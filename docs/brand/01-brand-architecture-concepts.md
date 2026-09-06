@@ -199,9 +199,53 @@ assumes paper-grade restraint.
 
 ---
 
+## Precision Edit v3 — Typography Revision
+
+**What was actually wrong, named plainly:** across v1 and v2 every concept used the same
+fallback stack — `Helvetica Neue, Helvetica, Arial, system-ui`. That's a safe *body* stack, not a
+typographic identity — it's the reason all three concepts still read as "the same brand recolored"
+instead of three distinct systems, and it's a legitimate miss on a task whose whole point is a
+distinct identity. Swapping color and layout without ever changing the typeface was treating type
+as an afterthought, not as the thing doing most of the actual brand work (which is exactly the
+Apple/SpaceX lesson from v2 — those two brands are typeface-first).
+
+**What changed — one real, distinct, licensed display face per concept, each doing a different
+job:**
+
+| Concept | Display / logotype | Body / dense UI | Why this pairing |
+|---|---|---|---|
+| 1 — Sovereign Monolith | **Space Grotesk** (500/600/700) | **IBM Plex Sans** (300–500) | Geometric, technical, disciplined — reads as instrumentation. IBM Plex was designed for IBM's own enterprise systems, so it carries genuine "built for serious infrastructure" pedigree. |
+| 2 — Adaptive Synapse | **Manrope** (400–800) | Manrope body + **JetBrains Mono** for coordinates/node IDs/data | Rounded-geometric warmth without losing precision; monospace is reserved strictly for technical labels, reinforcing the "schematic, not decorative" logic instead of just changing color. |
+| 3 — Ecosystem Anchor | **Fraunces** (400/600, italic 500) | **Source Sans 3** (400–700) | A serif carries permanence and editorial authority in a way no grotesk can — this is the concept about DPI/regulatory trust, so it's the one place a serif is earned. Source Sans 3 is Adobe's accessible workhorse, already common in government/DPI-style products. |
+
+All three are free, open-license (SIL OFL) Google Fonts — self-hostable for offline/air-gapped
+deployments, redistributable without per-seat licensing, and each maps cleanly to an Angular
+`--font-display` / `--font-body` CSS variable pair. This is also the concrete "Google design
+system" integration point from the original brief: not Material Design's component rules (which
+we're not adopting — this is a bespoke brand, not a Material app), but Google Fonts as the
+production-grade type engine underneath it.
+
+Rebuilt HTML/CSS samples for all three concepts, with real typography and a type-spec panel on
+each page, committed to GitHub (`docs/brand/mockups/*-v3.html` / `*-v3.png`).
+
+**On "hire a dedicated UI/UX designer":** worth answering directly rather than deflecting. What I
+can do well: structural brand logic, systemized type/color pairing, accessible and
+Angular-implementable design tokens, and enough visual craft to make a direction judgeable in
+static comps — which is what these three revisions are. What I can't do: draw a bespoke logotype
+by hand, guarantee the kind of pixel-level polish a trained visual designer produces, or replace
+taste with iteration. If v3 still doesn't land, the honest next step isn't a v4 recolor — it's
+either (a) you point at specific reference brands/screens you want matched more literally, so I
+can get closer with what I have, or (b) we scope a short, paid engagement with a human brand/type
+designer to take the *chosen structural direction* (the part that doesn't need to change) and
+execute final logotype + type licensing at a level of polish an agent shouldn't claim to match. I
+can draft that scope as a follow-up if useful — say the word and I'll open it as a separate
+tracked item so it doesn't block this decision.
+
+---
+
 ## Decision You Need to Make
 
-Pick one of the three **Precision Edit v2** directions as the master identity (the other two get
+Pick one of the three **Precision Edit v3** directions as the master identity (the other two get
 retired, not blended). Visual samples for all three are linked below and in the latest issue
 comment. Reply via the confirmation request on this issue, or comment directly with your choice
 and any requested changes. Once you confirm, Phase 2 (design tokens → Angular theme contract)

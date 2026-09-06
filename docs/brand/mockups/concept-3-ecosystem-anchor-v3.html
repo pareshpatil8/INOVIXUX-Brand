@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Concept 3 — Ecosystem Anchor (Precision Edit v3 — Typography)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;1,500&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FAFAF8; --ink:#111417; --sub:#5C6066; --line:rgba(17,20,23,.10);
+    --line-soft:rgba(17,20,23,.06); --navy:#16233B; --teal:#1F7A6C; --gold:#A6803A;
+    --green:#2E8B57; --red:#B23A32; --amber:#A67A2E;
+    --f-display:"Fraunces",Georgia,serif;
+    --f-body:"Source Sans 3",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);}
+  .banner{background:var(--navy);color:#B9C2D0;font-size:11px;letter-spacing:.08em;
+    padding:9px 32px;text-transform:uppercase;display:flex;justify-content:space-between}
+  .wrap{max-width:1180px;margin:0 auto;padding:56px 40px 96px}
+  header{display:flex;justify-content:space-between;align-items:center;
+    padding-bottom:28px;border-bottom:1px solid var(--line);margin-bottom:64px}
+  .logo{font-family:var(--f-display);font-weight:600;font-size:20px;letter-spacing:0;color:var(--navy)}
+  .logo em{font-style:italic;font-weight:500}
+  .tag{font-size:10px;color:var(--sub);letter-spacing:.14em;font-weight:600;
+    border:1px solid var(--line);padding:4px 8px;border-radius:2px}
+  nav{display:flex;gap:32px;font-size:13px;color:var(--sub)}
+  .hero{padding:24px 0 64px}
+  .eyebrow{color:var(--teal);font-size:11px;font-weight:700;letter-spacing:.2em;
+    text-transform:uppercase;margin-bottom:22px}
+  h1{font-family:var(--f-display);font-size:58px;line-height:1.12;font-weight:600;
+    letter-spacing:-0.01em;margin:0 0 22px;max-width:760px;color:var(--navy)}
+  h1 em{font-style:italic;font-weight:500;color:var(--teal)}
+  p.lead{color:var(--sub);font-size:17px;max-width:560px;line-height:1.65;margin:0 0 32px;font-weight:400}
+  .cta{display:inline-flex;gap:16px}
+  .btn{padding:13px 24px;border-radius:2px;font-weight:600;font-size:13px}
+  .btn.primary{background:var(--navy);color:#fff}
+  .btn.ghost{border:1px solid var(--line);color:var(--navy)}
+
+  .bento{display:grid;grid-template-columns:2fr 1fr;grid-template-rows:auto auto;gap:1px;
+    background:var(--line);margin:24px 0 0;border:1px solid var(--line)}
+  .bento > div{background:var(--bg);padding:24px}
+  .bento .accent{border-left:2px solid var(--gold)}
+
+  .rule{height:1px;background:var(--line);margin:0 0 20px}
+  .section-label{font-size:11px;color:var(--sub);text-transform:uppercase;
+    letter-spacing:.14em;margin:80px 0 20px;font-weight:700;display:flex;justify-content:space-between}
+  table{width:100%;border-collapse:collapse}
+  th{text-align:left;font-size:11px;color:var(--sub);text-transform:uppercase;
+    letter-spacing:.08em;padding:12px 4px;border-bottom:1px solid var(--line);font-weight:600}
+  td{padding:16px 4px;font-size:14px;border-bottom:1px solid var(--line-soft);color:var(--ink)}
+  .flag{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:13px}
+  .dot{width:6px;height:6px;border-radius:50%}
+  .dot.g{background:var(--green)} .dot.r{background:var(--red)} .dot.a{background:var(--amber)}
+
+  .collateral{display:grid;grid-template-columns:1fr 1fr;gap:1px;margin-top:24px;background:var(--line);
+    border:1px solid var(--line)}
+  .card{aspect-ratio:1.75/1;background:var(--navy);padding:32px;display:flex;flex-direction:column;
+    justify-content:space-between}
+  .card .mark{font-family:var(--f-display);font-weight:600;font-size:18px;color:#fff}
+  .card .person .n{font-weight:600;font-size:14px;color:#fff}
+  .card .person .t{font-size:11px;color:#9FB0C4;margin-top:4px}
+  .card .rule2{width:20px;height:2px;background:var(--gold)}
+  .letter{background:#fff;color:var(--navy);padding:36px;aspect-ratio:1.75/1;display:flex;
+    flex-direction:column;justify-content:space-between}
+  .letter .mark{font-family:var(--f-display);font-weight:600;font-size:17px}
+  .letter .hr{height:1px;background:var(--teal);width:36px;margin:14px 0}
+  .letter .body-lines div{height:5px;background:#E7E7E4;margin-bottom:9px}
+  .letter .body-lines div:nth-child(3){width:60%}
+  .letter .foot{font-size:10px;color:var(--sub);letter-spacing:.04em}
+  .type-spec{margin-top:88px;border:1px solid var(--line);padding:28px 32px}
+  .type-spec .row{display:flex;justify-content:space-between;align-items:baseline;
+    padding:10px 0;border-bottom:1px solid var(--line-soft);font-size:13px;color:var(--sub)}
+  .type-spec .row:last-child{border-bottom:none}
+  .type-spec .row b{color:var(--ink);font-weight:600}
+</style>
+</head>
+<body>
+  <div class="banner"><span>Directional visual sample — Concept 3 · Precision Edit v3 (typography revision)</span><span>Not final tokens, CSS, or production assets</span></div>
+  <div class="wrap">
+    <header>
+      <div class="logo">INOVI<em>XUX</em></div>
+      <div class="tag">SYS / 03 — COMPLIANCE</div>
+      <nav><span>Platform</span><span>KYB Underwriting</span><span>Docs</span><span>Company</span></nav>
+    </header>
+
+    <div class="hero">
+      <div class="eyebrow">Verification &amp; DPI Compliance</div>
+      <h1>An institutional record, built for <em>scrutiny</em>.</h1>
+      <p class="lead">The Ecosystem Anchor: a light Apple-grade surface, navy wordmark, and a
+        serif display face — Fraunces — chosen for permanence and editorial authority, set
+        against an accessible sans (Source Sans 3) for every dense screen and document.</p>
+      <div class="cta">
+        <div class="btn primary">Request underwriting demo</div>
+        <div class="btn ghost">Read the compliance model</div>
+      </div>
+      <div class="bento">
+        <div><strong style="color:var(--navy)">DPI-aligned by design</strong><div style="color:var(--sub);font-size:13px;margin-top:6px">Maps to India Stack rails — UPI, ABDM — as verification inputs, not decoration.</div></div>
+        <div class="accent"><strong style="color:var(--navy)">WCAG 2.2 AA</strong><div style="color:var(--sub);font-size:13px;margin-top:6px">Built in at the grid stage.</div></div>
+      </div>
+    </div>
+
+    <div class="rule"></div>
+    <div class="section-label"><span>Dense mode — KYB vendor risk table</span><span>REV. 02</span></div>
+    <table>
+      <tr><th>Vendor</th><th>Risk flag</th><th>Signal source</th><th>Reviewer</th></tr>
+      <tr><td>Meridian Freight Pvt Ltd</td><td><span class="flag"><span class="dot g"></span>Verified</span></td><td>ABDM + UPI trace</td><td>Pending sign-off</td></tr>
+      <tr><td>Kavya Textile Exports</td><td><span class="flag"><span class="dot a"></span>Review</span></td><td>GSTIN mismatch</td><td>Assigned</td></tr>
+      <tr><td>Orbit Cold Chain Co.</td><td><span class="flag"><span class="dot r"></span>Escalate</span></td><td>Beneficial-owner gap</td><td>Assigned</td></tr>
+    </table>
+
+    <div class="section-label"><span>Print collateral</span><span>NAVY + SINGLE TEAL/GOLD RULE</span></div>
+    <div class="collateral">
+      <div class="card">
+        <div class="mark">INOVI<em style="font-style:italic">XUX</em></div>
+        <div class="rule2"></div>
+        <div class="person"><div class="n">Paresh Patil</div><div class="t">Founder &amp; CEO</div></div>
+      </div>
+      <div class="letter">
+        <div class="mark">INOVI<em style="font-style:italic">XUX</em></div>
+        <div class="hr"></div>
+        <div class="body-lines"><div></div><div></div><div></div></div>
+        <div class="foot">Clean text-heavy letterhead, single teal rule, compliance-register tone</div>
+      </div>
+    </div>
+
+    <div class="type-spec">
+      <div class="row"><span>Display / logotype / headings</span><b>Fraunces — 400/600, italic 500</b></div>
+      <div class="row"><span>Body / UI / dense tables</span><b>Source Sans 3 — 400/500/600/700</b></div>
+      <div class="row"><span>Source</span><b>Google Fonts (open, self-hostable, WCAG 2.2 safe)</b></div>
+    </div>
+  </div>
+</body>
+</html>
