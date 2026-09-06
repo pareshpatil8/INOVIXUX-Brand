@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Concept 2 — The Adaptive Synapse (directional sample)</title>
+<style>
+  :root{
+    --bg:#0A0812; --bg2:#130F1F; --ink:#F3F1FA; --sub:#9C93B8;
+    --violet:#7C5CFF; --indigo:#4C6FFF; --line:#241D38;
+    --red:#F04D5B; --amber:#F0B23D; --green:#3ECF8E;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:
+      radial-gradient(1100px 500px at 15% -10%, rgba(124,92,255,.28), transparent 60%),
+      radial-gradient(900px 500px at 100% 20%, rgba(76,111,255,.22), transparent 55%),
+      var(--bg);
+    color:var(--ink);font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+  .banner{background:#150F24;color:#9C93B8;font-size:12px;letter-spacing:.04em;
+    padding:8px 24px;border-bottom:1px solid var(--line);text-transform:uppercase}
+  .wrap{max-width:1200px;margin:0 auto;padding:48px 32px 80px}
+  header{display:flex;justify-content:space-between;align-items:center;
+    padding-bottom:32px;border-bottom:1px solid var(--line);margin-bottom:48px}
+  .logo{font-weight:700;font-size:22px;letter-spacing:-0.01em;display:flex;align-items:center;gap:10px}
+  .node{width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,var(--violet),var(--indigo));
+    box-shadow:0 0 18px rgba(124,92,255,.9)}
+  nav{display:flex;gap:28px;font-size:14px;color:var(--sub)}
+  .hero{padding:40px 0 56px;position:relative}
+  svg.lines{position:absolute;right:-40px;top:-20px;width:520px;height:280px;opacity:.55}
+  .eyebrow{background:linear-gradient(90deg,var(--violet),var(--indigo));-webkit-background-clip:text;
+    background-clip:text;color:transparent;font-size:13px;font-weight:700;letter-spacing:.12em;
+    text-transform:uppercase;margin-bottom:16px}
+  h1{font-size:54px;line-height:1.08;font-weight:700;letter-spacing:-0.02em;margin:0 0 20px;max-width:760px}
+  p.lead{color:var(--sub);font-size:18px;max-width:600px;line-height:1.6;margin:0 0 28px}
+  .cta{display:inline-flex;gap:14px}
+  .btn{padding:12px 22px;border-radius:8px;font-weight:600;font-size:14px}
+  .btn.primary{background:linear-gradient(90deg,var(--violet),var(--indigo));color:#fff}
+  .btn.ghost{border:1px solid var(--line);color:var(--ink)}
+
+  .section-label{font-size:13px;color:var(--sub);text-transform:uppercase;
+    letter-spacing:.1em;margin:64px 0 16px;font-weight:600}
+  .bento{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:16px}
+  .tile{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:20px;
+    backdrop-filter:blur(6px)}
+  .tile h3{margin:0 0 8px;font-size:14px;color:var(--sub);font-weight:600}
+  .tile .big{font-size:30px;font-weight:700}
+  .row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed rgba(255,255,255,.08);font-size:13px}
+  .flag{display:inline-flex;align-items:center;gap:8px;font-weight:600}
+  .dot{width:8px;height:8px;border-radius:50%}
+  .dot.g{background:var(--green)} .dot.r{background:var(--red)} .dot.a{background:var(--amber)}
+
+  .collateral{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:24px}
+  .card{aspect-ratio:1.75/1;background:linear-gradient(135deg,#150F24,#1D1633);border:1px solid var(--line);
+    border-radius:10px;padding:28px;display:flex;flex-direction:column;justify-content:space-between}
+  .card .mark{font-weight:700;font-size:20px}
+  .card .person .n{font-weight:700;font-size:15px}
+  .card .person .t{font-size:12px;color:var(--sub);margin-top:4px}
+  .deck{background:linear-gradient(160deg,#170F28,#0E0A1A);border:1px solid var(--line);border-radius:10px;
+    padding:28px;aspect-ratio:1.75/1;display:flex;flex-direction:column;justify-content:space-between}
+  .deck .kicker{font-size:11px;color:var(--sub);letter-spacing:.1em;text-transform:uppercase}
+  .deck .title{font-size:22px;font-weight:700;max-width:80%}
+</style>
+</head>
+<body>
+  <div class="banner">Directional visual sample — Concept 2 of 3 — not final tokens, CSS, or production assets</div>
+  <div class="wrap">
+    <header>
+      <div class="logo"><span class="node"></span>INOVIXUX</div>
+      <nav><span>Platform</span><span>KYB Underwriting</span><span>Developer docs</span><span>Company</span></nav>
+    </header>
+
+    <div class="hero">
+      <svg class="lines" viewBox="0 0 500 260">
+        <g stroke="url(#g)" stroke-width="1.4" fill="none">
+          <path d="M10,220 L120,140 L240,180 L360,90 L480,120"/>
+          <path d="M40,60 L160,110 L260,40 L400,70"/>
+          <path d="M20,150 L140,200 L300,220 L460,190"/>
+        </g>
+        <g fill="#B7A6FF">
+          <circle cx="120" cy="140" r="4"/><circle cx="360" cy="90" r="4"/>
+          <circle cx="260" cy="40" r="4"/><circle cx="300" cy="220" r="4"/>
+        </g>
+        <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#7C5CFF"/><stop offset="1" stop-color="#4C6FFF"/>
+        </linearGradient></defs>
+      </svg>
+      <div class="eyebrow">Augmented Control</div>
+      <h1>Every vendor signal, traced and connected — one system, always legible.</h1>
+      <p class="lead">The Adaptive Synapse: fluid network line-work over obsidian, violet/indigo glow
+        fields. Built for technical integrators and developer-facing documentation.</p>
+      <div class="cta">
+        <div class="btn primary">Explore the API</div>
+        <div class="btn ghost">View live risk graph</div>
+      </div>
+    </div>
+
+    <div class="section-label">Fluid dashboard — bento layout</div>
+    <div class="bento">
+      <div class="tile">
+        <h3>Vendor risk stream</h3>
+        <div class="row"><span>Meridian Freight Pvt Ltd</span><span class="flag"><span class="dot g"></span>Verified</span></div>
+        <div class="row"><span>Kavya Textile Exports</span><span class="flag"><span class="dot a"></span>Review</span></div>
+        <div class="row"><span>Orbit Cold Chain Co.</span><span class="flag"><span class="dot r"></span>Escalate</span></div>
+      </div>
+      <div class="tile"><h3>Verified today</h3><div class="big">128</div></div>
+      <div class="tile"><h3>Awaiting human review</h3><div class="big">14</div></div>
+    </div>
+
+    <div class="section-label">Presentation &amp; print collateral</div>
+    <div class="collateral">
+      <div class="card">
+        <div class="mark"><span class="node" style="display:inline-block"></span> INOVIXUX</div>
+        <div class="person"><div class="n">Paresh Patil</div><div class="t">Founder &amp; CEO — Obsidian stock, foil gradient edge</div></div>
+      </div>
+      <div class="deck">
+        <div class="kicker">Pitch deck — cover slide</div>
+        <div class="title">Augmented Control for DPI-scale underwriting</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
