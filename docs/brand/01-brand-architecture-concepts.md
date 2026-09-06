@@ -243,6 +243,52 @@ tracked item so it doesn't block this decision.
 
 ---
 
+## Style Reference Check — Vetra (added 2026-09-06)
+
+**Checked, both accessible.** [vetra-app.vercel.app](https://vetra-app.vercel.app/) loads; source
+is open at [github.com/Shreyas-29/vetra](https://github.com/Shreyas-29/vetra).
+
+**What it actually is:** an AI marketing-automation SaaS landing page — Next.js 15 + TypeScript,
+TailwindCSS, **Shadcn UI** for components, **Framer Motion** for transitions, and Number Flow for
+animated metric counters. Dark-themed hero with an animated dashboard mock front-and-center,
+feature cards in a light grid, large count-up metrics ($12,834-style), smooth scroll-triggered
+motion throughout. It's a well-executed example of the same "21st.dev-adjacent" register the
+original brief named as the aesthetic benchmark.
+
+**The thing worth naming directly, not smoothing over:** this register — dark canvas, glow/gradient
+accents, motion-heavy dashboard hero, count-up metrics — is close to the **v1 direction you
+rejected** ("not best suited for the brand... refer Apple, SpaceX... professional Branding"), which
+is why v2/v3 pulled all three concepts toward monochrome-dominant surfaces with one functional
+accent and no ambient glow. Pointing at Vetra now could mean either of two different things, and
+the right next step depends on which one it is:
+
+1. **Reopen the aesthetic decision** — you want the more expressive, motion-forward, glow/gradient
+   register back, overriding the Apple/SpaceX correction. If so, **Concept 2 — Adaptive Synapse**
+   is the structural home for it (network line-work, violet/indigo glow fields, Framer-Motion-style
+   state transitions were its native language before the v2 monochrome pass) — v1's Concept 2 body
+   of work is the closer starting point than v3's.
+2. **Borrow specific mechanics, keep the discipline** — you like Vetra's *moves* (animated
+   dashboard-in-hero, count-up metrics, card-grid feature layout, dark-mode polish) but still want
+   v3's restraint (no ambient glow, one accent, instrumentation typography). All three v3 concepts
+   can absorb these as interaction patterns without reopening the color/gradient decision.
+
+**Tech-stack translation, flagged now so it isn't a surprise in Phase 2:** Vetra's component and
+motion layer is React-specific and doesn't run on our Angular rail. The load-bearing pieces map
+across cleanly, though:
+- **Tailwind CSS** — framework-agnostic, drops into Angular as-is.
+- **Shadcn UI** → **spartan/ui** (an Angular port of the same headless-component-plus-Tailwind
+  pattern) is the direct equivalent, rather than reaching for Angular Material's own design
+  language.
+- **Framer Motion** → Angular's built-in **Animations API** (or a lighter library such as Motion
+  One) covers the same scroll/state-transition territory.
+- **Number Flow** (animated counters) has direct Angular equivalents (e.g. count-up directives) and
+  is a small, safe addition regardless of which concept is chosen.
+
+No tokens, CSS variables, or components have been built from this — still inside the HITL
+guardrail. This is a reference note to sharpen the decision below, not an executed change.
+
+---
+
 ## Decision You Need to Make
 
 Pick one of the three **Precision Edit v3** directions as the master identity (the other two get
@@ -251,3 +297,10 @@ comment. Reply via the confirmation request on this issue, or comment directly w
 and any requested changes. Once you confirm, Phase 2 (design tokens → Angular theme contract)
 starts as the next tracked step — and if you share the Claude-built design system at that point,
 Phase 2 will reconcile it against the chosen direction.
+
+**Given the Vetra reference above, please also answer:** are you (1) reopening the aesthetic
+decision toward the more expressive glow/gradient/motion register — in which case say so and
+Concept 2 gets rebuilt toward its pre-v2 form — or (2) picking one of the three v3 concepts as-is
+and treating Vetra as a source of *interaction patterns* (animated hero dashboard, count-up
+metrics, card grids) to layer on top in Phase 2? Either is a legitimate answer — the structural
+work doesn't restart either way, only the surface treatment does.
