@@ -103,9 +103,107 @@ compliance stakeholders where "calm and institutional" outperforms "sharp and te
 
 ---
 
+---
+
+# Pivot: Precision Edit v2 (Apple × SpaceX reference)
+
+**Why this exists:** you rejected v1 ("all three options are not best suited for the brand...
+refer the apple, spacex... professional Branding"). v1 leaned on 21st.dev SaaS conventions
+(gradient washes, ambient glow, color-block panels) that read as *developer tool*, not as
+*premium institutional brand*. That's a legitimate miss for a company whose product sits next
+to banks, regulators, and DPI infrastructure.
+
+**What Apple and SpaceX actually do, for the record (not vibes):**
+- **Apple:** the discipline is subtraction, not decoration. Whitespace is used deliberately so
+  the eye lands on one thing; color is monochrome-first with accents earning their place through
+  function, not mood. ([prezlab.com](https://prezlab.com/how-apple-leverages-white-space-for-brand-success/), [icypluto.com](https://icypluto.com/blog/the-art-of-simplicity-apples-minimalist-branding-philosophy))
+- **SpaceX:** the identity system is built almost entirely on black, white, and photography —
+  no illustration, no gradients, no decorative type treatments, and deliberately no
+  patriotic/brand-color signaling. Typography is geometric and condensed with sharp, precise
+  terminals that read like engineering blueprints, not marketing collateral.
+  ([designyourway.net](https://www.designyourway.net/blog/spacex-logo/), [thedesigning.co](https://thedesigning.co/spacex-logo-brand-identity-brand-guidelines-2024))
+
+**The correction applied to all three concepts below:** monochrome-dominant surfaces (black/white
+or navy/off-white, not color-block panels), *one* functional accent per concept used only to carry
+meaning (a verified-state dot, an active-node pulse, a compliance rule) — never as a decorative
+wash or gradient — geometric/condensed type treated as instrumentation, and hairline structure
+(1px rules, coordinate/rev tags, mission-patch-style technical labels) borrowed from aerospace
+documentation rather than SaaS dashboard convention. The three structural directions (dark
+minimal / dark schematic / light institutional) are unchanged — only the execution discipline is
+corrected.
+
+**On the Claude-built design system you mentioned:** noted — you said it's built for application
+development, not brand, and isn't finished. I haven't seen it (no link/export was shared here).
+It doesn't block this brand decision, but once you pick a direction, share that system (repo link,
+Figma, or exported tokens) and Phase 2 will reconcile its component patterns against the chosen
+brand direction rather than starting the Angular theme from zero — that avoids building two
+incompatible design languages for the same product.
+
+## Concept 1 — Sovereign Monolith · Precision Edit v2
+
+**Visual Design:** Unchanged structural logic (B2C = mathematical subtraction of the B2B mark).
+Execution shifts to near-monochrome: pure black background, off-white type, hairline (1px,
+low-opacity) rules instead of visible borders. No silver "premium" gradient — silver becomes a
+flat, desaturated grey used only on secondary text.
+
+**Color Core:** ~92% black/off-white, ~8% desaturated forest green — and that green appears
+*only* as the "verified" RAG state dot. It is not a brand color in the decorative sense; it is a
+status signal that happens to also be present, sparingly, at logo-adjacent moments (e.g. a single
+dot next to "Resilience & Governance").
+
+**Tone Focus:** Same — absolute *Resilience & Governance* — but now closer in register to an
+aerospace instrumentation panel than a fintech SaaS hero section.
+
+**Asset Implementation:** Blind-emboss/foil business card on uncoated black stock (no visible
+gradient), coordinate/rev-tag micro-typography (e.g. "SYS/01 — GOVERNANCE") borrowed from
+technical drawings, dense-mode risk table with zero decorative color — only the RAG dots carry
+color, everything else is monochrome hierarchy via type weight.
+
+## Concept 2 — Adaptive Synapse · Precision Edit v2
+
+**Visual Design:** Unchanged network-line logic, but the "ambient glow field" from v1 is retired
+entirely — it was the single biggest departure from Apple/SpaceX discipline and also the flagged
+WCAG 2.4.11 risk. In its place: a black-and-white schematic diagram (node-and-line, blueprint
+style) with exactly one indigo accent marking the *active* verification path — everything else in
+the diagram is grayscale.
+
+**Color Core:** ~90% black/white, ~10% indigo — used only on the active node/edge, never as a
+background wash or gradient.
+
+**Tone Focus:** Same — *Augmented Control* — but expressed as "this diagram shows exactly one
+thing lit up: the thing the system wants you to look at," not as generalized tech-mood lighting.
+
+**Asset Implementation:** Schematic figure captions in the aerospace-documentation register
+("FIG. 02 — VERIFICATION PATH, ACTIVE NODE"), single-accent business card with a node mark
+instead of a violet gradient, dark-mode docs portal that treats indigo as a functional
+link/active-state color, not a canvas tint.
+
+## Concept 3 — Ecosystem Anchor · Precision Edit v2
+
+**Visual Design:** Unchanged heavy-wordmark, glyph-extraction logic — but the base surface flips
+from a navy field to an Apple-grade light neutral surface (off-white, generous margins), with navy
+reserved for the wordmark and type. This is the concept that most directly channels Apple's
+"whitespace does the work" principle, applied to a compliance-register brand.
+
+**Color Core:** ~85% off-white/navy type, ~15% teal + gold — and even that 15% is now expressed as
+single hairline rules and micro-accents (a 2px gold rule on a business card, a 1px teal underline
+on a letterhead) rather than fields of teal or gold color.
+
+**Tone Focus:** Same — *Verification & DPI Compliance* — now reading closer to a well-made
+institutional annual report than a "fintech brand palette."
+
+**Asset Implementation:** Bento grid rendered as a hairline-divided grid (no colored panels),
+navy business card with a single gold rule (not a gold field), light letterhead with a single
+teal underline — this is the concept with the clearest print-collateral story because it already
+assumes paper-grade restraint.
+
+---
+
 ## Decision You Need to Make
 
-Pick one of the three as the master direction (the other two get retired, not blended — per
-the brief this is a *single* master identity). Reply via the confirmation request on this issue,
-or comment directly with your choice and any requested changes. Once you confirm, Phase 2
-(design tokens → Angular theme contract) starts as the next tracked step.
+Pick one of the three **Precision Edit v2** directions as the master identity (the other two get
+retired, not blended). Visual samples for all three are linked below and in the latest issue
+comment. Reply via the confirmation request on this issue, or comment directly with your choice
+and any requested changes. Once you confirm, Phase 2 (design tokens → Angular theme contract)
+starts as the next tracked step — and if you share the Claude-built design system at that point,
+Phase 2 will reconcile it against the chosen direction.
