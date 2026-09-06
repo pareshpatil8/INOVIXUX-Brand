@@ -304,3 +304,120 @@ Concept 2 gets rebuilt toward its pre-v2 form — or (2) picking one of the thre
 and treating Vetra as a source of *interaction patterns* (animated hero dashboard, count-up
 metrics, card grids) to layer on top in Phase 2? Either is a legitimate answer — the structural
 work doesn't restart either way, only the surface treatment does.
+
+---
+
+## Precision Edit v4 — New Structural Directions (Sovereign Monolith / Adaptive Synapse /
+## Ecosystem Anchor retired)
+
+**Your answer, quoted plainly:** *"you are still giving me Sovereign Monolith, Adaptive and
+ecosystem anchor nothing other than than. I dont like these"* — and on the Vetra question, you
+picked **"keep v3 discipline, borrow Vetra's interaction patterns only."**
+
+**What that means, named directly rather than reskinned again:** v1→v3 kept iterating color,
+palette-discipline, and typography, but never changed the three underlying visual *ideas*
+(a monolithic wordmark, a node-network diagram, a heavy typographic wordmark) or their names. You
+rejected three rounds of that and said so in the plainest possible terms. Doing a fourth pass on
+the same three names and calling it different would repeat the exact mistake you just called out.
+So this round retires all three names and their mark logic entirely and replaces them with three
+new structural ideas — same audience segmentation (bank/regulator trust, technical/integrator
+control, DPI/compliance register — that segmentation was never the complaint), completely
+different visual mechanism for each.
+
+**What carries forward (confirmed, not reopened):** Apple/SpaceX monochrome-dominant discipline,
+one functional accent per concept, no ambient glow/gradient — and, per your answer above, Vetra's
+*interaction patterns* (animated dashboard-in-hero, count-up metrics, card-grid feature layout)
+now built into all three concepts below as static comps, with the underlying color/motion
+discipline unchanged.
+
+### Concept A — The Verified Line
+*(replaces Sovereign Monolith · same audience: banks/regulators, Resilience & Governance)*
+
+**Visual Design:** A single continuous stroke runs from the wordmark through the product — the
+literal "line" a KYB case travels — and only resolves into a checkmark once a human reviewer
+closes the case. The B2C mark is that resolved checkmark alone, cropped from the same stroke —
+never a separate icon.
+
+**Color Core:** Near-monochrome black/off-white, one functional accent — **Signal Blue** —
+appearing only on the active trace and the resolved-state checkmark. RAG (red/amber/green) status
+dots are a shared utility layer across all three concepts, not a brand color.
+
+**Tone Focus:** *Resilience & Governance*, expressed as "nothing is marked done until a human
+finishes the line," not through monolithic type weight.
+
+**Typography:** **Geist** (display/body) + **Geist Mono** (data, coordinates, tags) — Vercel's
+open-license (SIL OFL) type system, the same family underlying most of the 21st.dev/shadcn-style
+component work referenced throughout this task. This is a direct, honest answer to "give me
+typography like 21st.dev": Geist is literally in that ecosystem's toolkit, not an approximation
+of it.
+
+**Asset Implementation:** Animated hero dashboard showing the trace line resolving in real time
+(Vetra-style motion, monochrome execution); count-up metrics ("12,400+ KYB flags traced");
+matte-black business card with the resolved-checkmark B2C mark; minimal letterhead with a single
+traced rule.
+
+### Concept B — The Aperture Mark
+*(replaces Adaptive Synapse · same audience: technical integrators, Augmented Control)*
+
+**Visual Design:** Concentric rings — an aperture/iris — that widen as a case needs more human
+attention and narrow as it clears. This is a literal instrument for "the system surfaces signal,
+the human decides," rather than an abstract node-and-line network diagram standing in for the
+same idea. The B2C mark is the innermost ring alone.
+
+**Color Core:** Obsidian black/off-white, one functional accent — **warm bronze/copper** — used
+only on the active ring and control indicator. No glow field, no gradient wash.
+
+**Tone Focus:** *Augmented Control* — now shown mechanically (the aperture opens, the human
+closes it), not implied by ambient lighting.
+
+**Typography:** **Bricolage Grotesque** (display) + **Inter** (body/dense UI) — a distinctive
+variable-width display face paired with the most extensively tested typeface for small-size,
+high-density UI legibility at WCAG AA, which matters directly for the RAG risk tables this
+concept serves.
+
+**Asset Implementation:** Animated aperture gauge in the dashboard hero (widens/narrows with
+case status — Vetra-style motion, no color wash); count-up metrics; single-ring emboss business
+card; minimal letterhead.
+
+### Concept C — The Ledger Seal
+*(replaces Ecosystem Anchor · same audience: regulators/DPI partners, Verification & Compliance)*
+
+**Visual Design:** A stamp-style seal mark that only appears on a filing once a human reviewer
+closes it out — the literal visual language of an official verification stamp, not a heavy
+wordmark or a bento grid standing in for "institutional." The B2C mark is the seal glyph alone,
+without the wordmark.
+
+**Color Core:** Off-white/navy, one functional accent — **foil bronze/ochre** — used as the seal
+ring and hairline rules only. RAG dots remain the shared utility layer.
+
+**Tone Focus:** *Verification & DPI Compliance* — the seal is withheld until a case is actually
+closed, so the mark itself carries the "verified, not just branded" meaning the brief asks for.
+
+**Typography:** **Source Serif 4** (display, with an italic accent) + **Public Sans** (body) —
+Public Sans is the U.S. Web Design System's own accessible government-service typeface, a direct
+pedigree tie to DPI/regulatory-grade digital services; Source Serif 4 supplies the editorial
+authority a compliance-first brand needs.
+
+**Asset Implementation:** Animated "filing gets sealed" moment in the dashboard hero (Vetra-style
+motion: the seal draws in once review completes); count-up metrics ("4,820 filings sealed");
+navy business card with the bare seal glyph; formal letterhead with a foil-bronze rule.
+
+**Visual samples:** `docs/brand/mockups/concept-a-verified-line-v4.html` / `.png`,
+`concept-b-aperture-mark-v4.html` / `.png`, `concept-c-ledger-seal-v4.html` / `.png` — committed
+to GitHub alongside this revision.
+
+**Still true from v3, restated so it isn't lost in the pivot:** no design tokens, CSS variables,
+or production asset packs have been produced. This is still three structural directions for
+sign-off, per the HITL guardrail — the pivot is in *which three ideas* are being pitched, not in
+the gate they're subject to.
+
+**If none of these three land either:** the honest next step is not a v5 recolor of A/B/C — it's
+you pointing at 2–3 specific reference brands, logos, or screens (beyond Apple/SpaceX, which have
+now been fully applied) that show the actual visual target, or scoping the paid human
+designer engagement flagged in v3 to take one of these structural directions to final logotype
+art. Naming that now so it's on the table if needed, not as a deflection from doing the work above.
+
+## Decision You Need to Make (v4)
+
+Pick **Concept A, B, or C** above as the master identity, or say which specific reference/mark
+you want matched more literally. A fresh decision request is attached to this issue.

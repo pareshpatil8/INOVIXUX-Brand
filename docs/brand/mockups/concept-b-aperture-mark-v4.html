@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Concept B — The Aperture Mark (Precision Edit v4 — new structural direction)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B0B0C; --ink:#F5F5F4; --sub:#8C8C8E; --line:rgba(255,255,255,.10);
+    --line-soft:rgba(255,255,255,.06); --bronze:#B67B4B;
+    --green:#3A9B6B; --red:#C24C43; --amber:#B98A3C;
+    --f-display:"Bricolage Grotesque",system-ui,sans-serif;
+    --f-body:"Inter",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);}
+  .banner{background:#000;color:#6B6B6D;font-size:11px;letter-spacing:.08em;
+    padding:9px 32px;border-bottom:1px solid var(--line-soft);text-transform:uppercase;
+    display:flex;justify-content:space-between}
+  .wrap{max-width:1180px;margin:0 auto;padding:56px 40px 96px}
+  header{display:flex;justify-content:space-between;align-items:center;
+    padding-bottom:28px;border-bottom:1px solid var(--line);margin-bottom:56px}
+  .logo{display:flex;align-items:center;gap:10px;font-family:var(--f-display);font-weight:600;font-size:19px;letter-spacing:-.01em}
+  .tag{font-size:10px;color:var(--sub);letter-spacing:.14em;font-weight:500;
+    border:1px solid var(--line);padding:4px 8px;border-radius:2px}
+  nav{display:flex;gap:32px;font-size:13px;color:var(--sub)}
+
+  .hero{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center;padding:8px 0 64px}
+  .eyebrow{color:var(--sub);font-size:11px;font-weight:600;letter-spacing:.2em;
+    text-transform:uppercase;margin-bottom:22px;display:flex;align-items:center;gap:8px}
+  .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--bronze)}
+  h1{font-family:var(--f-display);font-size:54px;line-height:1.05;font-weight:600;letter-spacing:-0.02em;margin:0 0 22px}
+  p.lead{color:var(--sub);font-size:16px;max-width:520px;line-height:1.65;margin:0 0 32px}
+  .cta{display:inline-flex;gap:14px}
+  .btn{padding:13px 22px;border-radius:6px;font-weight:500;font-size:13px}
+  .btn.primary{background:var(--ink);color:#000}
+  .btn.ghost{border:1px solid var(--line);color:var(--ink)}
+
+  .panel{border:1px solid var(--line);border-radius:10px;background:#0F0F10;overflow:hidden}
+  .panel-head{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;
+    border-bottom:1px solid var(--line-soft);font-size:11px;color:var(--sub)}
+  .panel-body{padding:22px;display:flex;gap:22px;align-items:center}
+  .aperture{width:120px;height:120px;flex:0 0 auto}
+  .rows{flex:1;min-width:0}
+  .rowline{display:flex;justify-content:space-between;align-items:center;padding:10px 0;
+    border-bottom:1px solid var(--line-soft);font-size:13px}
+  .rowline:last-child{border-bottom:none}
+  .flag{display:inline-flex;align-items:center;gap:8px;font-weight:500;font-size:12px}
+  .dot{width:6px;height:6px;border-radius:50%}
+  .dot.g{background:var(--green)} .dot.r{background:var(--red)} .dot.a{background:var(--amber)}
+
+  .metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);
+    border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:64px 0}
+  .metric{background:#0B0B0C;padding:26px 24px}
+  .metric .num{font-family:var(--f-display);font-size:30px;font-weight:600;color:var(--ink)}
+  .metric .lbl{font-size:12px;color:var(--sub);margin-top:6px}
+
+  .section-label{font-size:11px;color:var(--sub);text-transform:uppercase;
+    letter-spacing:.14em;margin:64px 0 20px;font-weight:600;display:flex;justify-content:space-between}
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);
+    border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .fcard{background:#0B0B0C;padding:26px 22px;min-height:150px;display:flex;flex-direction:column;justify-content:space-between}
+  .fcard .icon{width:28px;height:28px;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;justify-content:center}
+  .fcard h3{font-family:var(--f-display);font-size:15px;font-weight:600;margin:16px 0 6px}
+  .fcard p{font-size:12.5px;color:var(--sub);margin:0;line-height:1.5}
+
+  table{width:100%;border-collapse:collapse;margin-top:8px}
+  th{text-align:left;font-size:11px;color:var(--sub);text-transform:uppercase;
+    letter-spacing:.08em;padding:12px 4px;border-bottom:1px solid var(--line);font-weight:500}
+  td{padding:16px 4px;font-size:14px;border-bottom:1px solid var(--line-soft)}
+
+  .collateral{display:grid;grid-template-columns:1fr 1fr;gap:1px;margin-top:24px;background:var(--line)}
+  .card{aspect-ratio:1.75/1;background:#000;padding:32px;display:flex;flex-direction:column;justify-content:space-between}
+  .card .mark{font-family:var(--f-display);font-weight:600;font-size:17px;letter-spacing:-.01em;display:flex;align-items:center;gap:8px}
+  .card .mono{font-size:10px;color:#5A5A5C;letter-spacing:.1em}
+  .card .person .n{font-weight:500;font-size:14px;color:#fff}
+  .card .person .t{font-size:11px;color:#6B6B6D;margin-top:4px}
+  .letter{background:#F5F5F4;color:#0B0B0C;padding:36px;aspect-ratio:1.75/1;display:flex;flex-direction:column;justify-content:space-between}
+  .letter .mark{font-family:var(--f-display);font-weight:600;font-size:16px;letter-spacing:-.01em}
+  .letter .hr{height:1px;background:#0B0B0C;width:36px;margin:14px 0}
+  .letter .body-lines div{height:5px;background:#DEDEDD;margin-bottom:9px}
+  .letter .body-lines div:nth-child(3){width:60%}
+  .letter .foot{font-size:10px;color:#8C8C8E}
+
+  .type-spec{margin-top:64px;border:1px solid var(--line);border-radius:10px;padding:28px 32px}
+  .type-spec .row{display:flex;justify-content:space-between;align-items:baseline;
+    padding:10px 0;border-bottom:1px solid var(--line-soft);font-size:13px;color:var(--sub)}
+  .type-spec .row:last-child{border-bottom:none}
+  .type-spec .row b{color:var(--ink);font-weight:500}
+</style>
+</head>
+<body>
+  <div class="banner"><span>Directional visual sample — Concept B · Precision Edit v4 (new structural direction)</span><span>Not final tokens, CSS, or production assets</span></div>
+  <div class="wrap">
+    <header>
+      <div class="logo">
+        <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9" fill="none" stroke="#F5F5F4" stroke-width="1" opacity=".5"/><circle cx="10" cy="10" r="6" fill="none" stroke="#F5F5F4" stroke-width="1" opacity=".7"/><circle cx="10" cy="10" r="3" fill="var(--bronze)"/></svg>
+        INOVIXUX
+      </div>
+      <div class="tag">APERTURE / AUGMENTED CONTROL</div>
+      <nav><span>Platform</span><span>KYB Underwriting</span><span>Docs</span><span>Company</span></nav>
+    </header>
+
+    <div class="hero">
+      <div>
+        <div class="eyebrow"><span class="dot"></span>Augmented Control</div>
+        <h1>The system opens focus. You close it.</h1>
+        <p class="lead">The Aperture Mark: concentric rings that widen as more human review is
+          warranted, and narrow as a case clears — a literal instrument for "the system surfaces
+          signal, the human decides," not a network diagram standing in for that idea.</p>
+        <div class="cta">
+          <div class="btn primary">Request underwriting demo</div>
+          <div class="btn ghost">Read the control model</div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>VENDOR-4471</span><span>FOCUS: WIDE</span></div>
+        <div class="panel-body">
+          <svg class="aperture" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="52" fill="none" stroke="#2A2A2C" stroke-width="1.5"/>
+            <circle cx="60" cy="60" r="36" fill="none" stroke="#3D3D40" stroke-width="1.5"/>
+            <circle cx="60" cy="60" r="20" fill="none" stroke="var(--bronze)" stroke-width="2"/>
+            <circle cx="60" cy="60" r="6" fill="var(--bronze)"/>
+          </svg>
+          <div class="rows">
+            <div class="rowline"><span>Beneficial-owner match</span><span class="flag"><span class="dot g"></span>Verified</span></div>
+            <div class="rowline"><span>GSTIN cross-check</span><span class="flag"><span class="dot a"></span>Review</span></div>
+            <div class="rowline"><span>UPI settlement trail</span><span class="flag"><span class="dot r"></span>Escalate</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="metrics">
+      <div class="metric"><div class="num">3,180</div><div class="lbl">Cases where focus widened for review this quarter</div></div>
+      <div class="metric"><div class="num">100%</div><div class="lbl">Final calls made by a human reviewer</div></div>
+      <div class="metric"><div class="num">6.4s</div><div class="lbl">Median time to surface a risk signal</div></div>
+    </div>
+
+    <div class="section-label"><span>Fluid mode — feature grid</span><span>CARD LAYOUT</span></div>
+    <div class="cards">
+      <div class="fcard"><div class="icon">◎</div><h3>One aperture, two densities</h3><p>The same ring system compresses to a single dot in dense mode, expands to a full gauge in fluid mode.</p></div>
+      <div class="fcard"><div class="icon">＋</div><h3>Widens, never decides</h3><p>The rings communicate where attention is needed — they never resolve a case on their own.</p></div>
+      <div class="fcard"><div class="icon">⟳</div><h3>Built for integrators</h3><p>A schematic, instrument-panel register that reads naturally in developer-facing documentation.</p></div>
+    </div>
+
+    <div class="section-label"><span>Dense mode — KYB vendor risk table</span><span>REV. 01</span></div>
+    <table>
+      <tr><th>Vendor</th><th>Risk flag</th><th>Signal source</th><th>Reviewer</th></tr>
+      <tr><td>Meridian Freight Pvt Ltd</td><td><span class="flag"><span class="dot g"></span>Verified</span></td><td>ABDM + UPI trace</td><td>Pending sign-off</td></tr>
+      <tr><td>Kavya Textile Exports</td><td><span class="flag"><span class="dot a"></span>Review</span></td><td>GSTIN mismatch</td><td>Assigned</td></tr>
+      <tr><td>Orbit Cold Chain Co.</td><td><span class="flag"><span class="dot r"></span>Escalate</span></td><td>Beneficial-owner gap</td><td>Assigned</td></tr>
+    </table>
+
+    <div class="section-label"><span>Print collateral</span><span>B2C MARK = INNERMOST RING ONLY</span></div>
+    <div class="collateral">
+      <div class="card">
+        <div class="mono">INOVIXUX / IDENTITY</div>
+        <div class="mark"><svg width="14" height="14" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9" fill="none" stroke="var(--bronze)" stroke-width="1.6"/></svg>INOVIXUX</div>
+        <div class="person"><div class="n">Paresh Patil</div><div class="t">Founder &amp; CEO</div></div>
+      </div>
+      <div class="letter">
+        <div class="mark">INOVIXUX</div>
+        <div class="hr"></div>
+        <div class="body-lines"><div></div><div></div><div></div></div>
+        <div class="foot">Single ring emboss, uncoated stock, maximum whitespace</div>
+      </div>
+    </div>
+
+    <div class="type-spec">
+      <div class="row"><span>Display / logotype</span><b>Bricolage Grotesque — 500/600/700</b></div>
+      <div class="row"><span>Body / dense UI / tables</span><b>Inter — 400/500/600</b></div>
+      <div class="row"><span>System fallback (Angular)</span><b>system-ui, Arial, Helvetica</b></div>
+      <div class="row"><span>Why this pairing</span><b>Bricolage brings a distinct, slightly variable-width display voice; Inter is the most-tested typeface for dense, small-size UI/data legibility at WCAG AA</b></div>
+    </div>
+  </div>
+</body>
+</html>
