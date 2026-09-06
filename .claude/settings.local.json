@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(/Users/apple/INOVIXUX/INOVIXUX-Brand/scripts/paperclip-issue-update.sh:*)",
+      "Bash(/Users/apple/INOVIXUX/INOVIXUX-Brand/scripts/paperclip:*)",
+      "Bash(curl:*)",
+      "Bash(env)",
+      "Bash(env:*)"
+    ],
+    "additionalDirectories": [
+      "/Users/apple/.paperclip/instances/default/companies/97c432d1-5006-4300-9082-bd4a97d0d36f",
+      "/Users/apple/.paperclip/instances/default/companies/97c432d1-5006-4300-9082-bd4a97d0d36f/acp-engine/agents/2444c60f-93d3-4e25-9244-34c96f456e7f",
+      "/Users/apple/.paperclip/instances/default/workspaces/2444c60f-93d3-4e25-9244-34c96f456e7f"
+    ],
+    "defaultMode": "default"
+  }
+}
