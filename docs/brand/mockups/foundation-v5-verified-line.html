@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>INOVIXUX — Design System Foundation v5 (Vetra structural map, Verified Line skin)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A0A0A; --bg-raised:#0D0D0E; --ink:#F5F5F4; --sub:#8C8C8E; --sub-dim:#5A5A5C;
+    --line:rgba(255,255,255,.10); --line-soft:rgba(255,255,255,.06);
+    --accent:#3B6EF6; /* swap token: Verified Line=Signal Blue, Aperture Mark=bronze #B98A3C, Ledger Seal=ochre #C2914B */
+    --green:#3A9B6B; --red:#C24C43; --amber:#B98A3C;
+    --radius:10px;
+    --f-display:"Geist",system-ui,-apple-system,Arial,sans-serif;
+    --f-mono:"Geist Mono",ui-monospace,"SFMono-Regular",monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-display);-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+  .banner{background:#000;color:#6B6B6D;font-size:11px;letter-spacing:.08em;
+    padding:9px 32px;border-bottom:1px solid var(--line-soft);text-transform:uppercase;
+    display:flex;justify-content:space-between;font-family:var(--f-mono)}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 40px}
+
+  /* nav */
+  header{display:flex;justify-content:space-between;align-items:center;
+    padding:26px 0;border-bottom:1px solid var(--line)}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:600;font-size:19px;letter-spacing:-.01em}
+  nav.links{display:flex;gap:32px;font-size:13px;color:var(--sub)}
+  .navcta{display:flex;align-items:center;gap:16px}
+
+  /* buttons */
+  .btn{padding:12px 20px;border-radius:6px;font-weight:500;font-size:13px;display:inline-flex;
+    align-items:center;gap:6px;cursor:default;border:1px solid transparent}
+  .btn.primary{background:var(--ink);color:#000}
+  .btn.ghost{border-color:var(--line);color:var(--ink)}
+  .btn.sm{padding:9px 14px;font-size:12.5px}
+
+  /* hero */
+  .hero{padding:80px 0 0;text-align:center}
+  .eyebrow{color:var(--sub);font-size:11px;font-weight:600;letter-spacing:.2em;
+    text-transform:uppercase;margin:0 auto 22px;display:inline-flex;align-items:center;gap:8px;
+    font-family:var(--f-mono);border:1px solid var(--line);padding:6px 12px;border-radius:20px}
+  .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+  h1{font-size:56px;line-height:1.05;font-weight:600;letter-spacing:-0.03em;margin:0 auto 22px;max-width:760px}
+  p.lead{color:var(--sub);font-size:17px;max-width:560px;line-height:1.65;margin:0 auto 34px;font-weight:400}
+  .cta-row{display:flex;justify-content:center;gap:14px;margin-bottom:56px}
+
+  /* hero dashboard mock — full width, mirrors Vetra's hero-mockup-below pattern */
+  .dash{border:1px solid var(--line);border-radius:14px;background:var(--bg-raised);
+    overflow:hidden;box-shadow:0 40px 80px -40px rgba(0,0,0,.6)}
+  .dash-head{display:flex;justify-content:space-between;align-items:center;padding:16px 22px;
+    border-bottom:1px solid var(--line-soft);font-size:11px;color:var(--sub);font-family:var(--f-mono)}
+  .dash-head .traffic{display:flex;gap:6px}
+  .dash-head .traffic i{width:9px;height:9px;border-radius:50%;background:var(--line)}
+  .dash-body{display:grid;grid-template-columns:1.3fr 1fr;gap:0}
+  .dash-left{padding:28px;border-right:1px solid var(--line-soft)}
+  .dash-right{padding:28px}
+  .trace{width:100%;height:110px;display:block;margin-bottom:18px}
+  .trace path{fill:none;stroke:var(--accent);stroke-width:2;stroke-linecap:round}
+  .trace circle{fill:var(--accent)}
+  .rowline{display:flex;justify-content:space-between;align-items:center;padding:11px 0;
+    border-bottom:1px solid var(--line-soft);font-size:13px}
+  .rowline:last-child{border-bottom:none}
+  .flag{display:inline-flex;align-items:center;gap:8px;font-weight:500;font-size:12px}
+  .dot{width:6px;height:6px;border-radius:50%}
+  .dot.g{background:var(--green)} .dot.r{background:var(--red)} .dot.a{background:var(--amber)}
+  .queue-item{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;
+    background:#0A0A0A;border:1px solid var(--line-soft);border-radius:8px;margin-bottom:10px;font-size:12.5px}
+  .queue-item .who{color:var(--sub)}
+
+  /* trust / rails bar */
+  .rails{padding:56px 0;border-bottom:1px solid var(--line)}
+  .rails .label{text-align:center;font-size:11px;color:var(--sub-dim);text-transform:uppercase;
+    letter-spacing:.14em;margin-bottom:26px;font-family:var(--f-mono)}
+  .rails-grid{display:flex;justify-content:center;gap:40px;flex-wrap:wrap;color:var(--sub);
+    font-family:var(--f-mono);font-size:13px;letter-spacing:.04em}
+
+  .section-label{font-size:11px;color:var(--sub);text-transform:uppercase;
+    letter-spacing:.14em;margin:0 0 20px;font-weight:600;display:flex;justify-content:space-between;font-family:var(--f-mono)}
+  section{padding:88px 0;border-bottom:1px solid var(--line)}
+  section.tight{padding-top:0}
+  .section-head{text-align:center;max-width:600px;margin:0 auto 48px}
+  .section-head h2{font-size:32px;font-weight:600;letter-spacing:-.02em;margin:0 0 12px}
+  .section-head p{color:var(--sub);font-size:15px;line-height:1.6;margin:0}
+
+  /* feature grid — 4 col, mirrors Vetra feature grid */
+  .cards4{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);
+    border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+  .fcard{background:var(--bg);padding:28px 22px;min-height:170px;display:flex;flex-direction:column;justify-content:space-between}
+  .fcard .icon{width:30px;height:30px;border-radius:7px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:13px}
+  .fcard h3{font-size:15px;font-weight:600;margin:18px 0 6px}
+  .fcard p{font-size:12.5px;color:var(--sub);margin:0;line-height:1.55}
+
+  /* metrics subsections — mirrors Vetra's Campaign Insights / Audience Metrics */
+  .metrics2{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);
+    border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+  .metric-panel{background:var(--bg-raised);padding:28px}
+  .metric-panel .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+  .metric-panel .num{font-family:var(--f-mono);font-size:34px;font-weight:500}
+  .metric-panel .delta{font-size:12px;color:var(--green);font-family:var(--f-mono)}
+  .metric-panel .cap{font-size:12.5px;color:var(--sub);margin-bottom:20px}
+  table{width:100%;border-collapse:collapse}
+  th{text-align:left;font-size:10.5px;color:var(--sub);text-transform:uppercase;
+    letter-spacing:.08em;padding:10px 4px;border-bottom:1px solid var(--line);font-weight:500;font-family:var(--f-mono)}
+  td{padding:13px 4px;font-size:13px;border-bottom:1px solid var(--line-soft);font-weight:400}
+
+  /* integration / tech callout */
+  .integration{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+  .integration .stack{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+  .chip{border:1px solid var(--line);border-radius:20px;padding:7px 13px;font-size:12px;color:var(--sub);font-family:var(--f-mono)}
+  .integration-panel{border:1px solid var(--line);border-radius:var(--radius);background:var(--bg-raised);padding:24px}
+  .maprow{display:flex;justify-content:space-between;font-size:12.5px;padding:10px 0;border-bottom:1px solid var(--line-soft)}
+  .maprow:last-child{border-bottom:none}
+  .maprow .from{color:var(--sub-dim);text-decoration:line-through}
+  .maprow .to{color:var(--ink);font-weight:500}
+
+  /* deployment tiers — replaces pricing */
+  .tiers-toggle{display:flex;justify-content:center;gap:0;margin-bottom:40px}
+  .tiers-toggle .opt{border:1px solid var(--line);padding:8px 18px;font-size:12.5px;color:var(--sub);font-family:var(--f-mono)}
+  .tiers-toggle .opt:first-child{border-radius:6px 0 0 6px}
+  .tiers-toggle .opt:last-child{border-radius:0 6px 6px 0}
+  .tiers-toggle .opt.active{background:var(--ink);color:#000;border-color:var(--ink)}
+  .tiers{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);
+    border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;max-width:760px;margin:0 auto}
+  .tier{background:var(--bg);padding:32px}
+  .tier h3{font-size:16px;margin:0 0 6px}
+  .tier .desc{font-size:12.5px;color:var(--sub);margin-bottom:18px}
+  .tier ul{list-style:none;padding:0;margin:0}
+  .tier li{font-size:12.5px;color:var(--sub);padding:7px 0;border-bottom:1px solid var(--line-soft);display:flex;gap:8px}
+  .tier li:last-child{border-bottom:none}
+  .tier li:before{content:"—";color:var(--accent)}
+
+  /* compliance / geography grid — replaces language grid */
+  .geo-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--line);
+    border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+  .geo-item{background:var(--bg);padding:16px 10px;text-align:center;font-size:11.5px;color:var(--sub);font-family:var(--f-mono)}
+
+  /* final cta */
+  .finalcta{text-align:center;padding:96px 0}
+  .finalcta h2{font-size:36px;font-weight:600;letter-spacing:-.02em;margin:0 0 16px}
+  .finalcta p{color:var(--sub);font-size:15px;margin:0 0 32px}
+
+  footer{padding:56px 0;display:grid;grid-template-columns:1.4fr repeat(4,1fr);gap:32px}
+  footer .fmark{font-weight:600;font-size:17px;margin-bottom:10px}
+  footer .fdesc{font-size:12.5px;color:var(--sub);max-width:220px;line-height:1.6}
+  footer h4{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--sub-dim);margin:0 0 14px;font-family:var(--f-mono)}
+  footer ul{list-style:none;padding:0;margin:0}
+  footer li{font-size:13px;color:var(--sub);margin-bottom:10px}
+  .subfoot{border-top:1px solid var(--line);padding:20px 0 60px;font-size:11.5px;color:var(--sub-dim);
+    display:flex;justify-content:space-between;font-family:var(--f-mono)}
+
+  .type-spec{margin-top:0;border:1px solid var(--line);border-radius:var(--radius);padding:28px 32px}
+  .type-spec .row{display:flex;justify-content:space-between;align-items:baseline;
+    padding:10px 0;border-bottom:1px solid var(--line-soft);font-size:13px;color:var(--sub)}
+  .type-spec .row:last-child{border-bottom:none}
+  .type-spec .row b{color:var(--ink);font-weight:500}
+
+  @media (max-width:900px){
+    .cards4{grid-template-columns:repeat(2,1fr)}
+    .metrics2,.integration,.tiers{grid-template-columns:1fr}
+    .geo-grid{grid-template-columns:repeat(3,1fr)}
+    footer{grid-template-columns:1fr 1fr}
+    h1{font-size:38px}
+  }
+</style>
+</head>
+<body>
+  <div class="banner"><span>Design System Foundation v5 — structural map of vetra-app.vercel.app, rebuilt tech-agnostic (no React/Next/Shadcn/Framer Motion) with the Verified Line brand skin</span><span>Directional — not final tokens or production code</span></div>
+
+  <div class="wrap">
+    <header>
+      <div class="logo">
+        <svg width="20" height="20" viewBox="0 0 20 20"><path d="M2 12 L7 12 L9 5 L12 15 L14 9 L18 9" stroke="#F5F5F4" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18" cy="9" r="2" fill="var(--accent)"/></svg>
+        INOVIXUX
+      </div>
+      <nav class="links"><a href="#features">Platform</a><a href="#metrics">KYB Underwriting</a><a href="#integration">Docs</a><a href="#tiers">Deployment</a></nav>
+      <div class="navcta"><span class="btn ghost sm">Sign in</span><span class="btn primary sm">Request demo</span></div>
+    </header>
+
+    <div class="hero">
+      <div class="eyebrow"><span class="dot"></span>Resilience &amp; Governance — Human still approves everything</div>
+      <h1>One line, traced to a verified state.</h1>
+      <p class="lead">The Verified Line resolves into a checkmark only once a human reviewer closes
+        the case. INOVIXUX turns raw vendor data into structured risk-flag reports — it surfaces
+        the signal; it never makes the call.</p>
+      <div class="cta-row">
+        <span class="btn primary">Request underwriting demo</span>
+        <span class="btn ghost">Read the governance model</span>
+      </div>
+
+      <div class="dash">
+        <div class="dash-head">
+          <div class="traffic"><i></i><i></i><i></i></div>
+          <span>KYB / VENDOR-4471 — LIVE TRACE</span>
+          <span>REV. 01</span>
+        </div>
+        <div class="dash-body">
+          <div class="dash-left">
+            <svg class="trace" viewBox="0 0 400 110">
+              <path d="M10 85 L90 85 L130 25 L190 95 L250 15 L310 55 L390 55" />
+              <circle cx="390" cy="55" r="5"/>
+            </svg>
+            <div class="rowline"><span>Beneficial-owner match</span><span class="flag"><span class="dot g"></span>Verified</span></div>
+            <div class="rowline"><span>GSTIN cross-check</span><span class="flag"><span class="dot a"></span>Review</span></div>
+            <div class="rowline"><span>UPI settlement trail</span><span class="flag"><span class="dot g"></span>Verified</span></div>
+            <div class="rowline"><span>Beneficial-owner gap — Orbit Cold Chain</span><span class="flag"><span class="dot r"></span>Escalate</span></div>
+          </div>
+          <div class="dash-right">
+            <div class="section-label" style="margin-top:0"><span>Reviewer queue</span></div>
+            <div class="queue-item"><span>VENDOR-4471</span><span class="who">Assigned — R. Nair</span></div>
+            <div class="queue-item"><span>VENDOR-4488</span><span class="who">Pending sign-off</span></div>
+            <div class="queue-item"><span>VENDOR-4502</span><span class="who">Assigned — S. Iyer</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rails">
+    <div class="wrap">
+      <div class="label">Built to reconcile against DPI-aligned rails — not a claimed integration or partnership</div>
+      <div class="rails-grid"><span>UPI</span><span>ABDM</span><span>GSTIN</span><span>MCA21</span><span>Account Aggregator</span><span>e-KYC</span></div>
+    </div>
+  </div>
+
+  <section id="features">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>One system, two densities</h2>
+        <p>The same trace motif and token set power a high-density risk dashboard for underwriters
+          and a low-friction consumer surface — no separate design language to maintain.</p>
+      </div>
+      <div class="cards4">
+        <div class="fcard"><div class="icon">→</div><h3>One master line</h3><p>Every mark in the system is the same stroke, cropped differently — never a redrawn logo.</p></div>
+        <div class="fcard"><div class="icon">✓</div><h3>Resolved, not decided</h3><p>The accent color appears only once a human reviewer has closed the loop.</p></div>
+        <div class="fcard"><div class="icon">≡</div><h3>Dense-mode ready</h3><p>The trace motif compresses into a status column for high-density RAG risk tables.</p></div>
+        <div class="fcard"><div class="icon">◧</div><h3>Fluid-mode ready</h3><p>The same tokens relax into a whitespace-first B2C layout for consumer surfaces.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="metrics" class="tight">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Verification throughput, not vanity metrics</h2>
+        <p>Structural equivalent of Vetra's Campaign Insights / Audience Metrics split — reframed
+          around case verification and human review load.</p>
+      </div>
+      <div class="metrics2">
+        <div class="metric-panel">
+          <div class="top"><span class="num" data-count="12400">0</span><span class="delta">+18% vs. last cycle</span></div>
+          <div class="cap">KYB flags traced to resolution</div>
+          <table>
+            <tr><th>Vendor</th><th>Signal source</th><th>Status</th></tr>
+            <tr><td>Meridian Freight</td><td>ABDM + UPI</td><td><span class="flag"><span class="dot g"></span>Verified</span></td></tr>
+            <tr><td>Kavya Textile Exports</td><td>GSTIN mismatch</td><td><span class="flag"><span class="dot a"></span>Review</span></td></tr>
+            <tr><td>Orbit Cold Chain Co.</td><td>Owner gap</td><td><span class="flag"><span class="dot r"></span>Escalate</span></td></tr>
+          </table>
+        </div>
+        <div class="metric-panel">
+          <div class="top"><span class="num" data-count="342">0</span><span class="delta">avg. 6.4 min / case</span></div>
+          <div class="cap">Human reviews closed this week</div>
+          <table>
+            <tr><th>Reviewer</th><th>Queue</th><th>Load</th></tr>
+            <tr><td>R. Nair</td><td>Underwriting</td><td>12 open</td></tr>
+            <tr><td>S. Iyer</td><td>Compliance</td><td>7 open</td></tr>
+            <tr><td>A. Verma</td><td>Escalations</td><td>3 open</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="integration">
+    <div class="wrap">
+      <div class="integration">
+        <div>
+          <div class="section-label"><span>Tech-stack translation</span></div>
+          <h2 style="font-size:26px;font-weight:600;letter-spacing:-.02em;margin:0 0 14px">
+            Vetra's structure, our Angular rail</h2>
+          <p style="color:var(--sub);font-size:14px;line-height:1.65;margin:0 0 4px">
+            Every section on this page is plain HTML/CSS with a few lines of vanilla JS
+            (count-up, tier toggle) — no React runtime — so it maps directly onto Angular
+            components without a rewrite.</p>
+          <div class="stack">
+            <span class="chip">Tailwind → Tailwind (as-is)</span>
+            <span class="chip">Shadcn UI → spartan/ui</span>
+            <span class="chip">Framer Motion → Angular Animations API</span>
+            <span class="chip">Number Flow → count-up directive</span>
+          </div>
+        </div>
+        <div class="integration-panel">
+          <div class="maprow"><span class="from">next/link routing</span><span class="to">Angular Router</span></div>
+          <div class="maprow"><span class="from">React Server Components</span><span class="to">Angular signals + SSR</span></div>
+          <div class="maprow"><span class="from">Shadcn Card/Table/Tabs</span><span class="to">spartan/ui primitives, same Tailwind classes</span></div>
+          <div class="maprow"><span class="from">Framer Motion scroll reveal</span><span class="to">Angular Animations + IntersectionObserver</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="tiers">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Deployment tiers</h2>
+        <p>Structural placeholder only — no commercial terms exist yet (INO-14 hold). Shown to
+          prove the section pattern, not to price anything.</p>
+      </div>
+      <div class="tiers-toggle">
+        <span class="opt active">Self-hosted</span>
+        <span class="opt">Managed</span>
+      </div>
+      <div class="tiers">
+        <div class="tier">
+          <h3>Standard</h3>
+          <div class="desc">Single-tenant KYB underwriting module, dense-mode dashboard.</div>
+          <ul>
+            <li>Structured risk-flag reports</li>
+            <li>RAG dense-mode tables</li>
+            <li>Human sign-off workflow</li>
+          </ul>
+        </div>
+        <div class="tier">
+          <h3>Enterprise</h3>
+          <div class="desc">Multi-entity, DPI-rail reconciliation, audit-grade trace history.</div>
+          <ul>
+            <li>Everything in Standard</li>
+            <li>Multi-rail reconciliation (UPI/ABDM/GSTIN)</li>
+            <li>Full audit trace export</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="tight">
+    <div class="wrap">
+      <div class="section-label"><span>Compliance &amp; geography coverage</span><span>ILLUSTRATIVE</span></div>
+      <div class="geo-grid">
+        <div class="geo-item">India</div><div class="geo-item">Singapore</div><div class="geo-item">UAE</div>
+        <div class="geo-item">Indonesia</div><div class="geo-item">Philippines</div><div class="geo-item">Vietnam</div>
+        <div class="geo-item">DPI / India Stack</div><div class="geo-item">RBI-aligned</div><div class="geo-item">ABDM</div>
+        <div class="geo-item">WCAG 2.2 AA</div><div class="geo-item">GSTIN</div><div class="geo-item">MCA21</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <div class="finalcta">
+      <h2>See the trace resolve on your own vendor data.</h2>
+      <p>No commercial sign-off requested — this is a working-direction demo, not a sales page.</p>
+      <span class="btn primary">Request underwriting demo</span>
+    </div>
+
+    <footer>
+      <div>
+        <div class="fmark">INOVIXUX</div>
+        <div class="fdesc">KYB vendor underwriting, verified by a human, traced by the system.</div>
+      </div>
+      <div><h4>Platform</h4><ul><li>Underwriting</li><li>Risk flags</li><li>Reviewer queue</li></ul></div>
+      <div><h4>Docs</h4><ul><li>Governance model</li><li>API reference</li><li>Design system</li></ul></div>
+      <div><h4>Company</h4><ul><li>About</li><li>Careers</li><li>Contact</li></ul></div>
+      <div><h4>Legal</h4><ul><li>Privacy</li><li>Security</li><li>DPI compliance</li></ul></div>
+    </footer>
+    <div class="subfoot"><span>© 2026 INOVIXUX</span><span>Design System Foundation v5 — directional, not final</span></div>
+
+    <div class="type-spec" style="margin:0 0 60px">
+      <div class="row"><span>Display / body / UI</span><b>Geist — 400/500/600/700</b></div>
+      <div class="row"><span>Data, coordinates, tags</span><b>Geist Mono — 400/500</b></div>
+      <div class="row"><span>System fallback (Angular)</span><b>system-ui, Arial, Helvetica</b></div>
+      <div class="row"><span>Accent token (swap per concept)</span><b>--accent: Verified Line=#3B6EF6 · Aperture Mark=#B98A3C · Ledger Seal=#C2914B</b></div>
+    </div>
+  </div>
+
+  <script>
+    // vanilla count-up — replaces Vetra's "Number Flow" without a React dependency
+    document.querySelectorAll('[data-count]').forEach(function(el){
+      var target = parseInt(el.getAttribute('data-count'), 10);
+      var start = null, dur = 900;
+      function step(ts){
+        if(!start) start = ts;
+        var p = Math.min((ts - start) / dur, 1);
+        el.textContent = Math.floor(p * target).toLocaleString('en-IN');
+        if(p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    });
+    // vanilla tier toggle — replaces Vetra's monthly/annual pricing toggle
+    document.querySelectorAll('.tiers-toggle .opt').forEach(function(opt){
+      opt.addEventListener('click', function(){
+        document.querySelectorAll('.tiers-toggle .opt').forEach(function(o){o.classList.remove('active')});
+        opt.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

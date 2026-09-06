@@ -421,3 +421,15 @@ art. Naming that now so it's on the table if needed, not as a deflection from do
 
 Pick **Concept A, B, or C** above as the master identity, or say which specific reference/mark
 you want matched more literally. A fresh decision request is attached to this issue.
+
+---
+
+## Superseded by v5 — see `03-vetra-structural-foundation.md`
+
+Your next instruction ("refer Vetra and let's start building our own Brand and Design system on
+top of this, without the tech stack") moved this past picking-from-three-pitches. v5 builds one
+full page on Vetra's actual section structure (nav → hero-with-live-dashboard → rails →
+feature grid → metrics → integration → tiers → geography → CTA → footer), framework-free, in the
+Verified Line skin, with every color routed through a single swappable `--accent` token. Full
+write-up, section-by-section Vetra mapping, and the decision now on the table:
+[`03-vetra-structural-foundation.md`](03-vetra-structural-foundation.md).
