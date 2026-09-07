@@ -1,0 +1,32 @@
+/*
+ * Global stylesheet for the INOVIXUX design-system showcase app.
+ * Imports the real token contract (docs/brand/02-design-tokens/tokens.css, mirrored here as
+ * tokens.css so this workspace has no dependency outside `web/`) and applies base page styles
+ * driven entirely by those custom properties — no hard-coded colors below this line.
+ */
+@import './tokens.css';
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--ino-color-surface);
+  color: var(--ino-color-on-surface);
+  font-family: var(--ino-font-display);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+h1, h2, h3, p, ul {
+  margin: 0;
+}

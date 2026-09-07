@@ -1,0 +1,68 @@
+<div class="page">
+  <ino-nav [links]="navLinks" ctaLabel="Request demo" (ctaClick)="onCta()">
+    <span logo class="ino-logo">
+      <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
+        <path d="M2 12 L7 12 L9 5 L12 15 L14 9 L18 9" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+        <circle cx="18" cy="9" r="2" fill="var(--ino-color-accent, #3B6EF6)" />
+      </svg>
+      <span>INOVIXUX</span>
+    </span>
+  </ino-nav>
+
+  <ino-hero
+    eyebrow="Resilience & Governance — human still approves everything"
+    headline="One line, traced to a verified state."
+    lead="The Verified Line resolves into a checkmark only once a human reviewer closes the case. INOVIXUX turns raw vendor data into structured risk-flag reports — it surfaces the signal; it never makes the call.">
+    <div class="dash">
+      <div class="dash-head">
+        <span>KYB / VENDOR-4471 — LIVE TRACE</span>
+        <span>REV. 01</span>
+      </div>
+      <div class="dash-body">
+        <ino-metric-panel label="KYB flags traced to resolution" [value]="12400" delta="+18% vs. last cycle" [rows]="flagsRows"></ino-metric-panel>
+        <ino-metric-panel label="Human reviews closed this week" [value]="342" delta="avg. 6.4 min / case" [rows]="reviewRows"></ino-metric-panel>
+      </div>
+    </div>
+  </ino-hero>
+
+  <section id="features">
+    <div class="section-head">
+      <h2>One system, two densities</h2>
+      <p>The same trace motif and token set power a high-density risk dashboard for underwriters and a low-friction consumer surface — no separate design language to maintain.</p>
+    </div>
+    <ino-feature-grid [items]="featureItems"></ino-feature-grid>
+  </section>
+
+  <section id="tiers">
+    <div class="section-head">
+      <h2>Deployment tiers</h2>
+      <p>Structural placeholder only — no commercial terms exist yet (INO-14 hold). Shown to prove the component pattern, not to price anything.</p>
+    </div>
+    <div class="tiers">
+      <ino-tier-card
+        name="Standard"
+        description="Single-tenant KYB underwriting module, dense-mode dashboard."
+        [features]="['Structured risk-flag reports', 'RAG dense-mode tables', 'Human sign-off workflow']">
+      </ino-tier-card>
+      <ino-tier-card
+        name="Enterprise"
+        description="Multi-entity, DPI-rail reconciliation, audit-grade trace history."
+        [features]="['Everything in Standard', 'Multi-rail reconciliation (UPI/ABDM/GSTIN)', 'Full audit trace export']"
+        [highlighted]="true">
+      </ino-tier-card>
+    </div>
+  </section>
+
+  <ino-footer [columns]="footerColumns">
+    <span logo class="ino-logo ino-logo--footer">
+      <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
+        <path d="M2 12 L7 12 L9 5 L12 15 L14 9 L18 9" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+        <circle cx="18" cy="9" r="2" fill="var(--ino-color-accent, #3B6EF6)" />
+      </svg>
+      <span>INOVIXUX</span>
+      <p>KYB vendor underwriting, verified by a human, traced by the system.</p>
+    </span>
+  </ino-footer>
+
+  <p class="subfoot">© 2026 INOVIXUX — Verified Line design system, running as real Angular (not a static mockup).</p>
+</div>

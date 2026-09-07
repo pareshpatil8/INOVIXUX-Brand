@@ -1,0 +1,77 @@
+.ino-metric-panel {
+  background: var(--ino-color-surface-raised); // raised = live data, per contract
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-xl);
+  box-shadow: var(--ino-elevation-1);
+  padding: var(--ino-space-6);
+}
+
+.ino-metric-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ino-metric-panel__label {
+  font: var(--ino-type-label-weight) var(--ino-type-label-size) / 1 var(--ino-font-mono);
+  letter-spacing: var(--ino-type-label-tracking);
+  text-transform: uppercase;
+  color: var(--ino-color-on-surface-muted);
+  margin: 0;
+}
+
+.ino-metric-panel__delta {
+  font-size: var(--ino-type-body-sm-size);
+  color: var(--ino-color-success);
+}
+
+.ino-metric-panel__value {
+  font-family: var(--ino-font-mono);
+  font-size: var(--ino-type-metric-size);
+  font-weight: var(--ino-type-metric-weight);
+  color: var(--ino-color-on-surface);
+  margin: var(--ino-space-2) 0 var(--ino-space-5);
+}
+
+.ino-metric-panel__rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ino-space-row, var(--ino-space-2)); // falls back if no [data-density] ancestor
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: var(--ino-space-2);
+    min-height: var(--ino-row-min-height, 32px); // WCAG 2.2 §2.5.8 floor, see tokens.css §9
+  }
+
+  .row-label {
+    flex: 1;
+    font-size: var(--ino-type-body-size);
+    color: var(--ino-color-on-surface-muted);
+  }
+
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+
+  li[data-status='high'] .dot { background: var(--ino-color-risk-high-dot); }
+  li[data-status='medium'] .dot { background: var(--ino-color-risk-medium-dot); }
+  li[data-status='low'] .dot { background: var(--ino-color-risk-low-dot); }
+}
+
+.chip {
+  border-radius: var(--ino-radius-pill);
+  padding: var(--ino-space-1) var(--ino-space-3);
+  font: var(--ino-type-label-weight) var(--ino-type-label-size) / 1 var(--ino-font-mono);
+  letter-spacing: var(--ino-type-label-tracking);
+
+  &--high { background: var(--ino-color-risk-high-fill); color: var(--ino-color-risk-high-on-fill); }
+  &--medium { background: var(--ino-color-risk-medium-fill); color: var(--ino-color-risk-medium-on-fill); }
+  &--low { background: var(--ino-color-risk-low-fill); color: var(--ino-color-risk-low-on-fill); }
+}

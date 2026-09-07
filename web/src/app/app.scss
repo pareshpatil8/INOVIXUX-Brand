@@ -1,0 +1,106 @@
+.page {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 40px 96px;
+}
+
+.ino-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ino-space-2);
+  font-weight: 600;
+  font-size: 19px;
+  letter-spacing: -0.01em;
+  color: var(--ino-color-on-surface);
+
+  &--footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--ino-space-2);
+
+    p {
+      font-size: 12.5px;
+      font-weight: 400;
+      color: var(--ino-color-on-surface-muted);
+      max-width: 220px;
+      line-height: 1.6;
+    }
+  }
+}
+
+.dash {
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-xl);
+  background: var(--ino-color-surface-raised);
+  overflow: hidden;
+  margin-top: var(--ino-space-9);
+}
+
+.dash-head {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--ino-space-4) var(--ino-space-6);
+  border-bottom: 1px solid var(--ino-color-border-soft);
+  font-size: 11px;
+  color: var(--ino-color-on-surface-muted);
+  font-family: var(--ino-font-mono);
+}
+
+.dash-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--ino-color-border-soft);
+}
+
+section {
+  padding: var(--ino-space-11) 0;
+  border-bottom: 1px solid var(--ino-color-border);
+}
+
+.section-head {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto var(--ino-space-8);
+
+  h2 {
+    font-size: 32px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--ino-space-3);
+  }
+
+  p {
+    color: var(--ino-color-on-surface-muted);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+}
+
+.tiers {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--ino-color-border);
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-lg);
+  overflow: hidden;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.subfoot {
+  border-top: 1px solid var(--ino-color-border);
+  padding: var(--ino-space-5) 0;
+  font-size: 11.5px;
+  color: var(--ino-color-on-surface-subtle);
+  text-align: center;
+  font-family: var(--ino-font-mono);
+}
+
+@media (max-width: 900px) {
+  .dash-body,
+  .tiers {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,13 @@
+<header class="ino-nav">
+  <div class="ino-nav__logo">
+    <ng-content select="[logo]"></ng-content>
+  </div>
+
+  <nav class="ino-nav__links" aria-label="Primary">
+    <a *ngFor="let link of links" [href]="link.href">{{ link.label }}</a>
+  </nav>
+
+  <button type="button" class="btn primary ino-nav__cta" (click)="onCtaClick()">
+    {{ ctaLabel }}
+  </button>
+</header>

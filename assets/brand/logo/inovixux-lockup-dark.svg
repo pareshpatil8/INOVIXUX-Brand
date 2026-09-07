@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 24" width="168" height="24" role="img" aria-label="INOVIXUX">
+  <title>INOVIXUX — full lockup (on dark)</title>
+  <g transform="translate(2, 2)">
+    <path d="M2 12 L7 12 L9 5 L12 15 L14 9 L18 9" fill="none" stroke="#F5F5F4" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="18" cy="9" r="2" fill="#3B6EF6"/>
+  </g>
+  <text x="32" y="17" font-family="Geist, Arial, Helvetica, sans-serif" font-weight="600" font-size="17" letter-spacing="-0.2" fill="#F5F5F4">INOVIXUX</text>
+</svg>

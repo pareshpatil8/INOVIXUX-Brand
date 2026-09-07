@@ -1,0 +1,181 @@
+/*
+ * INOVIXUX — Design Token Contract (Phase 2)
+ * Concept: Verified Line — approved 2026-09-06 (INO-31, plan revision 7)
+ *
+ * This file is the single source of truth for color, type, space, radius,
+ * elevation, and motion. Angular consumes it as-is: drop it into
+ * src/styles/tokens.css and import once in angular.json's global styles
+ * array, or paste the :root block into styles.scss. No SCSS variables, no
+ * Tailwind config, no framework-specific build step required — it is plain
+ * CSS custom properties on purpose, so it works identically in Angular
+ * component :host blocks, plain HTML collateral (letterhead/deck exports),
+ * and this repo's own mockups.
+ *
+ * Swapping identity: change ONLY --ino-color-accent (and, if a different
+ * concept is chosen later, --ino-font-display / --ino-font-mono) — see
+ * docs/brand/03-vetra-structural-foundation.md for the Aperture Mark /
+ * Ledger Seal swap values. Nothing else in this file should need to change
+ * for a mark swap.
+ *
+ * Full rationale, WCAG contrast audit, and Angular integration notes:
+ * see README.md in this folder.
+ */
+
+:root {
+  /* ---------------------------------------------------------------------
+   * 1. PRIMITIVES — raw values. Nothing outside this file should
+   *    reference these directly; components consume the semantic roles
+   *    in section 2 instead, so a re-theme never touches component code.
+   * ------------------------------------------------------------------- */
+  --ino-primitive-black: #0A0A0A;
+  --ino-primitive-black-raised: #0D0D0E;
+  --ino-primitive-white: #F5F5F4;
+  --ino-primitive-gray-500: #8C8C8E;
+  --ino-primitive-gray-700: #5A5A5C;
+  --ino-primitive-line: rgba(255, 255, 255, 0.10);
+  --ino-primitive-line-soft: rgba(255, 255, 255, 0.06);
+
+  --ino-primitive-blue-500: #3B6EF6;   /* Verified Line accent (Signal Blue) */
+  --ino-primitive-green-500: #3A9B6B;
+  --ino-primitive-red-500: #C24C43;
+  --ino-primitive-amber-500: #B98A3C;
+
+  /* ---------------------------------------------------------------------
+   * 2. SEMANTIC ROLES — what components actually bind to. Modeled on
+   *    Material Design 3's role system (surface / on-surface / primary /
+   *    on-primary, not raw color) so the token set is swappable without
+   *    restructuring components. See README §"Why M3 roles".
+   * ------------------------------------------------------------------- */
+  --ino-color-surface: var(--ino-primitive-black);
+  --ino-color-surface-raised: var(--ino-primitive-black-raised);
+  --ino-color-on-surface: var(--ino-primitive-white);
+  --ino-color-on-surface-muted: var(--ino-primitive-gray-500);
+  --ino-color-on-surface-subtle: var(--ino-primitive-gray-700); /* decorative/disabled only — see README contrast audit, fails AA as text at any size */
+
+  --ino-color-border: var(--ino-primitive-line);
+  --ino-color-border-soft: var(--ino-primitive-line-soft);
+
+  --ino-color-accent: var(--ino-primitive-blue-500);      /* swap token */
+  --ino-color-on-accent: #000000;                         /* verified 4.75:1, README §Contrast */
+
+  --ino-color-success: var(--ino-primitive-green-500);
+  --ino-color-on-success: #000000;                        /* 6.08:1 */
+  --ino-color-warning: var(--ino-primitive-amber-500);
+  --ino-color-on-warning: #000000;                        /* 6.76:1 */
+  --ino-color-danger: var(--ino-primitive-red-500);
+  --ino-color-on-danger: #FFFFFF;                         /* 4.76:1 */
+
+  /* ---------------------------------------------------------------------
+   * 3. RAG SEMANTIC ALERT TOKENS — for the KYB risk-flag matrix named in
+   *    the brief. Two forms per level on purpose:
+   *      -dot   : raw color, for small non-text indicators only (status
+   *               dots, chart strokes) — never for text, see README.
+   *      -fill/-on-fill : solid chip pair, AA-verified for real badge text
+   *               ("HIGH RISK", "3 flags") in dense risk tables.
+   * ------------------------------------------------------------------- */
+  --ino-color-risk-high-dot: var(--ino-primitive-red-500);
+  --ino-color-risk-high-fill: var(--ino-primitive-red-500);
+  --ino-color-risk-high-on-fill: #FFFFFF;
+
+  --ino-color-risk-medium-dot: var(--ino-primitive-amber-500);
+  --ino-color-risk-medium-fill: var(--ino-primitive-amber-500);
+  --ino-color-risk-medium-on-fill: #000000;
+
+  --ino-color-risk-low-dot: var(--ino-primitive-green-500);
+  --ino-color-risk-low-fill: var(--ino-primitive-green-500);
+  --ino-color-risk-low-on-fill: #000000;
+
+  /* ---------------------------------------------------------------------
+   * 4. TYPOGRAPHY — Geist / Geist Mono (OFL), self-hosted; see README
+   *    §Font onboarding. System fallback stack is mandatory per the brief
+   *    (locked-down bank/regulator machines must not break layout).
+   * ------------------------------------------------------------------- */
+  --ino-font-display: "Geist", system-ui, -apple-system, Arial, Helvetica, sans-serif;
+  --ino-font-mono: "Geist Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+
+  /* size / line-height / weight / tracking, one token group per role */
+  --ino-type-display-size: 56px;   --ino-type-display-line: 1.05; --ino-type-display-weight: 600; --ino-type-display-tracking: -0.03em;
+  --ino-type-display-size-sm: 38px; /* responsive step, <=640px */
+
+  --ino-type-h2-size: 32px;        --ino-type-h2-line: 1.25;      --ino-type-h2-weight: 600;      --ino-type-h2-tracking: -0.02em;
+  --ino-type-h3-size: 16px;        --ino-type-h3-line: 1.4;       --ino-type-h3-weight: 600;      --ino-type-h3-tracking: -0.01em;
+
+  --ino-type-body-lg-size: 17px;   --ino-type-body-lg-line: 1.65; --ino-type-body-lg-weight: 400;
+  --ino-type-body-size: 14px;      --ino-type-body-line: 1.55;    --ino-type-body-weight: 400;
+  --ino-type-body-sm-size: 12.5px; --ino-type-body-sm-line: 1.55; --ino-type-body-sm-weight: 400;
+
+  --ino-type-metric-size: 34px;    --ino-type-metric-weight: 500; /* mono, count-up numerals */
+  --ino-type-label-size: 11px;     --ino-type-label-weight: 600;  --ino-type-label-tracking: 0.14em; /* mono, uppercase eyebrows/section labels */
+
+  /* ---------------------------------------------------------------------
+   * 5. SPACE — one scale, t-shirt tokens. Values are the real paddings
+   *    already in use across the v5 foundation build, named, not invented.
+   * ------------------------------------------------------------------- */
+  --ino-space-1: 4px;
+  --ino-space-2: 8px;
+  --ino-space-3: 12px;
+  --ino-space-4: 16px;
+  --ino-space-5: 20px;
+  --ino-space-6: 24px;
+  --ino-space-7: 32px;
+  --ino-space-8: 40px;
+  --ino-space-9: 56px;
+  --ino-space-10: 80px;
+  --ino-space-11: 96px;
+
+  /* ---------------------------------------------------------------------
+   * 6. RADIUS
+   * ------------------------------------------------------------------- */
+  --ino-radius-sm: 6px;
+  --ino-radius-md: 8px;
+  --ino-radius-lg: 10px;
+  --ino-radius-xl: 14px;
+  --ino-radius-pill: 20px;
+
+  /* ---------------------------------------------------------------------
+   * 7. ELEVATION
+   * ------------------------------------------------------------------- */
+  --ino-elevation-0: none;
+  --ino-elevation-1: 0 40px 80px -40px rgba(0, 0, 0, 0.6);
+
+  /* ---------------------------------------------------------------------
+   * 8. MOTION — durations/easings map to Angular's animate() timing
+   *    strings 1:1 (e.g. animate('{{ino-motion-duration-base}} {{ino-motion-easing-standard}}')).
+   *    Easing curves are Material's standard set (M3 token model, not
+   *    M3 color) — see README §"Why M3 roles".
+   * ------------------------------------------------------------------- */
+  --ino-motion-duration-fast: 120ms;
+  --ino-motion-duration-base: 200ms;
+  --ino-motion-duration-slow: 480ms;
+  --ino-motion-duration-countup: 900ms;
+  --ino-motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ino-motion-easing-decelerate: cubic-bezier(0, 0, 0, 1);
+  --ino-motion-easing-accelerate: cubic-bezier(0.3, 0, 1, 1);
+
+  /* prefers-reduced-motion is handled at the component/animation-trigger
+     level in Angular (see angular-theme-contract.md), not by zeroing
+     durations here — zeroing here would also kill non-motion transitions
+     components rely on for state (focus rings, etc). */
+}
+
+/* ---------------------------------------------------------------------
+ * 9. DENSITY MODES — Dense (G2B/B2B risk dashboards) vs Fluid (B2C).
+ *    Applied via [data-density] on a container (e.g. <body> or a feature
+ *    root), never globally hardcoded, so one Angular app can host both.
+ *    Dense-mode row height is fixed at 32px to clear WCAG 2.2 §2.5.8
+ *    (24x24 CSS px minimum target) with margin for a real pointer, even
+ *    at maximum information density.
+ * ------------------------------------------------------------------- */
+[data-density="dense"] {
+  --ino-space-row: 8px;
+  --ino-type-body-size: 12.5px;
+  --ino-type-body-line: 1.4;
+  --ino-row-min-height: 32px; /* WCAG 2.2 2.5.8 floor is 24px; padded above it deliberately */
+}
+
+[data-density="fluid"] {
+  --ino-space-row: 16px;
+  --ino-type-body-size: 15px;
+  --ino-type-body-line: 1.65;
+  --ino-row-min-height: 44px;
+}

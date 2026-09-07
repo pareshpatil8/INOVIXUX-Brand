@@ -18,6 +18,22 @@ the front door.
    Angular build, no live integration.
 4. Governance/standards doc requested — delivered (§8).
 
+**2026-09-07, second directive received this same day:** *"i am not really happy with md files
+... giving you go-ahead to start further development ... I will share the review only when the
+design system, brand logos and other artifacts has developed."* Understood as: stop describing,
+start shipping non-markdown artifacts. This round adds two of those, both real files, not docs
+*about* files:
+
+- **`/assets/brand/logo/`** — the actual logo file set: 8 standalone SVGs (icon mark on-dark/
+  on-light, mono-black/mono-white for one-color print, full lockup on-dark/on-light, favicon,
+  social card) plus rendered PNG exports in `/assets/brand/exports/` (favicon 32/512/1024px,
+  1200×630 social card, and a full-page screenshot of the running app below). No markdown
+  required to see these — open them directly.
+- **`/web/`** — the design system wired into a real, buildable Angular workspace (`ng build`
+  passes), not source files sitting under `docs/`. `cd web && npm install && npm start` runs it
+  at `localhost:4200`. It's the same six components from §2, driven by the same token file,
+  actually rendering. Screenshot: [`assets/brand/exports/web-app-preview.png`](../../assets/brand/exports/web-app-preview.png).
+
 ---
 
 ## 1. The single approved identity: "Verified Line"
@@ -51,7 +67,9 @@ Verified Line/Aperture Mark/Ledger Seal) are closed and archived (§6).
 | Token contract (color roles, type scale, spacing, elevation, dense/fluid density modes) | [`02-design-tokens/tokens.css`](02-design-tokens/tokens.css) | ✅ Done, WCAG 2.2 contrast-audited (measured ratios, not eyeballed — see `02-design-tokens/README.md`) |
 | Rendered style guide | [`02-design-tokens/style-guide.html`](02-design-tokens/style-guide.html) | ✅ Done |
 | Angular theme contract (how the tokens + 6 component contracts map to Angular) | [`02-design-tokens/angular-theme-contract.md`](02-design-tokens/angular-theme-contract.md) | ✅ Done |
-| Angular component source (Nav, Hero, FeatureGrid, MetricPanel, TierCard, Footer + CountUpDirective) | [`06-angular-components/`](06-angular-components/) | ✅ Done as source, standalone/OnPush, 100% token-driven — **not** wired into a live app (see §5) |
+| Angular component source (Nav, Hero, FeatureGrid, MetricPanel, TierCard, Footer + CountUpDirective) | [`06-angular-components/`](06-angular-components/) | ✅ Done as source, standalone/OnPush, 100% token-driven |
+| Same components, wired into a real running app | [`/web/`](../../web/) | ✅ New this round — `ng build` passes, `npm start` serves it live |
+| Logo asset library (SVG + PNG, not embedded in a mockup) | [`/assets/brand/logo/`](../../assets/brand/logo/), [`/assets/brand/exports/`](../../assets/brand/exports/) | ✅ New this round |
 | Font self-hosting (Geist `.woff2`) | — | ⏳ Open — needs a real app's asset pipeline to land into; tracked, not lost |
 | Light-mode / B2C surface | — | ⏳ Deferred — only build if/when a light surface is actually needed |
 | Governance / usage standards | [`09-design-system-standards.md`](09-design-system-standards.md) | ✅ New this round — see §8 |
@@ -85,9 +103,12 @@ Per your 2026-09-07 directive, the following are **on hold**, not silently in pr
 - **Final vector logo artwork via Figma** — you said you'll authorize the Figma connector
   yourself via claude.ai connector settings. Nothing pushed to a Figma file yet; we'll wait for
   your confirmation that it's actually authorized before touching it, since Figma tools showing
-  as available in this session isn't the same as your account being connected.
-- **Angular port of the website into a real repo** — no target codebase named yet; also correctly
-  sequenced *after* the design system, per your priority order.
+  as available in this session isn't the same as your account being connected. (The SVG mark
+  files in `/assets/brand/logo/` are hand-built vector paths, not a Figma export — they're real
+  and usable now, but a designer pass in Figma would still refine curve quality before press.)
+- **Angular port of the *live marketing website* into a production repo** — `/web/` (this round)
+  is the design-system showcase app, not the production site; still correctly sequenced after
+  design-system sign-off, and still no live/external wiring (no KYB, no backend calls).
 
 ## 6. Archive (superseded — kept for the record, not for reading)
 

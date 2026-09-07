@@ -1,0 +1,11 @@
+<section class="ino-hero">
+  <div class="ino-hero__copy">
+    <p class="ino-hero__eyebrow" *ngIf="eyebrow">{{ eyebrow }}</p>
+    <h1 class="ino-hero__headline">{{ headline }}</h1>
+    <p class="ino-hero__lead" *ngIf="lead">{{ lead }}</p>
+  </div>
+
+  <div class="ino-hero__content">
+    <ng-content></ng-content>
+  </div>
+</section>
