@@ -1,0 +1,46 @@
+.ino-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ino-space-6);
+  padding: var(--ino-space-4) var(--ino-space-7);
+  border-bottom: 1px solid var(--ino-color-border);
+  background: var(--ino-color-surface);
+}
+
+.ino-nav__links {
+  display: flex;
+  align-items: center;
+  gap: var(--ino-space-6);
+
+  a {
+    color: var(--ino-color-on-surface-muted);
+    text-decoration: none;
+    font-size: var(--ino-type-body-size);
+    transition: color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+    &:hover,
+    &:focus-visible {
+      color: var(--ino-color-on-surface);
+    }
+  }
+}
+
+// .btn.primary is the shared button pattern from the v5 foundation build —
+// background: on-surface / color: surface (inverted chip), reused as-is here
+// rather than re-declared, per angular-theme-contract.md §1.
+.btn.primary {
+  background: var(--ino-color-on-surface);
+  color: var(--ino-color-surface);
+  border: none;
+  border-radius: var(--ino-radius-md);
+  padding: var(--ino-space-2) var(--ino-space-4);
+  font-size: var(--ino-type-body-size);
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  &:hover {
+    opacity: 0.85;
+  }
+}

@@ -1,0 +1,16 @@
+<section class="ino-metric-panel">
+  <header class="ino-metric-panel__header">
+    <p class="ino-metric-panel__label">{{ label }}</p>
+    <span class="ino-metric-panel__delta" *ngIf="delta">{{ delta }}</span>
+  </header>
+
+  <p class="ino-metric-panel__value" [inoCountUp]="value">0</p>
+
+  <ul class="ino-metric-panel__rows" *ngIf="rows.length">
+    <li *ngFor="let row of rows" [attr.data-status]="row.status">
+      <span class="dot" aria-hidden="true"></span>
+      <span class="row-label">{{ row.label }}</span>
+      <span class="row-value" [class]="'chip chip--' + row.status">{{ row.value }}</span>
+    </li>
+  </ul>
+</section>

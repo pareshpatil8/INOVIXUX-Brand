@@ -1,0 +1,43 @@
+.ino-hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--ino-space-9);
+  padding: var(--ino-space-11) var(--ino-space-7);
+}
+
+.ino-hero__eyebrow {
+  font: var(--ino-type-label-weight) var(--ino-type-label-size) / 1 var(--ino-font-mono);
+  letter-spacing: var(--ino-type-label-tracking);
+  text-transform: uppercase;
+  color: var(--ino-color-accent);
+  margin: 0 0 var(--ino-space-4);
+}
+
+.ino-hero__headline {
+  font-family: var(--ino-font-display);
+  font-size: var(--ino-type-display-size);
+  line-height: var(--ino-type-display-line);
+  font-weight: var(--ino-type-display-weight);
+  letter-spacing: var(--ino-type-display-tracking);
+  color: var(--ino-color-on-surface);
+  margin: 0 0 var(--ino-space-5);
+}
+
+.ino-hero__lead {
+  font-size: var(--ino-type-body-lg-size);
+  line-height: var(--ino-type-body-lg-line);
+  color: var(--ino-color-on-surface-muted);
+  max-width: 46ch;
+}
+
+// Responsive step — token file defines the value (--ino-type-display-size-sm),
+// this component owns the breakpoint, per angular-theme-contract.md §3.
+@media (max-width: 640px) {
+  .ino-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .ino-hero__headline {
+    font-size: var(--ino-type-display-size-sm);
+  }
+}

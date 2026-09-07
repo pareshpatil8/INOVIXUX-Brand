@@ -1,0 +1,48 @@
+.ino-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--ino-space-5);
+  padding: 0 var(--ino-space-7) var(--ino-space-9);
+}
+
+.ino-feature-grid__card {
+  // flat surface, not -raised — see component doc comment
+  background: var(--ino-color-surface);
+  border: 1px solid var(--ino-color-border-soft);
+  border-radius: var(--ino-radius-lg);
+  padding: var(--ino-space-6);
+
+  h3 {
+    font-size: var(--ino-type-h3-size);
+    line-height: var(--ino-type-h3-line);
+    font-weight: var(--ino-type-h3-weight);
+    letter-spacing: var(--ino-type-h3-tracking);
+    color: var(--ino-color-on-surface);
+    margin: var(--ino-space-3) 0 var(--ino-space-2);
+  }
+
+  p {
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+    color: var(--ino-color-on-surface-muted);
+    margin: 0;
+  }
+}
+
+.ino-feature-grid__icon {
+  display: inline-flex;
+  color: var(--ino-color-accent);
+  font-size: 20px;
+}
+
+@media (max-width: 960px) {
+  .ino-feature-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .ino-feature-grid {
+    grid-template-columns: 1fr;
+  }
+}

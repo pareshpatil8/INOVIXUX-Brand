@@ -62,7 +62,7 @@ from a blank canvas.
 | Angular component contracts (Nav, Hero, FeatureGrid, MetricsPanel, TierCard, Footer — selector/@Input/@Output specs) | `angular-theme-contract.md` | Agent | ✅ Done |
 | Build-vs-adopt primitives decision (`spartan/ui` for structural a11y, Angular Animations for motion) | Documented, reversible | Agent | ✅ Decided |
 | Geist / Geist Mono font self-hosting (`.woff2` assets + `@font-face`) | Font files landed in the real Angular app's `assets/` | Agent, once Angular repo exists | ⏳ Needs the actual Angular codebase — this docs-only repo has no build step to verify it |
-| Component implementation (turn the 6 contracts into real Angular standalone components) | Working Angular library/module | Agent (with your dev review) | ⏳ Not started — next concrete engineering step |
+| Component implementation (turn the 6 contracts into real Angular standalone components) | `06-angular-components/` — all 6 components + `CountUpDirective`, standalone/OnPush, 100% token-driven | Agent (with your dev review) | ✅ Done — source only, not built (no target workspace yet; see that folder's README) |
 | Light-mode token block (`[data-theme="light"]`) — only if a light B2C surface is needed | Second primitives block, same role names | Agent | ⏳ Deferred until requested |
 
 ### C. Website (public + product-facing surfaces)
@@ -79,8 +79,8 @@ from a blank canvas.
 | Activity | Deliverable | Owner | Status |
 |---|---|---|---|
 | Anchor vocabulary (Resilience / Governance / Verification / Augmented Control; no hype words) | Applied throughout all docs and mockups so far | Agent | ✅ In use |
-| Formal verbal identity guide (voice/tone rules, a do/don't word list, sample sentences per surface: dashboard microcopy vs. pitch-deck copy vs. legal/compliance copy) | New doc: `05-verbal-identity.md` | Agent | ⏳ Not started — natural next doc, can start immediately |
-| Tagline / one-line positioning statement | Short-listed options for your pick | Agent (draft) + you (pick) | ⏳ Not started |
+| Formal verbal identity guide (voice/tone rules, a do/don't word list, sample sentences per surface: dashboard microcopy vs. pitch-deck copy vs. legal/compliance copy) | `05-verbal-identity.md` | Agent | ✅ Done (first draft) |
+| Tagline / one-line positioning statement | 3 short-listed candidates in `05-verbal-identity.md` §6 | Agent (draft) + you (pick) | ⏳ Drafted — awaiting your pick |
 
 ### E. Collateral (print + presentation)
 
@@ -103,25 +103,27 @@ from a blank canvas.
 ## 3. Suggested sequencing (not a hard gate — flagging dependencies, not asking permission)
 
 ```
-Now ──▶ D (verbal identity doc)         [no dependency, can run in parallel to anything]
-    ──▶ B (Angular component build)     [depends on: nothing new — tokens already exist]
-    ──▶ C (Angular port of the site)    [depends on: B]
+Now ──▶ D (verbal identity doc)         [no dependency — done, see 05-verbal-identity.md]
+    ──▶ B (Angular component build)     [no dependency — done, see 06-angular-components/]
+    ──▶ C (Angular port of the site)    [depends on: B (done) + a real target repo]
     ──▶ A (final vector logo)           [depends on: you authorizing Figma, or a designer]
-    ──▶ E (collateral templates)        [depends on: A for the mark, B for tokens]
-    ──▶ F (real MVP rollout)            [depends on: B, and knowing where that repo lives]
+    ──▶ E (collateral templates)        [depends on: A for the mark, B (done) for tokens]
+    ──▶ F (real MVP rollout)            [depends on: B (done), and knowing where that repo lives]
 ```
 
 **What I need from you to keep this moving without stalling:**
-1. Where does the actual KYB MVP Angular codebase live (repo URL/path)? B and C can't become
-   *real* Angular code without a target repo — right now everything is a framework-free HTML
-   proof in this docs repo, by design, per the HITL guardrail.
+1. Where does the actual KYB MVP Angular codebase live (repo URL/path)? C and F can't become
+   *real*, wired Angular code without a target repo — component *source* (B) is now done in this
+   docs repo per the HITL guardrail; installing it into a live app is the next step and needs a
+   destination.
 2. Authorize the Figma MCP connector (your call, not blocking anything else) if you want a
    designer-ready file for the final logo vector pass.
 3. Anything in the "illustrative" callouts (rails list, geography grid, deployment tiers) you
    want corrected to real facts before it goes further.
 
-Everything else in this table I can start on unattended right now. Starting with **D (verbal
-identity guide)** next since it has zero dependencies.
+B and D are done. Next unattended step with zero open dependencies is **E (collateral
+templates — letterhead, business card spec, pitch deck template)**, since A needs Figma/a
+designer and C/F need the target repo answer above.
 
 ---
 

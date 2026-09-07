@@ -1,0 +1,12 @@
+<footer class="ino-footer">
+  <div class="ino-footer__mark">
+    <ng-content select="[logo]"></ng-content>
+  </div>
+
+  <div class="ino-footer__col" *ngFor="let column of columns">
+    <h4>{{ column.heading }}</h4>
+    <ul>
+      <li *ngFor="let link of column.links"><a [href]="link.href">{{ link.label }}</a></li>
+    </ul>
+  </div>
+</footer>

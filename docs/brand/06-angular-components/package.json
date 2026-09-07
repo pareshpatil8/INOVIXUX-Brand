@@ -1,0 +1,11 @@
+{
+  "name": "@inovixux/design-system",
+  "version": "0.1.0",
+  "description": "INOVIXUX Verified Line design system — standalone Angular components implementing docs/brand/02-design-tokens/angular-theme-contract.md. Not a built package yet; see README.md for how this becomes one inside the real KYB app repo.",
+  "private": true,
+  "peerDependencies": {
+    "@angular/common": "^18.0.0 || ^19.0.0",
+    "@angular/core": "^18.0.0 || ^19.0.0"
+  },
+  "sideEffects": false
+}

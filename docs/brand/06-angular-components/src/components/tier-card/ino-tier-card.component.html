@@ -1,0 +1,13 @@
+<article class="ino-tier-card" [class.ino-tier-card--highlighted]="highlighted">
+  <h3>{{ name }}</h3>
+  <p class="ino-tier-card__description">{{ description }}</p>
+
+  <ul class="ino-tier-card__features">
+    <li *ngFor="let feature of features">{{ feature }}</li>
+  </ul>
+
+  <p class="ino-tier-card__disclaimer" *ngIf="highlighted">
+    Illustrative deployment tier — not a commercial offer. INO-14 hold applies until the KYB MVP
+    is verified; a human still approves every underwriting decision.
+  </p>
+</article>
