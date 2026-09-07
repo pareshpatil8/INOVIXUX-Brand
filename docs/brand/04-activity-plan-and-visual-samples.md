@@ -86,9 +86,9 @@ from a blank canvas.
 
 | Activity | Deliverable | Owner | Status |
 |---|---|---|---|
-| Letterhead template | HTML/print-CSS template using the same tokens | Agent | ⏳ Not started |
-| Business card (matte/foil spec, Verified Line mark placement) | Print-ready spec (design intent; physical print production is a vendor step, not an agent one) | Agent (spec) + print vendor | ⏳ Not started |
-| Pitch deck template (INO-14-compliant — no commercial claims) | Slide-master HTML or exportable template | Agent | ⏳ Not started |
+| Letterhead template | `07-collateral/letterhead.html` — A4 + US Letter, print-CSS, single Signal Blue traced rule | Agent | ✅ Done |
+| Business card (matte/foil spec, Verified Line mark placement) | `07-collateral/business-card-spec.md` — dimensions, stock, foil/emboss trade-off, front/back layout | Agent (spec) + print vendor | ✅ Done — spec only; needs workstream A's final vector mark before a press file exists |
+| Pitch deck template (INO-14-compliant — no commercial claims) | `07-collateral/pitch-deck-template.html` — 16:9, 6-slide skeleton, mandatory INO-14 disclaimer slide | Agent | ✅ Done |
 
 ### F. Rollout (into the real KYB MVP + org-wide adoption)
 
@@ -103,27 +103,31 @@ from a blank canvas.
 ## 3. Suggested sequencing (not a hard gate — flagging dependencies, not asking permission)
 
 ```
-Now ──▶ D (verbal identity doc)         [no dependency — done, see 05-verbal-identity.md]
-    ──▶ B (Angular component build)     [no dependency — done, see 06-angular-components/]
-    ──▶ C (Angular port of the site)    [depends on: B (done) + a real target repo]
-    ──▶ A (final vector logo)           [depends on: you authorizing Figma, or a designer]
-    ──▶ E (collateral templates)        [depends on: A for the mark, B (done) for tokens]
-    ──▶ F (real MVP rollout)            [depends on: B (done), and knowing where that repo lives]
+Done ──▶ D (verbal identity doc)         [no dependency — see 05-verbal-identity.md]
+     ──▶ B (Angular component build)     [no dependency — see 06-angular-components/]
+     ──▶ E (collateral templates)        [no dependency — see 07-collateral/; used the mark's
+                                           existing CSS/SVG form, not final vector art]
+Open ──▶ C (Angular port of the site)    [depends on: a real target repo]
+     ──▶ A (final vector logo)           [depends on: you authorizing Figma, or a designer]
+     ──▶ F (real MVP rollout)            [depends on: knowing where that repo lives]
+     ──▶ Business card press file        [depends on: A — the spec in 07-collateral/ is done,
+                                           the final vector mark to print it with is not]
 ```
 
-**What I need from you to keep this moving without stalling:**
+**B, D, and E are now done — every remaining workstream (A, C, F) and the business-card press file
+depend on one of the same three answers, not on more unattended agent work:**
 1. Where does the actual KYB MVP Angular codebase live (repo URL/path)? C and F can't become
-   *real*, wired Angular code without a target repo — component *source* (B) is now done in this
+   *real*, wired Angular code without a target repo — component *source* (B) is done in this
    docs repo per the HITL guardrail; installing it into a live app is the next step and needs a
    destination.
-2. Authorize the Figma MCP connector (your call, not blocking anything else) if you want a
-   designer-ready file for the final logo vector pass.
-3. Anything in the "illustrative" callouts (rails list, geography grid, deployment tiers) you
-   want corrected to real facts before it goes further.
+2. Authorize the Figma MCP connector (your call) if you want a designer-ready file for the final
+   logo vector pass — this also unblocks the business card's press-ready artwork.
+3. Anything in the "illustrative" callouts (rails list, geography grid, deployment tiers, deck
+   metrics) you want corrected to real facts before any of this ships anywhere real.
+4. A pick among the 3 tagline candidates in `05-verbal-identity.md` §6, whenever convenient — not
+   blocking anything else.
 
-B and D are done. Next unattended step with zero open dependencies is **E (collateral
-templates — letterhead, business card spec, pitch deck template)**, since A needs Figma/a
-designer and C/F need the target repo answer above.
+Raised as a structured question set on this issue so a reply here resumes work automatically.
 
 ---
 

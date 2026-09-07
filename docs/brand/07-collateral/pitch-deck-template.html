@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>INOVIXUX — Pitch Deck Template (Verified Line)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /*
+   * INOVIXUX — Pitch deck slide-master template (Phase 3, workstream E)
+   * Uses tokens.css's dark system directly (no substitution — see 07-collateral/README.md).
+   * A deck is presented on-screen/projector, so the digital identity applies unmodified.
+   *
+   * INO-14 guardrail baked into slide 5 ("How we work"): every deck built from this template
+   * must keep a visible non-commercial/no-sign-off disclaimer per the internal mandate — do not
+   * delete that slide when adapting this for a real pitch.
+   */
+  :root{
+    --bg:#0A0A0A; --bg-raised:#0D0D0E; --ink:#F5F5F4; --sub:#8C8C8E; --sub-dim:#5A5A5C;
+    --line:rgba(255,255,255,.10); --line-soft:rgba(255,255,255,.06);
+    --accent:#3B6EF6; --green:#3A9B6B; --red:#C24C43; --amber:#B98A3C;
+    --f-display:"Geist",system-ui,-apple-system,Arial,Helvetica,sans-serif;
+    --f-mono:"Geist Mono",ui-monospace,"SFMono-Regular",Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#000;font-family:var(--f-display);-webkit-font-smoothing:antialiased}
+  .deck-note{
+    max-width:1120px;margin:16px auto;padding:12px 18px;background:#161616;color:#9a9a9a;
+    border:1px solid #262626;border-radius:8px;font-family:var(--f-mono);font-size:12px;text-align:center;
+  }
+  .deck-note b{color:#fff}
+
+  .slide{
+    width:1120px;aspect-ratio:16/9;margin:0 auto 24px;background:var(--bg);color:var(--ink);
+    border:1px solid var(--line);border-radius:4px;overflow:hidden;position:relative;
+    padding:64px 72px;display:flex;flex-direction:column;
+  }
+  .slide .eyebrow{
+    font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--sub);display:flex;align-items:center;gap:8px;margin-bottom:20px;
+  }
+  .slide .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+  .slide h1{font-size:44px;line-height:1.1;font-weight:600;letter-spacing:-0.02em;margin:0 0 18px}
+  .slide p.lead{font-size:17px;line-height:1.6;color:var(--sub);max-width:700px;margin:0 0 8px}
+  .slide .footer-row{
+    position:absolute;bottom:28px;left:72px;right:72px;display:flex;justify-content:space-between;
+    align-items:center;font-family:var(--f-mono);font-size:10px;color:var(--sub-dim);
+    letter-spacing:.04em;border-top:1px solid var(--line-soft);padding-top:14px;
+  }
+  .slide .pagenum{font-family:var(--f-mono);font-size:10px;color:var(--sub-dim)}
+  .placeholder{color:#5f6a8a;font-style:italic}
+
+  /* ---- Slide 1: Title ---- */
+  #s1{justify-content:center;align-items:center;text-align:center}
+  #s1 .mark{margin-bottom:28px}
+  #s1 .mark svg{width:40px;height:40px}
+  #s1 h1{font-size:52px;max-width:820px}
+  #s1 p.lead{margin:0 auto;text-align:center}
+
+  /* ---- Slide 2: Section divider ---- */
+  #s2{justify-content:center}
+  #s2 .idx{font-family:var(--f-mono);color:var(--accent);font-size:13px;margin-bottom:14px}
+
+  /* ---- Slide 3: Bento content grid ---- */
+  .bento{display:grid;grid-template-columns:1.2fr 1fr 1fr;grid-template-rows:1fr 1fr;gap:16px;flex:1;margin-top:8px}
+  .bento .card{
+    background:var(--bg-raised);border:1px solid var(--line);border-radius:10px;padding:20px;
+    display:flex;flex-direction:column;justify-content:space-between;
+  }
+  .bento .card.wide{grid-row:span 2}
+  .bento .card h3{font-size:13px;font-weight:600;margin:0 0 8px;color:var(--sub)}
+  .bento .metric{font-family:var(--f-mono);font-size:30px;font-weight:500;color:var(--ink)}
+  .bento .metric small{font-size:12px;color:var(--sub);font-weight:400;display:block;margin-top:4px}
+
+  /* ---- Slide 4: Trace/status visual (RAG matrix) ---- */
+  .rag-row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--line-soft);font-size:14px}
+  .rag-row:last-child{border-bottom:none}
+  .flag{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500}
+  .flagdot{width:7px;height:7px;border-radius:50%}
+  .flagdot.g{background:var(--green)} .flagdot.a{background:var(--amber)} .flagdot.r{background:var(--red)}
+
+  /* ---- Slide 5: How we work / INO-14 disclaimer (mandatory) ---- */
+  #s5 .disclaimer{
+    margin-top:auto;background:var(--bg-raised);border:1px solid var(--line);border-radius:10px;
+    padding:18px 22px;font-family:var(--f-mono);font-size:12px;color:var(--sub);line-height:1.6;
+  }
+  #s5 .disclaimer b{color:var(--ink)}
+
+  /* ---- Slide 6: Closing ---- */
+  #s6{justify-content:center;align-items:center;text-align:center}
+
+  @media print{
+    body{background:#000}
+    .deck-note{display:none}
+    .slide{margin:0 auto;page-break-after:always;border-radius:0}
+  }
+</style>
+</head>
+<body>
+
+<div class="deck-note">
+  <b>Template note:</b> 16:9, 1120px reference width — export via browser Print → Save as PDF
+  (landscape) for a quick deck, or rebuild in Keynote/Figma Slides using these exact type sizes,
+  spacing, and the same 6-slide skeleton. All metrics/copy marked <span class="placeholder">italic</span>
+  are illustrative, pending your fact-check (see the activity plan's open questions). Slide 5's
+  INO-14 disclaimer is mandatory in any real pitch built from this template — do not remove it.
+</div>
+
+<!-- Slide 1 — Title -->
+<div class="slide" id="s1">
+  <div class="mark">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M3 12h6l2-6 4 12 2-6h4" stroke="#3B6EF6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div>
+  <div class="eyebrow" style="justify-content:center"><span class="dot"></span>VERIFIED LINE — B2B / DPI DECK</div>
+  <h1>Structured risk visibility for vendor underwriting, built for verification — not automation.</h1>
+  <p class="lead placeholder">[One-line positioning statement — 3 candidates drafted in 05-verbal-identity.md, awaiting your pick]</p>
+  <div class="footer-row"><span>INOVIXUX</span><span class="pagenum">01 / 06</span></div>
+</div>
+
+<!-- Slide 2 — Section divider -->
+<div class="slide" id="s2">
+  <div class="idx">SECTION 01</div>
+  <h1>The problem: underwriting decisions run on unstructured vendor data.</h1>
+  <p class="lead placeholder">[Section-divider slides use this same skeleton — index label, one
+    large statement, no body copy. Reuse for "The approach," "The system," "Where we're headed."]</p>
+  <div class="footer-row"><span>INOVIXUX</span><span class="pagenum">02 / 06</span></div>
+</div>
+
+<!-- Slide 3 — Bento metrics grid -->
+<div class="slide" id="s3">
+  <div class="eyebrow"><span class="dot"></span>THE SYSTEM</div>
+  <h1 style="font-size:32px">One structured risk-flag report, traced end to end.</h1>
+  <div class="bento">
+    <div class="card wide">
+      <h3>WHAT THE SYSTEM DOES</h3>
+      <p class="lead placeholder" style="font-size:14px">Turns raw vendor data into a structured
+        risk-flag report. A human reviewer closes every case — the system never approves on its own.</p>
+    </div>
+    <div class="card">
+      <h3>CASES TRACED</h3>
+      <div class="metric placeholder">12,400<small>illustrative — pending your figure</small></div>
+    </div>
+    <div class="card">
+      <h3>AVG. TIME TO FLAG</h3>
+      <div class="metric placeholder">4.2m<small>illustrative — pending your figure</small></div>
+    </div>
+    <div class="card">
+      <h3>REVIEWER SIGN-OFF</h3>
+      <div class="metric">100%<small>by design — INO-14 mandate, not a variable</small></div>
+    </div>
+    <div class="card">
+      <h3>RAILS TARGETED</h3>
+      <div class="metric placeholder" style="font-size:18px">UPI · ABDM<small>illustrative — fact-check pending</small></div>
+    </div>
+  </div>
+  <div class="footer-row"><span>INOVIXUX</span><span class="pagenum">03 / 06</span></div>
+</div>
+
+<!-- Slide 4 — RAG matrix -->
+<div class="slide" id="s4">
+  <div class="eyebrow"><span class="dot"></span>THE OUTPUT</div>
+  <h1 style="font-size:32px">A risk-flag report a human can act on in minutes, not days.</h1>
+  <div style="margin-top:12px">
+    <div class="rag-row"><span>Vendor identity verification</span><span class="flag"><span class="flagdot g"></span>CLEARED</span></div>
+    <div class="rag-row"><span>Financial standing check</span><span class="flag"><span class="flagdot a"></span>NEEDS REVIEW</span></div>
+    <div class="rag-row"><span>Sanctions / watchlist screen</span><span class="flag"><span class="flagdot g"></span>CLEARED</span></div>
+    <div class="rag-row"><span>Beneficial ownership trace</span><span class="flag"><span class="flagdot r"></span>FLAGGED</span></div>
+    <div class="rag-row"><span>Regulatory filing history</span><span class="flag"><span class="flagdot g"></span>CLEARED</span></div>
+  </div>
+  <div class="footer-row"><span>INOVIXUX</span><span class="pagenum">04 / 06</span></div>
+</div>
+
+<!-- Slide 5 — How we work (INO-14 disclaimer, mandatory) -->
+<div class="slide" id="s5">
+  <div class="eyebrow"><span class="dot"></span>HOW WE WORK</div>
+  <h1 style="font-size:32px">Augmented control, not automated decisions.</h1>
+  <p class="lead">The system surfaces structured signal. A human reviewer closes every case.
+    We do not touch the decision.</p>
+  <div class="disclaimer">
+    <b>Internal mandate (INO-14):</b> no commercial or validation sign-off until the MVP is
+    verified. This deck describes a system under active verification, not a shipped product with
+    validated outcomes — any real pitch built from this template must keep this line, or an
+    equivalent, visible.
+  </div>
+  <div class="footer-row"><span>INOVIXUX</span><span class="pagenum">05 / 06</span></div>
+</div>
+
+<!-- Slide 6 — Closing -->
+<div class="slide" id="s6">
+  <div class="mark" style="margin-bottom:24px">
+    <svg viewBox="0 0 24 24" fill="none" width="32" height="32"><path d="M3 12h6l2-6 4 12 2-6h4" stroke="#3B6EF6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div>
+  <h1 style="font-size:36px">Verification, traced end to end.</h1>
+  <p class="lead placeholder">[Contact line / next-step CTA — illustrative]</p>
+  <div class="footer-row"><span>INOVIXUX</span><span class="pagenum">06 / 06</span></div>
+</div>
+
+</body>
+</html>
