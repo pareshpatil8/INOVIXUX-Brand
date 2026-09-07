@@ -4,6 +4,12 @@
 visualization and also plan the activities like brand logo, design system, website, brand
 language etc which has to be performed as a part of the Brand architecture."*
 
+> **2026-09-07 directive applied below:** KYB / anything requiring an external-world connection
+> is **paused** — do not work on it. Primary active focus until further notice is finishing the
+> design system, brand language, logo, letterhead, and business card (i.e. everything with no
+> external dependency). Website work is scoped to a design-system-based sitemap proposal only —
+> see `08-website-sitemap.md`. Full current-state view: start at `00-INDEX.md`, not this file.
+
 **Prepared by:** CEO agent (Paperclip / Claude) · **Date:** 2026-09-07
 
 **Housekeeping first:** the prior run (`d75c366b`) hit its session limit before it could commit
@@ -72,7 +78,7 @@ from a blank canvas.
 | Structural page build (proven against Vetra's anatomy, framework-free) | `foundation-v5-verified-line.html` | Agent | ✅ Done |
 | Port to Angular (real routing, real components from B) | Working Angular site | Agent + your dev review | ⏳ Depends on B |
 | Content pass (replace illustrative copy — rails list, geography grid — with verified real integrations) | Final copy | You (fact-check which rails/geographies are actually live) | ⏳ Needs your input — I flagged every illustrative claim in the HTML comments so nothing ships as fact by accident |
-| KYB product surface (dense-mode dashboard: risk tables, RAG matrix, reviewer queue) | Angular views inside the actual KYB MVP repo | Agent + dev review | ⏳ Not started — needs that repo's location/access |
+| KYB product surface (dense-mode dashboard: risk tables, RAG matrix, reviewer queue) | Angular views inside the actual KYB MVP repo | Agent + dev review | ⏸ **PAUSED 2026-09-07 per board directive — do not resume without explicit instruction** (external-world connection) |
 
 ### D. Brand Language (verbal identity)
 
@@ -94,9 +100,9 @@ from a blank canvas.
 
 | Activity | Deliverable | Owner | Status |
 |---|---|---|---|
-| Wire tokens + components into the actual KYB Angular app | Live app using `tokens.css` | Agent + dev review | ⏳ Needs that repo identified |
-| Contrast/accessibility regression check on real screens (not just the style guide) | Audit note | Agent | ⏳ After rollout |
-| Internal brand guideline doc (for anyone else touching INOVIXUX surfaces later) | Consolidated `docs/brand/BRAND-GUIDELINES.md` linking all of the above | Agent | ⏳ Last step, once B–E are stable |
+| Wire tokens + components into the actual KYB Angular app | Live app using `tokens.css` | Agent + dev review | ⏸ **PAUSED 2026-09-07 per board directive** — external-world connection, not to be worked on |
+| Contrast/accessibility regression check on real screens (not just the style guide) | Audit note | Agent | ⏸ Paused alongside rollout, same reason |
+| Internal brand guideline doc (for anyone else touching INOVIXUX surfaces later) | `09-design-system-standards.md` | Agent | ✅ Done this round (governance/standards doc, doesn't depend on rollout) |
 
 ---
 
