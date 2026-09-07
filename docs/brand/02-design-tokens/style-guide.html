@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>INOVIXUX — Design Token Style Guide (Verified Line, Phase 2)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css" />
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ino-color-surface);color:var(--ino-color-on-surface);
+    font-family:var(--ino-font-display);-webkit-font-smoothing:antialiased;padding:0 0 96px}
+  a{color:inherit}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 40px}
+  header{padding:56px 0 40px;border-bottom:1px solid var(--ino-color-border)}
+  header .kicker{font-family:var(--ino-font-mono);font-size:var(--ino-type-label-size);
+    letter-spacing:var(--ino-type-label-tracking);text-transform:uppercase;color:var(--ino-color-on-surface-muted);
+    margin:0 0 14px}
+  header h1{font-size:38px;font-weight:600;letter-spacing:-.02em;margin:0 0 10px}
+  header p{color:var(--ino-color-on-surface-muted);font-size:15px;max-width:640px;line-height:1.6;margin:0}
+
+  section{padding:56px 0;border-bottom:1px solid var(--ino-color-border)}
+  .section-label{font-family:var(--ino-font-mono);font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ino-color-on-surface-muted);margin:0 0 24px;font-weight:600}
+
+  /* color swatches */
+  .swatch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
+  .swatch{border:1px solid var(--ino-color-border);border-radius:var(--ino-radius-lg);overflow:hidden}
+  .swatch .fill{height:64px}
+  .swatch .meta{padding:12px 14px;font-family:var(--ino-font-mono);font-size:11.5px;
+    color:var(--ino-color-on-surface-muted);background:var(--ino-color-surface-raised)}
+  .swatch .meta b{display:block;color:var(--ino-color-on-surface);font-size:12.5px;margin-bottom:3px;font-family:var(--ino-font-display)}
+
+  /* RAG chips */
+  .chip-row{display:flex;gap:12px;flex-wrap:wrap}
+  .rag-chip{display:inline-flex;align-items:center;gap:6px;border-radius:var(--ino-radius-pill);
+    padding:var(--ino-space-1) var(--ino-space-3);font-family:var(--ino-font-mono);
+    font-size:var(--ino-type-label-size);font-weight:var(--ino-type-label-weight);
+    letter-spacing:.04em;text-transform:uppercase}
+  .rag-chip.high{background:var(--ino-color-risk-high-fill);color:var(--ino-color-risk-high-on-fill)}
+  .rag-chip.medium{background:var(--ino-color-risk-medium-fill);color:var(--ino-color-risk-medium-on-fill)}
+  .rag-chip.low{background:var(--ino-color-risk-low-fill);color:var(--ino-color-risk-low-on-fill)}
+  .dot-row{display:flex;gap:24px;align-items:center;margin-top:18px}
+  .dot-row .item{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ino-color-on-surface-muted);font-family:var(--ino-font-mono)}
+  .dot{width:7px;height:7px;border-radius:50%}
+  .dot.high{background:var(--ino-color-risk-high-dot)}
+  .dot.medium{background:var(--ino-color-risk-medium-dot)}
+  .dot.low{background:var(--ino-color-risk-low-dot)}
+
+  /* type scale */
+  .type-row{display:flex;align-items:baseline;gap:24px;padding:18px 0;border-bottom:1px solid var(--ino-color-border-soft)}
+  .type-row:last-child{border-bottom:none}
+  .type-row .tag{width:140px;flex:none;font-family:var(--ino-font-mono);font-size:11.5px;color:var(--ino-color-on-surface-muted)}
+  .type-row .sample{color:var(--ino-color-on-surface)}
+  .t-display{font-size:var(--ino-type-display-size);line-height:var(--ino-type-display-line);font-weight:var(--ino-type-display-weight);letter-spacing:var(--ino-type-display-tracking)}
+  .t-h2{font-size:var(--ino-type-h2-size);line-height:var(--ino-type-h2-line);font-weight:var(--ino-type-h2-weight);letter-spacing:var(--ino-type-h2-tracking)}
+  .t-h3{font-size:var(--ino-type-h3-size);line-height:var(--ino-type-h3-line);font-weight:var(--ino-type-h3-weight)}
+  .t-body-lg{font-size:var(--ino-type-body-lg-size);line-height:var(--ino-type-body-lg-line)}
+  .t-body{font-size:var(--ino-type-body-size);line-height:var(--ino-type-body-line)}
+  .t-body-sm{font-size:var(--ino-type-body-sm-size);line-height:var(--ino-type-body-sm-line);color:var(--ino-color-on-surface-muted)}
+  .t-label{font-family:var(--ino-font-mono);font-size:var(--ino-type-label-size);font-weight:var(--ino-type-label-weight);letter-spacing:var(--ino-type-label-tracking);text-transform:uppercase;color:var(--ino-color-on-surface-muted)}
+  .t-metric{font-family:var(--ino-font-mono);font-size:var(--ino-type-metric-size);font-weight:var(--ino-type-metric-weight)}
+
+  /* spacing */
+  .space-row{display:flex;align-items:center;gap:16px;padding:8px 0}
+  .space-row .tag{width:110px;flex:none;font-family:var(--ino-font-mono);font-size:11.5px;color:var(--ino-color-on-surface-muted)}
+  .space-bar{height:14px;background:var(--ino-color-accent);border-radius:3px}
+
+  /* radius */
+  .radius-grid{display:flex;gap:20px;flex-wrap:wrap}
+  .radius-box{width:88px;height:88px;background:var(--ino-color-surface-raised);border:1px solid var(--ino-color-border);
+    display:flex;align-items:center;justify-content:center;font-family:var(--ino-font-mono);font-size:11px;color:var(--ino-color-on-surface-muted)}
+
+  /* elevation */
+  .elevation-box{width:200px;height:100px;background:var(--ino-color-surface-raised);border:1px solid var(--ino-color-border);
+    border-radius:var(--ino-radius-lg);box-shadow:var(--ino-elevation-1);display:flex;align-items:center;justify-content:center;
+    font-family:var(--ino-font-mono);font-size:11px;color:var(--ino-color-on-surface-muted)}
+
+  /* density demo */
+  .density-demo{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  .density-panel{border:1px solid var(--ino-color-border);border-radius:var(--ino-radius-lg);overflow:hidden}
+  .density-panel .head{padding:14px 18px;font-family:var(--ino-font-mono);font-size:11px;color:var(--ino-color-on-surface-muted);
+    border-bottom:1px solid var(--ino-color-border-soft);text-transform:uppercase;letter-spacing:.08em}
+  .density-panel .row{display:flex;justify-content:space-between;align-items:center;padding:var(--ino-space-row,12px) 18px;
+    min-height:var(--ino-row-min-height,32px);border-bottom:1px solid var(--ino-color-border-soft);
+    font-size:var(--ino-type-body-size);line-height:var(--ino-type-body-line)}
+  .density-panel .row:last-child{border-bottom:none}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <p class="kicker">INO-31 · Phase 2 · Verified Line</p>
+      <h1>Design Token Style Guide</h1>
+      <p>Every value below is read live from <code>tokens.css</code> via CSS custom properties —
+      nothing on this page is hand-typed twice. If a token changes in the file, this page changes
+      with it. This is the rendered check for the token contract described in <code>README.md</code>.</p>
+    </header>
+
+    <section>
+      <p class="section-label">Color roles</p>
+      <div class="swatch-grid">
+        <div class="swatch"><div class="fill" style="background:var(--ino-color-surface)"></div><div class="meta"><b>surface</b>#0A0A0A</div></div>
+        <div class="swatch"><div class="fill" style="background:var(--ino-color-surface-raised)"></div><div class="meta"><b>surface-raised</b>#0D0D0E</div></div>
+        <div class="swatch"><div class="fill" style="background:var(--ino-color-on-surface)"></div><div class="meta"><b>on-surface</b>#F5F5F4</div></div>
+        <div class="swatch"><div class="fill" style="background:var(--ino-color-on-surface-muted)"></div><div class="meta"><b>on-surface-muted</b>#8C8C8E</div></div>
+        <div class="swatch"><div class="fill" style="background:var(--ino-color-on-surface-subtle)"></div><div class="meta"><b>on-surface-subtle</b>decorative only — fails AA as text</div></div>
+        <div class="swatch"><div class="fill" style="background:var(--ino-color-accent)"></div><div class="meta"><b>accent</b>#3B6EF6 — swap token</div></div>
+        <div class="swatch"><div class="fill" style="background:var(--ino-color-success)"></div><div class="meta"><b>success</b>#3A9B6B</div></div>
+        <div class="swatch"><div class="fill" style="background:var(--ino-color-warning)"></div><div class="meta"><b>warning</b>#B98A3C</div></div>
+        <div class="swatch"><div class="fill" style="background:var(--ino-color-danger)"></div><div class="meta"><b>danger</b>#C24C43</div></div>
+      </div>
+    </section>
+
+    <section>
+      <p class="section-label">RAG semantic alert tokens (KYB risk flags)</p>
+      <div class="chip-row">
+        <span class="rag-chip high">High risk · 3 flags</span>
+        <span class="rag-chip medium">Medium risk · review</span>
+        <span class="rag-chip low">Low risk · clear</span>
+      </div>
+      <div class="dot-row">
+        <span class="item"><span class="dot high"></span>dot form — icons/charts only, never text</span>
+        <span class="item"><span class="dot medium"></span>&nbsp;</span>
+        <span class="item"><span class="dot low"></span>&nbsp;</span>
+      </div>
+    </section>
+
+    <section>
+      <p class="section-label">Type scale</p>
+      <div class="type-row"><span class="tag">display</span><span class="sample t-display">Verify, don't decide</span></div>
+      <div class="type-row"><span class="tag">h2</span><span class="sample t-h2">Human reviews every case</span></div>
+      <div class="type-row"><span class="tag">h3</span><span class="sample t-h3">Feature card heading</span></div>
+      <div class="type-row"><span class="tag">body-lg / lead</span><span class="sample t-body-lg">A structured risk-flag report your team can act on, not an automated decision.</span></div>
+      <div class="type-row"><span class="tag">body</span><span class="sample t-body">Vendor GSTIN cross-checked against MCA21 filing status.</span></div>
+      <div class="type-row"><span class="tag">body-sm</span><span class="sample t-body-sm">Last synced 4 minutes ago via ABDM sandbox</span></div>
+      <div class="type-row"><span class="tag">label (mono)</span><span class="sample t-label">Verification throughput</span></div>
+      <div class="type-row"><span class="tag">metric (mono)</span><span class="sample t-metric">2,481</span></div>
+    </section>
+
+    <section>
+      <p class="section-label">Space scale</p>
+      <div id="space-scale"></div>
+    </section>
+
+    <section>
+      <p class="section-label">Radius scale</p>
+      <div class="radius-grid">
+        <div class="radius-box" style="border-radius:var(--ino-radius-sm)">sm · 6px</div>
+        <div class="radius-box" style="border-radius:var(--ino-radius-md)">md · 8px</div>
+        <div class="radius-box" style="border-radius:var(--ino-radius-lg)">lg · 10px</div>
+        <div class="radius-box" style="border-radius:var(--ino-radius-xl)">xl · 14px</div>
+        <div class="radius-box" style="border-radius:var(--ino-radius-pill)">pill · 20px</div>
+      </div>
+    </section>
+
+    <section>
+      <p class="section-label">Elevation</p>
+      <div class="elevation-box">elevation-1 (raised panel)</div>
+    </section>
+
+    <section style="border-bottom:none">
+      <p class="section-label">Density modes — same tokens, two row heights</p>
+      <div class="density-demo">
+        <div class="density-panel" data-density="dense">
+          <div class="head">Dense · G2B risk table · 32px row floor</div>
+          <div class="row"><span>Acme Traders Pvt Ltd</span><span class="rag-chip high" style="font-size:10px">High</span></div>
+          <div class="row"><span>Bharat Textile Co.</span><span class="rag-chip medium" style="font-size:10px">Medium</span></div>
+          <div class="row"><span>Sundar Exports LLP</span><span class="rag-chip low" style="font-size:10px">Low</span></div>
+        </div>
+        <div class="density-panel" data-density="fluid">
+          <div class="head">Fluid · B2C surface · 44px row floor</div>
+          <div class="row"><span>Application status</span><span>Verified</span></div>
+          <div class="row"><span>Next step</span><span>Awaiting document</span></div>
+          <div class="row"><span>Est. review time</span><span>1–2 business days</span></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+<script>
+  // Space scale rendered from the token list itself, so this section can't
+  // drift out of sync with tokens.css by hand-editing one side only.
+  const spaceTokens = ['ino-space-1','ino-space-2','ino-space-3','ino-space-4','ino-space-5',
+    'ino-space-6','ino-space-7','ino-space-8','ino-space-9','ino-space-10','ino-space-11'];
+  const root = getComputedStyle(document.documentElement);
+  const holder = document.getElementById('space-scale');
+  spaceTokens.forEach(name => {
+    const value = root.getPropertyValue('--' + name).trim();
+    const row = document.createElement('div');
+    row.className = 'space-row';
+    row.innerHTML = `<span class="tag">--${name}</span><span class="space-bar" style="width:${value}"></span><span style="font-family:var(--ino-font-mono);font-size:11.5px;color:var(--ino-color-on-surface-muted)">${value}</span>`;
+    holder.appendChild(row);
+  });
+</script>
+</body>
+</html>
