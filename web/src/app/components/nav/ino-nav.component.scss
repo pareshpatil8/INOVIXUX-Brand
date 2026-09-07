@@ -29,9 +29,12 @@
 // .btn.primary is the shared button pattern from the v5 foundation build —
 // background: on-surface / color: surface (inverted chip), reused as-is here
 // rather than re-declared, per angular-theme-contract.md §1.
+// Primary CTA carries the accent gradient directly (Adaptive Synapse pivot)
+// rather than the inverted on-surface chip — this is the one control on
+// the page that should read as "the accent," matching the Vetra reference.
 .btn.primary {
-  background: var(--ino-color-on-surface);
-  color: var(--ino-color-surface);
+  background: var(--ino-gradient-accent);
+  color: var(--ino-color-on-accent);
   border: none;
   border-radius: var(--ino-radius-md);
   padding: var(--ino-space-2) var(--ino-space-4);
@@ -41,6 +44,6 @@
   transition: opacity var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
 
   &:hover {
-    opacity: 0.85;
+    opacity: 0.88;
   }
 }

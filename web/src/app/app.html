@@ -2,8 +2,16 @@
   <ino-nav [links]="navLinks" ctaLabel="Request demo" (ctaClick)="onCta()">
     <span logo class="ino-logo">
       <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
-        <path d="M2 12 L7 12 L9 5 L12 15 L14 9 L18 9" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
-        <circle cx="18" cy="9" r="2" fill="var(--ino-color-accent, #3B6EF6)" />
+        <defs>
+          <linearGradient id="inoNavGrad" x1="2" y1="16" x2="18" y2="3" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#7C5CFC" />
+            <stop offset="1" stop-color="#4F46E5" />
+          </linearGradient>
+        </defs>
+        <path d="M4 16 L4 9 L10 3 L16 9 L16 16" stroke="url(#inoNavGrad)" stroke-width="2.1" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+        <circle cx="10" cy="3" r="2.1" fill="url(#inoNavGrad)" />
+        <circle cx="4" cy="16" r="1.5" fill="url(#inoNavGrad)" opacity="0.55" />
+        <circle cx="16" cy="16" r="1.5" fill="url(#inoNavGrad)" opacity="0.55" />
       </svg>
       <span>INOVIXUX</span>
     </span>
@@ -56,8 +64,16 @@
   <ino-footer [columns]="footerColumns">
     <span logo class="ino-logo ino-logo--footer">
       <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
-        <path d="M2 12 L7 12 L9 5 L12 15 L14 9 L18 9" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
-        <circle cx="18" cy="9" r="2" fill="var(--ino-color-accent, #3B6EF6)" />
+        <defs>
+          <linearGradient id="inoFootGrad" x1="2" y1="16" x2="18" y2="3" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#7C5CFC" />
+            <stop offset="1" stop-color="#4F46E5" />
+          </linearGradient>
+        </defs>
+        <path d="M4 16 L4 9 L10 3 L16 9 L16 16" stroke="url(#inoFootGrad)" stroke-width="2.1" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+        <circle cx="10" cy="3" r="2.1" fill="url(#inoFootGrad)" />
+        <circle cx="4" cy="16" r="1.5" fill="url(#inoFootGrad)" opacity="0.55" />
+        <circle cx="16" cy="16" r="1.5" fill="url(#inoFootGrad)" opacity="0.55" />
       </svg>
       <span>INOVIXUX</span>
       <p>KYB vendor underwriting, verified by a human, traced by the system.</p>

@@ -1,6 +1,12 @@
 /*
  * INOVIXUX — Design Token Contract (Phase 2)
- * Concept: Verified Line — approved 2026-09-06 (INO-31, plan revision 7)
+ * Concept: Verified Line, structure — Adaptive Synapse, accent register
+ * (INO-31, plan revision 8 — pivot 2026-09-07: board named
+ * https://vetra-app.vercel.app/ as the target register twice and rejected
+ * the flat monochrome accent both times; this swaps the single accent
+ * token from flat Signal Blue to a violet→indigo gradient/glow pair,
+ * matching Vetra's dark-glow SaaS register, without touching layout,
+ * type, or the density-mode structure below.)
  *
  * This file is the single source of truth for color, type, space, radius,
  * elevation, and motion. Angular consumes it as-is: drop it into
@@ -11,8 +17,9 @@
  * component :host blocks, plain HTML collateral (letterhead/deck exports),
  * and this repo's own mockups.
  *
- * Swapping identity: change ONLY --ino-color-accent (and, if a different
- * concept is chosen later, --ino-font-display / --ino-font-mono) — see
+ * Swapping identity: change ONLY --ino-color-accent / --ino-gradient-accent
+ * / --ino-glow-accent (and, if a different concept is chosen later,
+ * --ino-font-display / --ino-font-mono) — see
  * docs/brand/03-vetra-structural-foundation.md for the Aperture Mark /
  * Ledger Seal swap values. Nothing else in this file should need to change
  * for a mark swap.
@@ -35,7 +42,9 @@
   --ino-primitive-line: rgba(255, 255, 255, 0.10);
   --ino-primitive-line-soft: rgba(255, 255, 255, 0.06);
 
-  --ino-primitive-blue-500: #3B6EF6;   /* Verified Line accent (Signal Blue) */
+  --ino-primitive-blue-500: #3B6EF6;   /* retired accent (Signal Blue) — kept only for diffing/rollback, unreferenced below */
+  --ino-primitive-violet-500: #7C5CFC; /* Adaptive Synapse accent — Deep Tech Violet */
+  --ino-primitive-indigo-500: #4F46E5; /* Adaptive Synapse accent — Electric Indigo */
   --ino-primitive-green-500: #3A9B6B;
   --ino-primitive-red-500: #C24C43;
   --ino-primitive-amber-500: #B98A3C;
@@ -55,8 +64,11 @@
   --ino-color-border: var(--ino-primitive-line);
   --ino-color-border-soft: var(--ino-primitive-line-soft);
 
-  --ino-color-accent: var(--ino-primitive-blue-500);      /* swap token */
-  --ino-color-on-accent: #000000;                         /* verified 4.75:1, README §Contrast */
+  --ino-color-accent: var(--ino-primitive-violet-500);    /* swap token */
+  --ino-color-accent-secondary: var(--ino-primitive-indigo-500);
+  --ino-color-on-accent: #FFFFFF;                         /* provisional — recheck against README §Contrast before press-ready sign-off */
+  --ino-gradient-accent: linear-gradient(135deg, var(--ino-primitive-violet-500), var(--ino-primitive-indigo-500));
+  --ino-glow-accent: radial-gradient(circle, rgba(124, 92, 252, 0.35), transparent 70%);
 
   --ino-color-success: var(--ino-primitive-green-500);
   --ino-color-on-success: #000000;                        /* 6.08:1 */

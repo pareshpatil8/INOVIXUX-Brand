@@ -1,8 +1,32 @@
 .ino-hero {
+  position: relative;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--ino-space-9);
   padding: var(--ino-space-11) var(--ino-space-7);
+  overflow: hidden;
+}
+
+// Ambient glow field, Vetra-register: soft radial wash behind the hero
+// content, not a hard gradient panel. Decorative only — sits behind
+// copy/dashboard via z-index, never affects layout or reading order.
+.ino-hero::before {
+  content: "";
+  position: absolute;
+  top: -30%;
+  right: -15%;
+  width: 60%;
+  height: 160%;
+  background: var(--ino-glow-accent);
+  filter: blur(90px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.ino-hero__copy,
+.ino-hero__content {
+  position: relative;
+  z-index: 1;
 }
 
 .ino-hero__eyebrow {
@@ -39,5 +63,13 @@
 
   .ino-hero__headline {
     font-size: var(--ino-type-display-size-sm);
+  }
+}
+
+@media (prefers-reduced-motion: reduce), (prefers-contrast: more) {
+  // Glow is decorative; drop it rather than fight a high-contrast or
+  // reduced-motion user preference for a busier background.
+  .ino-hero::before {
+    display: none;
   }
 }

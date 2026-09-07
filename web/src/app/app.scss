@@ -34,6 +34,10 @@
   background: var(--ino-color-surface-raised);
   overflow: hidden;
   margin-top: var(--ino-space-9);
+  // Accent-tinted lift so the dashboard reads as part of the glow field
+  // behind it rather than a flat card dropped on top — same accent token
+  // as the hero glow, just far more subtle at rest.
+  box-shadow: 0 30px 70px -35px rgba(124, 92, 252, 0.35), var(--ino-elevation-1);
 }
 
 .dash-head {

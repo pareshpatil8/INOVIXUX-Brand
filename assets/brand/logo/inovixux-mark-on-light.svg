@@ -1,5 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="20" height="20" role="img" aria-label="INOVIXUX mark">
-  <title>INOVIXUX — Verified Line mark (on light)</title>
-  <path d="M2 12 L7 12 L9 5 L12 15 L14 9 L18 9" fill="none" stroke="#0A0A0A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="18" cy="9" r="2" fill="#3B6EF6"/>
+  <title>INOVIXUX — Adaptive Synapse mark (on light)</title>
+  <defs>
+    <linearGradient id="inoGrad" x1="2" y1="16" x2="18" y2="3" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7C5CFC"/>
+      <stop offset="1" stop-color="#4F46E5"/>
+    </linearGradient>
+  </defs>
+  <path d="M4 16 L4 9 L10 3 L16 9 L16 16" fill="none" stroke="url(#inoGrad)" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="10" cy="3" r="2.1" fill="url(#inoGrad)"/>
+  <circle cx="4" cy="16" r="1.5" fill="url(#inoGrad)" opacity="0.55"/>
+  <circle cx="16" cy="16" r="1.5" fill="url(#inoGrad)" opacity="0.55"/>
 </svg>
