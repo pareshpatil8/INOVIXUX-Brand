@@ -73,7 +73,10 @@ Verified Line/Aperture Mark/Ledger Seal) are closed and archived (§6).
 | Logo asset library (SVG + PNG, not embedded in a mockup) | [`/assets/brand/logo/`](../../assets/brand/logo/), [`/assets/brand/exports/`](../../assets/brand/exports/) | ✅ New this round |
 | Font self-hosting (Geist `.woff2`) | — | ⏳ Open — needs a real app's asset pipeline to land into; tracked, not lost |
 | Light mode + dark/light toggle, mobile app contract, WCAG 2.2 audit (light) | [`11-dark-light-mobile-accessibility.md`](11-dark-light-mobile-accessibility.md) | ✅ New 2026-09-08 — `ThemeService` shipped and wired into `/web/`, `ng build` passes |
+| Surface depth (sunken/overlay), `<ino-card>` component | [`11-dark-light-mobile-accessibility.md`](11-dark-light-mobile-accessibility.md) §9 | ✅ New 2026-09-08 — live in `/web/` as a bento-card section |
 | Governance / usage standards | [`09-design-system-standards.md`](09-design-system-standards.md) | ✅ New this round — see §8 |
+| Branding completeness checklist (what's built vs. still open, every category) | [`12-branding-completeness-checklist.md`](12-branding-completeness-checklist.md) | ✅ New 2026-09-08 |
+| Mobile app pattern set (nav, screen templates, theming, motion) | [`13-mobile-app-patterns.md`](13-mobile-app-patterns.md) | ✅ New 2026-09-08 — pattern-level, no native codebase exists yet |
 
 **Read as:** the design system now covers dark mode, light mode, and both density modes across
 web, dashboard, and a forward-looking mobile-app contract — all token-driven, all WCAG 2.2

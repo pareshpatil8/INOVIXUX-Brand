@@ -45,6 +45,28 @@
     <ino-feature-grid [items]="featureItems"></ino-feature-grid>
   </section>
 
+  <section id="cards">
+    <div class="section-head">
+      <h2>Surface cards</h2>
+      <p>One <code>&lt;ino-card&gt;</code> shell, three surface roles — the generic container every bento tile, KYB finding card, and mobile list row is built from.</p>
+    </div>
+    <div class="bento">
+      <ino-card class="bento-item bento-item--wide" [interactive]="true">
+        <div ino-card-header>Default surface</div>
+        <p>Standard raised card for page/section content — dashboard widgets, bento-grid tiles, mobile app list cards. Hover/focus to see the elevation state (respects <code>prefers-reduced-motion</code>).</p>
+      </ino-card>
+      <ino-card variant="sunken">
+        <div ino-card-header>Sunken surface</div>
+        <p>Inset panel — a card nested inside another card, or a code/data block that should read as recessed, not raised.</p>
+      </ino-card>
+      <ino-card variant="overlay" padding="lg">
+        <div ino-card-header>Overlay surface</div>
+        <p>Modal / bottom-sheet / popover body — paired with the <code>--ino-color-overlay-scrim</code> backdrop token, at elevation-2 so it reads clearly above page content.</p>
+        <div ino-card-footer>Not a live modal — shown in-flow for the style guide.</div>
+      </ino-card>
+    </div>
+  </section>
+
   <section id="tiers">
     <div class="section-head">
       <h2>Deployment tiers</h2>

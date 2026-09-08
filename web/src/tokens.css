@@ -7,6 +7,11 @@
  * This revision adds a real light-mode theme and touch-target tokens for
  * mobile; nothing in the dark-mode values below changed.)
  *
+ * 2026-09-08 (plan revision 10): added surface depth (--ino-color-surface-sunken,
+ * --ino-color-overlay-scrim) and a second elevation step (--ino-elevation-2) for
+ * inset panels and modal/sheet/popover surfaces — see docs/brand/
+ * 11-dark-light-mobile-accessibility.md §9. Existing surface/elevation values unchanged.
+ *
  * This file is the single source of truth for color, type, space, radius,
  * elevation, and motion. Angular consumes it as-is: drop it into
  * src/styles/tokens.css and import once in angular.json's global styles
@@ -43,6 +48,7 @@
    * ------------------------------------------------------------------- */
   --ino-primitive-black: #0A0A0A;
   --ino-primitive-black-raised: #0D0D0E;
+  --ino-primitive-black-sunken: #000000;
   --ino-primitive-white: #F5F5F4;
   --ino-primitive-gray-500: #8C8C8E;
   --ino-primitive-gray-700: #5A5A5C;
@@ -53,6 +59,7 @@
      (not inline in section 2b) so every raw value in the system lives in
      one place. See README §Contrast for the audit behind each. */
   --ino-primitive-off-white: #FAFAFA;
+  --ino-primitive-fog: #EFEFED;
   --ino-primitive-charcoal: #14141A;
   --ino-primitive-charcoal-muted: #55555C;
   --ino-primitive-line-dark: rgba(10, 10, 10, 0.10);
@@ -82,9 +89,11 @@
    * ------------------------------------------------------------------- */
   --ino-color-surface: var(--ino-primitive-black);
   --ino-color-surface-raised: var(--ino-primitive-black-raised);
+  --ino-color-surface-sunken: var(--ino-primitive-black-sunken); /* inset panels, input fields, code blocks — one step BELOW surface, not above */
   --ino-color-on-surface: var(--ino-primitive-white);
   --ino-color-on-surface-muted: var(--ino-primitive-gray-500);
   --ino-color-on-surface-subtle: var(--ino-primitive-gray-700); /* decorative/disabled only — see README contrast audit, fails AA as text at any size */
+  --ino-color-overlay-scrim: rgba(0, 0, 0, 0.72); /* modal/bottom-sheet backdrop — never used for text */
 
   --ino-color-border: var(--ino-primitive-line);
   --ino-color-border-soft: var(--ino-primitive-line-soft);
@@ -104,7 +113,8 @@
   --ino-color-on-danger: #FFFFFF;                         /* 4.76:1 */
 
   --ino-elevation-0: none;
-  --ino-elevation-1: 0 40px 80px -40px rgba(0, 0, 0, 0.6);
+  --ino-elevation-1: 0 40px 80px -40px rgba(0, 0, 0, 0.6);   /* resting raised surfaces — cards, tier cards */
+  --ino-elevation-2: 0 60px 120px -32px rgba(0, 0, 0, 0.72); /* surfaces above the overlay scrim — modals, sheets, popovers */
 
   /* ---------------------------------------------------------------------
    * 3. RAG SEMANTIC ALERT TOKENS — for the KYB risk-flag matrix named in
@@ -221,9 +231,11 @@
 [data-theme="light"] {
   --ino-color-surface: var(--ino-primitive-off-white);
   --ino-color-surface-raised: #FFFFFF;
+  --ino-color-surface-sunken: var(--ino-primitive-fog); /* inset panels/inputs — one step below off-white, still >7:1 for on-surface text */
   --ino-color-on-surface: var(--ino-primitive-charcoal);        /* 17.58:1 on surface */
   --ino-color-on-surface-muted: var(--ino-primitive-charcoal-muted); /* 7.08:1 on surface */
   --ino-color-on-surface-subtle: var(--ino-primitive-gray-500); /* decorative/disabled only, same rule as dark mode */
+  --ino-color-overlay-scrim: rgba(20, 20, 26, 0.4); /* lighter than dark-mode scrim — full black on white reads as a harsh cutout */
 
   --ino-color-border: var(--ino-primitive-line-dark);
   --ino-color-border-soft: var(--ino-primitive-line-dark-soft);
@@ -243,6 +255,7 @@
   --ino-color-on-danger: #FFFFFF;                       /* 6.59:1 */
 
   --ino-elevation-1: 0 20px 48px -24px rgba(20, 20, 26, 0.16); /* dark-mode shadow reads as a black smear on white; lighter + tighter spread */
+  --ino-elevation-2: 0 32px 72px -20px rgba(20, 20, 26, 0.24);
 
   --ino-color-risk-high-dot: var(--ino-primitive-red-500);
   --ino-color-risk-high-fill: var(--ino-primitive-red-600);
@@ -266,9 +279,11 @@
   :root:not([data-theme]) {
     --ino-color-surface: var(--ino-primitive-off-white);
     --ino-color-surface-raised: #FFFFFF;
+    --ino-color-surface-sunken: var(--ino-primitive-fog);
     --ino-color-on-surface: var(--ino-primitive-charcoal);
     --ino-color-on-surface-muted: var(--ino-primitive-charcoal-muted);
     --ino-color-on-surface-subtle: var(--ino-primitive-gray-500);
+    --ino-color-overlay-scrim: rgba(20, 20, 26, 0.4);
     --ino-color-border: var(--ino-primitive-line-dark);
     --ino-color-border-soft: var(--ino-primitive-line-dark-soft);
     --ino-color-accent-text-safe: var(--ino-primitive-indigo-500);
@@ -280,6 +295,7 @@
     --ino-color-danger: var(--ino-primitive-red-600);
     --ino-color-on-danger: #FFFFFF;
     --ino-elevation-1: 0 20px 48px -24px rgba(20, 20, 26, 0.16);
+    --ino-elevation-2: 0 32px 72px -20px rgba(20, 20, 26, 0.24);
     --ino-color-risk-high-fill: var(--ino-primitive-red-600);
     --ino-color-risk-high-on-fill: #FFFFFF;
     --ino-color-risk-medium-fill: var(--ino-primitive-amber-800);

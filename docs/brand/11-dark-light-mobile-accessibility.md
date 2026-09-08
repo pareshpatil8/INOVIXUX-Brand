@@ -160,3 +160,41 @@ the same system instead of inventing its own:
 - `web/src/app/components/nav/ino-nav.component.{ts,html,scss}` — theme toggle control.
 - `web/src/index.html` — pre-paint theme script.
 - This doc.
+
+## 9. Addendum (2026-09-08) — surface depth + `<ino-card>`, responding to the e-Cheque reference
+
+You pointed at a local reference (`~/Downloads/e-Cheque Design System`) and asked the system to
+cover its named categories — brand assets, motion tokens, primary/secondary/status/surface
+colors, components, mobile app, spacing, typography, website pages, cards. Motion, spacing,
+typography, and primary/secondary/status color were already covered (§3 above, `tokens.css` §4/5/9
+and the M3-style accent+RAG roles) — the one real gap this surfaced was **surface depth**: the
+token set had exactly two surface levels (`surface`, `surface-raised`), enough for a flat card on
+a page but not enough to express an inset panel or a modal sitting above other content. Fixed:
+
+- **`--ino-color-surface-sunken`** — one step *below* `surface` (dark: pure `#000000`; light: a
+  new `--ino-primitive-fog: #EFEFED`). For inset panels, input fields, code/data blocks — anything
+  that should read as recessed, not raised. Contrast re-verified, not assumed: `on-surface`
+  (charcoal) on `fog` = 15.93:1, `on-surface-muted` on `fog` = 6.42:1 — both still clear AA
+  comfortably (light-mode floor is 4.5:1); dark-mode pairing only gets *more* contrast since pure
+  black is more extreme than the existing `#0A0A0A` surface, so no new dark-mode audit was needed.
+- **`--ino-color-overlay-scrim`** — full-viewport modal/bottom-sheet backdrop (`rgba(0,0,0,.72)`
+  dark / `rgba(20,20,26,.4)` light). Background-only role, never used for text, so it carries no
+  text-contrast obligation — same category as the existing RAG `-dot` tokens.
+- **`--ino-elevation-2`** — a second elevation step, above `--ino-elevation-1` (cards), for
+  anything that needs to visually sit above the scrim: modals, sheets, popovers.
+- **`<ino-card>`** (`docs/brand/06-angular-components/src/components/card/`, mirrored into
+  `web/src/app/components/card/`) — the generic surface shell those three roles are for. Three
+  variants (`default` / `sunken` / `overlay`), optional header/footer content projection,
+  `interactive` state for tappable cards. This is deliberately **not** a replacement for
+  `<ino-tier-card>` or `<ino-metric-panel>`, which carry required semantics (INO-14 disclaimer,
+  closed RAG union) — it's the un-opinionated base those two (and any future bento-tile, KYB
+  finding card, or mobile list card) can be built on. Wired into the live app as a 3-up bento
+  section (`web/src/app/app.html` `#cards`) so `ng build` is the proof, not just source sitting
+  under `docs/`.
+- **Reference-folder access**: `~/Downloads/e-Cheque Design System` could not be read — same
+  category of boundary as the earlier `claude.ai/design/...` 403, but a local OS one this time
+  (macOS blocks terminal/agent processes from reading `~/Downloads` under Privacy & Security →
+  Files and Folders, independent of file permissions). Two ways to unblock it if there's something
+  in there this addendum doesn't already cover: grant that access in System Settings, or copy the
+  folder into this repo (e.g. `docs/references/e-cheque/`) via Finder so it's readable the normal
+  way. Full gap analysis against what you described from it: `12-branding-completeness-checklist.md`.

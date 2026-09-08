@@ -1,0 +1,76 @@
+.ino-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--ino-color-surface-raised);
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-xl);
+  box-shadow: var(--ino-elevation-1);
+  padding: var(--ino-space-6);
+  transition: border-color var(--ino-motion-duration-base) var(--ino-motion-easing-standard),
+    box-shadow var(--ino-motion-duration-base) var(--ino-motion-easing-standard),
+    transform var(--ino-motion-duration-base) var(--ino-motion-easing-standard);
+}
+
+.ino-card--pad-sm {
+  padding: var(--ino-space-4);
+}
+
+.ino-card--pad-lg {
+  padding: var(--ino-space-8);
+}
+
+.ino-card--sunken {
+  background: var(--ino-color-surface-sunken);
+  box-shadow: var(--ino-elevation-0);
+}
+
+.ino-card--overlay {
+  background: var(--ino-color-surface-raised);
+  box-shadow: var(--ino-elevation-2);
+}
+
+/* Interactive cards get elevation feedback, never a background-color change
+   (that path risks drifting a card's fill off its audited surface role). */
+.ino-card--interactive {
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible {
+    border-color: var(--ino-color-accent);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--ino-color-accent);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    &:hover {
+      transform: translateY(-2px);
+    }
+  }
+}
+
+.ino-card__header:empty,
+.ino-card__footer:empty {
+  display: none;
+}
+
+.ino-card__header:not(:empty) {
+  margin: calc(var(--ino-space-6) * -1) calc(var(--ino-space-6) * -1) var(--ino-space-4);
+  padding: var(--ino-space-4) var(--ino-space-6);
+  border-bottom: 1px solid var(--ino-color-border-soft);
+}
+
+.ino-card__body {
+  flex: 1;
+  font-size: var(--ino-type-body-size);
+  line-height: var(--ino-type-body-line);
+  color: var(--ino-color-on-surface);
+}
+
+.ino-card__footer:not(:empty) {
+  margin: var(--ino-space-4) calc(var(--ino-space-6) * -1) calc(var(--ino-space-6) * -1);
+  padding: var(--ino-space-4) var(--ino-space-6);
+  border-top: 1px solid var(--ino-color-border-soft);
+}

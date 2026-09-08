@@ -108,6 +108,8 @@
       <div class="swatch-grid">
         <div class="swatch"><div class="fill" style="background:var(--ino-color-surface)"></div><div class="meta"><b>surface</b>#0A0A0A</div></div>
         <div class="swatch"><div class="fill" style="background:var(--ino-color-surface-raised)"></div><div class="meta"><b>surface-raised</b>#0D0D0E</div></div>
+        <div class="swatch"><div class="fill" style="background:var(--ino-color-surface-sunken)"></div><div class="meta"><b>surface-sunken</b>#000000 — inset panels/inputs, one step below surface</div></div>
+        <div class="swatch"><div class="fill" style="background:var(--ino-color-overlay-scrim)"></div><div class="meta"><b>overlay-scrim</b>modal/sheet backdrop only, never text</div></div>
         <div class="swatch"><div class="fill" style="background:var(--ino-color-on-surface)"></div><div class="meta"><b>on-surface</b>#F5F5F4</div></div>
         <div class="swatch"><div class="fill" style="background:var(--ino-color-on-surface-muted)"></div><div class="meta"><b>on-surface-muted</b>#8C8C8E</div></div>
         <div class="swatch"><div class="fill" style="background:var(--ino-color-on-surface-subtle)"></div><div class="meta"><b>on-surface-subtle</b>decorative only — fails AA as text</div></div>
@@ -164,6 +166,16 @@
     <section>
       <p class="section-label">Elevation</p>
       <div class="elevation-box">elevation-1 (raised panel)</div>
+      <div class="elevation-box" style="box-shadow:var(--ino-elevation-2);margin-top:16px;">elevation-2 (modal / sheet / popover)</div>
+    </section>
+
+    <section>
+      <p class="section-label">Cards — &lt;ino-card&gt; surface variants (docs/brand/06-angular-components/src/components/card/)</p>
+      <div class="radius-grid" style="align-items:stretch;">
+        <div style="background:var(--ino-color-surface-raised);border:1px solid var(--ino-color-border);border-radius:var(--ino-radius-xl);box-shadow:var(--ino-elevation-1);padding:20px;min-width:160px;color:var(--ino-color-on-surface);font-size:13px;">default</div>
+        <div style="background:var(--ino-color-surface-sunken);border:1px solid var(--ino-color-border);border-radius:var(--ino-radius-xl);padding:20px;min-width:160px;color:var(--ino-color-on-surface);font-size:13px;">sunken</div>
+        <div style="background:var(--ino-color-surface-raised);border:1px solid var(--ino-color-border);border-radius:var(--ino-radius-xl);box-shadow:var(--ino-elevation-2);padding:20px;min-width:160px;color:var(--ino-color-on-surface);font-size:13px;">overlay</div>
+      </div>
     </section>
 
     <section style="border-bottom:none">

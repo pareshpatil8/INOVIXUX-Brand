@@ -6,6 +6,7 @@ import { InoHeroComponent } from './components/hero/ino-hero.component';
 import { InoFeatureGridComponent, InoFeatureGridItem } from './components/feature-grid/ino-feature-grid.component';
 import { InoMetricPanelComponent, InoMetricPanelRow } from './components/metric-panel/ino-metric-panel.component';
 import { InoTierCardComponent } from './components/tier-card/ino-tier-card.component';
+import { InoCardComponent } from './components/card/ino-card.component';
 import { InoFooterComponent, InoFooterColumn } from './components/footer/ino-footer.component';
 
 /**
@@ -27,6 +28,7 @@ import { InoFooterComponent, InoFooterColumn } from './components/footer/ino-foo
     InoFeatureGridComponent,
     InoMetricPanelComponent,
     InoTierCardComponent,
+    InoCardComponent,
     InoFooterComponent,
   ],
   templateUrl: './app.html',

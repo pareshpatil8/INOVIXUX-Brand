@@ -5,6 +5,7 @@
 export * from './directives/count-up.directive';
 
 export * from './components/nav/ino-nav.component';
+export * from './components/card/ino-card.component';
 export * from './components/hero/ino-hero.component';
 export * from './components/feature-grid/ino-feature-grid.component';
 export * from './components/metric-panel/ino-metric-panel.component';
