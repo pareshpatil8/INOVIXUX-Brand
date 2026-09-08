@@ -69,6 +69,20 @@ needed: five concept revisions and no single source of truth.
 - Status/semantic props (like `<ino-metric-panel status="high|medium|low">`) are closed unions,
   never a raw color prop — this is what keeps the WCAG-audited RAG pairs from being bypassed by a
   future caller passing an arbitrary color.
+- **Dark + light parity is a ship gate, not a follow-up.** (Per 2026-09-08 feedback on the surface
+  card round.) Because every component is required to bind only to semantic tokens (previous
+  bullet), and every semantic token already has a `[data-theme="light"]` override in `tokens.css`
+  §2b, correct token usage gets a component both themes for free — but that's now a checked gate,
+  not an assumption:
+  1. Before a component/page is called done, render it with the nav's theme toggle in both
+     states and confirm no hardcoded color, no `prefers-color-scheme`-only logic, and no
+     dark-only shadow/gradient value slipped in.
+  2. The toggle itself (`ino-nav.component.ts` → `ThemeService`) must be present and functional
+     on any page a new surface ships on — not just on the original homepage — since that's the
+     only way a reviewer can check bullet 1 without opening devtools.
+  3. This applies retroactively as a check, not just to new work: `<ino-card>` and the
+     surface-depth tokens from the 2026-09-08 round were built token-correct and re-verified
+     against this gate (`web/` toggle confirmed working, `ng build` clean) rather than assumed.
 
 ## 6. Asset request process (logo, Figma, print files)
 

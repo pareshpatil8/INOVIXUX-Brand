@@ -29,7 +29,7 @@ assumed-done or silently dropped. `✅` = built and pushed. `🟡` = partial / s
 
 | Item | Status | Where |
 |---|---|---|
-| Color roles (dark + light) | ✅ | `tokens.css` §2, §2b; light-mode independently WCAG-audited, not inverted |
+| Color roles (dark + light) | ✅ | `tokens.css` §2, §2b; light-mode independently WCAG-audited, not inverted; toggle re-verified working (`ino-nav` → `ThemeService`) and made a standing ship gate — `09-design-system-standards.md` §5 |
 | Surface depth (raised/sunken/overlay) | ✅ *(this round)* | `tokens.css`; addendum in `11-…mobile-accessibility.md` §9 |
 | Spacing scale | ✅ | `tokens.css` §5 |
 | Radius scale | ✅ | `tokens.css` §6 |
