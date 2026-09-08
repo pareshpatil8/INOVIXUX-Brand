@@ -20,7 +20,7 @@
   :root{
     --bg:#0A0A0A; --bg-raised:#0D0D0E; --ink:#F5F5F4; --sub:#8C8C8E; --sub-dim:#5A5A5C;
     --line:rgba(255,255,255,.10); --line-soft:rgba(255,255,255,.06);
-    --accent:#3B6EF6; --green:#3A9B6B; --red:#C24C43; --amber:#B98A3C;
+    --accent:#7C5CFC; --accent-2:#4F46E5; --green:#3A9B6B; --red:#C24C43; --amber:#B98A3C;
     --f-display:"Geist",system-ui,-apple-system,Arial,Helvetica,sans-serif;
     --f-mono:"Geist Mono",ui-monospace,"SFMono-Regular",Consolas,monospace;
   }
@@ -111,7 +111,11 @@
 <!-- Slide 1 — Title -->
 <div class="slide" id="s1">
   <div class="mark">
-    <svg viewBox="0 0 24 24" fill="none"><path d="M3 12h6l2-6 4 12 2-6h4" stroke="#3B6EF6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <svg viewBox="0 0 20 20" fill="none">
+      <defs><linearGradient id="pdGradS1" x1="2" y1="17" x2="18" y2="3" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#7C5CFC"/><stop offset="1" stop-color="#4F46E5"/></linearGradient></defs>
+      <path d="M3 3 L3 17 M8 3 L16 17 M16 3 L8 17" stroke="url(#pdGradS1)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="12" cy="10" r="1.9" fill="url(#pdGradS1)"/>
+    </svg>
   </div>
   <div class="eyebrow" style="justify-content:center"><span class="dot"></span>VERIFIED LINE — B2B / DPI DECK</div>
   <h1>Structured risk visibility for vendor underwriting, built for verification — not automation.</h1>
@@ -190,7 +194,11 @@
 <!-- Slide 6 — Closing -->
 <div class="slide" id="s6">
   <div class="mark" style="margin-bottom:24px">
-    <svg viewBox="0 0 24 24" fill="none" width="32" height="32"><path d="M3 12h6l2-6 4 12 2-6h4" stroke="#3B6EF6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <svg viewBox="0 0 20 20" fill="none" width="32" height="32">
+      <defs><linearGradient id="pdGradS6" x1="2" y1="17" x2="18" y2="3" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#7C5CFC"/><stop offset="1" stop-color="#4F46E5"/></linearGradient></defs>
+      <path d="M3 3 L3 17 M8 3 L16 17 M16 3 L8 17" stroke="url(#pdGradS6)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="12" cy="10" r="1.9" fill="url(#pdGradS6)"/>
+    </svg>
   </div>
   <h1 style="font-size:36px">Verification, traced end to end.</h1>
   <p class="lead placeholder">[Contact line / next-step CTA — illustrative]</p>

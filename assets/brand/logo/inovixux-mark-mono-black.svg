@@ -1,7 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="20" height="20" role="img" aria-label="INOVIXUX mark, single color black">
   <title>INOVIXUX mark — mono black (one-color print: engraving, foil, letterhead)</title>
-  <path d="M4 16 L4 9 L10 3 L16 9 L16 16" fill="none" stroke="#000000" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="10" cy="3" r="2.1" fill="#000000"/>
-  <circle cx="4" cy="16" r="1.5" fill="#000000"/>
-  <circle cx="16" cy="16" r="1.5" fill="#000000"/>
+  <path d="M3 3 L3 17 M8 3 L16 17 M16 3 L8 17" fill="none" stroke="#000000" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="12" cy="10" r="1.9" fill="#000000"/>
+  <circle cx="3" cy="3" r="1.1" fill="#000000"/>
+  <circle cx="3" cy="17" r="1.1" fill="#000000"/>
+  <circle cx="8" cy="3" r="1.1" fill="#000000"/>
+  <circle cx="16" cy="3" r="1.1" fill="#000000"/>
+  <circle cx="8" cy="17" r="1.1" fill="#000000"/>
+  <circle cx="16" cy="17" r="1.1" fill="#000000"/>
 </svg>

@@ -7,10 +7,14 @@
     </linearGradient>
   </defs>
   <g transform="translate(1, 1)">
-    <path d="M4 16 L4 9 L10 3 L16 9 L16 16" fill="none" stroke="url(#inoGrad)" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/>
-    <circle cx="10" cy="3" r="2.1" fill="url(#inoGrad)"/>
-    <circle cx="4" cy="16" r="1.5" fill="url(#inoGrad)" opacity="0.55"/>
-    <circle cx="16" cy="16" r="1.5" fill="url(#inoGrad)" opacity="0.55"/>
+    <path d="M3 3 L3 17 M8 3 L16 17 M16 3 L8 17" fill="none" stroke="url(#inoGrad)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="12" cy="10" r="1.9" fill="url(#inoGrad)"/>
+    <circle cx="3" cy="3" r="1.1" fill="url(#inoGrad)" opacity="0.5"/>
+    <circle cx="3" cy="17" r="1.1" fill="url(#inoGrad)" opacity="0.5"/>
+    <circle cx="8" cy="3" r="1.1" fill="url(#inoGrad)" opacity="0.45"/>
+    <circle cx="16" cy="3" r="1.1" fill="url(#inoGrad)" opacity="0.45"/>
+    <circle cx="8" cy="17" r="1.1" fill="url(#inoGrad)" opacity="0.45"/>
+    <circle cx="16" cy="17" r="1.1" fill="url(#inoGrad)" opacity="0.45"/>
   </g>
   <text x="32" y="17" font-family="Geist, Arial, Helvetica, sans-serif" font-weight="600" font-size="17" letter-spacing="-0.2" fill="#0A0A0A">INOVIXUX</text>
 </svg>

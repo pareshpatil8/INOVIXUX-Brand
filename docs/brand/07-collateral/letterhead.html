@@ -20,7 +20,8 @@
     --ink:        #14140F; /* letterhead-only substitute for --ino-color-on-surface (light-on-dark) */
     --ink-muted:  #5A5A54; /* ~= --ino-color-on-surface-muted, warmed for paper */
     --rule:       #DEDCD4; /* letterhead-only hairline, paper equivalent of --ino-color-border */
-    --accent:     #3B6EF6; /* = --ino-color-accent (Signal Blue) — unchanged from the digital system */
+    --accent:     #6D4CE0; /* = --ino-color-accent (violet/indigo register, print-safe midpoint of #7C5CFC → #4F46E5) */
+    --accent-2:   #4F46E5; /* = --ino-gradient-accent end stop, for the two-stop trace-rule below */
     --f-display:  "Geist", system-ui, -apple-system, Arial, Helvetica, sans-serif; /* = --ino-font-display */
     --f-mono:     "Geist Mono", ui-monospace, "SFMono-Regular", Consolas, monospace; /* = --ino-font-mono */
   }
@@ -47,7 +48,7 @@
   .page.letter{width:8.5in;min-height:11in}
 
   /* ---- traced rule: the one accent element, per concept A's spec ---- */
-  .trace-rule{height:3px;background:var(--accent);width:100%;flex:none}
+  .trace-rule{height:3px;background:linear-gradient(90deg,var(--accent),var(--accent-2));width:100%;flex:none}
 
   .letter-head{
     display:flex;justify-content:space-between;align-items:flex-start;
@@ -98,7 +99,11 @@
   <div class="trace-rule"></div>
   <div class="letter-head">
     <div class="wordmark">
-      <svg viewBox="0 0 24 24" fill="none"><path d="M3 12h6l2-6 4 12 2-6h4" stroke="#3B6EF6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <svg viewBox="0 0 20 20" fill="none">
+        <defs><linearGradient id="lhGradA4" x1="2" y1="17" x2="18" y2="3" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#7C5CFC"/><stop offset="1" stop-color="#4F46E5"/></linearGradient></defs>
+        <path d="M3 3 L3 17 M8 3 L16 17 M16 3 L8 17" stroke="url(#lhGradA4)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="12" cy="10" r="1.9" fill="url(#lhGradA4)"/>
+      </svg>
       <span>INOVIXUX</span>
     </div>
     <div class="meta">
@@ -138,7 +143,11 @@
   <div class="trace-rule"></div>
   <div class="letter-head">
     <div class="wordmark">
-      <svg viewBox="0 0 24 24" fill="none"><path d="M3 12h6l2-6 4 12 2-6h4" stroke="#3B6EF6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <svg viewBox="0 0 20 20" fill="none">
+        <defs><linearGradient id="lhGradUS" x1="2" y1="17" x2="18" y2="3" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#7C5CFC"/><stop offset="1" stop-color="#4F46E5"/></linearGradient></defs>
+        <path d="M3 3 L3 17 M8 3 L16 17 M16 3 L8 17" stroke="url(#lhGradUS)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="12" cy="10" r="1.9" fill="url(#lhGradUS)"/>
+      </svg>
       <span>INOVIXUX</span>
     </div>
     <div class="meta">
