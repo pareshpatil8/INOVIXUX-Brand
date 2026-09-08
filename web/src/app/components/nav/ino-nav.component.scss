@@ -26,6 +26,37 @@
   }
 }
 
+.ino-nav__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--ino-space-3);
+}
+
+// Icon-only control — 44px hit area (--ino-target-comfortable) even though the
+// visible glyph is 18px, so the target clears WCAG 2.2 §2.5.8 with real margin
+// on a touch viewport, not just the 24px floor. See tokens.css §7.
+.ino-nav__theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--ino-target-comfortable);
+  height: var(--ino-target-comfortable);
+  margin: calc((var(--ino-target-comfortable) - 32px) / -2);
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-md);
+  background: transparent;
+  color: var(--ino-color-on-surface-muted);
+  cursor: pointer;
+  transition: color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+    border-color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  &:hover,
+  &:focus-visible {
+    color: var(--ino-color-on-surface);
+    border-color: var(--ino-color-accent-secondary);
+  }
+}
+
 // .btn.primary is the shared button pattern from the v5 foundation build —
 // background: on-surface / color: surface (inverted chip), reused as-is here
 // rather than re-declared, per angular-theme-contract.md §1.

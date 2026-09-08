@@ -7,6 +7,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="INOVIXUX design system showcase — the approved Verified Line brand identity, running as real Angular components.">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <!--
+    Pre-paint theme selection — must run before tokens.css/styles.scss paint,
+    so there is no flash of the wrong theme. Priority: explicit user choice
+    (localStorage, set by ThemeService) > OS preference > dark (contract
+    default, no attribute needed). Kept deliberately tiny and dependency-free;
+    ThemeService (web/src/app/services/theme.service.ts) takes over from here
+    once Angular bootstraps.
+  -->
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem('ino-theme');
+        var wantsLight = stored ? stored === 'light'
+          : (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches);
+        if (wantsLight) {
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      } catch (e) {
+        // Storage/matchMedia unavailable — fall through to the dark default.
+      }
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">

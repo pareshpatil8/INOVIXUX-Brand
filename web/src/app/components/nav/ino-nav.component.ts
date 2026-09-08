@@ -1,5 +1,7 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+
+import { ThemeService } from '../../services/theme.service';
 
 export interface InoNavLink {
   label: string;
@@ -13,6 +15,9 @@ export interface InoNavLink {
  * Logo is projected via `<ng-content select="[logo]">` on purpose — the nav shell doesn't
  * know or care what mark renders there, so a mark swap (Verified Line → Aperture Mark →
  * Ledger Seal) never touches this component.
+ *
+ * Owns the dark/light toggle directly (injects ThemeService itself, no Input/Output
+ * plumbing) since nav is the one place both modes need this control on every page.
  */
 @Component({
   selector: 'ino-nav',
@@ -28,7 +33,14 @@ export class InoNavComponent {
 
   @Output() ctaClick = new EventEmitter<void>();
 
+  private readonly themeService = inject(ThemeService);
+  protected readonly theme = this.themeService.theme;
+
   onCtaClick(): void {
     this.ctaClick.emit();
+  }
+
+  onThemeToggle(): void {
+    this.themeService.toggle();
   }
 }

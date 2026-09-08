@@ -92,11 +92,15 @@
 <body>
   <div class="wrap">
     <header>
-      <p class="kicker">INO-31 · Phase 2 · Verified Line</p>
+      <p class="kicker">INO-31 · Phase 2 · Adaptive Synapse accent, dark + light</p>
       <h1>Design Token Style Guide</h1>
       <p>Every value below is read live from <code>tokens.css</code> via CSS custom properties —
       nothing on this page is hand-typed twice. If a token changes in the file, this page changes
       with it. This is the rendered check for the token contract described in <code>README.md</code>.</p>
+      <button type="button" id="theme-toggle"
+        style="font:inherit;padding:8px 14px;border-radius:var(--ino-radius-md);border:1px solid var(--ino-color-border);background:transparent;color:var(--ino-color-on-surface);cursor:pointer;">
+        Toggle dark / light — see <code>11-dark-light-mobile-accessibility.md</code>
+      </button>
     </header>
 
     <section>
@@ -107,7 +111,8 @@
         <div class="swatch"><div class="fill" style="background:var(--ino-color-on-surface)"></div><div class="meta"><b>on-surface</b>#F5F5F4</div></div>
         <div class="swatch"><div class="fill" style="background:var(--ino-color-on-surface-muted)"></div><div class="meta"><b>on-surface-muted</b>#8C8C8E</div></div>
         <div class="swatch"><div class="fill" style="background:var(--ino-color-on-surface-subtle)"></div><div class="meta"><b>on-surface-subtle</b>decorative only — fails AA as text</div></div>
-        <div class="swatch"><div class="fill" style="background:var(--ino-color-accent)"></div><div class="meta"><b>accent</b>#3B6EF6 — swap token</div></div>
+        <div class="swatch"><div class="fill" style="background:var(--ino-color-accent)"></div><div class="meta"><b>accent</b>violet #7C5CFC — decorative/non-text only, see accent-text-safe</div></div>
+        <div class="swatch"><div class="fill" style="background:var(--ino-color-accent-text-safe)"></div><div class="meta"><b>accent-text-safe</b>indigo #4F46E5 — AA-safe for accent text/buttons</div></div>
         <div class="swatch"><div class="fill" style="background:var(--ino-color-success)"></div><div class="meta"><b>success</b>#3A9B6B</div></div>
         <div class="swatch"><div class="fill" style="background:var(--ino-color-warning)"></div><div class="meta"><b>warning</b>#B98A3C</div></div>
         <div class="swatch"><div class="fill" style="background:var(--ino-color-danger)"></div><div class="meta"><b>danger</b>#C24C43</div></div>
@@ -193,6 +198,28 @@
     row.className = 'space-row';
     row.innerHTML = `<span class="tag">--${name}</span><span class="space-bar" style="width:${value}"></span><span style="font-family:var(--ino-font-mono);font-size:11.5px;color:var(--ino-color-on-surface-muted)">${value}</span>`;
     holder.appendChild(row);
+  });
+
+  // Theme toggle demo — same attribute contract as ThemeService
+  // (web/src/app/services/theme.service.ts): [data-theme="light"] on <html>,
+  // absent = dark default. Persists to localStorage so a reload keeps the
+  // choice, matching the real app's behavior.
+  const themeBtn = document.getElementById('theme-toggle');
+  const applyTheme = (theme) => {
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+    }
+  };
+  try {
+    const stored = localStorage.getItem('ino-theme');
+    if (stored) applyTheme(stored);
+  } catch (e) { /* storage disabled — stay on dark default */ }
+  themeBtn.addEventListener('click', () => {
+    const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    applyTheme(next);
+    try { localStorage.setItem('ino-theme', next); } catch (e) { /* ignore */ }
   });
 </script>
 </body>

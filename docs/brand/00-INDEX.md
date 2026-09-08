@@ -45,7 +45,8 @@ Verified Line/Aperture Mark/Ledger Seal) are closed and archived (§6).
 
 - **Mark:** a single traced line that resolves into a checkmark only when a human reviewer closes
   a case. Not a static icon — a state, matching "human still approves everything."
-- **Accent:** Signal Blue `#3B6EF6`.
+- **Accent:** violet→indigo gradient (`#7C5CFC` → `#4F46E5`, Adaptive Synapse pivot, `54f6b21`) —
+  supersedes the original flat Signal Blue `#3B6EF6` shown below; see `03-vetra-structural-foundation.md`.
 - **Type:** Geist / Geist Mono (OFL-licensed, self-hostable).
 - **Surface:** near-black monochrome, one functional accent, no gradients/glow (Apple/SpaceX
   discipline you asked for after rejecting the original 21st.dev-glow direction).
@@ -71,12 +72,14 @@ Verified Line/Aperture Mark/Ledger Seal) are closed and archived (§6).
 | Same components, wired into a real running app | [`/web/`](../../web/) | ✅ New this round — `ng build` passes, `npm start` serves it live |
 | Logo asset library (SVG + PNG, not embedded in a mockup) | [`/assets/brand/logo/`](../../assets/brand/logo/), [`/assets/brand/exports/`](../../assets/brand/exports/) | ✅ New this round |
 | Font self-hosting (Geist `.woff2`) | — | ⏳ Open — needs a real app's asset pipeline to land into; tracked, not lost |
-| Light-mode / B2C surface | — | ⏳ Deferred — only build if/when a light surface is actually needed |
+| Light mode + dark/light toggle, mobile app contract, WCAG 2.2 audit (light) | [`11-dark-light-mobile-accessibility.md`](11-dark-light-mobile-accessibility.md) | ✅ New 2026-09-08 — `ThemeService` shipped and wired into `/web/`, `ng build` passes |
 | Governance / usage standards | [`09-design-system-standards.md`](09-design-system-standards.md) | ✅ New this round — see §8 |
 
-**Read as:** the dark/dense-mode design system is functionally complete and self-consistent.
-What's left in this workstream (font self-hosting, light mode) both require a real Angular
-codebase to finish properly — see §5 for why that's intentionally on hold.
+**Read as:** the design system now covers dark mode, light mode, and both density modes across
+web, dashboard, and a forward-looking mobile-app contract — all token-driven, all WCAG 2.2
+AA-audited. Font self-hosting is the one remaining open item (needs a real app's build pipeline).
+**Logo mark is explicitly out of scope for this workstream** — tracked as its own open-ended
+child issue per the 2026-09-08 directive; nothing else here is blocked on it.
 
 ## 3. Brand language (verbal identity)
 
