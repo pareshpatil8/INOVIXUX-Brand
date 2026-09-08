@@ -22,7 +22,7 @@ assumed-done or silently dropped. `✅` = built and pushed. `🟡` = partial / s
 | Typography system | ✅ | Geist/Geist Mono, full scale, WCAG-safe fallback chain — `tokens.css` §4 |
 | Verbal identity / tone of voice | ✅ | `05-verbal-identity.md` |
 | Motion tokens | ✅ | `tokens.css` §9 (durations/easings, `prefers-reduced-motion` handled at component level) |
-| Iconography system | ⬜ | Only ad-hoc glyphs used inline (nav logo, feature-grid icons) — no named icon set/sizing scale yet |
+| Iconography system | ✅ *(this round)* | `14-icon-system.md` — Lucide adopted, sizing scale + color contract set; not yet wired into an Angular component (that's build order item 1) |
 | Imagery/photography direction | ⬜ | Not addressed — likely low-priority pre-MVP, flagging so it's a decision not an omission |
 
 ## 2. Design tokens (the Angular contract)
@@ -73,8 +73,8 @@ assumed-done or silently dropped. `✅` = built and pushed. `🟡` = partial / s
 |---|---|---|
 | Token contract (touch targets, safe-area, fluid density) | ✅ | `tokens.css` §7/§10/§11 |
 | Platform guidance (theme default, typography fallback) | ✅ | `11-…mobile-accessibility.md` §6 |
-| Actual screen inventory (nav pattern, tab bar, list/detail, onboarding) | ⬜ | Nothing built yet — no mobile app codebase exists to point at |
-| App icon / splash screen | ⬜ | Blocked on logo (INO-82) |
+| Actual screen inventory (nav pattern, tab bar, list/detail, onboarding) | 🟡 *(this round)* | `15-mobile-screen-inventory.md` — full screen list mapped to templates; still no codebase to build screens *in*, blocked on the framework decision (INO-85) |
+| App icon / splash screen | 🟡 | Source mark unblocked (`inovixux-icon-b2c.svg`, INO-82 shipped); per-platform icon/splash export still pending the framework choice |
 
 ## 6. Collateral (non-digital / print)
 
@@ -104,6 +104,8 @@ assumed-done or silently dropped. `✅` = built and pushed. `🟡` = partial / s
    `elevation-2`, status colors); fastest next win.
 3. **Website page templates** — sitemap is approved; turning it into real page layouts doesn't
    need new tokens or new decisions, just component assembly.
-4. **Mobile app screen inventory** — see `13-mobile-app-patterns.md` for the pattern set proposed
-   ahead of any screens existing.
-5. **Icon system** — needed by buttons/forms/nav before those look finished, not before.
+4. **Mobile app screen inventory** — see `13-mobile-app-patterns.md` for the pattern set, and
+   `15-mobile-screen-inventory.md` for the concrete screen list (done this round; actual screens
+   still wait on the framework decision, INO-85).
+5. **Icon system** — done this round, `14-icon-system.md` (Lucide, sizing/color contract).
+   Needed by buttons/forms/nav before those look finished — now unblocked for that work.

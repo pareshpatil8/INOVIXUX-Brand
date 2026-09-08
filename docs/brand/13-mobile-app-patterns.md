@@ -32,7 +32,7 @@ later. Nothing here touches the paused KYB product surface (`00-INDEX.md` §5).
 | **List** | Vertically stacked `ino-card` (`padding="sm"`, `interactive`) rows, or a dense list row using `--ino-row-min-height` (44px, fluid) | Row height token already exists (`tokens.css` §10, `fluid` variant) — reuse, don't invent a new row height for mobile |
 | **Detail** | Header (back + title) → `ino-card` sections stacked, sunken variant for read-only/reference blocks | `variant="sunken"` for anything that should read as "reference data," e.g. a submitted document's extracted fields |
 | **Modal / bottom sheet** | `ino-card` (`variant="overlay"`) sliding up from the bottom edge, full-width, `--ino-color-overlay-scrim` backdrop behind it | This is the mobile home of the overlay tokens added this round (see `11-…mobile-accessibility.md` §9) — a bottom sheet *is* an overlay card, just anchored to the bottom edge instead of centered |
-| **Empty state** | Centered icon/illustration slot + headline + optional single CTA | Icon system is currently `⬜` (checklist §1) — this template is blocked on that, not on tokens |
+| **Empty state** | Centered icon/illustration slot + headline + optional single CTA | Icon system decided (`14-icon-system.md`) — use the 32px icon row, `--ino-color-on-surface-muted` by default |
 | **Settings / account** | Grouped `ino-card` sections, list-row pattern inside each group | Reuses the List template's row pattern, grouped instead of flat |
 
 ## 3. Theming on mobile
@@ -61,9 +61,17 @@ later. Nothing here touches the paused KYB product surface (`00-INDEX.md` §5).
 
 ## 5. What's still an open decision, not guessed here
 
-- **Which framework** (React Native / Flutter / Capacitor wrapping the Angular web app) — not
-  decided anywhere in this repo yet; the tech-stack guardrail only specifies Angular for the web
-  front end. Flagging this explicitly so a framework doesn't get silently assumed later.
-- **App icon / splash screen** — blocked on the logo mark (INO-82), not on anything in this doc.
+- **Which framework** (React Native / Flutter / Capacitor wrapping the Angular web app) — still
+  not decided; the tech-stack guardrail only specifies Angular for the web front end. Sent to the
+  board as a confirmation on INO-85 this round (recommendation: Capacitor, since it wraps the
+  Angular app already built rather than standing up a second UI stack/hiring track — but this is
+  a real cost/timeline call, not a branding decision, so it's asked rather than assumed).
+  Flagging this explicitly so a framework doesn't get silently assumed later.
+- ~~Icon system~~ — decided, see `14-icon-system.md` (Lucide, sizing/color contract).
+- ~~Screen inventory~~ — done, see `15-mobile-screen-inventory.md` (framework-agnostic; doesn't
+  need the framework decision above to exist).
+- **App icon / splash screen** — source mark unblocked (INO-82 shipped, `inovixux-icon-b2c.svg`
+  exists), but per-platform icon/splash export still needs the framework decision (each platform's
+  build tooling dictates the export sizes/format).
 - **Push notification / deep-link visual patterns** — not addressed; out of scope until a
   framework decision exists to design against.
