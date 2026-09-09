@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>INOVIXUX — Logo Concept Mockups (INO-82)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A0A0A; --card:#111113; --ink:#F5F5F4; --sub:#9A9A9C; --sub-dim:#5A5A5C;
+    --line:rgba(255,255,255,.10); --line-soft:rgba(255,255,255,.06);
+    --violet:#7C5CFC; --indigo:#4F46E5; --radius:14px;
+    --f-display:"Geist",system-ui,-apple-system,Arial,sans-serif;
+    --f-mono:"Geist Mono",ui-monospace,"SFMono-Regular",monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-display);-webkit-font-smoothing:antialiased}
+  .banner{background:#000;color:#6B6B6D;font-size:11px;letter-spacing:.08em;
+    padding:10px 32px;border-bottom:1px solid var(--line-soft);text-transform:uppercase;font-family:var(--f-mono)}
+  .wrap{max-width:1000px;margin:0 auto;padding:56px 40px 100px}
+  h1{font-size:32px;letter-spacing:-.02em;margin:0 0 10px}
+  .lede{color:var(--sub);font-size:15px;line-height:1.6;max-width:760px;margin:0 0 40px}
+  h2.section{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--sub-dim);
+    font-family:var(--f-mono);margin:44px 0 16px;padding-top:28px;border-top:1px solid var(--line-soft)}
+  h2.section:first-of-type{border-top:none;padding-top:0;margin-top:0}
+  .status{display:inline-block;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.03em;
+    border-radius:999px;padding:3px 10px;margin-left:10px;vertical-align:middle}
+  .status.open{color:var(--violet);border:1px solid rgba(124,92,252,.4);background:rgba(124,92,252,.08)}
+  .status.rejected{color:var(--sub-dim);border:1px solid var(--line)}
+  .list{display:flex;flex-direction:column;gap:10px}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:16px;
+    background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 20px}
+  .row .name{font-size:14px;color:var(--ink)}
+  .row .meta{font-family:var(--f-mono);font-size:11px;color:var(--sub-dim);margin-top:3px}
+  .links{display:flex;gap:8px;flex:none}
+  a.btn{font-family:var(--f-mono);font-size:11.5px;color:var(--ink);text-decoration:none;
+    border:1px solid var(--line);border-radius:7px;padding:7px 12px;transition:border-color .15s,color .15s}
+  a.btn:hover{border-color:var(--violet);color:var(--violet)}
+  a.btn.primary{background:var(--violet);border-color:var(--violet);color:#fff}
+  a.btn.primary:hover{color:#fff;opacity:.9}
+  footer{margin-top:56px;padding-top:28px;border-top:1px solid var(--line);color:var(--sub-dim);font-size:12px;line-height:1.7;font-family:var(--f-mono)}
+  footer a{color:var(--sub)}
+</style>
+</head>
+<body>
+  <div class="banner">INOVIXUX &middot; INO-82 &middot; logo — dedicated design workstream (split from INO-31)</div>
+  <div class="wrap">
+    <h1>Logo concept mockups</h1>
+    <p class="lede">Every logo exploration round for INOVIXUX, hosted here because GitHub renders
+      <code>.html</code> files as source text rather than a live page — this index and each linked
+      page are served, not raw repo links. Current round is open for feedback; earlier rounds are
+      kept for context on what's already been rejected and why.</p>
+
+    <h2 class="section">Round 2 — current <span class="status open">open for feedback</span></h2>
+    <div class="list">
+      <div class="row">
+        <div>
+          <div class="name">Four structurally distinct concepts — Ledger Fold, Signal Vitals, Axis Mark, Convergence</div>
+          <div class="meta">INO-82 · none use an X-crossing, checkmark, or letterform</div>
+        </div>
+        <div class="links">
+          <a class="btn primary" href="logo-concepts-round2.html">View live</a>
+          <a class="btn" href="logo-concepts-round2.png">Screenshot</a>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="section">Shipped mark — pending explicit sign-off</h2>
+    <div class="list">
+      <div class="row">
+        <div>
+          <div class="name">IX monogram — "Verified Node" (commit <code>f1b3358</code>)</div>
+          <div class="meta">currently live in repo · has not received direct approve/reject feedback</div>
+        </div>
+        <div class="links">
+          <a class="btn" href="foundation-v5-verified-line.html">View live</a>
+          <a class="btn" href="foundation-v5-verified-line.png">Screenshot</a>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="section">Round 1 (v1–v3) — rejected <span class="status rejected">too 21st.dev-generic</span></h2>
+    <div class="list">
+      <div class="row">
+        <div><div class="name">Concept 1 — Sovereign Monolith (v1 / v2 / v3)</div></div>
+        <div class="links">
+          <a class="btn" href="concept-1-sovereign-monolith.html">v1</a>
+          <a class="btn" href="concept-1-sovereign-monolith-v2.html">v2</a>
+          <a class="btn" href="concept-1-sovereign-monolith-v3.html">v3</a>
+        </div>
+      </div>
+      <div class="row">
+        <div><div class="name">Concept 2 — Adaptive Synapse (v1 / v2 / v3)</div></div>
+        <div class="links">
+          <a class="btn" href="concept-2-adaptive-synapse.html">v1</a>
+          <a class="btn" href="concept-2-adaptive-synapse-v2.html">v2</a>
+          <a class="btn" href="concept-2-adaptive-synapse-v3.html">v3</a>
+        </div>
+      </div>
+      <div class="row">
+        <div><div class="name">Concept 3 — Ecosystem Anchor (v1 / v2 / v3)</div></div>
+        <div class="links">
+          <a class="btn" href="concept-3-ecosystem-anchor.html">v1</a>
+          <a class="btn" href="concept-3-ecosystem-anchor-v2.html">v2</a>
+          <a class="btn" href="concept-3-ecosystem-anchor-v3.html">v3</a>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="section">Round 1 (v4) — rejected <span class="status rejected">too similar to each other</span></h2>
+    <div class="list">
+      <div class="row">
+        <div><div class="name">Verified Line / Aperture Mark / Ledger Seal</div></div>
+        <div class="links">
+          <a class="btn" href="concept-a-verified-line-v4.html">Verified Line</a>
+          <a class="btn" href="concept-b-aperture-mark-v4.html">Aperture Mark</a>
+          <a class="btn" href="concept-c-ledger-seal-v4.html">Ledger Seal</a>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      Source: <a href="https://github.com/pareshpatil8/INOVIXUX-Brand/tree/main/docs/brand/mockups">docs/brand/mockups/</a>
+      in the INOVIXUX-Brand repo · tracked under INO-82.
+    </footer>
+  </div>
+</body>
+</html>
