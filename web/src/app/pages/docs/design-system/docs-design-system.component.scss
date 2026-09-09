@@ -1,0 +1,26 @@
+:host {
+  display: block;
+}
+
+.ds-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ino-space-3);
+  margin-bottom: var(--ino-space-6);
+}
+
+.ds-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ino-space-5);
+  max-width: 420px;
+  margin-bottom: var(--ino-space-6);
+}
+
+.ds-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ino-space-3);
+  margin-bottom: var(--ino-space-6);
+}

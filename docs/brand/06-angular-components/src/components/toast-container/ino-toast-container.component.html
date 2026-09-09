@@ -1,0 +1,10 @@
+<div class="ino-toast-container" aria-live="polite" aria-atomic="false">
+  <ino-alert
+    *ngFor="let toast of toasts()"
+    variant="toast"
+    [status]="toast.status"
+    [heading]="toast.heading ?? ''"
+    [dismissible]="true"
+    (dismissed)="dismiss(toast.id)"
+  >{{ toast.message }}</ino-alert>
+</div>

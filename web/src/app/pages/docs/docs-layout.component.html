@@ -1,0 +1,17 @@
+<div class="docs-shell">
+  <aside class="docs-sidebar">
+    <p class="docs-sidebar__label">Docs</p>
+    <nav aria-label="Docs">
+      <a
+        *ngFor="let item of navItems"
+        [routerLink]="item.href"
+        routerLinkActive="is-active"
+        [routerLinkActiveOptions]="{ exact: item.href === '/docs' }"
+      >{{ item.label }}</a>
+    </nav>
+  </aside>
+
+  <div class="docs-content">
+    <router-outlet></router-outlet>
+  </div>
+</div>

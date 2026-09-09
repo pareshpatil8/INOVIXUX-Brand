@@ -1,0 +1,296 @@
+/*
+ * Shared marketing/docs page layout classes — moved out of app.component.scss (INO-84) so every
+ * routed page component can use the same section/grid vocabulary the homepage anatomy already
+ * established, without each page redeclaring it. Nothing here is a new token or a new visual
+ * decision — it is the exact CSS the homepage shipped with, just promoted to global so it can be
+ * shared across routes instead of copy-pasted per page.
+ */
+
+.page {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 40px 96px;
+}
+
+.ino-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ino-space-2);
+  font-weight: 600;
+  font-size: 19px;
+  letter-spacing: -0.01em;
+  color: var(--ino-color-on-surface);
+
+  &--footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--ino-space-2);
+
+    p {
+      font-size: 12.5px;
+      font-weight: 400;
+      color: var(--ino-color-on-surface-muted);
+      max-width: 220px;
+      line-height: 1.6;
+    }
+  }
+}
+
+.dash {
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-xl);
+  background: var(--ino-color-surface-raised);
+  overflow: hidden;
+  margin-top: var(--ino-space-9);
+  box-shadow: 0 30px 70px -35px rgba(124, 92, 252, 0.35), var(--ino-elevation-1);
+}
+
+.dash-head {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--ino-space-4) var(--ino-space-6);
+  border-bottom: 1px solid var(--ino-color-border-soft);
+  font-size: 11px;
+  color: var(--ino-color-on-surface-muted);
+  font-family: var(--ino-font-mono);
+}
+
+.dash-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--ino-color-border-soft);
+}
+
+section {
+  padding: var(--ino-space-11) 0;
+  border-bottom: 1px solid var(--ino-color-border);
+}
+
+section:last-of-type {
+  border-bottom: none;
+}
+
+.section-head {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto var(--ino-space-8);
+
+  h2 {
+    font-size: 32px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--ino-space-3);
+  }
+
+  p {
+    color: var(--ino-color-on-surface-muted);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+}
+
+.section-head--left {
+  text-align: left;
+  margin: 0 0 var(--ino-space-8);
+}
+
+.tiers {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--ino-color-border);
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-lg);
+  overflow: hidden;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.bento {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--ino-space-4);
+
+  p {
+    color: var(--ino-color-on-surface-muted);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+    margin: 0;
+  }
+
+  code {
+    font-family: var(--ino-font-mono);
+    font-size: 0.92em;
+    color: var(--ino-color-on-surface);
+  }
+
+  [ino-card-header] {
+    font-family: var(--ino-font-mono);
+    font-size: var(--ino-type-label-size);
+    font-weight: var(--ino-type-label-weight);
+    letter-spacing: var(--ino-type-label-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+  }
+}
+
+.bento-item--wide {
+  grid-column: span 2;
+}
+
+.subfoot {
+  border-top: 1px solid var(--ino-color-border);
+  padding: var(--ino-space-5) 0;
+  font-size: 11.5px;
+  color: var(--ino-color-on-surface-subtle);
+  text-align: center;
+  font-family: var(--ino-font-mono);
+}
+
+// INO-14 non-commercial hold — reference implementation is
+// docs/brand/07-collateral/pitch-deck-template.html's disclaimer slide. Reused verbatim as a
+// page-level block on /trust-and-governance and /legal/disclosures; do not soften the copy.
+.ino-disclaimer {
+  margin-top: var(--ino-space-6);
+  background: var(--ino-color-surface-raised);
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-lg);
+  padding: var(--ino-space-5) var(--ino-space-6);
+  font-family: var(--ino-font-mono);
+  font-size: 12.5px;
+  color: var(--ino-color-on-surface-muted);
+  line-height: 1.7;
+
+  b {
+    color: var(--ino-color-on-surface);
+  }
+}
+
+.ino-illustrative-tag {
+  display: inline-block;
+  font-family: var(--ino-font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ino-color-on-surface-subtle);
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-sm);
+  padding: 2px 8px;
+  margin-bottom: var(--ino-space-3);
+}
+
+// Shared prose shell for the docs portal (/docs/*, dense-mode register) — one article layout
+// reused by the overview, getting-started, API reference, and design-system pages instead of
+// four separate declarations.
+.ino-article-eyebrow {
+  font-family: var(--ino-font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ino-color-on-surface-subtle);
+  margin-bottom: var(--ino-space-3);
+}
+
+.ino-article {
+  max-width: 720px;
+
+  h1 {
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin-bottom: var(--ino-space-4);
+  }
+
+  h2 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: var(--ino-space-8) 0 var(--ino-space-3);
+  }
+
+  p {
+    color: var(--ino-color-on-surface-muted);
+    font-size: var(--ino-type-body-size, 14px);
+    line-height: 1.7;
+    margin-bottom: var(--ino-space-4);
+  }
+
+  code {
+    font-family: var(--ino-font-mono);
+    font-size: 0.92em;
+    color: var(--ino-color-on-surface);
+    background: var(--ino-color-surface-sunken);
+    border-radius: var(--ino-radius-sm);
+    padding: 1px 6px;
+  }
+
+  pre {
+    background: var(--ino-color-surface-sunken);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-md);
+    padding: var(--ino-space-4) var(--ino-space-5);
+    overflow-x: auto;
+    font-family: var(--ino-font-mono);
+    font-size: 12.5px;
+    color: var(--ino-color-on-surface);
+    line-height: 1.6;
+  }
+
+  ul {
+    padding-left: var(--ino-space-5);
+    margin-bottom: var(--ino-space-4);
+
+    li {
+      color: var(--ino-color-on-surface-muted);
+      font-size: var(--ino-type-body-size, 14px);
+      line-height: 1.7;
+    }
+  }
+}
+
+.ino-article p.ino-article-lead {
+  font-size: 15px;
+}
+
+.docs-links {
+  display: grid;
+  gap: var(--ino-space-3);
+  margin-top: var(--ino-space-6);
+
+  a {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: var(--ino-space-4) var(--ino-space-5);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-md);
+    background: var(--ino-color-surface-raised);
+
+    strong {
+      color: var(--ino-color-on-surface);
+      font-size: 14px;
+    }
+
+    span {
+      color: var(--ino-color-on-surface-muted);
+      font-size: 12.5px;
+    }
+
+    &:hover,
+    &:focus-visible {
+      border-color: var(--ino-color-accent-secondary);
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  .dash-body,
+  .tiers,
+  .bento {
+    grid-template-columns: 1fr;
+  }
+
+  .bento-item--wide {
+    grid-column: span 1;
+  }
+}

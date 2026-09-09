@@ -1,0 +1,102 @@
+.ino-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ino-space-2);
+  min-height: var(--ino-target-comfortable);
+  padding: 0 var(--ino-space-5);
+  border-radius: var(--ino-radius-md);
+  border: 1px solid transparent;
+  background: transparent;
+  font-family: var(--ino-font-display);
+  font-size: var(--ino-type-body-size);
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+    border-color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+    color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+    filter var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+    opacity var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+    transform var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  &:focus-visible {
+    outline: 2px solid var(--ino-color-accent);
+    outline-offset: 2px;
+  }
+
+  &[disabled] {
+    cursor: not-allowed;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+
+.ino-btn--primary {
+  background: var(--ino-gradient-accent);
+  color: var(--ino-color-on-accent);
+
+  &:hover {
+    filter: brightness(1.08);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    &:hover {
+      transform: translateY(-1px);
+    }
+  }
+}
+
+.ino-btn--secondary {
+  background: var(--ino-color-surface-raised);
+  color: var(--ino-color-on-surface);
+  border-color: var(--ino-color-border);
+
+  &:hover {
+    border-color: var(--ino-color-accent);
+  }
+}
+
+.ino-btn--ghost {
+  color: var(--ino-color-on-surface-muted);
+
+  &:hover {
+    background: var(--ino-color-surface-sunken);
+    color: var(--ino-color-on-surface);
+  }
+}
+
+.ino-btn--icon {
+  min-width: var(--ino-target-comfortable);
+  padding: 0;
+  color: var(--ino-color-on-surface-muted);
+
+  &:hover {
+    background: var(--ino-color-surface-sunken);
+    color: var(--ino-color-on-surface);
+  }
+}
+
+.ino-btn--loading .ino-btn__label {
+  opacity: 0.6;
+}
+
+.ino-btn__spinner {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  opacity: 0.85;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: ino-btn-spin var(--ino-motion-duration-slow) linear infinite;
+  }
+}
+
+@keyframes ino-btn-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

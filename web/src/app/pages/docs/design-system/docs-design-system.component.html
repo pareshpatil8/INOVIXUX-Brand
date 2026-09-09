@@ -1,0 +1,104 @@
+<article class="docs-article">
+  <p class="docs-eyebrow">Docs / Design system</p>
+  <h1>Core interactive components</h1>
+  <p class="docs-lead">
+    Buttons, form controls, modal, and toast/alert/banner — the two component groups everything
+    else (forms, mobile screens, KYB review flows) is built on (INO-83). Every state below is the
+    real Angular component from <code>web/src/app/components/</code>, token-bound only
+    (<code>09-design-system-standards.md</code> §5). Structural components — nav, hero, cards,
+    deployment tiers — are demonstrated on the <a routerLink="/">homepage</a> instead of repeated
+    here.
+  </p>
+
+  <h2>Buttons</h2>
+  <p>Four variants; every state is a real interaction, not a screenshot.</p>
+  <div class="ds-row">
+    <button ino-button variant="primary">Primary</button>
+    <button ino-button variant="secondary">Secondary</button>
+    <button ino-button variant="ghost">Ghost</button>
+    <button ino-button variant="icon" aria-label="Settings">⚙</button>
+    <button ino-button variant="primary" [disabled]="true">Disabled</button>
+    <button ino-button variant="primary" [loading]="buttonLoading" (click)="simulateLoading()">
+      {{ buttonLoading ? 'Saving…' : 'Simulate loading' }}
+    </button>
+  </div>
+
+  <h2>Form controls</h2>
+  <p>
+    Labeled, with WCAG 2.2 label/error/focus-visible states and
+    <code>--ino-target-comfortable</code> on every control.
+  </p>
+  <div class="ds-form">
+    <ino-input
+      label="Work email"
+      type="email"
+      placeholder="you@company.com"
+      [value]="inputValue"
+      (valueChange)="inputValue = $event"
+      [error]="inputError"
+      hint="We only use this to send the review summary."
+      [required]="true"
+    ></ino-input>
+
+    <ino-select
+      label="Deployment tier"
+      placeholder="Choose a tier"
+      [options]="selectOptions"
+      [value]="selectValue"
+      (valueChange)="selectValue = $event"
+    ></ino-select>
+
+    <ino-checkbox
+      label="Email me when a case needs a second reviewer"
+      [checked]="checkboxChecked"
+      (checkedChange)="checkboxChecked = $event"
+    ></ino-checkbox>
+
+    <ino-radio-group
+      legend="Preferred notification channel"
+      [options]="radioOptions"
+      [value]="radioValue"
+      (valueChange)="radioValue = $event"
+    ></ino-radio-group>
+
+    <ino-toggle label="Dense mode for this table" [checked]="toggleChecked" (checkedChange)="toggleChecked = $event"></ino-toggle>
+
+    <div class="ds-row">
+      <button ino-button variant="primary" (click)="validateInput()">Validate</button>
+      <button ino-button variant="secondary" type="button">Cancel</button>
+    </div>
+  </div>
+
+  <h2>Modal</h2>
+  <p>Focus-trapped, closes on <kbd>Escape</kbd> or backdrop click, restores focus to the trigger button on close.</p>
+  <button ino-button variant="secondary" (click)="openModal()">Open modal</button>
+
+  <ino-modal heading="Confirm escalation" [open]="modalOpen" (openChange)="onModalOpenChange($event)">
+    <p>This marks the case for a second reviewer. The system still won't resolve it on its own — a person closes it.</p>
+    <div ino-modal-footer>
+      <button ino-button variant="ghost" (click)="modalOpen = false">Cancel</button>
+      <button ino-button variant="primary" (click)="modalOpen = false">Confirm</button>
+    </div>
+  </ino-modal>
+
+  <h2>Toast / inline alert / banner</h2>
+  <p>
+    One <code>&lt;ino-alert&gt;</code> shell, three layouts — <code>inline</code>, full-width
+    <code>banner</code>, and stacked <code>toast</code> (via <code>ToastService</code>) — sharing
+    the same closed <code>success | warning | danger</code> status union as the RAG tokens.
+  </p>
+
+  <div class="ds-stack">
+    <ino-alert status="success" heading="Verified">Meridian Freight cleared ABDM + UPI reconciliation.</ino-alert>
+    <ino-alert status="warning" heading="Needs review" [dismissible]="true">Kavya Textile Exports has a GSTIN mismatch.</ino-alert>
+    <ino-alert status="danger" variant="banner" heading="Escalated">Orbit Cold Chain Co. — owner identity gap, routed to compliance.</ino-alert>
+  </div>
+
+  <div class="ds-row">
+    <button ino-button variant="secondary" (click)="showToast('success')">Trigger success toast</button>
+    <button ino-button variant="secondary" (click)="showToast('warning')">Trigger warning toast</button>
+    <button ino-button variant="secondary" (click)="showToast('danger')">Trigger danger toast</button>
+  </div>
+</article>
+
+<ino-toast-container></ino-toast-container>

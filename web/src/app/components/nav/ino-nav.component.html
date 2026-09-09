@@ -4,7 +4,7 @@
   </div>
 
   <nav class="ino-nav__links" aria-label="Primary">
-    <a *ngFor="let link of links" [href]="link.href">{{ link.label }}</a>
+    <a *ngFor="let link of links" [routerLink]="link.href" routerLinkActive="is-active">{{ link.label }}</a>
   </nav>
 
   <div class="ino-nav__actions">

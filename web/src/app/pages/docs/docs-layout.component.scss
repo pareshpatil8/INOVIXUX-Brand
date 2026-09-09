@@ -1,0 +1,73 @@
+:host {
+  display: block;
+}
+
+.docs-shell {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: var(--ino-space-8);
+  padding: var(--ino-space-9) 0;
+  align-items: start;
+}
+
+.docs-sidebar {
+  position: sticky;
+  top: var(--ino-space-8);
+
+  &__label {
+    font-family: var(--ino-font-mono);
+    font-size: var(--ino-type-label-size, 11px);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ino-color-on-surface-subtle);
+    margin-bottom: var(--ino-space-4);
+  }
+
+  nav {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ino-space-row, var(--ino-space-2));
+  }
+
+  a {
+    padding: var(--ino-space-2) var(--ino-space-3);
+    border-radius: var(--ino-radius-sm);
+    color: var(--ino-color-on-surface-muted);
+    font-family: var(--ino-font-mono);
+    font-size: var(--ino-type-body-size, 13px);
+    min-height: var(--ino-row-min-height);
+    display: flex;
+    align-items: center;
+
+    &:hover,
+    &:focus-visible {
+      color: var(--ino-color-on-surface);
+      background: var(--ino-color-surface-raised);
+    }
+
+    &.is-active {
+      color: var(--ino-color-on-surface);
+      background: var(--ino-color-surface-raised);
+      font-weight: 600;
+    }
+  }
+}
+
+.docs-content {
+  min-width: 0;
+}
+
+@media (max-width: 900px) {
+  .docs-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .docs-sidebar {
+    position: static;
+
+    nav {
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+  }
+}

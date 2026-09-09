@@ -1,0 +1,31 @@
+:host {
+  display: block;
+}
+
+.rail-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--ino-space-row, var(--ino-space-3));
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-width: 720px;
+  margin-inline: auto;
+
+  li {
+    padding: var(--ino-space-4);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-md);
+    background: var(--ino-color-surface-raised);
+    text-align: center;
+    font-family: var(--ino-font-mono);
+    font-size: 13px;
+    color: var(--ino-color-on-surface-muted);
+  }
+}
+
+@media (max-width: 900px) {
+  .rail-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}

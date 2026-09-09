@@ -1,6 +1,6 @@
 <div class="page">
   <ino-nav [links]="navLinks" ctaLabel="Request demo" (ctaClick)="onCta()">
-    <span logo class="ino-logo">
+    <a logo routerLink="/" class="ino-logo" aria-label="INOVIXUX — home">
       <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
         <defs>
           <linearGradient id="inoNavGrad" x1="2" y1="16" x2="18" y2="3" gradientUnits="userSpaceOnUse">
@@ -18,74 +18,10 @@
         <circle cx="16" cy="17" r="1.1" fill="url(#inoNavGrad)" opacity="0.45" />
       </svg>
       <span>INOVIXUX</span>
-    </span>
+    </a>
   </ino-nav>
 
-  <ino-hero
-    eyebrow="Resilience & Governance — human still approves everything"
-    headline="One line, traced to a verified state."
-    lead="The Verified Line resolves into a checkmark only once a human reviewer closes the case. INOVIXUX turns raw vendor data into structured risk-flag reports — it surfaces the signal; it never makes the call.">
-    <div class="dash">
-      <div class="dash-head">
-        <span>KYB / VENDOR-4471 — LIVE TRACE</span>
-        <span>REV. 01</span>
-      </div>
-      <div class="dash-body">
-        <ino-metric-panel label="KYB flags traced to resolution" [value]="12400" delta="+18% vs. last cycle" [rows]="flagsRows"></ino-metric-panel>
-        <ino-metric-panel label="Human reviews closed this week" [value]="342" delta="avg. 6.4 min / case" [rows]="reviewRows"></ino-metric-panel>
-      </div>
-    </div>
-  </ino-hero>
-
-  <section id="features">
-    <div class="section-head">
-      <h2>One system, two densities</h2>
-      <p>The same trace motif and token set power a high-density risk dashboard for underwriters and a low-friction consumer surface — no separate design language to maintain.</p>
-    </div>
-    <ino-feature-grid [items]="featureItems"></ino-feature-grid>
-  </section>
-
-  <section id="cards">
-    <div class="section-head">
-      <h2>Surface cards</h2>
-      <p>One <code>&lt;ino-card&gt;</code> shell, three surface roles — the generic container every bento tile, KYB finding card, and mobile list row is built from.</p>
-    </div>
-    <div class="bento">
-      <ino-card class="bento-item bento-item--wide" [interactive]="true">
-        <div ino-card-header>Default surface</div>
-        <p>Standard raised card for page/section content — dashboard widgets, bento-grid tiles, mobile app list cards. Hover/focus to see the elevation state (respects <code>prefers-reduced-motion</code>).</p>
-      </ino-card>
-      <ino-card variant="sunken">
-        <div ino-card-header>Sunken surface</div>
-        <p>Inset panel — a card nested inside another card, or a code/data block that should read as recessed, not raised.</p>
-      </ino-card>
-      <ino-card variant="overlay" padding="lg">
-        <div ino-card-header>Overlay surface</div>
-        <p>Modal / bottom-sheet / popover body — paired with the <code>--ino-color-overlay-scrim</code> backdrop token, at elevation-2 so it reads clearly above page content.</p>
-        <div ino-card-footer>Not a live modal — shown in-flow for the style guide.</div>
-      </ino-card>
-    </div>
-  </section>
-
-  <section id="tiers">
-    <div class="section-head">
-      <h2>Deployment tiers</h2>
-      <p>Structural placeholder only — no commercial terms exist yet (INO-14 hold). Shown to prove the component pattern, not to price anything.</p>
-    </div>
-    <div class="tiers">
-      <ino-tier-card
-        name="Standard"
-        description="Single-tenant KYB underwriting module, dense-mode dashboard."
-        [features]="['Structured risk-flag reports', 'RAG dense-mode tables', 'Human sign-off workflow']">
-      </ino-tier-card>
-      <ino-tier-card
-        name="Enterprise"
-        description="Multi-entity, DPI-rail reconciliation, audit-grade trace history."
-        [features]="['Everything in Standard', 'Multi-rail reconciliation (UPI/ABDM/GSTIN)', 'Full audit trace export']"
-        [highlighted]="true">
-      </ino-tier-card>
-    </div>
-  </section>
+  <router-outlet></router-outlet>
 
   <ino-footer [columns]="footerColumns">
     <span logo class="ino-logo ino-logo--footer">

@@ -1,0 +1,30 @@
+:host {
+  display: block;
+}
+
+.dash-body {
+  grid-template-columns: 1fr;
+}
+
+.kyb-flow {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--ino-space-4);
+
+  li {
+    padding: var(--ino-space-4) var(--ino-space-5);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-lg);
+    background: var(--ino-color-surface-raised);
+    color: var(--ino-color-on-surface-muted);
+    font-size: var(--ino-type-body-size, 15px);
+    line-height: 1.6;
+  }
+
+  strong {
+    color: var(--ino-color-on-surface);
+  }
+}

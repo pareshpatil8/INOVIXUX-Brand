@@ -1,0 +1,27 @@
+<ino-hero
+  eyebrow="Platform"
+  headline="Structured risk visibility for vendor underwriting."
+  lead="INOVIXUX is a system for surfacing evidence — not a system for making decisions. KYB vendor underwriting is the first module built on it; more modules follow the same trace→structure→review→resolve anatomy.">
+</ino-hero>
+
+<section id="modules">
+  <div class="section-head">
+    <h2>How the platform is built</h2>
+    <p>One anatomy, applied module by module — starting with KYB underwriting, the first module shipping through it.</p>
+  </div>
+  <ino-feature-grid [items]="moduleItems"></ino-feature-grid>
+</section>
+
+<section id="kyb">
+  <div class="section-head">
+    <h2>First module: KYB underwriting</h2>
+    <p>Vendor onboarding risk, reconciled against India's DPI rails and reviewed by a person before any status changes.</p>
+  </div>
+  <div class="bento">
+    <ino-card class="bento-item bento-item--wide" padding="lg">
+      <div ino-card-header>KYB / Vendor Underwriting</div>
+      <p>Reconciles vendor-submitted data against UPI, ABDM, GSTIN, MCA21, Account Aggregator, and e-KYC rails, then produces a structured risk-flag report an underwriter reviews and closes. See the module deep-dive for the full trace→review→resolve walkthrough.</p>
+      <div ino-card-footer><a routerLink="/platform/kyb">View the KYB module →</a></div>
+    </ino-card>
+  </div>
+</section>

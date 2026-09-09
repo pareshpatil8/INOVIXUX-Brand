@@ -1,0 +1,64 @@
+<ino-hero
+  eyebrow="Trust & Governance"
+  headline="Aligned to India's DPI rails. Held to a human-review standard."
+  lead="This page states our compliance posture and its current limits plainly — no rail is claimed as a live integration unless it is one.">
+</ino-hero>
+
+<section id="rails">
+  <span class="ino-illustrative-tag">Illustrative — rail list, not a certification claim</span>
+  <div class="section-head">
+    <h2>DPI rails this system is built to reconcile against</h2>
+    <p>KYB underwriting reconciles vendor data against the following India Digital Public Infrastructure rails:</p>
+  </div>
+  <ul class="rail-grid">
+    <li *ngFor="let rail of rails">{{ rail }}</li>
+  </ul>
+</section>
+
+<section id="ino-14">
+  <div class="section-head section-head--left">
+    <h2>Non-commercial hold (INO-14)</h2>
+  </div>
+  <ino-card padding="lg">
+    <div class="ino-disclaimer">
+      <b>Internal mandate (INO-14):</b> no commercial or validation sign-off until the MVP is
+      verified. This site describes a system under active verification, not a shipped product
+      with validated outcomes. Nothing here is a pricing page, a customer claim, or a "live now"
+      statement — see <a routerLink="/legal/disclosures">Legal → Disclosures</a> for the same
+      hold stated as a standalone page.
+    </div>
+  </ino-card>
+</section>
+
+<section id="accessibility">
+  <div class="section-head section-head--left">
+    <h2>Accessibility — WCAG 2.2 AA</h2>
+    <p>Both theme modes are independently audited against the WCAG relative-luminance formula, not eyeballed.</p>
+  </div>
+  <div class="bento">
+    <ino-card>
+      <div ino-card-header>Contrast</div>
+      <p>Every text/on-fill pairing in both dark and light mode clears 4.5:1 (AA); most clear 7:1 (AAA). The one deliberate exception — the accent violet at 4.38:1 — is restricted by convention to non-text/large-text/decorative use.</p>
+    </ino-card>
+    <ino-card>
+      <div ino-card-header>Touch targets</div>
+      <p>Dense mode holds a 32px minimum row height (WCAG 2.2 §2.5.8's 24px floor, padded above it deliberately); fluid mode uses 44px, matching the common iOS/Android touch-target convention.</p>
+    </ino-card>
+    <ino-card>
+      <div ino-card-header>Motion</div>
+      <p>All hover/focus elevation and count-up animation respects <code>prefers-reduced-motion</code> — nothing here relies on motion to convey state.</p>
+    </ino-card>
+  </div>
+</section>
+
+<section id="security">
+  <div class="section-head section-head--left">
+    <h2>Security & governance posture</h2>
+  </div>
+  <div class="bento">
+    <ino-card class="bento-item bento-item--wide" padding="lg">
+      <div ino-card-header>Human-in-the-loop by design</div>
+      <p>The design system does not decide, approve, or auto-flag anything in the KYB risk-review flow — RAG status values are supplied by product logic and only <em>rendered</em> per an audited token contract. A human reviewer closes every case; the system's role stops at surfacing evidence.</p>
+    </ino-card>
+  </div>
+</section>

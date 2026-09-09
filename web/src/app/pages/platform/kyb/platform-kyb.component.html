@@ -1,0 +1,36 @@
+<ino-hero
+  eyebrow="Platform / KYB Underwriting"
+  headline="Vendor risk, traced to a verified state."
+  lead="The MVP module: raw vendor data reconciled against India's DPI rails, structured into a risk-flag report, and closed only when a human reviewer signs off.">
+  <div class="dash">
+    <div class="dash-head">
+      <span>KYB / VENDOR-4471 — LIVE TRACE</span>
+      <span>REV. 01</span>
+    </div>
+    <div class="dash-body">
+      <ino-metric-panel label="KYB flags traced to resolution" [value]="12400" delta="+18% vs. last cycle" [rows]="flagsRows"></ino-metric-panel>
+    </div>
+  </div>
+</ino-hero>
+
+<section id="rails">
+  <span class="ino-illustrative-tag">Illustrative — rails, not a live-integration claim</span>
+  <div class="section-head">
+    <h2>DPI rails this module is built to reconcile against</h2>
+    <p>The full detail lives on <a routerLink="/trust-and-governance">Trust &amp; Governance</a>; this is the module-level summary.</p>
+  </div>
+  <ino-feature-grid [items]="railItems"></ino-feature-grid>
+</section>
+
+<section id="flow">
+  <div class="section-head section-head--left">
+    <h2>Trace → structure → review → resolve</h2>
+    <p>The same anatomy as the platform overview, applied specifically to vendor onboarding:</p>
+  </div>
+  <ol class="kyb-flow">
+    <li><strong>Trace.</strong> Vendor-submitted data is pulled against the applicable rails and logged step by step.</li>
+    <li><strong>Structure.</strong> The trace resolves into a single risk-flag report — verified, review, or escalate — nothing inferred beyond what was checked.</li>
+    <li><strong>Review.</strong> An underwriter reads the report and the underlying trace, not a black-box score.</li>
+    <li><strong>Resolve.</strong> The underwriter closes the case. The Verified Line mark only resolves into a checkmark at this step — never before.</li>
+  </ol>
+</section>

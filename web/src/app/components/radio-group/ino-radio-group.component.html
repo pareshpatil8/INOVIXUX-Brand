@@ -1,0 +1,18 @@
+<fieldset class="ino-radio-group" [disabled]="disabled" [attr.aria-describedby]="error ? errorId : null">
+  <legend *ngIf="legend" class="ino-radio-group__legend">{{ legend }}</legend>
+
+  <label class="ino-radio-group__row" *ngFor="let option of options">
+    <input
+      type="radio"
+      class="ino-radio-group__input"
+      [name]="name"
+      [value]="option.value"
+      [checked]="option.value === value"
+      [disabled]="disabled"
+      (change)="onChange(option.value)"
+    />
+    <span class="ino-radio-group__label">{{ option.label }}</span>
+  </label>
+
+  <p *ngIf="error" [id]="errorId" class="ino-radio-group__error" role="alert">{{ error }}</p>
+</fieldset>

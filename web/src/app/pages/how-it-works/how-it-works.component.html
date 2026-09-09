@@ -1,0 +1,29 @@
+<ino-hero
+  eyebrow="How it works"
+  headline="The system surfaces evidence. A person decides."
+  lead="Every claim this page makes has to survive one question: does this imply the software made the call, or that a person did? If it implies the software decided, it's wrong — not off-brand, factually wrong.">
+</ino-hero>
+
+<section id="flow">
+  <div class="section-head">
+    <h2>Trace → review → resolve</h2>
+    <p>Three steps, applied to every module — KYB underwriting is the first, not the only one this anatomy is built for.</p>
+  </div>
+  <ino-feature-grid [items]="stepItems"></ino-feature-grid>
+</section>
+
+<section id="queue">
+  <div class="section-head">
+    <h2>What the human reviewer sees</h2>
+    <p>An open-case queue per reviewer, not a single shared inbox — each case stays assigned to a named person until it's closed.</p>
+  </div>
+  <div class="dash">
+    <div class="dash-head">
+      <span>REVIEWER QUEUE — ILLUSTRATIVE</span>
+      <span>REV. 01</span>
+    </div>
+    <div class="dash-body">
+      <ino-metric-panel label="Human reviews closed this week" [value]="342" delta="avg. 6.4 min / case" [rows]="reviewRows"></ino-metric-panel>
+    </div>
+  </div>
+</section>

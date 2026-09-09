@@ -1,0 +1,71 @@
+/* Shared `.ino-field` shell is intentionally re-declared per control (input/select) rather than
+   pulled from a shared partial — this repo has no shared SCSS-include infra yet (each component
+   folder is self-contained per 06-angular-components/README.md); values still trace 1:1 to
+   tokens.css, so a re-theme touches nothing here regardless of the duplication. */
+.ino-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ino-space-2);
+}
+
+.ino-field__label {
+  font-size: var(--ino-type-body-sm-size);
+  font-weight: 600;
+  color: var(--ino-color-on-surface);
+}
+
+.ino-field__required {
+  color: var(--ino-color-danger);
+}
+
+.ino-field__control {
+  min-height: var(--ino-target-comfortable);
+  padding: 0 var(--ino-space-4);
+  background: var(--ino-color-surface-sunken);
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-md);
+  color: var(--ino-color-on-surface);
+  font-family: var(--ino-font-display);
+  font-size: var(--ino-type-body-size);
+  transition: border-color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  &::placeholder {
+    color: var(--ino-color-on-surface-subtle);
+  }
+
+  &:hover {
+    border-color: var(--ino-color-on-surface-muted);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--ino-color-accent);
+    outline-offset: 1px;
+    border-color: var(--ino-color-accent);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.ino-field__control--error {
+  border-color: var(--ino-color-danger);
+}
+
+.ino-field__hint {
+  margin: 0;
+  font-size: var(--ino-type-body-sm-size);
+  color: var(--ino-color-on-surface-muted);
+}
+
+.ino-field__error {
+  margin: 0;
+  font-size: var(--ino-type-body-sm-size);
+  color: var(--ino-color-danger);
+  font-weight: 600;
+}
+
+.ino-field--disabled .ino-field__label {
+  color: var(--ino-color-on-surface-muted);
+}

@@ -1,0 +1,25 @@
+<div *ngIf="open" class="ino-modal" (keydown)="onKeydown($event)">
+  <div class="ino-modal__scrim" (click)="onBackdropClick()"></div>
+
+  <div
+    #panel
+    class="ino-modal__panel"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-labelledby]="heading ? headingId : null"
+    tabindex="-1"
+  >
+    <ino-card variant="overlay" padding="lg">
+      <div ino-card-header class="ino-modal__header">
+        <h2 *ngIf="heading" [id]="headingId" class="ino-modal__heading">{{ heading }}</h2>
+        <button type="button" class="ino-modal__close" (click)="requestClose()" aria-label="Close dialog">✕</button>
+      </div>
+
+      <ng-content></ng-content>
+
+      <div ino-card-footer class="ino-modal__footer">
+        <ng-content select="[ino-modal-footer]"></ng-content>
+      </div>
+    </ino-card>
+  </div>
+</div>

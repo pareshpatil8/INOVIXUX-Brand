@@ -1,0 +1,72 @@
+<ino-hero
+  eyebrow="Contact"
+  headline="Talk to us about the KYB module, or anything else."
+  lead="No sales queue yet — messages go straight to the team building the system. We're in active verification (INO-14), so this is a conversation, not a sales call.">
+</ino-hero>
+
+<section id="contact-form">
+  <div class="section-head section-head--left">
+    <h2>Send a message</h2>
+  </div>
+
+  <ino-card padding="lg">
+    <form class="contact-form" (submit)="submit(); $event.preventDefault()">
+      <div class="contact-form-grid">
+        <ino-input
+          label="Name"
+          [value]="name"
+          (valueChange)="name = $event"
+          [error]="nameError"
+          [required]="true"
+        ></ino-input>
+
+        <ino-input
+          label="Work email"
+          type="email"
+          placeholder="you@company.com"
+          [value]="email"
+          (valueChange)="email = $event"
+          [error]="emailError"
+          [required]="true"
+        ></ino-input>
+      </div>
+
+      <ino-input
+        label="Company (optional)"
+        [value]="company"
+        (valueChange)="company = $event"
+      ></ino-input>
+
+      <ino-select
+        label="Reason"
+        [options]="reasonOptions"
+        [value]="reason"
+        (valueChange)="reason = $event"
+      ></ino-select>
+
+      <div class="contact-textarea">
+        <label for="contact-message">Message</label>
+        <textarea
+          id="contact-message"
+          rows="5"
+          [value]="message"
+          (input)="onMessageInput($event)"
+          [attr.aria-invalid]="messageError ? 'true' : null"
+          [attr.aria-describedby]="messageError ? 'contact-message-error' : null"
+        ></textarea>
+        @if (messageError) {
+          <p id="contact-message-error" class="contact-textarea-error">{{ messageError }}</p>
+        }
+      </div>
+
+      <div class="contact-form-actions">
+        <button ino-button variant="primary" type="submit">Send message</button>
+        @if (submitted) {
+          <span class="contact-form-confirm">Sent — thank you.</span>
+        }
+      </div>
+    </form>
+  </ino-card>
+</section>
+
+<ino-toast-container></ino-toast-container>

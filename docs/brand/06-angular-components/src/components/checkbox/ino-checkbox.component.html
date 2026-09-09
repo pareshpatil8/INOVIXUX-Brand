@@ -1,0 +1,17 @@
+<div class="ino-checkbox" [class.ino-checkbox--disabled]="disabled">
+  <label class="ino-checkbox__row" [for]="controlId">
+    <input
+      [id]="controlId"
+      type="checkbox"
+      class="ino-checkbox__input"
+      [checked]="checked"
+      [disabled]="disabled"
+      [attr.aria-invalid]="error ? true : null"
+      [attr.aria-describedby]="error ? errorId : null"
+      (change)="onChange($event)"
+    />
+    <span class="ino-checkbox__label">{{ label }}</span>
+  </label>
+
+  <p *ngIf="error" [id]="errorId" class="ino-checkbox__error" role="alert">{{ error }}</p>
+</div>

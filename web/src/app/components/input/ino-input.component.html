@@ -1,0 +1,22 @@
+<div class="ino-field" [class.ino-field--disabled]="disabled">
+  <label [for]="inputId" class="ino-field__label">
+    {{ label }}<span *ngIf="required" class="ino-field__required" aria-hidden="true"> *</span>
+  </label>
+
+  <input
+    [id]="inputId"
+    class="ino-field__control"
+    [class.ino-field__control--error]="!!error"
+    [type]="type"
+    [placeholder]="placeholder"
+    [value]="value"
+    [disabled]="disabled"
+    [required]="required"
+    [attr.aria-invalid]="error ? true : null"
+    [attr.aria-describedby]="error ? errorId : (hint ? hintId : null)"
+    (input)="onInput($event)"
+  />
+
+  <p *ngIf="hint && !error" [id]="hintId" class="ino-field__hint">{{ hint }}</p>
+  <p *ngIf="error" [id]="errorId" class="ino-field__error" role="alert">{{ error }}</p>
+</div>

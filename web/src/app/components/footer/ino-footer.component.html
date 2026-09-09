@@ -6,7 +6,7 @@
   <div class="ino-footer__col" *ngFor="let column of columns">
     <h4>{{ column.heading }}</h4>
     <ul>
-      <li *ngFor="let link of column.links"><a [href]="link.href">{{ link.label }}</a></li>
+      <li *ngFor="let link of column.links"><a [routerLink]="link.href">{{ link.label }}</a></li>
     </ul>
   </div>
 </footer>

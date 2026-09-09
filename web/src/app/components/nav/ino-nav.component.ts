@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 
 import { ThemeService } from '../../services/theme.service';
 
@@ -18,11 +19,14 @@ export interface InoNavLink {
  *
  * Owns the dark/light toggle directly (injects ThemeService itself, no Input/Output
  * plumbing) since nav is the one place both modes need this control on every page.
+ *
+ * `links[].href` is an in-app route path (rendered via `routerLink`, INO-84) — not an
+ * arbitrary external URL.
  */
 @Component({
   selector: 'ino-nav',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink, RouterLinkActive],
   templateUrl: './ino-nav.component.html',
   styleUrl: './ino-nav.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

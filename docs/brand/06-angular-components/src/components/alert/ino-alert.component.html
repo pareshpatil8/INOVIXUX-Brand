@@ -1,0 +1,21 @@
+<div
+  class="ino-alert"
+  [class.ino-alert--success]="status === 'success'"
+  [class.ino-alert--warning]="status === 'warning'"
+  [class.ino-alert--danger]="status === 'danger'"
+  [class.ino-alert--banner]="variant === 'banner'"
+  [class.ino-alert--toast]="variant === 'toast'"
+  [attr.role]="role"
+>
+  <span class="ino-alert__icon" aria-hidden="true">{{ statusIcon[status] }}</span>
+
+  <div class="ino-alert__body">
+    <span class="ino-alert__sr-status">{{ statusLabel[status] }}:</span>
+    <p *ngIf="heading" class="ino-alert__heading">{{ heading }}</p>
+    <div class="ino-alert__message"><ng-content></ng-content></div>
+  </div>
+
+  <button *ngIf="dismissible" type="button" class="ino-alert__dismiss" aria-label="Dismiss" (click)="dismissed.emit()">
+    ✕
+  </button>
+</div>

@@ -1,70 +1,69 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink, RouterOutlet } from '@angular/router';
 
 import { InoNavComponent, InoNavLink } from './components/nav/ino-nav.component';
-import { InoHeroComponent } from './components/hero/ino-hero.component';
-import { InoFeatureGridComponent, InoFeatureGridItem } from './components/feature-grid/ino-feature-grid.component';
-import { InoMetricPanelComponent, InoMetricPanelRow } from './components/metric-panel/ino-metric-panel.component';
-import { InoTierCardComponent } from './components/tier-card/ino-tier-card.component';
-import { InoCardComponent } from './components/card/ino-card.component';
 import { InoFooterComponent, InoFooterColumn } from './components/footer/ino-footer.component';
 
 /**
- * Root shell for the INOVIXUX brand/design-system showcase app.
+ * Root shell for the INOVIXUX marketing/docs site.
  *
- * This is the "Verified Line" design system (docs/brand/00-INDEX.md §1) actually wired up and
- * running in Angular — not just component source sitting under docs/. It composes the same six
- * standalone components documented in docs/brand/06-angular-components/, driven entirely by the
- * token contract in src/tokens.css. `ng build` on this workspace is the proof the design system
- * compiles as real Angular, not just HTML mockups.
+ * As of INO-84 this is a real routed app, not a single long page: `App` owns only the
+ * persistent chrome (nav + footer, per the sitemap's page-to-component mapping in
+ * `docs/brand/08-website-sitemap.md` §2) and renders every route named in that sitemap through
+ * `<router-outlet>`. The homepage anatomy (hero→features→cards→tiers) moved into
+ * `pages/home/home.component.ts` unchanged.
  */
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [
-    CommonModule,
-    InoNavComponent,
-    InoHeroComponent,
-    InoFeatureGridComponent,
-    InoMetricPanelComponent,
-    InoTierCardComponent,
-    InoCardComponent,
-    InoFooterComponent,
-  ],
+  imports: [CommonModule, RouterLink, RouterOutlet, InoNavComponent, InoFooterComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
 export class App {
   protected readonly navLinks: InoNavLink[] = [
-    { label: 'Platform', href: '#features' },
-    { label: 'KYB Underwriting', href: '#metrics' },
-    { label: 'Deployment', href: '#tiers' },
-  ];
-
-  protected readonly featureItems: InoFeatureGridItem[] = [
-    { icon: '→', title: 'One master line', description: 'Every mark in the system is the same stroke, cropped differently — never a redrawn logo.' },
-    { icon: '✓', title: 'Resolved, not decided', description: 'The accent color appears only once a human reviewer has closed the loop.' },
-    { icon: '≡', title: 'Dense-mode ready', description: 'The trace motif compresses into a status column for high-density RAG risk tables.' },
-    { icon: '◧', title: 'Fluid-mode ready', description: 'The same tokens relax into a whitespace-first B2C layout for consumer surfaces.' },
-  ];
-
-  protected readonly flagsRows: InoMetricPanelRow[] = [
-    { label: 'Meridian Freight — ABDM + UPI', value: 'Verified', status: 'low' },
-    { label: 'Kavya Textile Exports — GSTIN mismatch', value: 'Review', status: 'medium' },
-    { label: 'Orbit Cold Chain Co. — Owner gap', value: 'Escalate', status: 'high' },
-  ];
-
-  protected readonly reviewRows: InoMetricPanelRow[] = [
-    { label: 'R. Nair — Underwriting', value: '12 open', status: 'low' },
-    { label: 'S. Iyer — Compliance', value: '7 open', status: 'medium' },
-    { label: 'A. Verma — Escalations', value: '3 open', status: 'high' },
+    { label: 'Platform', href: '/platform' },
+    { label: 'How it works', href: '/how-it-works' },
+    { label: 'Trust & Governance', href: '/trust-and-governance' },
+    { label: 'Docs', href: '/docs' },
+    { label: 'Company', href: '/company/about' },
+    { label: 'Contact', href: '/contact' },
   ];
 
   protected readonly footerColumns: InoFooterColumn[] = [
-    { heading: 'Platform', links: [{ label: 'Underwriting', href: '#' }, { label: 'Risk flags', href: '#' }, { label: 'Reviewer queue', href: '#' }] },
-    { heading: 'Docs', links: [{ label: 'Governance model', href: '#' }, { label: 'API reference', href: '#' }, { label: 'Design system', href: '#' }] },
-    { heading: 'Company', links: [{ label: 'About', href: '#' }, { label: 'Careers', href: '#' }, { label: 'Contact', href: '#' }] },
-    { heading: 'Legal', links: [{ label: 'Privacy', href: '#' }, { label: 'Security', href: '#' }, { label: 'DPI compliance', href: '#' }] },
+    {
+      heading: 'Platform',
+      links: [
+        { label: 'Overview', href: '/platform' },
+        { label: 'KYB underwriting', href: '/platform/kyb' },
+        { label: 'How it works', href: '/how-it-works' },
+      ],
+    },
+    {
+      heading: 'Docs',
+      links: [
+        { label: 'Getting started', href: '/docs/getting-started' },
+        { label: 'API reference', href: '/docs/api-reference' },
+        { label: 'Design system', href: '/docs/design-system' },
+      ],
+    },
+    {
+      heading: 'Company',
+      links: [
+        { label: 'About', href: '/company/about' },
+        { label: 'Careers', href: '/company/careers' },
+        { label: 'Contact', href: '/contact' },
+      ],
+    },
+    {
+      heading: 'Legal',
+      links: [
+        { label: 'Privacy', href: '/legal/privacy' },
+        { label: 'Terms', href: '/legal/terms' },
+        { label: 'Disclosures', href: '/legal/disclosures' },
+      ],
+    },
   ];
 
   protected onCta(): void {

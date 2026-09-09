@@ -1,0 +1,100 @@
+.ino-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ino-space-3);
+  padding: var(--ino-space-4);
+  border-radius: var(--ino-radius-lg);
+  font-size: var(--ino-type-body-size);
+  line-height: var(--ino-type-body-line);
+}
+
+.ino-alert--success {
+  background: var(--ino-color-success);
+  color: var(--ino-color-on-success);
+}
+
+.ino-alert--warning {
+  background: var(--ino-color-warning);
+  color: var(--ino-color-on-warning);
+}
+
+.ino-alert--danger {
+  background: var(--ino-color-danger);
+  color: var(--ino-color-on-danger);
+}
+
+.ino-alert--banner {
+  border-radius: 0;
+  padding: var(--ino-space-4) var(--ino-space-7);
+}
+
+.ino-alert--toast {
+  max-width: 360px;
+  box-shadow: var(--ino-elevation-2);
+}
+
+.ino-alert__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  color: currentColor;
+}
+
+.ino-alert__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.ino-alert__heading {
+  margin: 0 0 var(--ino-space-1);
+  font-weight: 600;
+  color: currentColor;
+}
+
+.ino-alert__message {
+  color: currentColor;
+  opacity: 0.92;
+}
+
+/* Visually-hidden but announced-first status word, so meaning never depends on the icon/color
+   alone (icon is aria-hidden). Standard sr-only clip pattern. */
+.ino-alert__sr-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.ino-alert__dismiss {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--ino-target-comfortable);
+  height: var(--ino-target-comfortable);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--ino-radius-md);
+  color: currentColor;
+  cursor: pointer;
+  transition: border-color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  &:hover {
+    border-color: currentColor;
+  }
+
+  &:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+}

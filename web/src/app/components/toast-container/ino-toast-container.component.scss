@@ -1,0 +1,21 @@
+.ino-toast-container {
+  position: fixed;
+  z-index: 2000;
+  right: var(--ino-space-6);
+  bottom: calc(var(--ino-space-6) + var(--ino-safe-area-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: var(--ino-space-3);
+  pointer-events: none;
+
+  ino-alert {
+    pointer-events: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .ino-toast-container {
+    left: var(--ino-space-4);
+    right: var(--ino-space-4);
+  }
+}

@@ -23,6 +23,10 @@
     &:focus-visible {
       color: var(--ino-color-on-surface);
     }
+
+    &.is-active {
+      color: var(--ino-color-on-surface);
+    }
   }
 }
 

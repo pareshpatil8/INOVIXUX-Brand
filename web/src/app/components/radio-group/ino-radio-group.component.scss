@@ -1,0 +1,64 @@
+.ino-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ino-space-2);
+  margin: 0;
+  padding: 0;
+  border: none;
+
+  &:disabled {
+    /* fieldset:disabled cascades disabled to descendant form controls natively */
+  }
+}
+
+.ino-radio-group__legend {
+  padding: 0;
+  margin-bottom: var(--ino-space-1);
+  font-size: var(--ino-type-body-sm-size);
+  font-weight: 600;
+  color: var(--ino-color-on-surface);
+}
+
+.ino-radio-group__row {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ino-space-3);
+  min-height: var(--ino-target-comfortable);
+  cursor: pointer;
+  width: fit-content;
+}
+
+.ino-radio-group__input {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  accent-color: var(--ino-color-accent);
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid var(--ino-color-accent);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.ino-radio-group__label {
+  font-size: var(--ino-type-body-size);
+  color: var(--ino-color-on-surface);
+}
+
+.ino-radio-group:disabled .ino-radio-group__row,
+.ino-radio-group:disabled .ino-radio-group__label {
+  color: var(--ino-color-on-surface-muted);
+  cursor: not-allowed;
+}
+
+.ino-radio-group__error {
+  margin: 0;
+  font-size: var(--ino-type-body-sm-size);
+  color: var(--ino-color-danger);
+  font-weight: 600;
+}

@@ -1,0 +1,14 @@
+<button
+  type="button"
+  class="ino-toggle"
+  role="switch"
+  [attr.aria-checked]="checked"
+  [attr.aria-label]="!label && ariaLabel ? ariaLabel : null"
+  [disabled]="disabled"
+  (click)="onToggle()"
+>
+  <span class="ino-toggle__track">
+    <span class="ino-toggle__thumb"></span>
+  </span>
+  <span class="ino-toggle__label" *ngIf="label">{{ label }}</span>
+</button>
