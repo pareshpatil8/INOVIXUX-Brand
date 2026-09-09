@@ -73,8 +73,9 @@ assumed-done or silently dropped. `✅` = built and pushed. `🟡` = partial / s
 |---|---|---|
 | Token contract (touch targets, safe-area, fluid density) | ✅ | `tokens.css` §7/§10/§11 |
 | Platform guidance (theme default, typography fallback) | ✅ | `11-…mobile-accessibility.md` §6 |
-| Actual screen inventory (nav pattern, tab bar, list/detail, onboarding) | 🟡 *(this round)* | `15-mobile-screen-inventory.md` — full screen list mapped to templates; still no codebase to build screens *in*, blocked on the framework decision (INO-85) |
-| App icon / splash screen | 🟡 | Source mark unblocked (`inovixux-icon-b2c.svg`, INO-82 shipped); per-platform icon/splash export still pending the framework choice |
+| Actual screen inventory (nav pattern, tab bar, list/detail, onboarding) | ✅ | `15-mobile-screen-inventory.md` — full screen list mapped to templates; shared spec for all three framework tracks below |
+| App icon / splash screen | 🟡 | Source mark unblocked (`inovixux-icon-b2c.svg`, INO-82 shipped); per-platform icon/splash export now owned by each framework child issue |
+| Framework decision | ✅ *(this round)* | Resolved on INO-85: build all three — Capacitor, React Native, Flutter — in parallel, each in its own `mobile/<framework>/` folder. See `13-mobile-app-patterns.md` §5. Child issues track each build. |
 
 ## 6. Collateral (non-digital / print)
 
@@ -105,7 +106,8 @@ assumed-done or silently dropped. `✅` = built and pushed. `🟡` = partial / s
 3. **Website page templates** — sitemap is approved; turning it into real page layouts doesn't
    need new tokens or new decisions, just component assembly.
 4. **Mobile app screen inventory** — see `13-mobile-app-patterns.md` for the pattern set, and
-   `15-mobile-screen-inventory.md` for the concrete screen list (done this round; actual screens
-   still wait on the framework decision, INO-85).
+   `15-mobile-screen-inventory.md` for the concrete screen list. Framework decision resolved
+   (all three: Capacitor, React Native, Flutter, in parallel — INO-85); actual builds tracked as
+   child issues, one per framework track.
 5. **Icon system** — done this round, `14-icon-system.md` (Lucide, sizing/color contract).
    Needed by buttons/forms/nav before those look finished — now unblocked for that work.

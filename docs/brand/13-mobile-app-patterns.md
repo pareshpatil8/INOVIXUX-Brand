@@ -59,19 +59,31 @@ later. Nothing here touches the paused KYB product surface (`00-INDEX.md` §5).
   `AccessibilityInfo.isReduceMotionEnabled` / OS-level check) the same way the web components do —
   disable transform/slide animations, keep opacity/state changes.
 
-## 5. What's still an open decision, not guessed here
+## 5. Framework decision (resolved on INO-85)
 
-- **Which framework** (React Native / Flutter / Capacitor wrapping the Angular web app) — still
-  not decided; the tech-stack guardrail only specifies Angular for the web front end. Sent to the
-  board as a confirmation on INO-85 this round (recommendation: Capacitor, since it wraps the
-  Angular app already built rather than standing up a second UI stack/hiring track — but this is
-  a real cost/timeline call, not a branding decision, so it's asked rather than assumed).
-  Flagging this explicitly so a framework doesn't get silently assumed later.
+- ~~Which framework~~ — resolved 2026-09-09: the board answered the INO-85 confirmation with
+  **all three** — Capacitor, React Native, and Flutter — built in parallel rather than picking
+  one, each maintained in its own top-level folder so the codebases stay fully independent:
+  - `mobile/capacitor/` — wraps the existing Angular web app (`web/`); reuses components, design
+    tokens, and `ThemeService` directly.
+  - `mobile/react-native/` — standalone RN codebase; re-implements the token contract and screen
+    templates from this doc natively (no direct code reuse from `web/`).
+  - `mobile/flutter/` — standalone Flutter codebase; same token contract and screen templates,
+    re-implemented in Dart/Flutter widgets.
+  Each track consumes the same framework-agnostic contract already specified above (§1–4) and the
+  same screen inventory (`15-mobile-screen-inventory.md`) so the three apps stay visually and
+  behaviorally consistent even though nothing but the design spec is shared between them. Recorded
+  here as the decision of record; original recommendation (Capacitor-only, for code reuse and one
+  hiring track) is superseded by this answer — flagging for awareness that running three native
+  codebases in parallel triples ongoing build/maintenance/hiring cost versus the single-track
+  recommendation, in case that trade-off wasn't the intent. Build work for each track is split into
+  its own child issue under INO-85.
 - ~~Icon system~~ — decided, see `14-icon-system.md` (Lucide, sizing/color contract).
-- ~~Screen inventory~~ — done, see `15-mobile-screen-inventory.md` (framework-agnostic; doesn't
-  need the framework decision above to exist).
+- ~~Screen inventory~~ — done, see `15-mobile-screen-inventory.md` (framework-agnostic; shared by
+  all three framework tracks above).
 - **App icon / splash screen** — source mark unblocked (INO-82 shipped, `inovixux-icon-b2c.svg`
-  exists), but per-platform icon/splash export still needs the framework decision (each platform's
-  build tooling dictates the export sizes/format).
-- **Push notification / deep-link visual patterns** — not addressed; out of scope until a
-  framework decision exists to design against.
+  exists). Per-platform export now unblocked for all three tracks; each child issue below owns its
+  own icon/splash export since tooling/format differs per framework.
+- **Push notification / deep-link visual patterns** — still not addressed; scope into whichever
+  child issue needs it first, since the visual pattern itself is framework-agnostic but the
+  implementation isn't.
