@@ -24,6 +24,14 @@ natively, per the board's "all three frameworks in parallel" decision on INO-85.
     rows 9 + 12), using the shared `EmptyState` component.
   - `SettingsScreen.tsx` — Settings/account template (inventory row 10), with the one genuinely
     live piece of state in this scaffold: the theme override control.
+- **App icon / splash export** (`assets/`, `app.json`) — `icon.png`, `adaptive-icon.png`,
+  `splash-icon.png`, `favicon.png` rasterized from `assets/brand/logo/inovixux-icon-b2c.svg`
+  (INO-82) at the 1024×1024 source resolution Expo's build pipeline (`expo prebuild`) consumes to
+  generate the full Xcode `Images.xcassets` AppIcon set and Android
+  `mipmap`/`adaptive-icon` directories — see `scripts/gen-app-icons.py` for how (no SVG rasterizer
+  was available in this sandbox, so the glyph's own path/gradient coordinates were reproduced
+  directly). `app.json` wires them in, backgrounded with `--ino-color-surface` dark
+  (`#0A0A0A`) per `tokens.css`. Re-run the script if `inovixux-icon-b2c.svg` ever changes.
 
 ## What's deliberately not done yet
 
@@ -37,11 +45,10 @@ natively, per the board's "all three frameworks in parallel" decision on INO-85.
   decision, and out of this track's remit.
 - **Placeholder content**: `HomeScreen`'s list rows and `DetailScreen`'s fields are dummy data.
   Real data wiring is backend/product work, not part of the design-system build.
-- **Native project files** (`ios/`, `android/` folders, Expo prebuild config) — not generated in
-  this sandbox (no `npm install` / Expo CLI run here). Standing this up for a real device/simulator
-  run is: `npm install && npx expo prebuild`.
-- **App icon / splash export** at RN/Xcode/Android config sizes from `inovixux-icon-b2c.svg` —
-  tooling work, not yet done.
+- **Native project files** (`ios/`, `android/` folders) — not generated in this sandbox (no
+  `npm install` / Expo CLI run here). Standing this up for a real device/simulator run is:
+  `npm install && npx expo prebuild`, which is also what turns `app.json` + `assets/*.png` into
+  the actual per-size Xcode/Android icon and splash assets.
 
 ## Running
 
