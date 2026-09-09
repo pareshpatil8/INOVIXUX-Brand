@@ -1,0 +1,24 @@
+name: inovixux_mobile
+description: >
+  INOVIXUX mobile app — Flutter track (INO-90). Standalone Dart/Flutter codebase, no code reuse
+  from web/ (Angular). Re-implements the token contract and screen templates from
+  docs/brand/13-mobile-app-patterns.md natively.
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: '>=3.4.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  lucide_icons: ^0.257.0
+  shared_preferences: ^2.3.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
