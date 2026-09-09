@@ -18,8 +18,13 @@ benchmarked against **Apple, SpaceX, and 21st.dev's component bar**, and explici
 palette or geometry variations of one idea, since that's why six prior rounds were rejected
 (v1–v4 concepts, then the shipped IX mark, which hasn't had explicit sign-off either).
 
-**See it rendered:** [`mockups/logo-concepts-round2.html`](mockups/logo-concepts-round2.html)
-(screenshot: [`mockups/logo-concepts-round2.png`](mockups/logo-concepts-round2.png)).
+**See it rendered (hosted, live):**
+[pareshpatil8.github.io/INOVIXUX-Brand/brand/mockups/logo-concepts-round2.html](https://pareshpatil8.github.io/INOVIXUX-Brand/brand/mockups/logo-concepts-round2.html)
+— this is a real served page, not a repo link (GitHub shows `.html` files as source, not
+rendered, which is why the previous round's links didn't visualize for the board).
+Screenshot fallback: [`mockups/logo-concepts-round2.png`](mockups/logo-concepts-round2.png).
+
+In-repo source, for reference: [`mockups/logo-concepts-round2.html`](mockups/logo-concepts-round2.html).
 
 ## The four concepts
 

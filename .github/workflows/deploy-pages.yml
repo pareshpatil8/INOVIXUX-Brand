@@ -6,6 +6,7 @@ on:
     paths:
       - "web/**"
       - "assets/brand/**"
+      - "docs/brand/mockups/**"
       - ".github/workflows/deploy-pages.yml"
   workflow_dispatch: {}
 
@@ -42,6 +43,11 @@ jobs:
         run: |
           mkdir -p web/dist/web/browser/brand-assets
           cp -R assets/brand/. web/dist/web/browser/brand-assets/
+
+      - name: Copy logo/brand concept mockups into build output
+        run: |
+          mkdir -p web/dist/web/browser/brand/mockups
+          cp -R docs/brand/mockups/. web/dist/web/browser/brand/mockups/
 
       - uses: actions/upload-pages-artifact@v3
         with:
