@@ -1,0 +1,21 @@
+<nav class="ino-tab-bar" aria-label="Primary">
+  <a
+    *ngFor="let tab of tabs"
+    [routerLink]="tab.href"
+    routerLinkActive="is-active"
+    class="ino-tab-bar__item">
+    <svg *ngIf="tab.icon === 'home'" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="M3 11.5 12 4l9 7.5" />
+      <path stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="M5.5 10v9a1 1 0 0 0 1 1H10v-5.5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1V20h3.5a1 1 0 0 0 1-1v-9" />
+    </svg>
+    <svg *ngIf="tab.icon === 'bell'" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="M6 9a6 6 0 1 1 12 0c0 4.2 1.5 5.8 2 6.5H4c.5-.7 2-2.3 2-6.5Z" />
+      <path stroke="currentColor" stroke-width="1.6" stroke-linecap="round" d="M9.5 18.5a2.5 2.5 0 0 0 5 0" />
+    </svg>
+    <svg *ngIf="tab.icon === 'settings'" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="3.2" stroke="currentColor" stroke-width="1.6" />
+      <path stroke="currentColor" stroke-width="1.6" stroke-linecap="round" d="M12 3v2.6M12 18.4V21M21 12h-2.6M5.6 12H3M18.1 5.9l-1.8 1.8M7.7 16.3l-1.8 1.8M18.1 18.1l-1.8-1.8M7.7 7.7 5.9 5.9" />
+    </svg>
+    <span>{{ tab.label }}</span>
+  </a>
+</nav>

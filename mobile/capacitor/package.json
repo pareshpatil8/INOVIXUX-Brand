@@ -6,7 +6,9 @@
     "build:web": "cd ../../web && npm run build",
     "sync": "cap sync",
     "open:ios": "cap open ios",
-    "open:android": "cap open android"
+    "open:android": "cap open android",
+    "assets:gen-source": "python3 scripts/gen-app-icons.py",
+    "assets:generate": "capacitor-assets generate"
   },
   "dependencies": {
     "@capacitor/android": "^7.0.0",
@@ -15,6 +17,7 @@
     "@capacitor/preferences": "^7.0.0"
   },
   "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
     "@capacitor/cli": "^7.0.0"
   }
 }

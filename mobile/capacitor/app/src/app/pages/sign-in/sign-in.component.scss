@@ -1,0 +1,42 @@
+.sign-in {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100%;
+  padding: 24px;
+  padding-top: calc(24px + var(--ino-safe-area-top, 0px));
+}
+
+.sign-in__headline {
+  margin: 0 0 24px;
+  font-family: var(--ino-font-display);
+  font-size: var(--ino-type-display-size-sm, 38px);
+  font-weight: 700;
+  color: var(--ino-color-on-surface);
+}
+
+.sign-in__form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sign-in__form button[ino-button] {
+  width: 100%;
+  min-height: var(--ino-target-comfortable, 44px);
+}
+
+.sign-in__forgot {
+  display: block;
+  margin-top: 16px;
+  min-height: var(--ino-target-comfortable, 44px);
+  line-height: var(--ino-target-comfortable, 44px);
+  text-align: center;
+  color: var(--ino-color-accent);
+  font-size: 14px;
+  font-weight: 600;
+
+  &:focus-visible {
+    outline: 2px solid var(--ino-color-accent);
+  }
+}

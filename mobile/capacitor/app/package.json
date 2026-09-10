@@ -1,0 +1,31 @@
+{
+  "name": "@inovixux/mobile-capacitor-app",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Product-screen Angular workspace for the Capacitor track (INO-88) — see README.md in the parent mobile/capacitor/ folder for why this is a second workspace rather than routes added to web/.",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development"
+  },
+  "packageManager": "npm@11.19.0",
+  "dependencies": {
+    "@angular/common": "^22.1.0",
+    "@angular/compiler": "^22.1.0",
+    "@angular/core": "^22.1.0",
+    "@angular/forms": "^22.1.0",
+    "@angular/platform-browser": "^22.1.0",
+    "@angular/router": "^22.1.0",
+    "@capacitor/core": "^7.0.0",
+    "@capacitor/preferences": "^7.0.0",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "@angular/build": "^22.1.7",
+    "@angular/cli": "^22.1.7",
+    "@angular/compiler-cli": "^22.1.0",
+    "typescript": "~6.0.2"
+  }
+}

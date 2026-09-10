@@ -1,0 +1,28 @@
+/*
+ * Global stylesheet for the Capacitor product app. Imports the same token contract web/ uses —
+ * by relative path into web/src/tokens.css directly, not a copy — so this workspace can never
+ * drift from web/'s tokens the way a duplicated file could. See mobile/capacitor/README.md.
+ */
+@import '../../../web/src/tokens.css';
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--ino-color-surface);
+  color: var(--ino-color-on-surface);
+  font-family: var(--ino-font-display), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}

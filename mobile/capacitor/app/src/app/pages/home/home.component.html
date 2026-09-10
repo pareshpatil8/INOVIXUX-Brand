@@ -1,0 +1,24 @@
+<div class="home">
+  <header class="home__header">
+    <h1 class="home__headline">Home</h1>
+    <a routerLink="/search" class="home__search-action" aria-label="Search">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8" />
+        <path stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="m20 20-3.5-3.5" />
+      </svg>
+    </a>
+  </header>
+
+  <div class="home__list">
+    <ino-card
+      *ngFor="let item of items"
+      variant="default"
+      padding="sm"
+      interactive
+      [routerLink]="['/home', item.id]"
+      class="home__row">
+      <p class="home__row-title">{{ item.title }}</p>
+      <p class="home__row-subtitle">{{ item.subtitle }}</p>
+    </ino-card>
+  </div>
+</div>

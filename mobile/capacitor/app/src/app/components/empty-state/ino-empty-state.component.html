@@ -1,0 +1,23 @@
+<div class="ino-empty-state">
+  <svg *ngIf="icon === 'inbox'" width="32" height="32" viewBox="0 0 24 24" fill="none" aria-hidden="true" class="ino-empty-state__icon">
+    <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M4 12h4l1.5 3h5L16 12h4" />
+    <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M5.5 5h13L20.5 12v6a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 18v-6L5.5 5Z" />
+  </svg>
+  <svg *ngIf="icon === 'offline'" width="32" height="32" viewBox="0 0 24 24" fill="none" aria-hidden="true" class="ino-empty-state__icon">
+    <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M2 8.5a15.6 15.6 0 0 1 20 0M5.5 12a10.6 10.6 0 0 1 13 0M9 15.5a5.6 5.6 0 0 1 6 0" />
+    <circle cx="12" cy="19" r="1.1" fill="currentColor" />
+    <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M3 3l18 18" />
+  </svg>
+
+  <h2 class="ino-empty-state__headline">{{ headline }}</h2>
+  <p *ngIf="body" class="ino-empty-state__body">{{ body }}</p>
+
+  <button
+    *ngIf="ctaLabel"
+    ino-button
+    type="button"
+    variant="secondary"
+    (click)="ctaClick.emit()">
+    {{ ctaLabel }}
+  </button>
+</div>

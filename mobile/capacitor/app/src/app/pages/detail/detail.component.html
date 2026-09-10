@@ -1,0 +1,19 @@
+<div class="detail">
+  <header class="detail__header">
+    <button type="button" class="detail__back" (click)="back()" aria-label="Back to home">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+      </svg>
+    </button>
+    <h1 class="detail__title">Application #{{ id }}</h1>
+  </header>
+
+  <ino-card variant="sunken" padding="md" class="detail__section">
+    <dl class="detail__fields">
+      <ng-container *ngFor="let field of fields">
+        <dt>{{ field.label }}</dt>
+        <dd>{{ field.value }}</dd>
+      </ng-container>
+    </dl>
+  </ino-card>
+</div>

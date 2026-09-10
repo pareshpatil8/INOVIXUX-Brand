@@ -1,0 +1,65 @@
+.onboarding {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100%;
+  padding: 24px;
+  padding-top: calc(24px + var(--ino-safe-area-top, 0px));
+}
+
+.onboarding__skip {
+  align-self: flex-end;
+  min-height: var(--ino-target-comfortable, 44px);
+  padding: 0 8px;
+  background: none;
+  border: none;
+  color: var(--ino-color-on-surface-muted);
+  font-family: var(--ino-font-display);
+  font-size: var(--ino-type-body-size, 15px);
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid var(--ino-color-accent);
+  }
+}
+
+.onboarding__card {
+  margin-top: 12px;
+}
+
+.onboarding__dots {
+  display: flex;
+  gap: var(--ino-target-spacing, 8px);
+  margin-bottom: 24px;
+}
+
+.onboarding__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ino-primitive-line);
+
+  &.is-active {
+    background: var(--ino-color-accent);
+  }
+}
+
+.onboarding__headline {
+  margin: 0 0 12px;
+  font-family: var(--ino-font-display);
+  font-size: var(--ino-type-display-size-sm, 38px);
+  font-weight: 700;
+  color: var(--ino-color-on-surface);
+}
+
+.onboarding__body {
+  margin: 0 0 24px;
+  color: var(--ino-color-on-surface-muted);
+  font-size: var(--ino-type-body-size, 15px);
+  line-height: var(--ino-type-body-line, 1.65);
+}
+
+.onboarding__card button[ino-button] {
+  width: 100%;
+  min-height: var(--ino-target-comfortable, 44px);
+}

@@ -1,0 +1,29 @@
+<div class="sign-in">
+  <h1 class="sign-in__headline">Welcome back</h1>
+
+  <ino-card variant="default" padding="lg">
+    <form class="sign-in__form" (ngSubmit)="onSubmit()">
+      <ino-input
+        label="Email"
+        type="email"
+        placeholder="you@company.com"
+        [value]="email"
+        (valueChange)="email = $event"
+        required>
+      </ino-input>
+
+      <ino-input
+        label="Password"
+        type="password"
+        placeholder="••••••••"
+        [value]="password"
+        (valueChange)="password = $event"
+        required>
+      </ino-input>
+
+      <button ino-button type="submit" variant="primary">Sign in</button>
+    </form>
+
+    <a routerLink="/forgot-password" class="sign-in__forgot">Forgot password?</a>
+  </ino-card>
+</div>

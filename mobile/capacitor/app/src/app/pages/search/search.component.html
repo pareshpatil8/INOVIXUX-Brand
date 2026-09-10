@@ -1,0 +1,33 @@
+<div class="search">
+  <header class="search__header">
+    <button type="button" class="search__back" (click)="back()" aria-label="Back to home">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+      </svg>
+    </button>
+    <ino-input
+      class="search__input"
+      type="search"
+      placeholder="Search…"
+      [value]="query"
+      (valueChange)="query = $event">
+    </ino-input>
+  </header>
+
+  <div class="search__list" *ngIf="results.length; else empty">
+    <ino-card
+      *ngFor="let item of results"
+      variant="default"
+      padding="sm"
+      interactive
+      [routerLink]="['/home', item.id]"
+      class="search__row">
+      <p class="search__row-title">{{ item.title }}</p>
+      <p class="search__row-meta">{{ item.meta }}</p>
+    </ino-card>
+  </div>
+
+  <ng-template #empty>
+    <ino-empty-state icon="inbox" headline="No results" [body]="emptyBody"></ino-empty-state>
+  </ng-template>
+</div>

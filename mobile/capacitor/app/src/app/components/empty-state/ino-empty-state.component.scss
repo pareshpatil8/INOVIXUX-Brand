@@ -1,0 +1,28 @@
+.ino-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+  padding: 48px 24px;
+}
+
+.ino-empty-state__icon {
+  color: var(--ino-color-on-surface-muted);
+}
+
+.ino-empty-state__headline {
+  margin: 0;
+  font-family: var(--ino-font-display);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--ino-color-on-surface);
+}
+
+.ino-empty-state__body {
+  margin: 0;
+  max-width: 32ch;
+  color: var(--ino-color-on-surface-muted);
+  font-size: var(--ino-type-body-size, 15px);
+  line-height: var(--ino-type-body-line, 1.65);
+}

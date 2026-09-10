@@ -1,0 +1,52 @@
+<div class="settings">
+  <h1 class="settings__headline">Settings</h1>
+
+  <section class="settings__group">
+    <h2 class="settings__group-label">Appearance</h2>
+    <ino-card variant="default" padding="sm">
+      <div class="settings__row">
+        <span class="settings__row-label">Light theme</span>
+        <ino-toggle
+          ariaLabel="Toggle light theme"
+          [checked]="theme() === 'light'"
+          (checkedChange)="onThemeToggle()">
+        </ino-toggle>
+      </div>
+    </ino-card>
+  </section>
+
+  <section class="settings__group">
+    <h2 class="settings__group-label">Account</h2>
+    <ino-card variant="default" padding="sm">
+      <div class="settings__row">
+        <span class="settings__row-label">Delete account</span>
+        <button
+          type="button"
+          class="settings__danger-link"
+          (click)="deleteConfirmOpen = true">
+          Delete
+        </button>
+      </div>
+    </ino-card>
+  </section>
+
+  <section class="settings__group">
+    <h2 class="settings__group-label">Developer preview</h2>
+    <ino-card variant="default" padding="sm">
+      <a routerLink="/error-offline" class="settings__row settings__row--link">
+        <span class="settings__row-label">Error / offline state</span>
+        <span class="settings__row-chevron" aria-hidden="true">›</span>
+      </a>
+    </ino-card>
+  </section>
+
+  <ino-confirm-action-sheet
+    [open]="deleteConfirmOpen"
+    heading="Delete account?"
+    body="This permanently removes your account and all submitted documents. This can't be undone."
+    confirmLabel="Delete account"
+    [destructive]="true"
+    (openChange)="deleteConfirmOpen = $event"
+    (confirmed)="onDeleteAccount()">
+  </ino-confirm-action-sheet>
+</div>

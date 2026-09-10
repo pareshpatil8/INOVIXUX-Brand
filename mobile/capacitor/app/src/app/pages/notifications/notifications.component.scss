@@ -1,0 +1,12 @@
+.notifications {
+  padding: 20px;
+  padding-top: calc(20px + var(--ino-safe-area-top, 0px));
+}
+
+.notifications__headline {
+  margin: 0 0 var(--ino-space-row, 16px);
+  font-family: var(--ino-font-display);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--ino-color-on-surface);
+}

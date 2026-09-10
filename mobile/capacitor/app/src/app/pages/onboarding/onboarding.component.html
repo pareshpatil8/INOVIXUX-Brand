@@ -1,0 +1,20 @@
+<div class="onboarding">
+  <button type="button" class="onboarding__skip" (click)="skip()">Skip</button>
+
+  <ino-card variant="default" padding="lg" class="onboarding__card">
+    <div class="onboarding__dots">
+      <span
+        *ngFor="let step of steps; let i = index"
+        class="onboarding__dot"
+        [class.is-active]="i === index">
+      </span>
+    </div>
+
+    <h1 class="onboarding__headline">{{ steps[index].headline }}</h1>
+    <p class="onboarding__body">{{ steps[index].body }}</p>
+
+    <button ino-button type="button" variant="primary" (click)="next()">
+      {{ isLastStep ? 'Get started' : 'Next' }}
+    </button>
+  </ino-card>
+</div>

@@ -1,0 +1,22 @@
+<ino-modal
+  [open]="open"
+  [heading]="heading"
+  (openChange)="close()"
+  (closed)="close()">
+  <p *ngIf="body" class="ino-confirm-action-sheet__body">{{ body }}</p>
+
+  <div ino-modal-footer class="ino-confirm-action-sheet__actions">
+    <button
+      ino-button
+      type="button"
+      variant="primary"
+      class="ino-confirm-action-sheet__confirm"
+      [class.ino-confirm-action-sheet__confirm--destructive]="destructive"
+      (click)="confirm()">
+      {{ confirmLabel }}
+    </button>
+    <button ino-button type="button" variant="ghost" (click)="close()">
+      {{ cancelLabel }}
+    </button>
+  </div>
+</ino-modal>

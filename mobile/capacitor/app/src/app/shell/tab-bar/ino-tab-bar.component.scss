@@ -1,0 +1,44 @@
+// Per docs/brand/13-mobile-app-patterns.md §1: 3–5 items, icon + label (never icon-only),
+// ≥ --ino-target-comfortable (44px) tap targets, --ino-target-spacing (8px) between adjacent
+// tabs, safe-area bottom padding on top of base spacing (never just the raw inset).
+:host {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 10;
+}
+
+.ino-tab-bar {
+  display: flex;
+  justify-content: space-around;
+  gap: var(--ino-target-spacing, 8px);
+  background: var(--ino-color-surface-raised);
+  border-top: 1px solid var(--ino-primitive-line);
+  padding-top: 6px;
+  padding-bottom: calc(6px + var(--ino-safe-area-bottom, 0px));
+}
+
+.ino-tab-bar__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-width: var(--ino-target-comfortable, 44px);
+  min-height: var(--ino-target-comfortable, 44px);
+  padding: 4px 10px;
+  color: var(--ino-color-on-surface-muted);
+  font-family: var(--ino-font-display);
+  font-size: 11px;
+  font-weight: 500;
+  border-radius: var(--ino-radius-md, 8px);
+
+  &.is-active {
+    color: var(--ino-color-accent);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--ino-color-accent);
+    outline-offset: 2px;
+  }
+}

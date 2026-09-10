@@ -1,0 +1,29 @@
+.ino-confirm-action-sheet__body {
+  margin: 0;
+  color: var(--ino-color-on-surface-muted);
+  font-size: var(--ino-type-body-size, 15px);
+  line-height: var(--ino-type-body-line, 1.65);
+}
+
+.ino-confirm-action-sheet__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.ino-confirm-action-sheet__confirm,
+.ino-confirm-action-sheet__actions button[ino-button] {
+  width: 100%;
+  min-height: var(--ino-target-comfortable, 44px);
+}
+
+// No dedicated "danger" variant on ino-button yet (primary/secondary/ghost/icon only, see that
+// component's doc comment) — tint the filled confirm button with the danger token pair directly
+// rather than add a one-off variant to a shared component for a single caller. Compound selector
+// (not just the one class) to out-specificity `.ino-btn--primary`'s own background rule
+// regardless of Angular emulated-encapsulation style injection order.
+.ino-confirm-action-sheet__confirm--destructive.ino-confirm-action-sheet__confirm {
+  background: var(--ino-color-danger);
+  color: var(--ino-color-on-danger);
+}
