@@ -15,15 +15,28 @@ natively, per the board's "all three frameworks in parallel" decision on INO-85.
 - **Navigation shell** (`src/navigation/RootNavigator.tsx`) — bottom tab bar (Home, Notifications,
   Settings) + a native stack inside the Home tab (Home → Detail), per §1's "bottom tabs, stack for
   secondary nav" rule. Icons: Lucide via `lucide-react-native`, per `docs/brand/14-icon-system.md`.
-- **Screen templates proven with real, running screens** (`src/screens/`):
-  - `SignInScreen.tsx` — Auth/onboarding template (inventory row 3; row 4 Forgot-password pushes
-    from the same shell, not yet added).
-  - `HomeScreen.tsx` + `DetailScreen.tsx` — List → Detail template pair (inventory rows 5–7),
-    wired with real stack navigation and placeholder rows (no real product data — see note below).
-  - `NotificationsScreen.tsx` — List template rendered via the Empty-state template (inventory
-    rows 9 + 12), using the shared `EmptyState` component.
-  - `SettingsScreen.tsx` — Settings/account template (inventory row 10), with the one genuinely
-    live piece of state in this scaffold: the theme override control.
+- **All 13 screens in `docs/brand/15-mobile-screen-inventory.md` §1 are real, running screens**
+  (`src/screens/`), each a real call site for its `13-mobile-app-patterns.md` §2 template, not
+  just a file on disk:
+  - `SignInScreen.tsx` + `ForgotPasswordScreen.tsx` — Auth/onboarding template (rows 3–4), wired
+    stack push: Sign in's "Forgot password?" link navigates to the reset-password screen.
+  - `OnboardingScreen.tsx` — Auth/onboarding template, 1–3 step variant (row 2): paged intro with
+    a Skip action and a dot indicator.
+  - `HomeScreen.tsx` + `DetailScreen.tsx` — List → Detail template pair (rows 5–7), wired with
+    real stack navigation and placeholder rows (no real product data — see note below).
+  - `SearchScreen.tsx` — List template + search-input header (row 8), pushed from `HomeScreen`'s
+    header search action; falls back to the Empty-state template when a query has no matches.
+  - `NotificationsScreen.tsx` — List template rendered via the Empty-state template (rows 9, 12),
+    using the shared `EmptyState` component.
+  - `SettingsScreen.tsx` — Settings/account template (row 10), with the one genuinely live piece
+    of state in this scaffold: the theme override control. A second "Preview" section pushes
+    Onboarding, Sign in, and Error/offline — the templates that don't have a natural in-app entry
+    point yet (they live pre-tab-bar, behind a signed-out state this scaffold doesn't model).
+  - `ConfirmActionSheet.tsx` (`src/components/`) — Modal/bottom-sheet template (row 11), an
+    overlay rather than a nav destination per the inventory doc; wired to `DetailScreen`'s Delete
+    action as a real call site.
+  - `ErrorOfflineScreen.tsx` — Empty-state template, offline/error copy+icon variant (row 13).
+  - Splash (row 1) is the app-icon/splash export below, not a screen component.
 - **App icon / splash export** (`assets/`, `app.json`) — `icon.png`, `adaptive-icon.png`,
   `splash-icon.png`, `favicon.png` rasterized from `assets/brand/logo/inovixux-icon-b2c.svg`
   (INO-82) at the 1024×1024 source resolution Expo's build pipeline (`expo prebuild`) consumes to
@@ -35,22 +48,21 @@ natively, per the board's "all three frameworks in parallel" decision on INO-85.
 
 ## What's deliberately not done yet
 
-- **Remaining inventory screens** (`docs/brand/15-mobile-screen-inventory.md` §1): Splash (row 1,
-  blocked on platform icon/splash export, not code), Onboarding steps (row 2), Forgot/reset
-  password (row 4), Search/filter (row 8), Modal actions (row 11), Error/offline (row 13). Each
-  maps to a template already proven above (Auth/onboarding, List, Modal/bottom sheet, Empty
-  state respectively) — mechanical repetition of the existing pattern, not new capability.
 - **Tab slot 2** ("second core surface") — intentionally left out of `RootNavigator.tsx` rather
   than invented. Per the inventory doc §2, naming it is a product-scope question, not a branding
   decision, and out of this track's remit.
-- **Placeholder content**: `HomeScreen`'s list rows and `DetailScreen`'s fields are dummy data.
-  Real data wiring is backend/product work, not part of the design-system build.
-- **Native project files** (`ios/`, `android/` folders) — not generated in this sandbox (no
-  `npm install` / Expo CLI run here). Standing this up for a real device/simulator run is:
-  `npm install && npx expo prebuild`, which is also what turns `app.json` + `assets/*.png` into
-  the actual per-size Xcode/Android icon and splash assets.
+- **Placeholder content**: `HomeScreen`/`SearchScreen`'s list rows and `DetailScreen`'s fields are
+  dummy data. Real data wiring is backend/product work, not part of the design-system build.
+- **No signed-out gate**: the main tab bar renders directly; Onboarding/Sign in/Error-offline are
+  reachable from Settings → Preview instead of a real auth flow, since there's no backend to gate
+  against yet. Same boundary as the placeholder-content note above.
+- **Native project files** (`ios/`, `android/` folders) — not generated (no Expo CLI `prebuild`
+  run here). Standing this up for a real device/simulator run is `npx expo prebuild`, which is
+  also what turns `app.json` + `assets/*.png` into the actual per-size Xcode/Android icon and
+  splash assets.
 
 ## Running
 
-Not runnable as-is in this sandbox (no package install). Once dependencies are installed:
-`npm install && npm run ios` (or `npm run android`).
+`npm install` (verified: installs clean, `npm run typecheck` passes) then `npm run ios` (or
+`npm run android`). Device/simulator boot itself wasn't verified in this sandbox (no Xcode/Android
+SDK here).

@@ -5,8 +5,13 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Home, Bell, Settings } from 'lucide-react-native';
 import { HomeScreen } from '../screens/HomeScreen';
 import { DetailScreen } from '../screens/DetailScreen';
+import { SearchScreen } from '../screens/SearchScreen';
 import { NotificationsScreen } from '../screens/NotificationsScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
+import { OnboardingScreen } from '../screens/OnboardingScreen';
+import { SignInScreen } from '../screens/SignInScreen';
+import { ForgotPasswordScreen } from '../screens/ForgotPasswordScreen';
+import { ErrorOfflineScreen } from '../screens/ErrorOfflineScreen';
 import { useTheme } from '../theme/ThemeProvider';
 import { targetComfortable, targetSpacing } from '../theme/tokens';
 
@@ -22,6 +27,7 @@ import { targetComfortable, targetSpacing } from '../theme/tokens';
 export type HomeStackParamList = {
   Home: undefined;
   Detail: { id: string; title: string };
+  Search: undefined;
 };
 
 const HomeStack = createNativeStackNavigator<HomeStackParamList>();
@@ -30,7 +36,36 @@ function HomeStackNavigator() {
     <HomeStack.Navigator screenOptions={{ headerShown: false }}>
       <HomeStack.Screen name="Home" component={HomeScreen} />
       <HomeStack.Screen name="Detail" component={DetailScreen} />
+      <HomeStack.Screen name="Search" component={SearchScreen} />
     </HomeStack.Navigator>
+  );
+}
+
+/**
+ * Settings tab is its own stack, not a bare screen — its "Preview" section (see
+ * `SettingsScreen`) pushes the templates that don't have a natural in-app entry point yet
+ * (auth/onboarding lives pre-tab-bar, behind a signed-out state this scaffold doesn't model), so
+ * every screen in `docs/brand/15-mobile-screen-inventory.md` is a real, running screen rather
+ * than just a file on disk.
+ */
+export type SettingsStackParamList = {
+  Settings: undefined;
+  Onboarding: undefined;
+  SignIn: undefined;
+  ForgotPassword: undefined;
+  ErrorOffline: undefined;
+};
+
+const SettingsStack = createNativeStackNavigator<SettingsStackParamList>();
+function SettingsStackNavigator() {
+  return (
+    <SettingsStack.Navigator screenOptions={{ headerShown: false }}>
+      <SettingsStack.Screen name="Settings" component={SettingsScreen} />
+      <SettingsStack.Screen name="Onboarding" component={OnboardingScreen} />
+      <SettingsStack.Screen name="SignIn" component={SignInScreen} />
+      <SettingsStack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+      <SettingsStack.Screen name="ErrorOffline" component={ErrorOfflineScreen} />
+    </SettingsStack.Navigator>
   );
 }
 
@@ -77,7 +112,7 @@ export function RootNavigator() {
         />
         <Tab.Screen
           name="SettingsTab"
-          component={SettingsScreen}
+          component={SettingsStackNavigator}
           options={{ title: 'Settings', tabBarIcon: ({ color, size }) => <Settings color={color} size={size} strokeWidth={2} /> }}
         />
       </Tab.Navigator>

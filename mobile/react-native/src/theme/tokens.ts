@@ -97,4 +97,7 @@ export const motion = {
   easingAccelerate: [0.3, 0, 1, 1] as const,
 };
 
-export type Palette = typeof colorsDark;
+// Widened to plain `string` per key — `typeof colorsDark` would pin every value to its dark-mode
+// literal, which then rejects colorsLight's (differently-literal) values at the ThemeProvider
+// call site that picks between the two at runtime.
+export type Palette = { [K in keyof typeof colorsDark]: string };

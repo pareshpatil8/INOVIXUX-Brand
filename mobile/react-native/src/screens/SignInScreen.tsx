@@ -3,14 +3,18 @@ import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-nativ
 import { ScreenTemplate } from '../components/ScreenTemplate';
 import { useTheme } from '../theme/ThemeProvider';
 import { radius, space, targetComfortable, type } from '../theme/tokens';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { SettingsStackParamList } from '../navigation/RootNavigator';
 
 /**
  * Auth / onboarding template (docs/brand/13-mobile-app-patterns.md §2) — covers screen inventory
- * rows 3 (Sign in/Sign up) and 4 (Forgot/reset password shares this shell, pushed from here).
+ * rows 3 (Sign in/Sign up) and 4 (Forgot/reset password, pushed from here).
  * Single-column form shell, `--ino-target-comfortable` (44px) on every input/button, display-sm
  * (38px) headline — not the 56px desktop size.
  */
-export function SignInScreen() {
+type Props = NativeStackScreenProps<SettingsStackParamList, 'SignIn'>;
+
+export function SignInScreen({ navigation }: Props) {
   const { colors } = useTheme();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -62,7 +66,11 @@ export function SignInScreen() {
         <Text style={[styles.submitLabel, { color: colors.onAccent }]}>Continue</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity accessibilityRole="link" style={styles.forgotLink}>
+      <TouchableOpacity
+        accessibilityRole="link"
+        style={styles.forgotLink}
+        onPress={() => navigation.navigate('ForgotPassword')}
+      >
         <Text style={{ color: colors.accentTextSafe, ...type.bodySm }}>Forgot password?</Text>
       </TouchableOpacity>
     </ScreenTemplate>

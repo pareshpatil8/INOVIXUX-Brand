@@ -1,7 +1,8 @@
 import React from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { ChevronRight } from 'lucide-react-native';
+import { ChevronRight, Search } from 'lucide-react-native';
 import { ScreenTemplate } from '../components/ScreenTemplate';
+import { HeaderIconButton } from '../components/HeaderIconButton';
 import { useTheme } from '../theme/ThemeProvider';
 import { radius, rowMinHeight, space, type } from '../theme/tokens';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -26,7 +27,11 @@ export function HomeScreen({ navigation }: Props) {
   const { colors } = useTheme();
 
   return (
-    <ScreenTemplate title="Home" scroll={false}>
+    <ScreenTemplate
+      title="Home"
+      scroll={false}
+      actions={<HeaderIconButton icon={Search} label="Search" onPress={() => navigation.navigate('Search')} />}
+    >
       <FlatList
         data={PLACEHOLDER_ROWS}
         keyExtractor={(item) => item.id}
