@@ -4,6 +4,7 @@ import '../theme/app_theme.dart';
 import '../theme/tokens.dart';
 import '../widgets/screen_template.dart';
 import 'detail_screen.dart';
+import 'search_screen.dart';
 
 /// List template (docs/brand/13-mobile-app-patterns.md §2) — screen inventory row 5
 /// (Home/dashboard) and, with the same widget, row 6 (generic list). Placeholder rows only — no
@@ -24,6 +25,13 @@ class HomeScreen extends StatelessWidget {
     return ScreenTemplate(
       title: 'Home',
       scroll: false,
+      actions: [
+        ScreenIconAction(
+          icon: LucideIcons.search,
+          tooltip: 'Search',
+          onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SearchScreen())),
+        ),
+      ],
       child: ListView.separated(
         itemCount: _rows.length,
         separatorBuilder: (_, __) => const SizedBox(height: InoSpace.s2),

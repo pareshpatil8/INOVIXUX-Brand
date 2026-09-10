@@ -19,6 +19,38 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
+  flutter_launcher_icons: ^0.14.1
+  flutter_native_splash: ^2.4.1
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/icon/
+    - assets/splash/
+
+# App icon export (INO-90, mirrors INO-89's Expo config for the React Native track). Source
+# images generated from inovixux-icon-b2c.svg by scripts/gen_app_icons.py (no SVG renderer
+# available in this sandbox — see that script's docstring). Actual platform artifacts (iOS
+# Assets.xcassets AppIcon set, Android mipmap-*/ic_launcher.png) aren't generated yet: that needs
+# `flutter create .` run first (no android/ios folders exist in this sandbox), then
+# `flutter pub get && dart run flutter_launcher_icons`.
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: assets/icon/app_icon_1024.png
+  adaptive_icon_background: "#0A0A0A" # --ino-color-surface dark, tokens.css
+  adaptive_icon_foreground: assets/icon/app_icon_foreground_1024.png
+
+# Splash screen export (INO-90). Same "config now, generate once tooling is run" pattern as
+# above — `flutter pub get && dart run flutter_native_splash:create` once `flutter create .` has
+# been run.
+flutter_native_splash:
+  color: "#0A0A0A" # --ino-color-surface dark, tokens.css — matches the app's default (dark) theme
+  image: assets/splash/splash_logo_1024.png
+  color_dark: "#0A0A0A"
+  image_dark: assets/splash/splash_logo_1024.png
+  android_12:
+    image: assets/splash/splash_logo_1024.png
+    color: "#0A0A0A"
+    image_dark: assets/splash/splash_logo_1024.png
+    color_dark: "#0A0A0A"
