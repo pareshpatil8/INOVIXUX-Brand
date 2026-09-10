@@ -81,9 +81,11 @@ later. Nothing here touches the paused KYB product surface (`00-INDEX.md` §5).
 - ~~Icon system~~ — decided, see `14-icon-system.md` (Lucide, sizing/color contract).
 - ~~Screen inventory~~ — done, see `15-mobile-screen-inventory.md` (framework-agnostic; shared by
   all three framework tracks above).
-- **App icon / splash screen** — source mark unblocked (INO-82 shipped, `inovixux-icon-b2c.svg`
-  exists). Per-platform export now unblocked for all three tracks; each child issue below owns its
-  own icon/splash export since tooling/format differs per framework.
-- **Push notification / deep-link visual patterns** — still not addressed; scope into whichever
-  child issue needs it first, since the visual pattern itself is framework-agnostic but the
-  implementation isn't.
+- ~~App icon / splash screen~~ — done on all three tracks from the same `inovixux-icon-b2c.svg`
+  source (INO-82), each with its own generator script since tooling/format differs per framework:
+  `mobile/capacitor/resources/`, `mobile/react-native/assets/`, `mobile/flutter/assets/{icon,splash}/`.
+  See `15-mobile-screen-inventory.md` §4 row 1.
+- **Push notification / deep-link visual patterns** — the one item in this section still open.
+  The visual pattern is framework-agnostic (notification icon/badge treatment, deep-link landing
+  behaviour) but the implementation isn't, and it needs a notification backend that doesn't exist
+  yet, so it's a product/backend dependency rather than a branding one. Tracked as INO-97.
