@@ -31,9 +31,13 @@ class _InovixuxAppState extends State<InovixuxApp> {
       builder: (context, _) => MaterialApp(
         title: 'INOVIXUX',
         debugShowCheckedModeBanner: false,
-        themeMode: _themeController.mode,
+        themeMode: _themeController.materialMode,
         theme: buildInoTheme(InoPalette.light, Brightness.light),
-        darkTheme: buildInoTheme(InoPalette.dark, Brightness.dark),
+        darkTheme: buildInoTheme(
+          _themeController.mode == InoThemeMode.highContrast
+              ? InoPalette.highContrast : InoPalette.dark,
+          Brightness.dark,
+        ),
         home: RootShell(themeController: _themeController),
       ),
     );

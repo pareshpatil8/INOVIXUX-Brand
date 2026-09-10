@@ -47,4 +47,16 @@ export class InoNavComponent {
   onThemeToggle(): void {
     this.themeService.toggle();
   }
+
+  /** Describes what clicking the toggle does next (dark → light → high-contrast → dark). */
+  protected nextThemeLabel(): string {
+    switch (this.theme()) {
+      case 'dark':
+        return 'Switch to light mode';
+      case 'light':
+        return 'Switch to high-contrast mode';
+      default:
+        return 'Switch to dark mode';
+    }
+  }
 }

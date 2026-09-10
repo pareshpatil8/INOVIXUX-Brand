@@ -23,10 +23,11 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.inoColors;
-    final options = <(ThemeMode, String, IconData)>[
-      (ThemeMode.system, 'System', LucideIcons.sunMoon),
-      (ThemeMode.light, 'Light', LucideIcons.sun),
-      (ThemeMode.dark, 'Dark', LucideIcons.moon),
+    final options = <(InoThemeMode, String, IconData)>[
+      (InoThemeMode.system, 'System', LucideIcons.sunMoon),
+      (InoThemeMode.light, 'Light', LucideIcons.sun),
+      (InoThemeMode.dark, 'Dark', LucideIcons.moon),
+      (InoThemeMode.highContrast, 'High contrast', LucideIcons.sunMoon),
     ];
 
     return ScreenTemplate(
@@ -50,6 +51,7 @@ class SettingsScreen extends StatelessWidget {
                 children: [
                   for (final (mode, label, icon) in options)
                     ListTile(
+                      selected: controller.mode == mode,
                       onTap: () => controller.setMode(mode),
                       minLeadingWidth: InoTarget.comfortable,
                       leading: Icon(icon, size: 20, color: colors.onSurfaceMuted),

@@ -1,13 +1,19 @@
 import { Injectable, signal } from '@angular/core';
 
-export type InoTheme = 'dark' | 'light';
+export type InoTheme = 'dark' | 'light' | 'high-contrast';
 
 const STORAGE_KEY = 'ino-theme';
+
+// Cycle order for toggle(). Adding a 4th theme later is a one-line addition
+// here plus its [data-theme="..."] block in tokens.css — see
+// docs/brand/09-design-system-standards.md §8 "Adding a new theme".
+const THEME_ORDER: readonly InoTheme[] = ['dark', 'light', 'high-contrast'];
 
 /**
  * Runtime theme toggle for the design-system app. Dark is the token
  * contract's default (no attribute needed, see tokens.css §2); this
- * service only ever adds/removes `data-theme="light"` on <html>.
+ * service only ever adds/removes `data-theme="..."` on <html> (any
+ * non-dark value in THEME_ORDER), never inlines a color.
  *
  * First-paint theme selection (localStorage → prefers-color-scheme →
  * dark) happens in a small blocking script in index.html, BEFORE Angular
@@ -20,19 +26,18 @@ const STORAGE_KEY = 'ino-theme';
 export class ThemeService {
   readonly theme = signal<InoTheme>(this.readInitial());
 
+  /** Cycles dark → light → high-contrast → dark. */
   toggle(): void {
-    this.set(this.theme() === 'dark' ? 'light' : 'dark');
+    const nextIndex = (THEME_ORDER.indexOf(this.theme()) + 1) % THEME_ORDER.length;
+    this.set(THEME_ORDER[nextIndex]);
   }
 
   set(theme: InoTheme): void {
     this.theme.set(theme);
 
     if (typeof document !== 'undefined') {
-      if (theme === 'light') {
-        document.documentElement.setAttribute('data-theme', 'light');
-      } else {
-        document.documentElement.removeAttribute('data-theme');
-      }
+      // Explicit dark must suppress the OS-light CSS fallback too.
+      document.documentElement.setAttribute('data-theme', theme);
     }
 
     try {
@@ -48,6 +53,7 @@ export class ThemeService {
     if (typeof document === 'undefined') {
       return 'dark';
     }
-    return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+    const attr = document.documentElement.getAttribute('data-theme');
+    return attr === 'light' || attr === 'high-contrast' ? attr : 'dark';
   }
 }

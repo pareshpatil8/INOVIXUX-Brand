@@ -29,7 +29,8 @@ assumed-done or silently dropped. `✅` = built and pushed. `🟡` = partial / s
 
 | Item | Status | Where |
 |---|---|---|
-| Color roles (dark + light) | ✅ | `tokens.css` §2, §2b; light-mode independently WCAG-audited, not inverted; toggle re-verified working (`ino-nav` → `ThemeService`) and made a standing ship gate — `09-design-system-standards.md` §5 |
+| Color roles (dark + light + high-contrast) | ✅ | `tokens.css` §2, §2b, §2c; each theme independently WCAG-audited (light AA, high-contrast AAA target), not inverted/derived; toggle re-verified working (`ino-nav` → `ThemeService`, now 3-way) and made a standing ship gate — `09-design-system-standards.md` §5 |
+| N-theme extensibility (3rd theme shipped as proof, documented recipe for a 4th) | ✅ *(2026-09-10, INO-92)* | `09-design-system-standards.md` §8; parity enforced by `scripts/check-theme-parity.mjs` across web/RN/Flutter |
 | Surface depth (raised/sunken/overlay) | ✅ *(this round)* | `tokens.css`; addendum in `11-…mobile-accessibility.md` §9 |
 | Spacing scale | ✅ | `tokens.css` §5 |
 | Radius scale | ✅ | `tokens.css` §6 |

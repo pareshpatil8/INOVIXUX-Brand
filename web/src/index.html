@@ -17,16 +17,11 @@
   -->
   <script>
     (function () {
-      try {
-        var stored = localStorage.getItem('ino-theme');
-        var wantsLight = stored ? stored === 'light'
-          : (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches);
-        if (wantsLight) {
-          document.documentElement.setAttribute('data-theme', 'light');
-        }
-      } catch (e) {
-        // Storage/matchMedia unavailable — fall through to the dark default.
-      }
+      var stored;
+      try { stored = localStorage.getItem('ino-theme'); } catch (e) { /* session-only */ }
+      var theme = ['dark', 'light', 'high-contrast'].includes(stored) ? stored
+        : (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+      document.documentElement.setAttribute('data-theme', theme);
     })();
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">

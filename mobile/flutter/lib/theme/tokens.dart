@@ -79,7 +79,7 @@ class InoPalette {
     onSurface: Color(0xFF14141A),
     onSurfaceMuted: Color(0xFF55555C),
     onSurfaceSubtle: Color(0xFF8C8C8E),
-    overlayScrim: Color(0x66141416), // rgba(20,20,26,0.4)
+    overlayScrim: Color(0x6614141A), // rgba(20,20,26,0.4) — fixed INO-92 drift audit: blue channel was 0x16 (22), tokens.css charcoal primitive is 0x1A (26)
     border: Color(0x1A0A0A0A), // rgba(10,10,10,0.10)
     borderSoft: Color(0x0F0A0A0A), // rgba(10,10,10,0.06)
     accent: Color(0xFF7C5CFC),
@@ -93,11 +93,36 @@ class InoPalette {
     danger: Color(0xFFA6362D),
     onDanger: Color(0xFFFFFFFF),
   );
+
+  static const highContrast = InoPalette(
+    surface: Color(0xFF000000),
+    surfaceRaised: Color(0xFF050505),
+    surfaceSunken: Color(0xFF000000),
+    onSurface: Color(0xFFFFFFFF),
+    onSurfaceMuted: Color(0xFFAAAAAA),
+    onSurfaceSubtle: Color(0xFF5A5A5C),
+    overlayScrim: Color(0xEB000000),
+    border: Color(0xFFFFFFFF),
+    borderSoft: Color(0x80FFFFFF),
+    accent: Color(0xFFFFD60A),
+    accentSecondary: Color(0xFF00E5FF),
+    accentTextSafe: Color(0xFFFFD60A),
+    onAccent: Color(0xFF000000),
+    success: Color(0xFF00E676),
+    onSuccess: Color(0xFF000000),
+    warning: Color(0xFFFFC400),
+    onWarning: Color(0xFF000000),
+    danger: Color(0xFFFF6B6B),
+    onDanger: Color(0xFF000000),
+  );
 }
 
 /// tokens.css §5 — space scale (t-shirt tokens, px == logical pixels in Flutter).
+/// s10/s11 added INO-92 for parity with mobile/react-native/src/theme/tokens.ts — both mobile
+/// ports previously stopped at s9; s10/s11 exist in tokens.css and RN already had them.
 class InoSpace {
-  static const double s1 = 4, s2 = 8, s3 = 12, s4 = 16, s5 = 20, s6 = 24, s7 = 32, s8 = 40, s9 = 56;
+  static const double s1 = 4, s2 = 8, s3 = 12, s4 = 16, s5 = 20, s6 = 24, s7 = 32, s8 = 40, s9 = 56,
+      s10 = 80, s11 = 96;
 }
 
 /// tokens.css §6 — radius scale.

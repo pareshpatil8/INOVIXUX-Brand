@@ -5,12 +5,12 @@
     <h2 class="settings__group-label">Appearance</h2>
     <ino-card variant="default" padding="sm">
       <div class="settings__row">
-        <span class="settings__row-label">Light theme</span>
-        <ino-toggle
-          ariaLabel="Toggle light theme"
-          [checked]="theme() === 'light'"
-          (checkedChange)="onThemeToggle()">
-        </ino-toggle>
+        <label class="settings__row-label" for="theme-choice">Theme</label>
+        <select id="theme-choice" [value]="theme()" (change)="onThemeSelect($event)">
+          <option value="dark">Dark</option>
+          <option value="light">Light</option>
+          <option value="high-contrast">High contrast</option>
+        </select>
       </div>
     </ino-card>
   </section>

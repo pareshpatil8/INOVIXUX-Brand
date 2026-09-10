@@ -1,30 +1,43 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { Appearance, ColorSchemeName } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { colorsDark, colorsLight, Palette } from './tokens';
+import { colorsDark, colorsHighContrast, colorsLight, Palette } from './tokens';
 
 /**
  * Mirrors web/src/app/services/theme.service.ts: default to OS `prefers-color-scheme`
  * (RN: `Appearance.getColorScheme()`), explicit in-app override persisted to platform storage
  * instead of `localStorage` — per docs/brand/13-mobile-app-patterns.md §3.
+ *
+ * `high-contrast` (INO-92) has no OS-level signal on RN (unlike dark/light, which
+ * `Appearance` reports) — RN's `AccessibilityInfo` doesn't expose a contrast preference the way
+ * web's `prefers-contrast` media feature would, so it's explicit-opt-in only, same as the web
+ * style guide's toggle. `'system'` therefore only ever resolves to dark or light, never
+ * high-contrast.
  */
 
-type ThemeMode = 'system' | 'dark' | 'light';
+type ThemeMode = 'system' | 'dark' | 'light' | 'high-contrast';
+type ResolvedTheme = 'dark' | 'light' | 'high-contrast';
 const STORAGE_KEY = '@inovixux/theme-mode';
 
 interface ThemeContextValue {
   mode: ThemeMode;
-  resolvedScheme: 'dark' | 'light';
+  resolvedScheme: ResolvedTheme;
   colors: Palette;
   setMode: (mode: ThemeMode) => void;
 }
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
-function resolve(mode: ThemeMode, system: ColorSchemeName): 'dark' | 'light' {
+function resolve(mode: ThemeMode, system: ColorSchemeName): ResolvedTheme {
   if (mode === 'system') return system === 'light' ? 'light' : 'dark'; // dark is the default, matches tokens.css
   return mode;
 }
+
+const PALETTES: Record<ResolvedTheme, Palette> = {
+  dark: colorsDark,
+  light: colorsLight,
+  'high-contrast': colorsHighContrast,
+};
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [mode, setModeState] = useState<ThemeMode>('system');
@@ -32,7 +45,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     AsyncStorage.getItem(STORAGE_KEY).then((stored) => {
-      if (stored === 'dark' || stored === 'light' || stored === 'system') setModeState(stored);
+      if (stored === 'dark' || stored === 'light' || stored === 'high-contrast' || stored === 'system') {
+        setModeState(stored);
+      }
     });
     const sub = Appearance.addChangeListener(({ colorScheme }) => setSystemScheme(colorScheme));
     return () => sub.remove();
@@ -48,7 +63,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     () => ({
       mode,
       resolvedScheme,
-      colors: resolvedScheme === 'light' ? colorsLight : colorsDark,
+      colors: PALETTES[resolvedScheme],
       setMode,
     }),
     [mode, resolvedScheme],

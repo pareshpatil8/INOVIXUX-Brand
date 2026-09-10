@@ -12,6 +12,12 @@
  * inset panels and modal/sheet/popover surfaces — see docs/brand/
  * 11-dark-light-mobile-accessibility.md §9. Existing surface/elevation values unchanged.
  *
+ * 2026-09-10 (INO-92): added a third theme, [data-theme="high-contrast"]
+ * (WCAG 2.2 AAA target — see §2c below), as the proof that the primitive →
+ * semantic-role architecture genuinely supports N themes, not just a
+ * dark/light pair. Existing dark/light values unchanged. See
+ * docs/brand/09-design-system-standards.md §8 for the recipe.
+ *
  * This file is the single source of truth for color, type, space, radius,
  * elevation, and motion. Angular consumes it as-is: drop it into
  * src/styles/tokens.css and import once in angular.json's global styles
@@ -22,12 +28,13 @@
  * and this repo's own mockups.
  *
  * Theme switching: dark is the default (:root, no attribute needed — matches
- * the approved Vetra-register foundation). Light mode is an explicit opt-in
- * via [data-theme="light"] on <html>, set by ThemeService before first paint
+ * the approved Vetra-register foundation). Light mode and high-contrast mode
+ * are explicit opt-ins via [data-theme="light"] / [data-theme="high-contrast"]
+ * on <html>, set by ThemeService before first paint
  * (see docs/brand/02-design-tokens/angular-theme-contract.md §5) so there is
  * no flash of the wrong theme. Components must bind to the semantic roles in
  * section 2 only — never branch on data-theme directly — so the same markup
- * repaints correctly in either mode for free.
+ * repaints correctly in any theme for free.
  *
  * Swapping identity: change ONLY --ino-color-accent / --ino-gradient-accent
  * / --ino-glow-accent (and, if a different concept is chosen later,
@@ -79,6 +86,27 @@
   --ino-primitive-green-700: #1F7A4F;
   --ino-primitive-amber-800: #8A5D1E;
   --ino-primitive-red-600: #A6362D;
+
+  /* High-contrast-only primitives (WCAG 2.2 AAA target, section 2c) — unused
+     while dark/light is active, kept here so every raw value in the system
+     still lives in one place. See README §Contrast (high-contrast) for the
+     audit behind each. Bright, highly saturated hues chosen deliberately —
+     not a recolor of dark mode's palette — because AAA-level luminance
+     separation on a pure-black surface needs colors this brand's usual
+     muted RAG set doesn't carry. */
+  --ino-primitive-hc-black: #000000;
+  --ino-primitive-hc-black-raised: #050505;
+  --ino-primitive-hc-white: #FFFFFF;
+  --ino-primitive-hc-gray-muted: #AAAAAA;
+  --ino-primitive-hc-yellow: #FFD60A;  /* accent */
+  --ino-primitive-hc-cyan: #00E5FF;    /* accent-secondary */
+  --ino-primitive-hc-green: #00E676;   /* success */
+  --ino-primitive-hc-amber: #FFC400;   /* warning */
+  --ino-primitive-hc-coral: #FF6B6B;   /* danger — a standard saturated red fails AAA
+                                           in both directions (text-on-black AND
+                                           chip-text-on-red); this coral is the
+                                           brightest red that still clears 7:1 both
+                                           ways, see README §Contrast (high-contrast) */
 
   /* ---------------------------------------------------------------------
    * 2. SEMANTIC ROLES — what components actually bind to. Modeled on
@@ -268,6 +296,71 @@
   --ino-color-risk-low-dot: var(--ino-primitive-green-500);
   --ino-color-risk-low-fill: var(--ino-primitive-green-700);
   --ino-color-risk-low-on-fill: #FFFFFF;                /* 5.31:1 */
+}
+
+/* ---------------------------------------------------------------------
+ * 2c. HIGH-CONTRAST MODE — third theme, WCAG 2.2 AAA target (not just AA).
+ *     Proves the primitive → semantic-role architecture scales past a
+ *     dark/light pair: every override below re-points an existing role name
+ *     at a new primitive, same as 2b did for light — zero new role names,
+ *     zero component changes required. Set via [data-theme="high-contrast"]
+ *     on <html>, same attribute contract as [data-theme="light"]; ThemeService
+ *     just adds a third value to its union type. See
+ *     docs/brand/09-design-system-standards.md §8 "Adding a new theme" for
+ *     the recipe this proves out, and docs/brand/02-design-tokens/README.md
+ *     §Contrast (high-contrast) for the full ratio table.
+ *
+ *     Two departures from dark/light below, both accessibility-motivated,
+ *     not stylistic:
+ *       - No elevation shadows (--ino-elevation-* → none) and no accent glow
+ *         (--ino-glow-accent → none). Soft shadow/glow gradients are a
+ *         luminance-gradient effect that reduces edge clarity for low-vision
+ *         users — exactly who opts into a high-contrast theme. Elevation and
+ *         grouping are communicated by the (now solid, opaque) border only.
+ *       - Borders go from ~6-10% translucent hairlines to fully opaque
+ *         white / 50% white — translucent lines are designed to be subtle;
+ *         a high-contrast theme's entire job is to not be subtle.
+ * ------------------------------------------------------------------- */
+[data-theme="high-contrast"] {
+  --ino-color-surface: var(--ino-primitive-hc-black);
+  --ino-color-surface-raised: var(--ino-primitive-hc-black-raised); /* distinguished by border, not luminance — see note above */
+  --ino-color-surface-sunken: var(--ino-primitive-hc-black); /* already at the black floor — same "sunken==black" pattern as dark mode's own surface-sunken */
+  --ino-color-on-surface: var(--ino-primitive-hc-white);             /* 21:1 on surface */
+  --ino-color-on-surface-muted: var(--ino-primitive-hc-gray-muted);  /* 9.04:1 on surface — AAA body text */
+  --ino-color-on-surface-subtle: var(--ino-primitive-gray-700);      /* decorative/disabled only, same rule as dark/light */
+  --ino-color-overlay-scrim: rgba(0, 0, 0, 0.92); /* darker than dark mode's 0.72 — max separation from the modal surface above it */
+
+  --ino-color-border: var(--ino-primitive-hc-white);       /* solid, opaque — not a hairline */
+  --ino-color-border-soft: rgba(255, 255, 255, 0.5);
+
+  --ino-color-accent: var(--ino-primitive-hc-yellow);            /* 14.88:1 on surface — AAA even as running text, unlike dark/light's accent */
+  --ino-color-accent-secondary: var(--ino-primitive-hc-cyan);    /* 13.65:1 on surface */
+  --ino-color-accent-text-safe: var(--ino-primitive-hc-yellow);  /* 14.88:1 */
+  --ino-color-on-accent: #000000;                                /* white text on this yellow is 1.41:1 — must be black */
+  --ino-gradient-accent: linear-gradient(135deg, var(--ino-primitive-hc-yellow), var(--ino-primitive-hc-cyan));
+  --ino-glow-accent: none; /* decorative glow disabled in high-contrast mode, see note above */
+
+  --ino-color-success: var(--ino-primitive-hc-green);
+  --ino-color-on-success: #000000;                        /* 12.58:1 */
+  --ino-color-warning: var(--ino-primitive-hc-amber);
+  --ino-color-on-warning: #000000;                        /* 13.15:1 */
+  --ino-color-danger: var(--ino-primitive-hc-coral);
+  --ino-color-on-danger: #000000;                         /* 7.57:1 */
+
+  --ino-elevation-1: none; /* see note above — no shadow gradients in high-contrast mode */
+  --ino-elevation-2: none;
+
+  --ino-color-risk-high-dot: var(--ino-primitive-hc-coral);
+  --ino-color-risk-high-fill: var(--ino-primitive-hc-coral);
+  --ino-color-risk-high-on-fill: #000000;                 /* 7.57:1 */
+
+  --ino-color-risk-medium-dot: var(--ino-primitive-hc-amber);
+  --ino-color-risk-medium-fill: var(--ino-primitive-hc-amber);
+  --ino-color-risk-medium-on-fill: #000000;               /* 13.15:1 */
+
+  --ino-color-risk-low-dot: var(--ino-primitive-hc-green);
+  --ino-color-risk-low-fill: var(--ino-primitive-hc-green);
+  --ino-color-risk-low-on-fill: #000000;                  /* 12.58:1 */
 }
 
 /* Respect the OS preference the FIRST time a visitor arrives, before

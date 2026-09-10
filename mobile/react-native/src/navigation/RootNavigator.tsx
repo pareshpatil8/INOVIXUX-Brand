@@ -75,9 +75,9 @@ export function RootNavigator() {
   const { colors, resolvedScheme } = useTheme();
 
   const navTheme = {
-    ...(resolvedScheme === 'dark' ? DarkTheme : DefaultTheme),
+    ...(resolvedScheme !== 'light' ? DarkTheme : DefaultTheme),
     colors: {
-      ...(resolvedScheme === 'dark' ? DarkTheme.colors : DefaultTheme.colors),
+      ...(resolvedScheme !== 'light' ? DarkTheme.colors : DefaultTheme.colors),
       background: colors.surface,
       card: colors.surfaceRaised,
       border: colors.border,

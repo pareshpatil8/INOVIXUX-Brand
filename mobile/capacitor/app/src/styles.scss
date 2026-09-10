@@ -3,7 +3,7 @@
  * by relative path into web/src/tokens.css directly, not a copy — so this workspace can never
  * drift from web/'s tokens the way a duplicated file could. See mobile/capacitor/README.md.
  */
-@import '../../../web/src/tokens.css';
+@import '../../../../web/src/tokens.css';
 
 * {
   box-sizing: border-box;

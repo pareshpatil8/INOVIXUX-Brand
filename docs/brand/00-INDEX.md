@@ -67,6 +67,8 @@ Verified Line/Aperture Mark/Ledger Seal) are closed and archived (§6).
 |---|---|---|
 | Token contract (color roles, type scale, spacing, elevation, dense/fluid density modes) | [`02-design-tokens/tokens.css`](02-design-tokens/tokens.css) | ✅ Done, WCAG 2.2 contrast-audited (measured ratios, not eyeballed — see `02-design-tokens/README.md`) |
 | Rendered style guide | [`02-design-tokens/style-guide.html`](02-design-tokens/style-guide.html) | ✅ Done |
+| N-theme extensibility proof: third theme (`high-contrast`, WCAG 2.2 AAA target) + "adding a new theme" recipe | [`09-design-system-standards.md`](09-design-system-standards.md) §8, `02-design-tokens/tokens.css` §2c, `02-design-tokens/README.md` | ✅ New 2026-09-10 (INO-92) — proves the primitive→role architecture scales past dark/light; wired into web `ThemeService`, RN, Flutter, Capacitor (inherits via shared import) |
+| Cross-platform token parity check (web canonical vs. RN `tokens.ts` vs. Flutter `tokens.dart`, all 3 themes) | [`../../scripts/check-theme-parity.mjs`](../../scripts/check-theme-parity.mjs) | ✅ New 2026-09-10 (INO-92) — dependency-free source audit, run with `node scripts/check-theme-parity.mjs`; replaces the earlier "spot-checked once" state |
 | Angular theme contract (how the tokens + 6 component contracts map to Angular) | [`02-design-tokens/angular-theme-contract.md`](02-design-tokens/angular-theme-contract.md) | ✅ Done |
 | Angular component source (Nav, Hero, FeatureGrid, MetricPanel, TierCard, Footer + CountUpDirective) | [`06-angular-components/`](06-angular-components/) | ✅ Done as source, standalone/OnPush, 100% token-driven |
 | Same components, wired into a real running app | [`/web/`](../../web/) | ✅ New this round — `ng build` passes, `npm start` serves it live |
@@ -78,11 +80,15 @@ Verified Line/Aperture Mark/Ledger Seal) are closed and archived (§6).
 | Branding completeness checklist (what's built vs. still open, every category) | [`12-branding-completeness-checklist.md`](12-branding-completeness-checklist.md) | ✅ New 2026-09-08 |
 | Mobile app pattern set (nav, screen templates, theming, motion) | [`13-mobile-app-patterns.md`](13-mobile-app-patterns.md) | ✅ New 2026-09-08 — pattern-level, no native codebase exists yet |
 
-**Read as:** the design system now covers dark mode, light mode, and both density modes across
-web, dashboard, and a forward-looking mobile-app contract — all token-driven, all WCAG 2.2
-AA-audited. Font self-hosting is the one remaining open item (needs a real app's build pipeline).
-**Logo mark is explicitly out of scope for this workstream** — tracked as its own open-ended
-child issue per the 2026-09-08 directive; nothing else here is blocked on it.
+**Read as:** the design system now covers dark mode, light mode, a third WCAG 2.2 AAA
+high-contrast mode, and both density modes across web, dashboard, and mobile (React Native,
+Flutter, Capacitor) — all token-driven, all contrast-audited, all parity-checked by a script
+(`scripts/check-theme-parity.mjs`) rather than a one-time spot check. The architecture is proven
+to extend past two themes (INO-92); adding a fourth follows the recipe in
+`09-design-system-standards.md` §8. Font self-hosting is the one remaining open item (needs a
+real app's build pipeline). **Logo mark is explicitly out of scope for this workstream** —
+tracked as its own open-ended child issue per the 2026-09-08 directive; nothing else here is
+blocked on it.
 
 ## 3. Brand language (verbal identity)
 

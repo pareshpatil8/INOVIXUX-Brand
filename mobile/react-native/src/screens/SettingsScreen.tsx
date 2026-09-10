@@ -27,6 +27,7 @@ export function SettingsScreen({ navigation }: Props) {
     { key: 'system', label: 'System', icon: SunMoon },
     { key: 'light', label: 'Light', icon: Sun },
     { key: 'dark', label: 'Dark', icon: Moon },
+    { key: 'high-contrast', label: 'High contrast', icon: SunMoon },
   ];
 
   const previewLinks: { label: string; icon: typeof Sun; onPress: () => void }[] = [
@@ -42,6 +43,7 @@ export function SettingsScreen({ navigation }: Props) {
         {themeOptions.map(({ key, label, icon: Icon }, i) => (
           <TouchableOpacity
             key={key}
+            accessibilityState={{ selected: mode === key }}
             accessibilityRole="button"
             onPress={() => setMode(key)}
             style={[styles.row, i > 0 && { borderTopWidth: 1, borderTopColor: colors.borderSoft }]}

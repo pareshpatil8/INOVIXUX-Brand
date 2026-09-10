@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 
 import { InoCardComponent } from '@web-app/components/card/ino-card.component';
-import { InoToggleComponent } from '@web-app/components/toggle/ino-toggle.component';
 import { ThemeService } from '@web-app/services/theme.service';
 
 import { InoConfirmActionSheetComponent } from '../../components/confirm-action-sheet/ino-confirm-action-sheet.component';
@@ -29,7 +28,6 @@ import { InoConfirmActionSheetComponent } from '../../components/confirm-action-
     CommonModule,
     RouterLink,
     InoCardComponent,
-    InoToggleComponent,
     InoConfirmActionSheetComponent,
   ],
   templateUrl: './settings.component.html',
@@ -43,8 +41,11 @@ export class SettingsComponent {
 
   protected deleteConfirmOpen = false;
 
-  protected onThemeToggle(): void {
-    this.themeService.toggle();
+  protected onThemeSelect(event: Event): void {
+    const value = (event.target as HTMLSelectElement).value;
+    if (value === 'dark' || value === 'light' || value === 'high-contrast') {
+      this.themeService.set(value);
+    }
   }
 
   protected onDeleteAccount(): void {

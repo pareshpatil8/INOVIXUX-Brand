@@ -56,9 +56,40 @@ export const colorsLight = {
   onDanger: '#FFFFFF',
 } as const;
 
+// Third theme, added INO-92 — WCAG 2.2 AAA target (7:1+), not just the AA floor dark/light hit.
+// Same role set as colorsDark/colorsLight (Palette type below still applies), values ported 1:1
+// from tokens.css §2c [data-theme="high-contrast"]. Full contrast audit: docs/brand/
+// 02-design-tokens/README.md §Contrast (high-contrast).
+export const colorsHighContrast = {
+  surface: '#000000',
+  surfaceRaised: '#050505',
+  surfaceSunken: '#000000',
+  onSurface: '#FFFFFF',
+  onSurfaceMuted: '#AAAAAA', // 9.04:1 on surface — AAA body text
+  onSurfaceSubtle: '#5A5A5C', // decorative/disabled only, same rule as dark/light
+  overlayScrim: 'rgba(0, 0, 0, 0.92)',
+  border: '#FFFFFF', // solid, opaque — not a translucent hairline like dark/light
+  borderSoft: 'rgba(255, 255, 255, 0.5)',
+  accent: '#FFD60A',
+  accentSecondary: '#00E5FF',
+  accentTextSafe: '#FFD60A', // 14.88:1 on surface — AAA even as small body text
+  onAccent: '#000000', // white on this yellow is 1.41:1 — must be black, unlike dark/light's white
+  success: '#00E676',
+  onSuccess: '#000000',
+  warning: '#FFC400',
+  onWarning: '#000000',
+  danger: '#FF6B6B', // brightest red that still clears 7:1 both directions — see README
+  onDanger: '#000000',
+} as const;
+
 // Gradient stops for accent surfaces (LinearGradient colors prop) — same stops as
 // --ino-gradient-accent in both themes.
 export const gradientAccent = ['#7C5CFC', '#4F46E5'] as const;
+export const gradientAccentHighContrast = ['#FFD60A', '#00E5FF'] as const;
+
+// High-contrast mode disables decorative glow — see tokens.css §2c note. No RN component
+// currently renders --ino-glow-accent (no shadow/elevation tokens exist in this file either),
+// so there's nothing to null out here; flagged so a future glow/shadow port doesn't miss it.
 
 export const space = {
   1: 4, 2: 8, 3: 12, 4: 16, 5: 20, 6: 24, 7: 32, 8: 40, 9: 56, 10: 80, 11: 96,

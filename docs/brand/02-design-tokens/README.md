@@ -61,6 +61,43 @@ exactly where an unaudited color pair would be a real, not cosmetic, defect.
 
 ---
 
+## WCAG 2.2 contrast audit — high-contrast theme (AAA target, added INO-92)
+
+`[data-theme="high-contrast"]` (`tokens.css` §2c) is the third theme, added 2026-09-10 as the
+extensibility proof for INO-92 — same primitive → semantic-role architecture as dark/light, no
+new role names, pure-black surface + bright saturated primitives chosen to clear 7:1 (AAA), not
+just the 4.5:1 (AA) floor dark/light targets. All ratios below computed with the same
+relative-luminance formula as the table above (script-verified, not eyeballed):
+
+| Pair | Ratio | Verdict |
+|---|---|---|
+| `on-surface` (#FFFFFF) on `surface` (#000000) | 21.00:1 | Pass — AAA, max possible ratio |
+| `on-surface-muted` (#AAAAAA) on `surface` | 9.04:1 | Pass — AAA body text (≥7:1) |
+| `accent` / `accent-text-safe` (#FFD60A) on `surface`, as text | 14.88:1 | Pass — AAA even as small body text (dark/light's accent is non-text-safe at this size) |
+| `accent-secondary` (#00E5FF) on `surface`, as text | 13.65:1 | Pass — AAA |
+| `on-accent` (black) on `accent` fill | 14.88:1 | Pass — AAA chip/button text. White on this yellow measures 1.41:1 — fails outright, which is why `on-accent` flips to black here (dark/light both use white) |
+| `success` (#00E676) on `surface`, as text | 12.58:1 | Pass — AAA |
+| `on-success` (black) on `success` fill | 12.58:1 | Pass — AAA |
+| `warning` (#FFC400) on `surface`, as text | 13.15:1 | Pass — AAA |
+| `on-warning` (black) on `warning` fill | 13.15:1 | Pass — AAA |
+| `danger` (#FF6B6B) on `surface`, as text | 7.57:1 | Pass — AAA (barely; see below) |
+| `on-danger` (black) on `danger` fill | 7.57:1 | Pass — AAA |
+
+**One honest limitation, not smoothed over:** saturated red is the hardest hue to push past
+7:1 in either direction — the standard brand red (`#C24C43`/`#A6362D` used in dark/light) only
+reaches 5.46:1 on black, short of AAA. `#FF6B6B` (a lighter coral, not the brand's usual red) is
+the brightest red that clears 7:1 both as text-on-black and as black-text-on-fill simultaneously;
+pushing further toward brand-red hue trades away the AAA target. Documented here rather than
+silently picking a color that reads as "high contrast" without actually measuring it — the same
+discipline the dark/light audit above already applies.
+
+Two non-color departures from dark/light, both accessibility-motivated: `--ino-elevation-*` and
+`--ino-glow-accent` are `none` in high-contrast mode (soft shadow/glow gradients reduce edge
+clarity for low-vision users), and borders go from ~6–10% translucent hairlines to fully opaque
+white — see `tokens.css` §2c comment for the full rationale.
+
+---
+
 ## Why Material Design 3's token *model* (not M3's colors)
 
 The brief asks for a Google-Material-or-Claude-design integration read. Neither is a visual

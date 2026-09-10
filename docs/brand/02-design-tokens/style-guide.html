@@ -92,14 +92,14 @@
 <body>
   <div class="wrap">
     <header>
-      <p class="kicker">INO-31 · Phase 2 · Adaptive Synapse accent, dark + light</p>
+      <p class="kicker">INO-31 · Phase 2 · Adaptive Synapse accent, dark + light + high-contrast</p>
       <h1>Design Token Style Guide</h1>
       <p>Every value below is read live from <code>tokens.css</code> via CSS custom properties —
       nothing on this page is hand-typed twice. If a token changes in the file, this page changes
       with it. This is the rendered check for the token contract described in <code>README.md</code>.</p>
       <button type="button" id="theme-toggle"
         style="font:inherit;padding:8px 14px;border-radius:var(--ino-radius-md);border:1px solid var(--ino-color-border);background:transparent;color:var(--ino-color-on-surface);cursor:pointer;">
-        Toggle dark / light — see <code>11-dark-light-mobile-accessibility.md</code>
+        Theme: <span id="theme-toggle-label">dark</span> — cycles dark → light → high-contrast, see <code>09-design-system-standards.md</code> §8
       </button>
     </header>
 
@@ -213,23 +213,24 @@
   });
 
   // Theme toggle demo — same attribute contract as ThemeService
-  // (web/src/app/services/theme.service.ts): [data-theme="light"] on <html>,
-  // absent = dark default. Persists to localStorage so a reload keeps the
-  // choice, matching the real app's behavior.
+  // (web/src/app/services/theme.service.ts): [data-theme="light|high-contrast"]
+  // on <html>, absent = dark default. Cycles dark -> light -> high-contrast ->
+  // dark, same THEME_ORDER as ThemeService. Persists to localStorage so a
+  // reload keeps the choice, matching the real app's behavior.
+  const THEME_ORDER = ['dark', 'light', 'high-contrast'];
   const themeBtn = document.getElementById('theme-toggle');
+  const themeLabel = document.getElementById('theme-toggle-label');
   const applyTheme = (theme) => {
-    if (theme === 'light') {
-      document.documentElement.setAttribute('data-theme', 'light');
-    } else {
-      document.documentElement.removeAttribute('data-theme');
-    }
+    document.documentElement.setAttribute('data-theme', theme);
+    themeLabel.textContent = theme;
   };
   try {
     const stored = localStorage.getItem('ino-theme');
-    if (stored) applyTheme(stored);
+    if (stored && THEME_ORDER.includes(stored)) applyTheme(stored);
   } catch (e) { /* storage disabled — stay on dark default */ }
   themeBtn.addEventListener('click', () => {
-    const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    const current = document.documentElement.getAttribute('data-theme') || 'dark';
+    const next = THEME_ORDER[(THEME_ORDER.indexOf(current) + 1) % THEME_ORDER.length];
     applyTheme(next);
     try { localStorage.setItem('ino-theme', next); } catch (e) { /* ignore */ }
   });

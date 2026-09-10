@@ -101,3 +101,66 @@ needed: five concept revisions and no single source of truth.
 - It does not decide, approve, or auto-flag anything in the KYB risk-review flow — RAG status
   values are supplied by the product logic and only *rendered* per the audited token contract.
   This mirrors the INO-14 mandate at the design-system layer, not just in copy.
+
+## 8. Adding a new theme (INO-92)
+
+The dark/light pair was never a hard limit — it was the first two proof points of a
+primitive → semantic-role architecture designed for N themes. `[data-theme="high-contrast"]`
+(`tokens.css` §2c, WCAG 2.2 AAA target) is the third, added 2026-09-10 specifically to prove
+that out before anyone needed a fourth under time pressure. It cost one CSS block, a one-line
+union-type addition per platform, and zero component changes — because component rule §5 (bind
+only to semantic roles) was already enforced.
+
+**The 3-layer rule that makes this cheap:**
+
+1. **Primitives** (`tokens.css` §1) — raw hex values, theme-specific, added freely. A new theme
+   gets its own primitive block (see `--ino-primitive-hc-*`) so no existing theme's raw values
+   are touched.
+2. **Semantic roles** (`tokens.css` §2) — the fixed vocabulary (`--ino-color-surface`,
+   `--ino-color-accent`, `--ino-color-on-danger`, …). A new theme re-points every existing role
+   name at a new primitive; it never invents a new role name. This is the rule that keeps the
+   cost at "one CSS block," not "grep every component."
+3. **Components** (`06-angular-components/`, RN/Flutter equivalents) — consume role tokens only
+   (§5). A component that already passes the dark/light parity gate repaints correctly in any
+   Nth theme for free, with no component-level changes, *because it never branched on
+   `data-theme` or a theme name in the first place.*
+
+**Concrete steps, in order:**
+
+1. Add a `--ino-primitive-*` block in `tokens.css` §1 for the new theme's raw values, if it needs
+   colors distinct from existing primitives (it usually will — see the high-contrast block's
+   comment for why reusing dark mode's muted RAG hues failed the AAA target).
+2. Add a `[data-theme="<name>"]` block in `tokens.css` (after §2b) that re-points every semantic
+   role the new theme needs to override at a primitive from step 1 — copy the full role list from
+   an existing theme block as your checklist so nothing is silently missed.
+3. Compute contrast for every text/fill pair the new theme touches and record it in
+   `02-design-tokens/README.md` (own subsection, same relative-luminance method as the existing
+   tables) — same rule as governance item 1.2, no new pair ships unaudited.
+4. Add the theme name to `InoTheme`/`ThemeMode`/`InoThemeMode` (whichever union type each
+   platform uses) — see the diffs in `web/src/app/services/theme.service.ts`,
+   `mobile/react-native/src/theme/ThemeProvider.tsx`, and
+   `mobile/flutter/lib/theme/theme_controller.dart` for the exact one-line-per-platform shape.
+   This is deliberately a union-type change, not a new boolean or a new prop, so an unhandled
+   theme is a compile error, not a silent fallback.
+5. Port the new theme's resolved role values into `mobile/react-native/src/theme/tokens.ts`
+   (`colors<Name>`) and `mobile/flutter/lib/theme/tokens.dart` (`InoPalette.<name>`).
+   Capacitor needs no separate step — it imports `web/src/tokens.css` directly (zero drift by
+   construction).
+6. Run `node scripts/check-theme-parity.mjs` from the repo root. It is a dependency-free source
+   audit (no build step, no test framework) that fails loudly if: the canonical/`web/` CSS files
+   diverge, a theme is missing its RN or Flutter palette, a color role differs between CSS and
+   either mobile port by more than a rounding tolerance, or a shared numeric token (space, radius,
+   touch target, motion duration) drifts between CSS and either mobile port. Treat a failing run
+   as a blocking defect, not a warning — this is what replaces "hand-checked, spot-checked once"
+   with "checked every time."
+7. Wire a UI entry point on every surface (web `ThemeService.toggle()`/style guide, RN/Flutter
+   settings screens) so the theme is actually reachable, not just present in the token file.
+8. Update `00-INDEX.md` §2 and `12-branding-completeness-checklist.md` to reflect the new theme
+   count — those documents are the audit trail; an unreflected addition is (for governance
+   purposes) the same as an undocumented one.
+
+**What this recipe does not cover:** a theme that needs a *new* semantic role (not just a new
+value for an existing one) is a bigger change — it means every existing theme also needs a value
+for that role, and every component that should react to it needs a deliberate design decision,
+not just a repaint. That's still a token-governance-gated change (§1), just a larger one than
+"add a theme."
