@@ -1,0 +1,10 @@
+<span class="ino-tag__dot" *ngIf="dot" aria-hidden="true"></span>
+
+<span class="ino-tag__icon" *ngIf="!dot">
+  <span class="ino-tag__spinner" *ngIf="loading" aria-hidden="true"></span>
+  <ng-container *ngIf="!loading">
+    <ng-content select="[icon]"></ng-content>
+  </ng-container>
+</span>
+
+<span class="ino-tag__label" [class.ino-tag__label--sr-only]="dot">{{ value || severityLabel[severity] }}</span>
