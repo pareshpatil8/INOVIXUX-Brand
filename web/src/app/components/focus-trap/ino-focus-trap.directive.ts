@@ -83,13 +83,11 @@ export class InoFocusTrapDirective implements OnInit, OnChanges, OnDestroy {
   private settingFocus = false;
 
   ngOnInit(): void {
-    console.log('DBG ngOnInit');
     this.sync();
     this.initialized = true;
   }
 
   ngOnChanges(): void {
-    console.log('DBG ngOnChanges init=', this.initialized, 'disabled=', this.inoFocusTrapDisabled);
     // ngOnChanges fires before ngOnInit for bound inputs; let ngOnInit own the first activation
     // so auto-focus runs exactly once.
     if (this.initialized) {
@@ -150,7 +148,6 @@ export class InoFocusTrapDirective implements OnInit, OnChanges, OnDestroy {
   }
 
   private deactivate(): void {
-    console.log('DBG deactivate active=', this.active);
     if (!this.active) {
       return;
     }
@@ -290,11 +287,19 @@ export class InoFocusTrapDirective implements OnInit, OnChanges, OnDestroy {
    */
   private isVisible(el: HTMLElement): boolean {
     for (let node: HTMLElement | null = el; node; node = node.parentElement) {
-      if (node.hidden || node.hasAttribute('inert') || node.getAttribute('aria-hidden') === 'true') {
+      if (
+        node.hidden ||
+        node.hasAttribute('inert') ||
+        node.getAttribute('aria-hidden') === 'true'
+      ) {
         return false;
       }
       const style = getComputedStyle(node);
-      if (style.display === 'none' || style.visibility === 'hidden' || style.visibility === 'collapse') {
+      if (
+        style.display === 'none' ||
+        style.visibility === 'hidden' ||
+        style.visibility === 'collapse'
+      ) {
         return false;
       }
       if (node === this.host) {

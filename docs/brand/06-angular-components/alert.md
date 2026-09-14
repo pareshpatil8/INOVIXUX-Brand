@@ -81,6 +81,37 @@ shared regardless of how many places call `show()`.
 
 ---
 
+## Motion
+
+Only the **toast** shape animates. `inline` and `banner` are laid out in the document flow, where an
+alert arriving is usually the result of the page itself changing; animating them would animate the
+content around them too.
+
+| Phase | Duration token | Easing token | Movement |
+|---|---|---|---|
+| Enter | `--ino-motion-duration-base` (200ms) | `--ino-motion-easing-decelerate` | fade in + `translateY(12px)` → 0 |
+| Exit | `--ino-motion-duration-fast` (120ms) | `--ino-motion-easing-accelerate` | fade out + 0 → `translateY(8px)` |
+
+Exit is the *fast* step and *accelerate*; enter is *base* and *decelerate*. A toast leaving should
+get out of the reviewer's way, while a toast arriving has to be on screen long enough to be noticed
+at all.
+
+Both are plain CSS keyframes bound through Angular's built-in `animate.enter` / `animate.leave`
+class bindings in `<ino-toast-container>`. That choice matters: `ToastService` removes a toast on
+its own auto-dismiss timer as well as via `dismiss(id)`, and `animate.leave` holds the element in
+the DOM until the animation finishes **whichever path removed it** — so an auto-dismissing toast and
+a user-closed one animate out identically, without the container having to be the only removal
+route. No `@angular/animations` dependency is involved.
+
+Neither keyframe uses `translateX`, so there is nothing to mirror under `dir="rtl"`.
+
+**Reduced motion** — both rules sit inside `@media (prefers-reduced-motion: no-preference)`. Under
+`reduce` the classes resolve to no animation; Angular measures the leaving element, finds none, and
+removes it on the next frame. Toasts therefore still dismiss promptly — and still dismiss *at all* —
+with motion switched off, which is the failure mode a naive `animationend` wait would introduce.
+
+---
+
 ## Accessibility contract
 
 **Role / ARIA**

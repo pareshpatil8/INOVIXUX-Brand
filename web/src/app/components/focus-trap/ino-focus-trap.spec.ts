@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { InoFocusTrapComponent } from './ino-focus-trap.component';
@@ -14,6 +14,12 @@ import { InoFocusTrapDirective } from './ino-focus-trap.directive';
  * sentinels are exactly the elements a real browser's tab order hands focus to at the boundary,
  * so focusing them is a faithful stand-in for the wrap that matters — and it is also the reason
  * the implementation uses sentinels rather than `preventDefault()` on keydown.
+ *
+ * Host state is held in signals rather than plain fields. Under Angular 22's zoneless change
+ * detection a plain field assignment never marks the view dirty, so `fixture.detectChanges()`
+ * refreshes nothing and a test that flips an input silently asserts against the *old* binding —
+ * it fails for a reason that has nothing to do with the trap. `fixture.changeDetectorRef
+ * .markForCheck()` does not rescue it either; a signal write is what schedules the refresh.
  */
 
 @Component({
@@ -23,22 +29,22 @@ import { InoFocusTrapDirective } from './ino-focus-trap.directive';
     <button type="button" id="outside">outside</button>
     <div
       inoFocusTrap
-      [inoFocusTrapDisabled]="disabled"
-      [inoFocusTrapAutoFocus]="autoFocus"
-      [inoFocusTrapInitialFocus]="initialFocus"
+      [inoFocusTrapDisabled]="disabled()"
+      [inoFocusTrapAutoFocus]="autoFocus()"
+      [inoFocusTrapInitialFocus]="initialFocus()"
     >
       <button type="button" id="first">first</button>
-      <button type="button" id="middle" [disabled]="middleDisabled">middle</button>
+      <button type="button" id="middle" [disabled]="middleDisabled()">middle</button>
       <a id="link" href="#x">link</a>
       <button type="button" id="last">last</button>
     </div>
   `,
 })
 class HostComponent {
-  disabled = false;
-  autoFocus = true;
-  initialFocus = '';
-  middleDisabled = false;
+  readonly disabled = signal(false);
+  readonly autoFocus = signal(true);
+  readonly initialFocus = signal('');
+  readonly middleDisabled = signal(false);
 }
 
 function sentinels(fixture: ComponentFixture<unknown>): HTMLElement[] {
@@ -99,7 +105,7 @@ describe('InoFocusTrapDirective', () => {
   it('honours an initialFocus selector', async () => {
     fixture.destroy();
     fixture = TestBed.createComponent(HostComponent);
-    fixture.componentInstance.initialFocus = '#link';
+    fixture.componentInstance.initialFocus.set('#link');
     document.body.appendChild(fixture.nativeElement);
     fixture.detectChanges();
     await flush();
@@ -110,7 +116,7 @@ describe('InoFocusTrapDirective', () => {
   it('does not move focus when autoFocus is off', async () => {
     fixture.destroy();
     fixture = TestBed.createComponent(HostComponent);
-    fixture.componentInstance.autoFocus = false;
+    fixture.componentInstance.autoFocus.set(false);
     document.body.appendChild(fixture.nativeElement);
     fixture.detectChanges();
     await flush();
@@ -133,7 +139,7 @@ describe('InoFocusTrapDirective', () => {
   });
 
   it('skips disabled controls when wrapping', () => {
-    fixture.componentInstance.middleDisabled = true;
+    fixture.componentInstance.middleDisabled.set(true);
     fixture.detectChanges();
 
     const [leading] = sentinels(fixture);
@@ -157,7 +163,7 @@ describe('InoFocusTrapDirective', () => {
   });
 
   it('releases focus and removes its sentinels when disabled', async () => {
-    fixture.componentInstance.disabled = true;
+    fixture.componentInstance.disabled.set(true);
     fixture.detectChanges();
     await flush();
 
@@ -182,7 +188,7 @@ describe('InoFocusTrapDirective', () => {
     await flush();
     expect(document.activeElement).toBe(byId(fixture, 'first'));
 
-    fixture.componentInstance.disabled = true;
+    fixture.componentInstance.disabled.set(true);
     fixture.detectChanges();
     await flush();
 
@@ -212,14 +218,14 @@ describe('InoFocusTrapComponent', () => {
     standalone: true,
     imports: [InoFocusTrapComponent],
     template: `
-      <ino-focus-trap [disabled]="disabled">
+      <ino-focus-trap [disabled]="disabled()">
         <button type="button" id="a">a</button>
         <button type="button" id="b">b</button>
       </ino-focus-trap>
     `,
   })
   class WrapperHost {
-    disabled = false;
+    readonly disabled = signal(false);
   }
 
   it('traps through the element form without adding a wrapper node', async () => {

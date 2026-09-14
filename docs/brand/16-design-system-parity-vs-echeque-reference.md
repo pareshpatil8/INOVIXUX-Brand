@@ -264,10 +264,12 @@ did not list.
 
 | PrimeNG component | In 38-plan? | Our equivalent | Status |
 |---|---|---|---|
-| Toast | **[38]** | `<ino-toast-container>` + `<ino-alert variant="toast">` | ⚠️ no position input, **no `info` severity** |
-| Message | **[38]** | `<ino-alert>` | ⚠️ **no `info` severity** |
+| Toast | **[38]** | `<ino-toast-container>` + `<ino-alert variant="toast">` | ⚠️ no position input (severity tiers complete — **N-8** closed) |
+| Message | **[38]** | `<ino-alert>` | ⚠️ no `outlined` / `simple` variant (severity tiers complete — **N-8** closed) |
 
-**Messages: 0 ✅ · 2 ⚠️ · 0 ❌** — still our strongest group.
+**Messages: 0 ✅ · 2 ⚠️ · 0 ❌** — still our strongest group. Both remaining gaps are *variant*
+gaps, not severity gaps; each is recorded as a deliberate omission in
+`06-angular-components/alert.md`.
 
 #### Media (6)
 
@@ -401,7 +403,8 @@ architectural mistake in Phase 2.
 the missing `size`.
 → *Rule: closed unions only. No free-form `class` strings, no `[ngClass]` pass-through, no boolean flags
 that encode a variant.*
-→ *Gap:* `size` absent on all 16 (N-1); `danger` absent on button; `info` absent on alert/toast (N-8).
+→ *Gap:* `size` absent on all 16 (N-1); `danger` absent on button. (`info` on alert/toast — N-8 — is
+closed by INO-128.)
 
 **Layer 4 — Escape hatch.** **This layer does not exist, and that is a decision we are making by
 default rather than on purpose.** PrimeNG's `pt` is a pressure valve; without one, the first consumer
@@ -583,7 +586,7 @@ the same scaffold plus 40 pages of backfill.
 |---|---|
 | Summary + detail + leading icon | ✅ |
 | Severity Success / Warning / Error | ✅ |
-| Severity **Info** | ❌ — `InoAlertStatus` is `success\|warning\|danger` (**N-8**) |
+| Severity **Info** | ✅ — `InoAlertStatus` is `info\|success\|warning\|danger` (**N-8** closed by INO-128) |
 | Position (5 corners) | ❌ fixed placement |
 | Sticky / persistent | 🔲 Pending (P-3) |
 | Dismissable / close button | ✅ |
@@ -886,7 +889,7 @@ the current component count and get monotonically more expensive. §4.4 makes th
 | **N-5** | Composite type aliases + `--leading-*` / `--tracking-*` scales | ❌ Missing | — |
 | **N-6** | Shadow/elevation scale — 2 steps today vs 6 + 3 brand + 2 inset | ⚠️ Partial | — |
 | **N-7** | `prefers-reduced-motion` coverage — 5 of 16 components | ⚠️ Partial | — |
-| **N-8** | **Info severity tier** — `InoAlertStatus` lacks `info`; required on both Toast and Message | ❌ Missing | — |
+| **N-8** | **Info severity tier** — `info` on both Toast and Message | ✅ **Closed** by **INO-128** (W0-6) — `InoAlertStatus` is `info\|success\|warning\|danger`; `--ino-color-info` / `--ino-color-on-info` in all 3 themes + both mobile ports, asserted by `check-theme-parity.mjs` | — |
 | **N-9** | Icon slots + `danger` button variant | ❌ Missing | rebaselined to `IconField` + `InputGroup` (§3.2) |
 | **N-11** | **Escape-hatch / override contract** *(NEW)* — PrimeNG's `pt` equivalent | 🔲 **Decision required** | §4.3 Layer 4. **You** — recommend option (a) |
 

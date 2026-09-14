@@ -85,6 +85,34 @@
   @media (prefers-reduced-motion: reduce) {
     .ino-alert__dismiss { transition: none; }
   }
+
+  /* Toast enter/exit (INO-128). Mirrors ino-toast-container.component.scss; in the Angular
+     component these two classes are applied by `animate.enter` / `animate.leave`. */
+  @media (prefers-reduced-motion: no-preference) {
+    .ino-toast-enter {
+      animation: ino-toast-in var(--ino-motion-duration-base) var(--ino-motion-easing-decelerate);
+    }
+    .ino-toast-leave {
+      animation: ino-toast-out var(--ino-motion-duration-fast) var(--ino-motion-easing-accelerate) forwards;
+    }
+  }
+
+  @keyframes ino-toast-in  { from { opacity: 0; transform: translateY(12px); } }
+  @keyframes ino-toast-out { to   { opacity: 0; transform: translateY(8px); } }
+
+  .motion-demo { display: flex; flex-direction: column; gap: var(--ino-space-3); align-items: flex-start; }
+  .motion-demo__btn {
+    padding: var(--ino-space-2) var(--ino-space-4);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-md);
+    background: var(--ino-color-surface-raised);
+    color: var(--ino-color-on-surface);
+    font: inherit; cursor: pointer;
+  }
+  .motion-demo__btn:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
 </style>
 </head>
 <body>
@@ -243,6 +271,57 @@
     <button type="button" class="ino-alert__dismiss" aria-label="Dismiss">&#10005;</button>
   </div>
 </div>
+
+<h2>Motion — toast enter / exit</h2>
+<p class="lede">
+  Enter is <code>--ino-motion-duration-base</code> + <code>--ino-motion-easing-decelerate</code>;
+  exit is <code>--ino-motion-duration-fast</code> + <code>--ino-motion-easing-accelerate</code> — a
+  toast leaving should get out of the way, a toast arriving has to be noticed. Movement is on the Y
+  axis only, so there is nothing to mirror under <code>dir="rtl"</code>. With
+  <strong>prefers-reduced-motion: reduce</strong> both classes resolve to no animation and the toast
+  appears and disappears instantly; in the Angular component Angular then removes the node on the
+  next frame, so toasts still dismiss with motion off.
+</p>
+<div class="motion-demo">
+  <button type="button" class="motion-demo__btn" id="motion-replay">Replay enter / exit</button>
+  <div id="motion-host"></div>
+</div>
+
+<script>
+  // Preview-only driver. The real component gets these classes from Angular's `animate.enter` /
+  // `animate.leave` bindings; this just reproduces the same two classes on the same markup.
+  (function () {
+    var host = document.getElementById('motion-host');
+    var toast =
+      '<div class="ino-alert ino-alert--info ino-alert--toast" role="status">' +
+        '<span class="ino-alert__icon" aria-hidden="true">i</span>' +
+        '<div class="ino-alert__body">' +
+          '<p class="ino-alert__heading">Screening scheduled</p>' +
+          '<div class="ino-alert__message">Re-runs nightly at 02:00 IST.</div>' +
+        '</div>' +
+      '</div>';
+
+    function play() {
+      host.innerHTML = toast;
+      var el = host.firstElementChild;
+      el.classList.add('ino-toast-enter');
+      // Leave after a dwell, mirroring ToastService's auto-dismiss path.
+      window.setTimeout(function () {
+        el.classList.remove('ino-toast-enter');
+        el.classList.add('ino-toast-leave');
+        // Remove on animationend, with a timer fallback so the reduced-motion case (no animation,
+        // therefore no animationend) still clears — the same hazard the component documents.
+        var done = false;
+        function remove() { if (!done) { done = true; host.innerHTML = ''; } }
+        el.addEventListener('animationend', remove);
+        window.setTimeout(remove, 400);
+      }, 1600);
+    }
+
+    document.getElementById('motion-replay').addEventListener('click', play);
+    play();
+  })();
+</script>
 
 </body>
 </html>

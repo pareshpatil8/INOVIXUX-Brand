@@ -1,3 +1,6 @@
+// Positioning shell only — no `:active`, no focus ring (INO-123 / DoD §5-6). This element is
+// `pointer-events: none` by design and never receives a press or focus; the projected `ino-alert`
+// re-enables pointer events and owns the dismiss button's pressed/focus-visible states.
 .ino-toast-container {
   position: fixed;
   z-index: 2000;
@@ -17,5 +20,47 @@
   .ino-toast-container {
     /* Logical, not left/right, so the stack mirrors correctly under dir="rtl" (DoD §8). */
     inset-inline: var(--ino-space-4);
+  }
+}
+
+/* Enter/exit motion (DoD §7, INO-128). Driven by Angular's built-in `animate.enter` /
+   `animate.leave` class bindings rather than a hand-rolled "leaving" flag, so a toast that
+   auto-dismisses from ToastService's own timer animates out on exactly the same path as one
+   the user closes — the container never has to be the sole removal route.
+
+   Both keyframes move on the Y axis only. There is no `translateX`, and therefore nothing to
+   mirror under dir="rtl" (DoD §8): the stack already flips via `inset-inline-end`, and an
+   axis-neutral slide stays correct in both directions without a second stylesheet. */
+@media (prefers-reduced-motion: no-preference) {
+  .ino-toast-enter {
+    animation: ino-toast-in var(--ino-motion-duration-base) var(--ino-motion-easing-decelerate);
+  }
+
+  .ino-toast-leave {
+    /* `forwards` holds the faded end state for the frame between animationend and DOM removal,
+       so the toast cannot flash back to full opacity on its way out. Exit is deliberately the
+       `fast` step and `accelerate`: dismissal should get out of the reviewer's way, whereas
+       arrival (`base` + `decelerate`) has to be slow enough to be noticed at all. */
+    animation: ino-toast-out var(--ino-motion-duration-fast) var(--ino-motion-easing-accelerate)
+      forwards;
+  }
+}
+
+/* Under `prefers-reduced-motion: reduce` neither class resolves to an animation. That is the
+   working reduce branch, not a gap: Angular measures the leaving element and, finding no
+   animation, removes it on the next frame — so toasts still dismiss promptly (and still
+   dismiss at all) with motion switched off. */
+
+@keyframes ino-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+@keyframes ino-toast-out {
+  to {
+    opacity: 0;
+    transform: translateY(8px);
   }
 }
