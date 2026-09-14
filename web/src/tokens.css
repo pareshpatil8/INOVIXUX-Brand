@@ -46,6 +46,25 @@
  * existing components already hardcodes. Rationale and the per-component
  * adoption recipe: docs/brand/06-angular-components/control-size-scale.md.
  *
+ * 2026-09-14 (INO-125, Wave 0 item W0-3): replaced the single mono uppercase
+ * "label" token with a real five-role form-label set (§4b) — label-lg /
+ * label / label-sm / hint / caption, each carrying size, leading, weight,
+ * tracking and a colour role, the three size tiers mapping 1:1 onto §12's
+ * sm/default/lg. THIS IS A RENAME, NOT AN ADDITION: the old
+ * --ino-type-label-* was the uppercase section kicker and is now
+ * --ino-type-eyebrow-*, so `label` finally means what it says. Every consumer
+ * moved in the same commit and no alias was left behind, because an alias
+ * would have let the misuse doc 16 §9.2 filed survive silently.
+ *
+ * That work also surfaced a live accessibility defect and fixed it: pointing
+ * an invalid-label role at --ino-color-danger renders at 4.16:1 on the dark
+ * surface and fails WCAG 1.4.3 AA. Hence --ino-color-danger-text-safe (new,
+ * all three themes) on a new --ino-primitive-red-400, exactly parallel to the
+ * existing --ino-color-accent-text-safe split. check-theme-parity.mjs now
+ * audits every form-label text role against every surface in all three
+ * themes, so it cannot regress. Rationale, the size-pairing table and the
+ * a11y contract: docs/brand/06-angular-components/form-label-tokens.md.
+ *
  * This file is the single source of truth for color, type, space, radius,
  * elevation, and motion. Angular consumes it as-is: drop it into
  * src/styles/tokens.css and import once in angular.json's global styles
@@ -116,6 +135,12 @@
                                           rather than the dark theme's violet. 8.07:1 with white. */
   --ino-primitive-green-500: #3A9B6B;
   --ino-primitive-red-500: #C24C43;
+  --ino-primitive-red-400: #DE6A61;    /* dark-mode TEXT red (INO-125) — red-500 is only 4.16:1 on
+                                          --ino-color-surface, so it fails WCAG 1.4.3 AA as small
+                                          text, and an invalid form label IS small text. Lightened
+                                          within the same hue family until it clears 4.5:1 against
+                                          all three dark surfaces. Fill and dot uses of red stay on
+                                          -500 — this primitive is text-only. */
   --ino-primitive-amber-500: #B98A3C;
   --ino-primitive-sky-500: #3D92BD;    /* info — hsl(200, 51%, 49%), built on the same
                                           saturation/lightness recipe as the RAG -500 trio above
@@ -198,6 +223,22 @@
   --ino-color-on-danger: #FFFFFF;                         /* 4.76:1 */
   --ino-color-info: var(--ino-primitive-sky-500);
   --ino-color-on-info: #000000;                           /* 6.04:1 */
+  --ino-color-danger-text-safe: var(--ino-primitive-red-400); /* danger as TEXT on a surface (invalid labels, inline errors, required markers). Splits from --ino-color-danger per theme for exactly the reason --ino-color-accent-text-safe does: the fill red is not a legible text red here. */
+
+  /* Form-label colour roles (INO-125 / W0-3). Every one is an alias of an
+     already-themed role, which is why light and high-contrast need zero
+     overrides for them below — that is the primitive → semantic-role
+     architecture doing its job, not an omission. Components bind to these
+     names and never to on-surface/danger directly, so a future "labels are
+     muted by default" decision stays a one-line change here. Audited at AA
+     4.5:1 in all three themes by scripts/check-theme-parity.mjs. */
+  --ino-color-label: var(--ino-color-on-surface);                 /* resting form label */
+  --ino-color-label-muted: var(--ino-color-on-surface-muted);     /* the "(optional)" suffix, and labels on a readonly field */
+  --ino-color-label-disabled: var(--ino-color-on-surface-subtle); /* WCAG 1.4.3 exempts disabled controls — same carve-out the role it aliases already carries */
+  --ino-color-label-invalid: var(--ino-color-danger-text-safe);
+  --ino-color-required-marker: var(--ino-color-danger-text-safe); /* the asterisk; never the ONLY signal — see form-label-tokens.md §Accessibility */
+  --ino-color-hint: var(--ino-color-on-surface-muted);
+  --ino-color-caption: var(--ino-color-on-surface-muted);
 
   --ino-elevation-0: none;
   --ino-elevation-1: 0 40px 80px -40px rgba(0, 0, 0, 0.6);   /* resting raised surfaces — cards, tier cards */
@@ -244,7 +285,48 @@
   --ino-type-body-sm-size: 12.5px; --ino-type-body-sm-line: 1.55; --ino-type-body-sm-weight: 400;
 
   --ino-type-metric-size: 34px;    --ino-type-metric-weight: 500; /* mono, count-up numerals */
-  --ino-type-label-size: 11px;     --ino-type-label-weight: 600;  --ino-type-label-tracking: 0.14em; /* mono, uppercase eyebrows/section labels */
+
+  /* EYEBROW — mono, UPPERCASE, wide-tracked. Section kickers, metric captions,
+     footer column heads. Renamed from --ino-type-label-* in INO-125 (W0-3):
+     the old name invited form fields to bind to it, which it was never
+     specified for — it is a display accent, not a UI label (doc 16 §9.2).
+     Values are unchanged; only the name moved, and no alias was left behind
+     because an alias would have kept the misuse silent. Always pair with
+     --ino-font-mono + text-transform: uppercase. */
+  --ino-type-eyebrow-size: 11px;   --ino-type-eyebrow-line: 1;    --ino-type-eyebrow-weight: 600; --ino-type-eyebrow-tracking: 0.14em;
+
+  /* ---------------------------------------------------------------------
+   * 4b. FORM-LABEL SET (INO-125 / W0-3, register item N-4) — the roles every
+   *     form control, Label / FloatLabel / IftaLabel wrapper, and inline
+   *     validation message binds to. Display font, sentence case, NOT
+   *     tracked-out: these are UI chrome that must stay scannable next to an
+   *     input, not a display accent.
+   *
+   *     Three size tiers map 1:1 onto the sm / default / lg control tiers in
+   *     §12, so a control's `size` input selects the matching label tier and
+   *     no component invents a label size of its own:
+   *
+   *       label-lg  -> size="lg"      control
+   *       label     -> size="default" control
+   *       label-sm  -> size="sm"      control, and dense-table column heads
+   *       hint      -> help text under a field (non-error), the
+   *                    aria-describedby target
+   *       caption   -> character counts, timestamps, sub-table footnotes
+   *
+   *     Each tier sits one step under the control font size it pairs with
+   *     (§12 -lg is 17px, label-lg is 16px) — a label naming a field should
+   *     not compete with the value inside it — while staying above the 11px
+   *     eyebrow, which is a display size and not safe for sustained reading.
+   *
+   *     Leading and tracking are declared per role here, matching the shape
+   *     of every type group above. The abstracted --leading-* / --tracking-*
+   *     scales are W0-4's scope, not this issue's.
+   * ------------------------------------------------------------------- */
+  --ino-type-label-lg-size: 16px;  --ino-type-label-lg-line: 1.35; --ino-type-label-lg-weight: 500; --ino-type-label-lg-tracking: -0.01em;
+  --ino-type-label-size: 13.5px;   --ino-type-label-line: 1.4;     --ino-type-label-weight: 500;    --ino-type-label-tracking: 0em;
+  --ino-type-label-sm-size: 12px;  --ino-type-label-sm-line: 1.4;  --ino-type-label-sm-weight: 500; --ino-type-label-sm-tracking: 0.005em;
+  --ino-type-hint-size: 12.5px;    --ino-type-hint-line: 1.5;      --ino-type-hint-weight: 400;     --ino-type-hint-tracking: 0em;
+  --ino-type-caption-size: 11.5px; --ino-type-caption-line: 1.45;  --ino-type-caption-weight: 400;  --ino-type-caption-tracking: 0.01em;
 
   /* ---------------------------------------------------------------------
    * 5. SPACE — one scale, t-shirt tokens. Values are the real paddings
@@ -453,6 +535,7 @@
   --ino-color-on-danger: #FFFFFF;                       /* 6.59:1 */
   --ino-color-info: var(--ino-primitive-sky-700);
   --ino-color-on-info: #FFFFFF;                         /* 6.40:1 */
+  --ino-color-danger-text-safe: var(--ino-primitive-red-600); /* on light, the fill red is already a legible text red, so the two roles converge — no light-only primitive needed */
 
   --ino-elevation-1: 0 20px 48px -24px rgba(20, 20, 26, 0.16); /* dark-mode shadow reads as a black smear on white; lighter + tighter spread */
   --ino-elevation-2: 0 32px 72px -20px rgba(20, 20, 26, 0.24);
@@ -521,6 +604,7 @@
   --ino-color-on-danger: #000000;                         /* 7.57:1 */
   --ino-color-info: var(--ino-primitive-hc-sky);
   --ino-color-on-info: #000000;                           /* 9.76:1 */
+  --ino-color-danger-text-safe: var(--ino-primitive-hc-coral); /* hc-coral already clears this theme's AAA bar as text, so the roles converge here too */
 
   --ino-elevation-1: none; /* see note above — no shadow gradients in high-contrast mode */
   --ino-elevation-2: none;
@@ -572,6 +656,7 @@
     --ino-color-on-danger: #FFFFFF;
     --ino-color-info: var(--ino-primitive-sky-700);
     --ino-color-on-info: #FFFFFF;
+    --ino-color-danger-text-safe: var(--ino-primitive-red-600);
     --ino-elevation-1: 0 20px 48px -24px rgba(20, 20, 26, 0.16);
     --ino-elevation-2: 0 32px 72px -20px rgba(20, 20, 26, 0.24);
     --ino-color-risk-high-fill: var(--ino-primitive-red-600);
@@ -598,6 +683,21 @@
   --ino-type-body-size: 12.5px;
   --ino-type-body-line: 1.4;
   --ino-row-min-height: 32px; /* WCAG 2.2 2.5.8 floor is 24px; padded above it deliberately */
+
+  /* §4b form labels track density the same way body does, and for the same
+     reason: a label sitting in a dense row beside 12.5px body text must not
+     stay at its fluid size. Only the DEFAULT tier moves — label-lg and
+     label-sm are explicit tier requests coming from a control's `size` input,
+     and per doc 16 §8 density and sm/default/lg are orthogonal axes, so a
+     container's density must never silently override a caller's size="lg".
+     That is the same split --ino-control-font-size-default already makes in
+     §12, and the same one --ino-type-body-lg/-sm made before it. */
+  --ino-type-label-size: 12.5px;
+  --ino-type-label-line: 1.35;
+  --ino-type-hint-size: 11.5px;
+  --ino-type-hint-line: 1.4;
+  --ino-type-caption-size: 11px;
+  --ino-type-caption-line: 1.35;
 
   /* §12 control scale, dense resolution. -default is pinned to
      --ino-row-min-height (32px) so a control dropped into a dense table row
@@ -631,6 +731,17 @@
   --ino-type-body-size: 15px;
   --ino-type-body-line: 1.65;
   --ino-row-min-height: 44px;
+
+  /* §4b form labels, fluid resolution — repeated rather than inherited for
+     the same reason §12's block below repeats its aliases: a fluid island
+     nested inside a dense shell would otherwise render dense labels. Mobile
+     carries exactly these numbers (mobile is always fluid). */
+  --ino-type-label-size: 14.5px;
+  --ino-type-label-line: 1.45;
+  --ino-type-hint-size: 13px;
+  --ino-type-hint-line: 1.55;
+  --ino-type-caption-size: 12px;
+  --ino-type-caption-line: 1.5;
 
   /* §12 control scale, fluid resolution. Numerically identical to the :root
      values, and repeated anyway on purpose: a fluid island nested inside a

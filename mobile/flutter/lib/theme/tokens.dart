@@ -28,6 +28,10 @@ class InoPalette {
   final Color onWarning;
   final Color danger;
   final Color onDanger;
+  /// Danger used as TEXT on a surface (invalid form labels, inline errors, required
+  /// markers). Diverges from [danger] in dark mode only — see tokens.css
+  /// --ino-color-danger-text-safe / INO-125.
+  final Color dangerTextSafe;
   final Color info;
   final Color onInfo;
 
@@ -52,6 +56,7 @@ class InoPalette {
     required this.onWarning,
     required this.danger,
     required this.onDanger,
+    required this.dangerTextSafe,
     required this.info,
     required this.onInfo,
   });
@@ -77,6 +82,7 @@ class InoPalette {
     onWarning: Color(0xFF000000),
     danger: Color(0xFFC24C43),
     onDanger: Color(0xFFFFFFFF),
+    dangerTextSafe: Color(0xFFDE6A61), // PLACEHOLDER_DARK
     info: Color(0xFF3D92BD), // INO-128 — fourth, non-alarming severity register
     onInfo: Color(0xFF000000),
   );

@@ -32,6 +32,7 @@ export const colorsDark = {
   warning: '#B98A3C',
   onWarning: '#000000',
   danger: '#C24C43',
+  dangerTextSafe: '#DE6A61', // danger as TEXT: danger itself is only 4.16:1 on surface and fails AA 1.4.3
   onDanger: '#FFFFFF',
   info: '#3D92BD', // INO-128 — fourth, non-alarming severity register; see tokens.css §2
   onInfo: '#000000',
@@ -57,6 +58,7 @@ export const colorsLight = {
   warning: '#8A5D1E',
   onWarning: '#FFFFFF',
   danger: '#A6362D',
+  dangerTextSafe: '#A6362D', // light's fill red is already a legible text red — roles converge
   onDanger: '#FFFFFF',
   info: '#226587',
   onInfo: '#FFFFFF',
@@ -86,6 +88,7 @@ export const colorsHighContrast = {
   warning: '#FFC400',
   onWarning: '#000000',
   danger: '#FF6B6B', // brightest red that still clears 7:1 both directions — see README
+  dangerTextSafe: '#FF6B6B', // clears this theme's AAA bar as text — roles converge
   onDanger: '#000000',
   info: '#6BB6FF', // true blue, not a second cyan — accentSecondary already owns #00E5FF here
   onInfo: '#000000',
@@ -137,7 +140,19 @@ export const type = {
   bodyLg: { fontSize: 17, lineHeight: 17 * 1.65, fontWeight: '400' as const },
   body: { fontSize: 15, lineHeight: 15 * 1.65, fontWeight: '400' as const }, // fluid-density body size
   bodySm: { fontSize: 12.5, lineHeight: 12.5 * 1.55, fontWeight: '400' as const },
-  label: { fontSize: 11, letterSpacing: 1.54, fontWeight: '600' as const }, // 0.14em @ 11px
+  // Mono UPPERCASE display accent — section kickers, group headers. Renamed from `label` in
+  // INO-125: the name now belongs to the form-label set below. Values unchanged.
+  eyebrow: { fontSize: 11, letterSpacing: 1.54, fontWeight: '600' as const }, // 0.14em @ 11px
+
+  // Form-label set — tokens.css §4b. Mobile is always fluid density
+  // (13-mobile-app-patterns.md §3), so these mirror the [data-density="fluid"] column, not the
+  // :root defaults — exactly as `body` above already does. letterSpacing is px (RN has no em),
+  // computed at the listed size. check-theme-parity.mjs asserts all of it against the CSS.
+  labelLg: { fontSize: 16, lineHeight: 16 * 1.35, fontWeight: '500' as const, letterSpacing: -0.16 },
+  label: { fontSize: 14.5, lineHeight: 14.5 * 1.45, fontWeight: '500' as const, letterSpacing: 0 },
+  labelSm: { fontSize: 12, lineHeight: 12 * 1.4, fontWeight: '500' as const, letterSpacing: 0.06 },
+  hint: { fontSize: 13, lineHeight: 13 * 1.55, fontWeight: '400' as const, letterSpacing: 0 },
+  caption: { fontSize: 12, lineHeight: 12 * 1.5, fontWeight: '400' as const, letterSpacing: 0.12 },
 };
 
 export const motion = {
