@@ -78,6 +78,7 @@ assumed-done or silently dropped. `✅` = built and pushed. `🟡` = partial / s
 | App icon / splash screen | ✅ *(this round)* | Exported per platform from `inovixux-icon-b2c.svg` on all three tracks — `mobile/capacitor/resources/`, `mobile/react-native/assets/`, `mobile/flutter/assets/{icon,splash}/`, each with a `scripts/gen*app*icon*` generator |
 | Screens actually built | ✅ *(this round)* | All 13 inventory rows built on all three tracks — see `15-mobile-screen-inventory.md` §4 for the per-track file map. INO-88/89/90 closed. |
 | Framework decision | ✅ *(this round)* | Resolved on INO-85: build all three — Capacitor, React Native, Flutter — in parallel, each in its own `mobile/<framework>/` folder. See `13-mobile-app-patterns.md` §5. Child issues track each build. |
+| Push notification / deep-link patterns | ✅ *(this round)* | `13-mobile-app-patterns.md` §6 (INO-97) — notification icon/tint, badge rules, in-app-banner-vs-tray decision, category→token map, deep-link grammar, cold-start/back-stack behaviour. Spec only: §6.7 names the five backend/product items implementation still needs. |
 
 ## 6. Collateral (non-digital / print)
 

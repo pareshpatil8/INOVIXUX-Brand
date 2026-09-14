@@ -78,7 +78,7 @@ Verified Line/Aperture Mark/Ledger Seal) are closed and archived (§6).
 | Surface depth (sunken/overlay), `<ino-card>` component | [`11-dark-light-mobile-accessibility.md`](11-dark-light-mobile-accessibility.md) §9 | ✅ New 2026-09-08 — live in `/web/` as a bento-card section |
 | Governance / usage standards | [`09-design-system-standards.md`](09-design-system-standards.md) | ✅ New this round — see §8 |
 | Branding completeness checklist (what's built vs. still open, every category) | [`12-branding-completeness-checklist.md`](12-branding-completeness-checklist.md) | ✅ New 2026-09-08 |
-| Mobile app pattern set (nav, screen templates, theming, motion) | [`13-mobile-app-patterns.md`](13-mobile-app-patterns.md) | ✅ New 2026-09-08 — pattern-level, no native codebase exists yet |
+| Mobile app pattern set (nav, screen templates, theming, motion, push/deep-link) | [`13-mobile-app-patterns.md`](13-mobile-app-patterns.md) | ✅ New 2026-09-08 — §6 push-notification & deep-link patterns added 2026-09-14 (INO-97); all three tracks now built, see §5 |
 
 **Read as:** the design system now covers dark mode, light mode, a third WCAG 2.2 AAA
 high-contrast mode, and both density modes across web, dashboard, and mobile (React Native,
