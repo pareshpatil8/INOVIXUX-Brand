@@ -79,6 +79,7 @@ Verified Line/Aperture Mark/Ledger Seal) are closed and archived (§6).
 | Governance / usage standards | [`09-design-system-standards.md`](09-design-system-standards.md) | ✅ New this round — see §8 |
 | Branding completeness checklist (what's built vs. still open, every category) | [`12-branding-completeness-checklist.md`](12-branding-completeness-checklist.md) | ✅ New 2026-09-08 |
 | Mobile app pattern set (nav, screen templates, theming, motion, push/deep-link) | [`13-mobile-app-patterns.md`](13-mobile-app-patterns.md) | ✅ New 2026-09-08 — §6 push-notification & deep-link patterns added 2026-09-14 (INO-97); all three tracks now built, see §5 |
+| Parity analysis vs. the e-Cheque reference folder + the "what's missing under branding" list | [`16-design-system-parity-vs-echeque-reference.md`](16-design-system-parity-vs-echeque-reference.md) | ✅ New 2026-09-14 — reference folder read in full (172 files) and compared artifact by artifact. **Read §2 for the matrix, §5 for what we're missing, §7 for the sequenced backlog.** Corrects the earlier "folder could not be read" note in docs 11 and 12 |
 
 **Read as:** the design system now covers dark mode, light mode, a third WCAG 2.2 AAA
 high-contrast mode, and both density modes across web, dashboard, and mobile (React Native,

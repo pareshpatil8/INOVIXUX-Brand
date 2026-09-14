@@ -95,10 +95,13 @@ assumed-done or silently dropped. `✅` = built and pushed. `🟡` = partial / s
   2026-09-07 directive; tokens/density modes are ready for them, no screens built.
 - **Any commercial/pricing content** — INO-14 hold still applies everywhere above.
 - **A duplicate of whatever `~/Downloads/e-Cheque Design System` contains that isn't listed
-  above** — that folder could not be read this round (local OS permission boundary, not a repo
-  issue — see `11-…mobile-accessibility.md` §9). If it has categories not covered here, the
-  fastest fix is copying it into `docs/references/` in this repo, or naming the specific
-  categories directly in a comment.
+  above.** ~~That folder could not be read this round (local OS permission boundary).~~
+  **Corrected 2026-09-14:** the folder *was* read in full (172 files) and compared file by file
+  against this repo — see **`16-design-system-parity-vs-echeque-reference.md`**. It surfaced no
+  component category this checklist had missed; the real gaps it exposed are packaging-layer
+  (manifest, agent skill descriptor, per-component contracts, specimen cards, adherence lint) plus
+  a set of company-brand categories the reference doesn't cover either (data-viz palette, Indic
+  typography, report/PDF theme, email system). All enumerated in doc 16 §5 and §7.
 
 ## 8. Build order — items 1–5 complete
 
