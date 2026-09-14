@@ -1,0 +1,292 @@
+/*
+ * <ino-virtual-scroller> — INO-129 / INO-31 T-3.
+ *
+ * Two rules govern every declaration in this file:
+ *
+ * 1. No literal colour, space, radius, duration, shadow or font-size. Everything resolves
+ *    through a semantic role in tokens.css, so all three themes repaint for free and there
+ *    is no `[data-theme]` branch anywhere below.
+ * 2. Logical properties only — `inset-block-start` / `inset-inline-start` / `border-inline-end`,
+ *    never top/left/right. The scroll math in the .ts is logical too (scrollLeft is normalised
+ *    on read, de-normalised on write), so RTL is one code path rather than two.
+ *
+ * The eight states are carried by ONE inherited custom property, --ino-vs-border, which each
+ * state rebinds. That is deliberate: the alternative (a border-color declaration per state per
+ * modifier) is where invalid-while-hovered and readonly-while-pressed silently disagree, and it
+ * is what pushed the first draft of this file over its stylesheet budget. Specificity does the
+ * arbitration — a modifier selector is `:host([x]) .ino-vs__viewport` (0,3,0) and therefore
+ * always outranks the bare `.ino-vs__viewport:hover` (0,2,0).
+ */
+
+/* -------------------------------------------------------------------------------------------
+ * Size API — DoD row 3. The four lines per step are the Wave 0 idiom from tokens.css §12:
+ * rebind the unsuffixed alias, and every descendant rule reads the alias. Because the aliases
+ * are re-declared inside both [data-density] blocks, a dense/fluid ancestor re-resolves this
+ * whole scale without this file knowing density exists.
+ *
+ * data-size lands on the host via the component's `host: {...}` binding, so `:host([...])` is
+ * the selector that actually matches — a bare attribute selector here would be dead CSS under
+ * emulated encapsulation (the lesson recorded at the top of ino-button.component.scss).
+ * ------------------------------------------------------------------------------------------- */
+:host([data-size='sm']) {
+  --ino-control-height: var(--ino-control-height-sm);
+  --ino-control-padding-inline: var(--ino-control-padding-inline-sm);
+  --ino-control-font-size: var(--ino-control-font-size-sm);
+  --ino-control-gap: var(--ino-control-gap-sm);
+}
+
+:host([data-size='lg']) {
+  --ino-control-height: var(--ino-control-height-lg);
+  --ino-control-padding-inline: var(--ino-control-padding-inline-lg);
+  --ino-control-font-size: var(--ino-control-font-size-lg);
+  --ino-control-gap: var(--ino-control-gap-lg);
+}
+
+:host {
+  display: block;
+  --ino-vs-border: var(--ino-color-border);
+  /*
+   * Grid column default. A column has no height-like token to inherit, so this is a
+   * component-local LAYOUT RATIO (a unitless multiple of the resolved control height), not a
+   * new spacing value — it still tracks size and density automatically, and a consumer
+   * overrides it with the `columnSize` input or by setting this property directly.
+   */
+  --ino-vs-column-size: calc(var(--ino-control-height) * 4);
+}
+
+.ino-vs {
+  position: relative; /* containing block for the probe — see .ino-vs__probe */
+  display: flex;
+  flex-direction: column;
+  min-block-size: 0;
+  font-family: var(--ino-font-display);
+  font-size: var(--ino-control-font-size);
+  color: var(--ino-color-on-surface);
+}
+
+/* Header / footer sit OUTSIDE .ino-vs__viewport so a sticky column header or a paginator does
+   not scroll away with the rows, and does not participate in the scroll math. */
+.ino-vs__header,
+.ino-vs__footer {
+  flex: none;
+  padding: var(--ino-space-2) var(--ino-control-padding-inline);
+  background: var(--ino-color-surface-raised);
+}
+
+.ino-vs__header {
+  border-block-end: 1px solid var(--ino-vs-border);
+}
+
+.ino-vs__footer {
+  border-block-start: 1px solid var(--ino-vs-border);
+}
+
+/* -------------------------------------------------------------------------------------------
+ * The scroll port — the focusable element, and the owner of all eight states.
+ * ------------------------------------------------------------------------------------------- */
+.ino-vs__viewport {
+  position: relative;
+  flex: 1 1 auto;
+  min-block-size: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  background: var(--ino-color-surface-sunken);
+  border: 1px solid var(--ino-vs-border);
+  border-radius: var(--ino-radius-md);
+  transition: border-color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  /* State 2 — hover. */
+  &:hover {
+    --ino-vs-border: var(--ino-color-on-surface-muted);
+  }
+
+  /* State 3 — active/pressed. A scroll region is "pressed" while its scrollbar is being
+     dragged or it is being panned, and that is worth acknowledging for the same reason a
+     button press is: it confirms the gesture landed on THIS container, not an ancestor. */
+  &:active {
+    --ino-vs-border: var(--ino-color-accent-active);
+  }
+
+  /* State 4 — focus-visible. Ring comes from the Wave 0 tokens; never hand-rolled. */
+  &:focus-visible {
+    --ino-vs-border: var(--ino-color-accent);
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+}
+
+/* -------------------------------------------------------------------------------------------
+ * States 5-8, from host data-attributes set by the typed @Inputs.
+ * ------------------------------------------------------------------------------------------- */
+
+/* State 5 — disabled. Scrolling is genuinely suppressed, not merely dimmed: a disabled region
+   that still scrolls is a lie about its own interactivity. */
+:host([data-disabled]) {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+:host([data-disabled]) .ino-vs__viewport {
+  --ino-vs-border: var(--ino-color-border-soft);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* State 6 — readonly. The opposite trade from disabled: content stays fully scrollable and
+   fully legible (a reviewer must still be able to READ a locked result set), so readonly only
+   withdraws the interactive affordances — the hover/press feedback promising rows are
+   actionable.
+
+   No :hover/:active suffix needed — this selector is (0,3,0) and pins the property on the same
+   element the (0,2,0) hover/active rules target, so it simply outranks them in every state.
+   That includes :focus-visible, so a focused readonly viewport keeps a neutral border — but the
+   focus RING is a separate `outline` declaration and is unaffected, which is the part SC 2.4.7
+   actually requires. A readonly region stays keyboard-reachable and visibly focused. */
+:host([data-readonly]) .ino-vs__viewport {
+  --ino-vs-border: var(--ino-color-border);
+}
+
+/* State 7 — invalid. Border only; the fill stays neutral so row content keeps its audited
+   contrast against surface-sunken rather than against a tinted background. */
+:host([data-invalid]) .ino-vs__viewport {
+  --ino-vs-border: var(--ino-color-danger);
+}
+
+/* State 8 — loading/busy. Paired with aria-busy on the viewport in the template. */
+:host([data-busy]) .ino-vs__viewport {
+  cursor: progress;
+}
+
+/* -------------------------------------------------------------------------------------------
+ * Measuring stick — sized by exactly the properties a row is, so the scroll math reads the
+ * resolved control scale out of the DOM instead of hardcoding it (DoD rows 1, 3 and 4).
+ * `visibility: hidden`, NOT display:none: a display:none element measures 0x0 and the scroll
+ * math would divide by it.
+ * ------------------------------------------------------------------------------------------- */
+.ino-vs__probe {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  block-size: var(--ino-control-height);
+  min-block-size: var(--ino-row-min-height);
+  inline-size: var(--ino-vs-column-size);
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* -------------------------------------------------------------------------------------------
+ * Spacer + rendered window.
+ * ------------------------------------------------------------------------------------------- */
+
+/* Sized to the FULL collection. This, not the row count in the DOM, is what gives the browser
+   an honest scrollbar for 100k rows. */
+.ino-vs__content {
+  position: relative;
+  block-size: 100%;
+  min-inline-size: 100%;
+}
+
+.ino-vs__window {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  display: flex;
+  flex-direction: column;
+  inline-size: 100%;
+}
+
+:host([data-orientation='horizontal']) .ino-vs__window {
+  flex-direction: row;
+  block-size: 100%;
+  inline-size: auto;
+}
+
+/* Rows. --ino-row-min-height is the dense-table floor (DoD row 4); it sits above the WCAG 2.2
+   SC 2.5.8 24px minimum, and size="default" in fluid density resolves to the comfortable 44px. */
+.ino-vs__row {
+  display: flex;
+  align-items: center;
+  gap: var(--ino-control-gap);
+  box-sizing: border-box;
+  flex: none;
+  min-block-size: var(--ino-row-min-height);
+  padding-inline: var(--ino-control-padding-inline);
+  border-block-end: 1px solid var(--ino-color-border-soft);
+}
+
+:host([data-orientation='horizontal']) .ino-vs__row {
+  inline-size: var(--ino-vs-column-size);
+  block-size: 100%;
+  border-block-end: 0;
+  border-inline-end: 1px solid var(--ino-color-border-soft);
+}
+
+.ino-vs__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: var(--ino-control-height);
+  padding: var(--ino-space-6) var(--ino-control-padding-inline);
+  color: var(--ino-color-on-surface-muted);
+}
+
+/*
+ * Built-in skeleton, used only when the consumer projects no [inoVirtualScrollerLoader], so
+ * `loading` is never an invisible state. Both ends of the shimmer are semantic roles, so it
+ * re-themes like everything else and never becomes a second place a grey literal lives.
+ */
+.ino-vs__skeleton {
+  display: block;
+  inline-size: 100%;
+  block-size: var(--ino-space-2);
+  border-radius: var(--ino-radius-pill);
+  background: var(--ino-color-border-soft);
+}
+
+/*
+ * DoD row 7 — reduced motion. The shimmer ANIMATION is the enhancement, so it is scoped to the
+ * no-preference branch and `reduce` inherits the flat bar above: the loading state stays fully
+ * perceivable, it simply stops moving. (The JS half of this rule lives in resolveBehavior() —
+ * a programmatic smooth scroll is vestibular motion too, and is downgraded to 'auto' under the
+ * same media query.)
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .ino-vs__skeleton {
+    background: linear-gradient(
+      90deg,
+      var(--ino-color-border-soft) 0%,
+      var(--ino-color-border) 50%,
+      var(--ino-color-border-soft) 100%
+    );
+    background-size: 200% 100%;
+    animation: ino-vs-shimmer var(--ino-motion-duration-slow) var(--ino-motion-easing-standard)
+      infinite;
+  }
+}
+
+@keyframes ino-vs-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/*
+ * Visually hidden, still announced — the live region must stay in the a11y tree, so this is the
+ * house sr-only clip idiom (see ino-alert__sr-status) rather than display:none.
+ *
+ * Minus the classic `margin: -1px`. That declaration dates from the pre-`position: absolute`
+ * version of this pattern, where it was what pulled the 1px box out of flow; here `position:
+ * absolute` already does that and `clip-path` does the hiding, so it is pure vestige — and it is
+ * off the spacing scale, which check-ds-adherence.mjs correctly flags.
+ */
+.ino-vs__sr {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

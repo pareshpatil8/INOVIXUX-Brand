@@ -458,6 +458,30 @@ export class InoVirtualScrollerComponent implements OnChanges, AfterViewChecked,
 
   protected trackRow = (index: number, row: RenderedRow): unknown => row.key;
 
+  /**
+   * Total collection length for `aria-setsize` / `aria-rowcount` — the *real* one, not the
+   * rendered one. This is the single most important accessibility fact about a virtual
+   * scroller: without it the a11y tree says "item 3 of 30" when it is item 3 of 100,000.
+   * In `lazy` mode with an unknown total, -1 is the ARIA-sanctioned "size unknown".
+   */
+  protected get rowCountForAria(): number {
+    if (this.lazy && this.totalRecords <= 0) return -1;
+    return this.rowAxis.length;
+  }
+
+  /**
+   * Polite live-region text naming the rendered window. Sighted users read virtualization off
+   * the scrollbar; this is the equivalent signal for a screen-reader user, and it is why the
+   * component does not simply lie about `aria-setsize`.
+   */
+  protected get rangeAnnouncement(): string {
+    const total = this.rowAxis.length;
+    if (total === 0 || this.range.last < this.range.first) return '';
+    const unit = this.isGrid ? 'Rows' : 'Items';
+    const totalText = this.rowCountForAria < 0 ? 'many' : total.toLocaleString();
+    return `${unit} ${(this.range.first + 1).toLocaleString()} to ${(this.range.last + 1).toLocaleString()} of ${totalText}`;
+  }
+
   // ---------------------------------------------------------------------------------------------
   // Keyboard
   // ---------------------------------------------------------------------------------------------

@@ -205,11 +205,11 @@ Legend: ✅ Covered · ⚠️ Partial · ❌ Missing · **[38]** = was in the or
 | Timeline | [new] | — | ❌ — **strong fit for a KYB audit trail** |
 | Tree | **[38]** | — | ❌ |
 | TreeTable | **[38]** | — | ❌ |
-| **VirtualScroller** | [new] | — | ❌ — a large-dataset table prerequisite the 38-plan missed |
+| **VirtualScroller** | [new] | `<ino-virtual-scroller>` | ✅ — fixed + variable item size, lazy loading, scroll-position restoration; web-only by design (INO-129) |
 
-**Data: 0 ✅ · 0 ⚠️ · 10 ❌.** The KYB MVP cannot ship without this group — a risk-flag report *is* a
+**Data: 1 ✅ · 0 ⚠️ · 9 ❌.** The KYB MVP cannot ship without this group — a risk-flag report *is* a
 dense table. The rebaseline adds three prerequisites (Paginator, VirtualScroller, Timeline) the 38-plan
-did not list.
+did not list; VirtualScroller is the first of the three closed.
 
 #### Panel (11)
 
@@ -857,7 +857,7 @@ Total 31.** Two items change status on the strength of your points 3 and 6.
 | # | Item | Status | Evidence | Blocked by |
 |---|---|---|---|---|
 | **H-1** | **Data-visualization palette** — categorical series, sequential + diverging ramps, colourblind-safe validation across all 3 themes | ❌ Missing | `tokens.css` mentions "chart strokes" once, in passing | — |
-| **H-2** | **Table / dense data component** | ❌ Missing | `--ino-row-min-height: 32px` defined; **zero consumers**. Rebaseline adds Paginator + VirtualScroller as prerequisites | — |
+| **H-2** | **Table / dense data component** | ❌ Missing | `--ino-row-min-height: 32px` defined; **zero consumers**. Rebaseline adds Paginator + VirtualScroller as prerequisites — **VirtualScroller shipped (INO-129)**, Paginator still open | — |
 | **H-3** | **Devanagari + Indic typography** — Noto Sans Devanagari pairing, matched vertical rhythm | ❌ Missing | font chain is `Geist, system-ui, -apple-system, Arial, Helvetica` — no Devanagari face; a Hindi string falls to the OS default and breaks the line-height contract | — |
 | **H-4** | **Report / PDF export theme** — header/footer, typographic spec, print colour profile, INO-14 disclaimer lockup | ❌ Missing | no `@media print` block anywhere | print-colour half on **INO-82** |
 | **H-5** | **Design-system adherence lint** | ❌ Missing | `check-theme-parity.mjs` checks parity, not adherence | needs H-6 §6.1 item 6 |
