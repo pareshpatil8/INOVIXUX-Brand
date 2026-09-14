@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { LucideIcon } from 'lucide-react-native';
 import { useTheme } from '../theme/ThemeProvider';
-import { space, targetComfortable, type } from '../theme/tokens';
+import { radius, space, targetComfortable, type } from '../theme/tokens';
 
 /**
  * Empty state / error-offline template — docs/brand/13-mobile-app-patterns.md §2 row "Empty
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
   cta: {
     minHeight: targetComfortable,
     paddingHorizontal: space[6],
-    borderRadius: 10,
+    borderRadius: radius.lg,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: space[2],

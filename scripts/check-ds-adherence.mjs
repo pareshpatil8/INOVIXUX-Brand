@@ -226,10 +226,20 @@ function resolveVars(file, value, at, whole) {
       const declared = tokenValues.get(name);
       const norm = fallback.replace(/\s+/g, ' ');
       const numeric = norm.match(/^(-?\d*\.?\d+)px$/);
-      const ok = declared.has(norm) || (numeric && [...declared].some(d => {
+      const sameNumber = d => {
         const dn = d.match(/^(-?\d*\.?\d+)px$/);
-        return dn && parseFloat(dn[1]) === parseFloat(numeric[1]);
-      }));
+        return numeric && dn && parseFloat(dn[1]) === parseFloat(numeric[1]);
+      };
+      // A token defined as env()/var() carries its own fallback, and repeating THAT is the
+      // correct thing to write: --ino-safe-area-top is env(safe-area-inset-top, 0px), so
+      // `var(--ino-safe-area-top, 0px)` agrees with the contract on every browser — the
+      // 0px is the same 0px. Comparing against the literal `env(…)` string would flag the
+      // house idiom on every mobile page, which is how a lint gets switched off.
+      const echoesInnerFallback = d => {
+        const inner = d.match(/^(?:env|var)\([^,()]+,\s*([^()]+)\)$/);
+        return inner && (inner[1].trim().replace(/\s+/g, ' ') === norm || sameNumber(inner[1].trim()));
+      };
+      const ok = declared.has(norm) || [...declared].some(d => sameNumber(d) || echoesInnerFallback(d));
       if (!ok) {
         add('stale-var-fallback', file, whole, at, `var(${name}, ${fallback})`,
           `${name} is never ${fallback} — the contract declares ${[...declared].join(' | ')}; a drifted fallback renders an unapproved value whenever tokens.css is slow`);

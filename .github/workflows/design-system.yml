@@ -1,0 +1,59 @@
+name: Design system
+
+# The design-system gate (INO-118). Two checks that ask different questions:
+#
+#   parity    — do web, React Native and Flutter agree about what the tokens ARE?
+#   adherence — does the component source actually USE them?
+#
+# Parity passes with flying colours on a codebase where every component hardcodes
+# #7C5CFC, because the token files still agree with each other. Adherence is the
+# gate that catches that.
+#
+# Deliberately NOT part of deploy-pages.yml: that workflow only runs on push to
+# main, so it can only tell you about drift you have already merged. This one runs
+# on the pull request, which is the only place the answer is still cheap to act on.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch: {}
+
+# A superseded push has nothing useful left to say — cancel it and answer for the tip.
+concurrency:
+  group: design-system-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Tokens — parity and adherence
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # No `npm ci`. Both scripts are dependency-free ESM over node: builtins, which
+      # is what makes this job ~15s instead of ~3min — and is the reason the gate can
+      # run on every PR without anyone wanting to switch it off. Please keep it that
+      # way: a design-system lint that needs three toolchains installed (Angular SCSS,
+      # React Native TSX, Flutter Dart) is a design-system lint that gets disabled.
+      - name: Token parity — web <-> React Native <-> Flutter
+        run: node scripts/check-theme-parity.mjs
+
+      # Fails on a raw #7C5CFC, an off-scale 13px, a non-token radius/shadow/duration,
+      # a primitive-token reference, or a hardcoded icon colour. Pre-existing violations
+      # are waived in scripts/ds-adherence-waivers.json, and each waiver names the issue
+      # that deletes it — so this blocks NEW drift without blocking on a cleanup.
+      #
+      # If this step fails on your PR: fix the violation. The message names the nearest
+      # on-scale token. Add a waiver only when the fix genuinely needs a token decision,
+      # and say so on the owning issue — an unused waiver fails this build too, so the
+      # file cannot quietly become a parking lot.
+      - name: Design-system adherence
+        run: node scripts/check-ds-adherence.mjs
