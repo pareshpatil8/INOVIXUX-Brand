@@ -7,6 +7,7 @@ on:
       - "web/**"
       - "assets/brand/**"
       - "docs/brand/mockups/**"
+      - "mobile/react-native/**"
       - ".github/workflows/deploy-pages.yml"
   workflow_dispatch: {}
 
@@ -48,6 +49,25 @@ jobs:
         run: |
           mkdir -p web/dist/web/browser/brand/mockups
           cp -R docs/brand/mockups/. web/dist/web/browser/brand/mockups/
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: mobile/react-native/package-lock.json
+
+      - name: Install React Native track dependencies
+        working-directory: mobile/react-native
+        run: npm ci
+
+      - name: Export React Native track to static web (INO-107)
+        working-directory: mobile/react-native
+        run: npm run export:web
+
+      - name: Copy React Native mobile preview into build output
+        run: |
+          mkdir -p web/dist/web/browser/mobile-preview/react-native
+          cp -R mobile/react-native/dist-web/. web/dist/web/browser/mobile-preview/react-native/
 
       - uses: actions/upload-pages-artifact@v3
         with:
