@@ -130,5 +130,136 @@ for (const [theme, vars] of Object.entries(themes)) {
   assert.match(ring, /^\d+px solid var\(--ino-color-accent\)$/, `${theme}: --ino-focus-ring must stay "<n>px solid var(--ino-color-accent)", got "${ring}"`);
   assert.match(vars['--ino-focus-ring-offset'] ?? '', /^\d+px$/, `${theme}: --ino-focus-ring-offset must be a px length`);
 }
-console.log(`PASS: CSS mirrors; Capacitor import; ${colorChecks} color roles across 3 themes × 2 mobile ports; space/radius/targets/durations; focus-ring shape; pressed-accent contrast in 3 themes.`);
+// ── Wave 0 / INO-124 — the control-size scale (tokens.css §12) ─────────────────────────────────
+// Every component's size="sm"|"default"|"lg" API resolves entirely through these tokens, so the
+// scale is load-bearing for ~35 components that do not exist yet. Three things break it quietly,
+// and none of the three is visible in a diff:
+//   1. A density block forgets a row, so the row falls through to the enclosing scope and a fluid
+//      island nested in a dense shell silently renders 32px controls (or the reverse).
+//   2. A height is trimmed below the WCAG 2.2 SC 2.5.8 24px floor while chasing density.
+//      --ino-target-min is the floor for EVERY size in EVERY density, not just the nominal ones.
+//   3. The RN/Flutter ports drift from the CSS, which no web-side check would ever notice.
+// Assert all three structurally, so the failure lands on whoever edits the scale.
+const SIZES = ['sm', 'default', 'lg'];
+const ALIASES = ['height', 'padding-inline', 'padding-inline-roomy', 'font-size', 'icon-size', 'gap'];
+const densityBody = name =>
+  blocks.find(m => m[1].trim() === `[data-density="${name}"]`)?.[2];
+const rawDense = declarations(densityBody('dense') ?? assert.fail('[data-density="dense"] block missing'));
+const rawFluid = declarations(densityBody('fluid') ?? assert.fail('[data-density="fluid"] block missing'));
+const rawBase = Object.fromEntries(Object.entries(base).filter(([k]) => k.startsWith('--ino-control-')));
+const controlKeys = o => Object.keys(o).filter(k => k.startsWith('--ino-control-')).sort();
+
+// The two density blocks must re-resolve exactly the SAME token set as each other. This is the
+// check that makes "added a row to dense, forgot fluid" a build failure instead of a nesting bug.
+assert.deepEqual(controlKeys(rawDense), controlKeys(rawFluid),
+  'dense and fluid must re-resolve an identical set of --ino-control-* tokens');
+// …and the tokens a density block deliberately does NOT re-resolve are pinned by name, so that
+// dropping a row from both blocks at once cannot slip through the check above.
+const DENSITY_INVARIANT = [
+  '--ino-control-font-size-lg', '--ino-control-font-size-sm',   // alias body-lg/body-sm, which no density block overrides
+  '--ino-control-gap-default', '--ino-control-gap-sm', '--ino-control-gap-lg', // gap is density-invariant by design, §12
+];
+assert.deepEqual(controlKeys(rawBase).filter(k => !controlKeys(rawDense).includes(k)), DENSITY_INVARIANT.sort(),
+  'the set of control tokens a density block leaves to :root changed — update §12 and DENSITY_INVARIANT together');
+for (const [name, decls] of [['dense', rawDense], ['fluid', rawFluid]]) {
+  for (const f of ALIASES) {
+    assert.ok(decls[`--ino-control-${f}`],
+      `[data-density="${name}"] must re-declare the bare alias --ino-control-${f}; inheriting it from :root pins it to the OUTER density forever`);
+  }
+  assert.match(decls['--ino-row-min-height'] ?? '', /^\d+px$/, `[data-density="${name}"]: --ino-row-min-height must be a px length`);
+}
+
+const scales = { base, dense: { ...base, ...rawDense }, fluid: { ...base, ...rawFluid } };
+const targetMin = numeric('--ino-target-min');
+for (const [density, vars] of Object.entries(scales)) {
+  const px = key => parseFloat(resolve(vars[key] ?? assert.fail(`${density}: ${key} missing`), vars));
+  const row = f => SIZES.map(s => px(`--ino-control-${f}-${s}`));
+  const [hSm, hDefault, hLg] = row('height');
+  assert.ok(hSm < hDefault && hDefault < hLg,
+    `${density}: control heights must strictly increase sm < default < lg, got ${hSm}/${hDefault}/${hLg}`);
+  for (const f of ALIASES) {
+    const [a, b, c] = row(f);
+    assert.ok(a <= b && b <= c, `${density}: --ino-control-${f}-* must be non-decreasing across sm/default/lg, got ${a}/${b}/${c}`);
+    // The bare alias is what components actually consume; if it ever stops tracking -default,
+    // size="default" and "no size at all" quietly render differently.
+    assert.equal(px(`--ino-control-${f}`), px(`--ino-control-${f}-default`),
+      `${density}: --ino-control-${f} must resolve to its -default row`);
+  }
+  for (const s of SIZES) {
+    assert.ok(px(`--ino-control-height-${s}`) >= targetMin,
+      `${density}/${s}: control height ${px(`--ino-control-height-${s}`)}px is under the WCAG 2.2 SC 2.5.8 floor (--ino-target-min ${targetMin}px)`);
+    assert.ok(px(`--ino-control-padding-inline-roomy-${s}`) > px(`--ino-control-padding-inline-${s}`),
+      `${density}/${s}: -roomy padding must exceed the compact padding, or the two rows are the same row`);
+  }
+}
+// The two pins §12 states in prose, asserted so the prose cannot go stale: a dense control fits a
+// dense table row exactly, and a fluid control is the platform-HIG comfortable target.
+assert.equal(parseFloat(scales.dense['--ino-control-height-default']), parseFloat(rawDense['--ino-row-min-height']),
+  'dense: --ino-control-height-default must equal --ino-row-min-height so a control drops into a dense table row without growing it');
+assert.equal(parseFloat(scales.fluid['--ino-control-height-default']), numeric('--ino-target-comfortable'),
+  'fluid: --ino-control-height-default must equal --ino-target-comfortable');
+// The fluid GEOMETRY is numerically identical to :root — it exists only so a fluid island nested
+// inside a dense shell re-resolves instead of inheriting. If the two ever diverge, one is a typo.
+// font-size is excluded on purpose: it aliases --ino-type-body-*, and a density block redefines
+// that scale underneath it (fluid body is 15px vs :root 14px), so the alias is SUPPOSED to move.
+// That distinction is the whole reason -font-size-default is re-declared in both density blocks.
+for (const f of ALIASES.filter(f => f !== 'font-size')) {
+  for (const s of SIZES) {
+    const key = `--ino-control-${f}-${s}`;
+    assert.equal(parseFloat(resolve(scales.fluid[key], scales.fluid)), parseFloat(resolve(base[key], base)),
+      `${key}: the fluid geometry must stay numerically identical to :root (it is a re-declaration, not a variant)`);
+  }
+}
+// …and the font-size rows are checked against the thing they are supposed to track instead: each
+// density's own body size. A density block that overrides --ino-type-body-size but forgets to
+// re-declare --ino-control-font-size-default would otherwise ship a control whose label is sized
+// for the WRONG density — invisible in a diff, and the exact bug this re-declaration prevents.
+for (const [density, vars] of Object.entries(scales)) {
+  assert.equal(parseFloat(resolve(vars['--ino-control-font-size-default'], vars)), parseFloat(resolve(vars['--ino-type-body-size'], vars)),
+    `${density}: --ino-control-font-size-default must re-resolve against this density's own --ino-type-body-size`);
+}
+// A control size never invents a spacing or type value — padding/gap alias §5, font-size aliases §4.
+// Height and icon-size are deliberately their own ramps and stay raw px.
+for (const [density, decls] of [['base', rawBase], ['dense', rawDense], ['fluid', rawFluid]]) {
+  for (const [k, v] of Object.entries(decls)) {
+    if (!SIZES.some(s => k.endsWith(`-${s}`))) continue; // bare aliases point at their own -default row
+    if (/^--ino-control-(padding-inline|gap)/.test(k)) {
+      assert.match(v, /^var\(--ino-space-\d+\)$/, `${density}/${k}: must alias the §5 space scale, got "${v}"`);
+    }
+    if (k.startsWith('--ino-control-font-size')) {
+      assert.match(v, /^var\(--ino-type-[\w-]+\)$/, `${density}/${k}: must alias the §4 type scale, got "${v}"`);
+    }
+  }
+}
+// Mobile ports carry the FLUID column only (mobile is never dense), so they are asserted against
+// the fluid resolution — not :root — even though the two are numerically identical today.
+const CONTROL_FIELDS = {
+  'height': 'height', 'padding-inline': 'paddingInline', 'padding-inline-roomy': 'paddingInlineRoomy',
+  'font-size': 'fontSize', 'icon-size': 'iconSize', 'gap': 'gap',
+};
+const rnControl = rnGroup('control');
+let controlChecks = 0;
+for (const s of SIZES) {
+  const rnRow = rnControl.match(new RegExp(`\\b${s}:\\s*\\{([^}]*)\\}`))?.[1];
+  assert.ok(rnRow, `RN control.${s} missing`);
+  // `default` is a reserved word in Dart, so the Flutter port names that row `standard`. This is
+  // the one place the scale's names diverge from the web API, and it is deliberate — see tokens.dart.
+  const dartName = s === 'default' ? 'standard' : s;
+  const dartRow = dart.match(new RegExp(`static const ${dartName} = InoControlSize\\(([^)]*)\\)`))?.[1];
+  assert.ok(dartRow, `Flutter InoControlSize.${dartName} missing`);
+  const fields = Object.fromEntries([...rnRow.matchAll(/(\w+):\s*([\d.]+)/g)].map(m => [m[1], Number(m[2])]));
+  const dartFields = Object.fromEntries([...dartRow.matchAll(/(\w+):\s*([\d.]+)/g)].map(m => [m[1], Number(m[2])]));
+  assert.deepEqual(Object.keys(fields).sort(), Object.values(CONTROL_FIELDS).sort(), `RN control.${s} field completeness`);
+  assert.deepEqual(Object.keys(dartFields).sort(), Object.values(CONTROL_FIELDS).sort(), `Flutter InoControlSize.${dartName} field completeness`);
+  for (const [cssFamily, field] of Object.entries(CONTROL_FIELDS)) {
+    const expected = parseFloat(resolve(scales.fluid[`--ino-control-${cssFamily}-${s}`], scales.fluid));
+    assert.equal(fields[field], expected, `RN control.${s}.${field}: ${fields[field]} != CSS fluid ${expected}`);
+    assert.equal(dartFields[field], expected, `Flutter InoControlSize.${dartName}.${field}: ${dartFields[field]} != CSS fluid ${expected}`);
+    controlChecks += 2;
+  }
+}
+assert.equal(numeric('--ino-target-comfortable'), parseFloat(rawFluid['--ino-row-min-height']),
+  'fluid --ino-row-min-height must equal --ino-target-comfortable (the mobile ports export it as a single number)');
+
+console.log(`PASS: CSS mirrors; Capacitor import; ${colorChecks} color roles across 3 themes × 2 mobile ports; space/radius/targets/durations; focus-ring shape; pressed-accent contrast in 3 themes; control-size scale across 3 densities + ${controlChecks} mobile port values.`);
 console.log('High-contrast token pairs (AAA text >=7; non-text borders >=3; excludes disabled/decorative subtle role);\nplus per-theme pressed-accent pairs (INO-123):\n'+measurements.join('\n'));
