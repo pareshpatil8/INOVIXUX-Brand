@@ -82,7 +82,7 @@ class InoPalette {
     onWarning: Color(0xFF000000),
     danger: Color(0xFFC24C43),
     onDanger: Color(0xFFFFFFFF),
-    dangerTextSafe: Color(0xFFDE6A61), // PLACEHOLDER_DARK
+    dangerTextSafe: Color(0xFFDE6A61), // danger-500 is only 4.16:1 on dark surface, fails AA 1.4.3 as text
     info: Color(0xFF3D92BD), // INO-128 — fourth, non-alarming severity register
     onInfo: Color(0xFF000000),
   );
@@ -108,6 +108,7 @@ class InoPalette {
     onWarning: Color(0xFFFFFFFF),
     danger: Color(0xFFA6362D),
     onDanger: Color(0xFFFFFFFF),
+    dangerTextSafe: Color(0xFFA6362D), // light's fill red is already a legible text red — roles converge
     info: Color(0xFF226587),
     onInfo: Color(0xFFFFFFFF),
   );
@@ -133,6 +134,7 @@ class InoPalette {
     onWarning: Color(0xFF000000),
     danger: Color(0xFFFF6B6B),
     onDanger: Color(0xFF000000),
+    dangerTextSafe: Color(0xFFFF6B6B), // clears this theme's AAA bar as text — roles converge
     info: Color(0xFF6BB6FF), // true blue — accentSecondary already owns cyan in this theme
     onInfo: Color(0xFF000000),
   );

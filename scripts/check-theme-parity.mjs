@@ -261,5 +261,43 @@ for (const s of SIZES) {
 assert.equal(numeric('--ino-target-comfortable'), parseFloat(rawFluid['--ino-row-min-height']),
   'fluid --ino-row-min-height must equal --ino-target-comfortable (the mobile ports export it as a single number)');
 
-console.log(`PASS: CSS mirrors; Capacitor import; ${colorChecks} color roles across 3 themes × 2 mobile ports; space/radius/targets/durations; focus-ring shape; pressed-accent contrast in 3 themes; control-size scale across 3 densities + ${controlChecks} mobile port values.`);
+// ── Wave 0 / INO-125 — form-label colour roles (§4b) ────────────────────────────────────────────
+// label / hint / caption are body text, not decoration, so they carry the same AA 4.5:1 (AAA 7:1
+// in high-contrast) budget as onSurface/onSurfaceMuted above — but they are new roles the generic
+// audit at line 104 never walked, so a future edit that quietly re-points one at a token that
+// fails contrast would otherwise ship silently. labelDisabled is exempt (WCAG 1.4.3 carve-out for
+// disabled content, same as the control it labels) and is checked for presence only, not contrast.
+const labelBudget = { dark: 4.5, light: 4.5, 'high-contrast': 7 };
+for (const [theme, min] of Object.entries(labelBudget)) {
+  const palette = resolved[theme];
+  assert.ok(palette, `form-label audit: unknown theme ${theme}`);
+  for (const bg of ['surface', 'surfaceRaised', 'surfaceSunken']) {
+    for (const fg of ['label', 'labelMuted', 'hint', 'caption', 'labelInvalid', 'requiredMarker']) {
+      pair(fg, bg, min, palette, `${theme} `);
+    }
+  }
+  assert.ok(palette.labelDisabled, `${theme}: --ino-color-label-disabled role missing`);
+}
+// labelInvalid and requiredMarker are aliases of --ino-color-danger-text-safe, not a fresh pick —
+// assert the alias directly so the two can never drift from the token they exist to reuse.
+for (const [theme, vars] of Object.entries(themes)) {
+  assert.equal(vars['--ino-color-label-invalid'], 'var(--ino-color-danger-text-safe)', `${theme}: --ino-color-label-invalid must alias --ino-color-danger-text-safe`);
+  assert.equal(vars['--ino-color-required-marker'], 'var(--ino-color-danger-text-safe)', `${theme}: --ino-color-required-marker must alias --ino-color-danger-text-safe`);
+}
+// The five size/role tiers must exist on :root — the three size tiers map 1:1 onto §12's
+// sm/default/lg, which is the whole reason a control's `size` input can select its label tier for
+// free (doc: form-label-tokens.md §Adoption) — plus the two non-tiered roles (hint, caption).
+for (const key of ['--ino-type-label-lg-size', '--ino-type-label-size', '--ino-type-label-sm-size', '--ino-type-hint-size', '--ino-type-caption-size']) {
+  assert.ok(base[key], `${key} missing`);
+}
+// label / hint / caption move with density (dense compresses, fluid/base share the same fluid
+// resolution as §12) — the DEFAULT tier only, exactly like §12's own base/fluid geometry pin.
+for (const [density, decls] of [['dense', rawDense], ['fluid', rawFluid]]) {
+  for (const role of ['label', 'hint', 'caption']) {
+    assert.ok(decls[`--ino-type-${role}-size`], `[data-density="${density}"] must re-declare --ino-type-${role}-size`);
+    assert.ok(decls[`--ino-type-${role}-line`], `[data-density="${density}"] must re-declare --ino-type-${role}-line`);
+  }
+}
+
+console.log(`PASS: CSS mirrors; Capacitor import; ${colorChecks} color roles across 3 themes × 2 mobile ports; space/radius/targets/durations; focus-ring shape; pressed-accent contrast in 3 themes; control-size scale across 3 densities + ${controlChecks} mobile port values; form-label tokens across 3 themes × 2 densities.`);
 console.log('High-contrast token pairs (AAA text >=7; non-text borders >=3; excludes disabled/decorative subtle role);\nplus per-theme pressed-accent pairs (INO-123):\n'+measurements.join('\n'));
