@@ -124,8 +124,10 @@ function PushBanner({ notification }: { notification: InoNotification }) {
             // rather than added to theme/tokens.ts — that file is a colour/space/radius/motion
             // port guarded byte-for-byte by scripts/check-theme-parity.mjs, and elevation has no
             // entry there on any mobile track yet. Porting the elevation scale is its own change.
-            shadowColor: '#000',
-            shadowOpacity: 0.72,
+            // colors.overlayScrim already carries its own alpha, so shadowOpacity stays at 1 —
+            // this is the one themed neutral-ink role in scope, and it re-themes with the other 2.
+            shadowColor: colors.overlayScrim,
+            shadowOpacity: 1,
             shadowRadius: 30,
             shadowOffset: { width: 0, height: 24 },
             elevation: 12,
