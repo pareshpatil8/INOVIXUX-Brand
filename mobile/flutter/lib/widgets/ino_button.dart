@@ -54,7 +54,7 @@ class _InoButtonState extends State<InoButton> {
         return _pressed ? colors.surfaceSunken : colors.surfaceRaised;
       case InoButtonVariant.ghost:
       case InoButtonVariant.icon:
-        return _pressed ? colors.surfaceSunken : Colors.transparent;
+        return _pressed ? colors.surfaceSunken : colors.surface.withValues(alpha: 0);
     }
   }
 
@@ -73,7 +73,7 @@ class _InoButtonState extends State<InoButton> {
 
   Color _border(InoPalette colors) => widget.variant == InoButtonVariant.secondary
       ? (_pressed ? colors.accentActive : colors.border)
-      : Colors.transparent;
+      : colors.surface.withValues(alpha: 0);
 
   @override
   Widget build(BuildContext context) {
