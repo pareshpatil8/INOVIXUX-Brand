@@ -1,3 +1,9 @@
+// No `:active` and no focus ring here, deliberately (INO-123 / DoD §5-6). A tier card is a
+// presentational panel: it is not focusable, carries no activation behaviour, and the whole card
+// is never the click target. The CTA *inside* it is an `ino-button`, which already owns the
+// pressed and focus-visible states from the Wave 0 tokens — painting a second press affordance on
+// the container would signal a target that does not exist. If a tier card is ever made wholly
+// clickable, it must adopt `.ino-card--interactive`'s contract rather than grow its own.
 .ino-tier-card {
   background: var(--ino-color-surface);
   border: 1px solid var(--ino-color-border);

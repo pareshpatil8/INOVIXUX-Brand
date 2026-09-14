@@ -24,8 +24,24 @@
       color: var(--ino-color-on-surface);
     }
 
+    /* Same SC 2.4.11 / 1.4.11 correction as ino-footer's link list: muted -> on-surface is a
+       colour-only change, which is not a conforming focus indicator by itself. The ring carries
+       the focus; the recolour above is now only reinforcement. */
+    &:focus-visible {
+      outline: var(--ino-focus-ring);
+      outline-offset: var(--ino-focus-ring-offset);
+    }
+
     &.is-active {
       color: var(--ino-color-on-surface);
+    }
+
+    /* A text link has no fill to darken, so the press rides on the label colour — same token as
+       the ghost-button press in ino-button, expressed as foreground. Declared AFTER `.is-active`
+       because `a:active` and `a.is-active` have identical specificity (0,1,1): source order is the
+       only tie-break, and pressing the current-route link must still read as a press. */
+    &:active {
+      color: var(--ino-color-accent-active);
     }
   }
 }
@@ -52,12 +68,28 @@
   color: var(--ino-color-on-surface-muted);
   cursor: pointer;
   transition: color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
-    border-color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+    border-color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+    background var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
 
   &:hover,
   &:focus-visible {
     color: var(--ino-color-on-surface);
     border-color: var(--ino-color-accent-secondary);
+  }
+
+  /* Border-colour alone is not a conforming indicator (SC 2.4.11) — it is the same hue the hover
+     state already uses, so a keyboard user cannot tell focus from a stray hover. */
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+
+  /* Transparent-fill icon control, so it presses like ino-button's `icon` variant: sunken plate
+     appears and the glyph takes the pressed accent. */
+  &:active {
+    background: var(--ino-color-surface-sunken);
+    border-color: var(--ino-color-accent-active);
+    color: var(--ino-color-accent-active);
   }
 }
 
@@ -76,9 +108,24 @@
   font-size: var(--ino-type-body-size);
   font-weight: 600;
   cursor: pointer;
-  transition: opacity var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+  transition: opacity var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+    background var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
 
   &:hover {
     opacity: 0.88;
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+
+  /* Mirrors `ino-button`'s primary press exactly: swap --ino-gradient-accent for the FLAT
+     --ino-color-accent-active and drop the hover opacity fade. Flat-vs-gradient is half the press
+     signal, and a flat fill has one auditable contrast ratio against --ino-color-on-accent —
+     check-theme-parity.mjs asserts that pair per theme, which it cannot do for a gradient. */
+  &:active {
+    background: var(--ino-color-accent-active);
+    opacity: 1;
   }
 }
