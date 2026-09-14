@@ -33,6 +33,18 @@
     &:focus-visible {
       color: var(--ino-color-accent);
     }
+
+    /* Was colour-change-only on focus, which is not a conforming focus indicator on its own
+       (SC 2.4.11 / 1.4.11) — a link that merely recolours gives a low-vision or colour-blind
+       keyboard user nothing to track. The ring is the fix; the recolour above now just reinforces it. */
+    &:focus-visible {
+      outline: var(--ino-focus-ring);
+      outline-offset: var(--ino-focus-ring-offset);
+    }
+
+    &:active {
+      color: var(--ino-color-accent-active);
+    }
   }
 }
 

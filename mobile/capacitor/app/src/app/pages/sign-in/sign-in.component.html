@@ -9,7 +9,7 @@
         placeholder="you@company.com"
         [value]="email"
         (valueChange)="email = $event"
-        required>
+        [required]="true">
       </ino-input>
 
       <ino-input
@@ -18,7 +18,7 @@
         placeholder="••••••••"
         [value]="password"
         (valueChange)="password = $event"
-        required>
+        [required]="true">
       </ino-input>
 
       <button ino-button type="submit" variant="primary">Sign in</button>

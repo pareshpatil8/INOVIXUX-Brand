@@ -25,6 +25,7 @@ export const colorsDark = {
   accent: '#7C5CFC',
   accentSecondary: '#4F46E5',
   accentTextSafe: '#7C5CFC',
+  accentActive: '#6A44E8', // INO-123 — pressed/:active accent fill; 5.83:1 with onAccent
   onAccent: '#FFFFFF',
   success: '#3A9B6B',
   onSuccess: '#000000',
@@ -32,6 +33,8 @@ export const colorsDark = {
   onWarning: '#000000',
   danger: '#C24C43',
   onDanger: '#FFFFFF',
+  info: '#3D92BD', // INO-128 — fourth, non-alarming severity register; see tokens.css §2
+  onInfo: '#000000',
 } as const;
 
 export const colorsLight = {
@@ -47,6 +50,7 @@ export const colorsLight = {
   accent: '#7C5CFC',
   accentSecondary: '#4F46E5',
   accentTextSafe: '#4F46E5', // 6.29:1 on white — use for text/links/filled buttons on light
+  accentActive: '#3F37C9', // pressed — darkens the indigo, since indigo is light mode's filled-accent role
   onAccent: '#FFFFFF',
   success: '#1F7A4F',
   onSuccess: '#FFFFFF',
@@ -54,6 +58,8 @@ export const colorsLight = {
   onWarning: '#FFFFFF',
   danger: '#A6362D',
   onDanger: '#FFFFFF',
+  info: '#226587',
+  onInfo: '#FFFFFF',
 } as const;
 
 // Third theme, added INO-92 — WCAG 2.2 AAA target (7:1+), not just the AA floor dark/light hit.
@@ -73,6 +79,7 @@ export const colorsHighContrast = {
   accent: '#FFD60A',
   accentSecondary: '#00E5FF',
   accentTextSafe: '#FFD60A', // 14.88:1 on surface — AAA even as small body text
+  accentActive: '#E6BC00', // pressed — 11.56:1 with black, so the press keeps its AAA budget
   onAccent: '#000000', // white on this yellow is 1.41:1 — must be black, unlike dark/light's white
   success: '#00E676',
   onSuccess: '#000000',
@@ -80,6 +87,8 @@ export const colorsHighContrast = {
   onWarning: '#000000',
   danger: '#FF6B6B', // brightest red that still clears 7:1 both directions — see README
   onDanger: '#000000',
+  info: '#6BB6FF', // true blue, not a second cyan — accentSecondary already owns #00E5FF here
+  onInfo: '#000000',
 } as const;
 
 // Gradient stops for accent surfaces (LinearGradient colors prop) — same stops as
@@ -106,6 +115,20 @@ export const targetSpacing = 8;
 
 // Fluid density row height — tokens.css §10 [data-density="fluid"]. Mobile never uses dense.
 export const rowMinHeight = 44;
+
+// tokens.css §12 — control-size scale behind the `size` prop. These are the FLUID resolution
+// only, because mobile is always fluid (same rule as rowMinHeight above); the dense column of
+// that table has no mobile counterpart by design, so porting it would just be dead values that
+// drift. `default` matches targetComfortable (44) — the platform HIG minimum — which is why
+// mobile has no reason to reach for `lg` on ordinary controls.
+// check-theme-parity.mjs asserts every number below against the CSS, so edit tokens.css first.
+export const control = {
+  sm: { height: 36, paddingInline: 12, paddingInlineRoomy: 16, fontSize: 12.5, iconSize: 16, gap: 8 },
+  default: { height: 44, paddingInline: 16, paddingInlineRoomy: 20, fontSize: 15, iconSize: 20, gap: 8 },
+  lg: { height: 52, paddingInline: 20, paddingInlineRoomy: 24, fontSize: 17, iconSize: 24, gap: 12 },
+} as const;
+
+export type ControlSize = keyof typeof control;
 
 export const type = {
   displaySm: { fontSize: 38, lineHeight: 38 * 1.05, fontWeight: '600' as const },

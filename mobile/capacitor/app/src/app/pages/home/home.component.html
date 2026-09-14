@@ -14,7 +14,7 @@
       *ngFor="let item of items"
       variant="default"
       padding="sm"
-      interactive
+      [interactive]="true"
       [routerLink]="['/home', item.id]"
       class="home__row">
       <p class="home__row-title">{{ item.title }}</p>

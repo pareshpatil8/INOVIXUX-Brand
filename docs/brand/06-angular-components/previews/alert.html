@@ -1,0 +1,248 @@
+<!-- @dsCard group="Messages" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ino-alert — severity tiers (INO-128)</title>
+<!-- Canonical token file, linked rather than copied: this preview must repaint with the system,
+     and must never become a second place raw hex values live. -->
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-label-size);
+    letter-spacing: var(--ino-type-label-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 60ch; }
+
+  .theme-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); }
+  .theme-pane {
+    flex: 1 1 320px;
+    padding: var(--ino-space-5);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-xl);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+  }
+  .theme-pane > h3 {
+    margin: 0 0 var(--ino-space-4);
+    font-size: var(--ino-type-body-sm-size);
+    color: var(--ino-color-on-surface-muted);
+    font-weight: 600;
+  }
+
+  .stack { display: flex; flex-direction: column; gap: var(--ino-space-3); }
+
+  /* Mirrors web/src/app/components/alert/ino-alert.component.scss — same token bindings, so a
+     divergence between this preview and the shipped component is visible as a visual diff. */
+  .ino-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--ino-space-3);
+    padding: var(--ino-space-4);
+    border-radius: var(--ino-radius-lg);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  .ino-alert--info    { background: var(--ino-color-info);    color: var(--ino-color-on-info); }
+  .ino-alert--success { background: var(--ino-color-success); color: var(--ino-color-on-success); }
+  .ino-alert--warning { background: var(--ino-color-warning); color: var(--ino-color-on-warning); }
+  .ino-alert--danger  { background: var(--ino-color-danger);  color: var(--ino-color-on-danger); }
+  .ino-alert--banner  { border-radius: 0; padding: var(--ino-space-4) var(--ino-space-7); }
+  .ino-alert--toast   { max-width: 360px; box-shadow: var(--ino-elevation-2); }
+
+  .ino-alert__icon {
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0; width: 20px; height: 20px;
+    font-size: 13px; font-weight: 700; color: currentColor;
+  }
+  .ino-alert__body { flex: 1; min-width: 0; }
+  .ino-alert__heading { margin: 0 0 var(--ino-space-1); font-weight: 600; color: currentColor; }
+  .ino-alert__message { color: currentColor; opacity: 0.92; }
+  .ino-alert__dismiss {
+    display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+    width: var(--ino-target-comfortable); height: var(--ino-target-comfortable);
+    background: transparent; border: 1px solid transparent;
+    border-radius: var(--ino-radius-md); color: currentColor; cursor: pointer;
+    font: inherit;
+    transition: border-color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+  }
+  .ino-alert__dismiss:hover { border-color: currentColor; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ino-alert__dismiss { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<h1>Message &amp; Toast — severity tiers</h1>
+<p class="lede">
+  Four tiers, one shell. <strong>info</strong> (added INO-128) is the non-alarming register: it
+  states a fact the reviewer should know without implying anything needs fixing, so
+  <strong>warning</strong> keeps meaning "you need to decide something." Each pane below is the same
+  markup under a different <code>data-theme</code>.
+</p>
+
+<h2>Severity × theme</h2>
+<div class="theme-row">
+
+  <div class="theme-pane">
+    <h3>dark — :root (default)</h3>
+    <div class="stack">
+      <div class="ino-alert ino-alert--info" role="status">
+        <span class="ino-alert__icon" aria-hidden="true">i</span>
+        <div class="ino-alert__body">
+          <p class="ino-alert__heading">Scheduled</p>
+          <div class="ino-alert__message">Sanctions screening re-runs nightly at 02:00 IST.</div>
+        </div>
+      </div>
+      <div class="ino-alert ino-alert--success" role="status">
+        <span class="ino-alert__icon" aria-hidden="true">&#10003;</span>
+        <div class="ino-alert__body">
+          <p class="ino-alert__heading">Verified</p>
+          <div class="ino-alert__message">Meridian Freight cleared ABDM + UPI reconciliation.</div>
+        </div>
+      </div>
+      <div class="ino-alert ino-alert--warning" role="status">
+        <span class="ino-alert__icon" aria-hidden="true">!</span>
+        <div class="ino-alert__body">
+          <p class="ino-alert__heading">Needs review</p>
+          <div class="ino-alert__message">Kavya Textile Exports has a GSTIN mismatch.</div>
+        </div>
+      </div>
+      <div class="ino-alert ino-alert--danger" role="alert">
+        <span class="ino-alert__icon" aria-hidden="true">&#10005;</span>
+        <div class="ino-alert__body">
+          <p class="ino-alert__heading">Escalated</p>
+          <div class="ino-alert__message">Orbit Cold Chain Co. — owner identity gap.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="light">
+    <h3>light — [data-theme="light"]</h3>
+    <div class="stack">
+      <div class="ino-alert ino-alert--info" role="status">
+        <span class="ino-alert__icon" aria-hidden="true">i</span>
+        <div class="ino-alert__body">
+          <p class="ino-alert__heading">Scheduled</p>
+          <div class="ino-alert__message">Sanctions screening re-runs nightly at 02:00 IST.</div>
+        </div>
+      </div>
+      <div class="ino-alert ino-alert--success" role="status">
+        <span class="ino-alert__icon" aria-hidden="true">&#10003;</span>
+        <div class="ino-alert__body">
+          <p class="ino-alert__heading">Verified</p>
+          <div class="ino-alert__message">Meridian Freight cleared ABDM + UPI reconciliation.</div>
+        </div>
+      </div>
+      <div class="ino-alert ino-alert--warning" role="status">
+        <span class="ino-alert__icon" aria-hidden="true">!</span>
+        <div class="ino-alert__body">
+          <p class="ino-alert__heading">Needs review</p>
+          <div class="ino-alert__message">Kavya Textile Exports has a GSTIN mismatch.</div>
+        </div>
+      </div>
+      <div class="ino-alert ino-alert--danger" role="alert">
+        <span class="ino-alert__icon" aria-hidden="true">&#10005;</span>
+        <div class="ino-alert__body">
+          <p class="ino-alert__heading">Escalated</p>
+          <div class="ino-alert__message">Orbit Cold Chain Co. — owner identity gap.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="high-contrast">
+    <h3>high-contrast — [data-theme="high-contrast"]</h3>
+    <div class="stack">
+      <div class="ino-alert ino-alert--info" role="status">
+        <span class="ino-alert__icon" aria-hidden="true">i</span>
+        <div class="ino-alert__body">
+          <p class="ino-alert__heading">Scheduled</p>
+          <div class="ino-alert__message">Sanctions screening re-runs nightly at 02:00 IST.</div>
+        </div>
+      </div>
+      <div class="ino-alert ino-alert--success" role="status">
+        <span class="ino-alert__icon" aria-hidden="true">&#10003;</span>
+        <div class="ino-alert__body">
+          <p class="ino-alert__heading">Verified</p>
+          <div class="ino-alert__message">Meridian Freight cleared ABDM + UPI reconciliation.</div>
+        </div>
+      </div>
+      <div class="ino-alert ino-alert--warning" role="status">
+        <span class="ino-alert__icon" aria-hidden="true">!</span>
+        <div class="ino-alert__body">
+          <p class="ino-alert__heading">Needs review</p>
+          <div class="ino-alert__message">Kavya Textile Exports has a GSTIN mismatch.</div>
+        </div>
+      </div>
+      <div class="ino-alert ino-alert--danger" role="alert">
+        <span class="ino-alert__icon" aria-hidden="true">&#10005;</span>
+        <div class="ino-alert__body">
+          <p class="ino-alert__heading">Escalated</p>
+          <div class="ino-alert__message">Orbit Cold Chain Co. — owner identity gap.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<h2>Variants — info tier</h2>
+<div class="stack">
+  <div class="ino-alert ino-alert--info" role="status">
+    <span class="ino-alert__icon" aria-hidden="true">i</span>
+    <div class="ino-alert__body">
+      <p class="ino-alert__heading">inline</p>
+      <div class="ino-alert__message">Default shape — radius-lg, no shadow, flows in content.</div>
+    </div>
+  </div>
+
+  <div class="ino-alert ino-alert--info ino-alert--banner" role="status">
+    <span class="ino-alert__icon" aria-hidden="true">i</span>
+    <div class="ino-alert__body">
+      <p class="ino-alert__heading">banner</p>
+      <div class="ino-alert__message">Square corners, wider inline padding — full-bleed page strip.</div>
+    </div>
+  </div>
+
+  <div class="ino-alert ino-alert--info ino-alert--toast" role="status">
+    <span class="ino-alert__icon" aria-hidden="true">i</span>
+    <div class="ino-alert__body">
+      <p class="ino-alert__heading">toast</p>
+      <div class="ino-alert__message">Capped at 360px, elevation-2, stacked bottom-end.</div>
+    </div>
+    <button type="button" class="ino-alert__dismiss" aria-label="Dismiss">&#10005;</button>
+  </div>
+</div>
+
+<h2>RTL</h2>
+<div class="stack" dir="rtl">
+  <div class="ino-alert ino-alert--info" role="status">
+    <span class="ino-alert__icon" aria-hidden="true">i</span>
+    <div class="ino-alert__body">
+      <p class="ino-alert__heading">اتجاه من اليمين إلى اليسار</p>
+      <div class="ino-alert__message">Logical properties only — the icon, body, and dismiss button mirror without a second stylesheet.</div>
+    </div>
+    <button type="button" class="ino-alert__dismiss" aria-label="Dismiss">&#10005;</button>
+  </div>
+</div>
+
+</body>
+</html>

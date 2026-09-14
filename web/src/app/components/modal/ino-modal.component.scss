@@ -64,9 +64,14 @@
     color: var(--ino-color-on-surface);
   }
 
+  &:active {
+    background: var(--ino-color-surface-sunken);
+    color: var(--ino-color-accent-active);
+  }
+
   &:focus-visible {
-    outline: 2px solid var(--ino-color-accent);
-    outline-offset: 2px;
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
   }
 }
 

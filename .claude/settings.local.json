@@ -10,7 +10,13 @@
     "additionalDirectories": [
       "/Users/apple/.paperclip/instances/default/companies/97c432d1-5006-4300-9082-bd4a97d0d36f",
       "/Users/apple/.paperclip/instances/default/companies/97c432d1-5006-4300-9082-bd4a97d0d36f/acp-engine/agents/2444c60f-93d3-4e25-9244-34c96f456e7f",
-      "/Users/apple/.paperclip/instances/default/workspaces/2444c60f-93d3-4e25-9244-34c96f456e7f"
+      "/Users/apple/.paperclip/instances/default/companies/97c432d1-5006-4300-9082-bd4a97d0d36f/acp-engine/agents/8484b1a9-aeb3-4504-a6ae-bd85df20b02c",
+      "/Users/apple/.paperclip/instances/default/companies/97c432d1-5006-4300-9082-bd4a97d0d36f/acp-engine/agents/b7140afa-f13c-4685-a34e-c10a3f85b810",
+      "/Users/apple/.paperclip/instances/default/companies/97c432d1-5006-4300-9082-bd4a97d0d36f/acp-engine/agents/cd51894f-0a9a-4451-a5ed-6e47b3cb7f22",
+      "/Users/apple/.paperclip/instances/default/workspaces/2444c60f-93d3-4e25-9244-34c96f456e7f",
+      "/Users/apple/.paperclip/instances/default/workspaces/8484b1a9-aeb3-4504-a6ae-bd85df20b02c",
+      "/Users/apple/.paperclip/instances/default/workspaces/b7140afa-f13c-4685-a34e-c10a3f85b810",
+      "/Users/apple/.paperclip/instances/default/workspaces/cd51894f-0a9a-4451-a5ed-6e47b3cb7f22"
     ],
     "defaultMode": "default"
   }

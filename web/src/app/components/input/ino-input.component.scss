@@ -37,9 +37,18 @@
     border-color: var(--ino-color-on-surface-muted);
   }
 
+  /* Pressed — the mousedown flash before focus settles. Ordered ABOVE :focus-visible on purpose
+     is not enough (both can match at once), so this rule carries the higher specificity via
+     :not(:disabled) and wins while the pointer is held. */
+  &:active:not(:disabled) {
+    border-color: var(--ino-color-accent-active);
+  }
+
+  /* outline-offset here was 1px while button/checkbox/card/modal/radio/toggle all used 2px —
+     the drift that motivated the token. Both now read the same value. */
   &:focus-visible {
-    outline: 2px solid var(--ino-color-accent);
-    outline-offset: 1px;
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
     border-color: var(--ino-color-accent);
   }
 

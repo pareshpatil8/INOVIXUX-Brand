@@ -34,9 +34,14 @@
     border-color: var(--ino-color-on-surface-muted);
   }
 
+  /* Held open / mousedown. Same 1px -> token outline-offset correction as ino-input. */
+  &:active:not(:disabled) {
+    border-color: var(--ino-color-accent-active);
+  }
+
   &:focus-visible {
-    outline: 2px solid var(--ino-color-accent);
-    outline-offset: 1px;
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
     border-color: var(--ino-color-accent);
   }
 

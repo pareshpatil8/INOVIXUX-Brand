@@ -93,17 +93,42 @@ function luminance(c) {
 function contrast(a,b) { const x=luminance(a), y=luminance(b); return (Math.max(x,y)+.05)/(Math.min(x,y)+.05); }
 const hc = resolved['high-contrast'];
 const measurements = [];
-function pair(fg,bg,min) {
-  const a = hc[fg], b = hc[bg];
+function pair(fg,bg,min,palette = hc,label = '') {
+  const a = palette[fg], b = palette[bg];
+  assert.ok(a && b, `${label}${fg}/${bg}: role missing from palette`);
   const composite = a.slice(0,3).map((v,i) => v*a[3]+b[i]*(1-a[3]));
   const ratio = contrast(composite,b);
-  assert.ok(ratio >= min, `${fg}/${bg}: ${ratio} < ${min}`);
-  measurements.push(`${fg} / ${bg}: ${ratio.toFixed(2)}:1`);
+  assert.ok(ratio >= min, `${label}${fg}/${bg}: ${ratio} < ${min}`);
+  measurements.push(`${label}${fg} / ${bg}: ${ratio.toFixed(2)}:1`);
 }
 for (const bg of ['surface','surfaceRaised','surfaceSunken']) {
-  for (const fg of ['onSurface','onSurfaceMuted','accentTextSafe','accentSecondary','success','warning','danger']) pair(fg,bg,7);
+  for (const fg of ['onSurface','onSurfaceMuted','accentTextSafe','accentSecondary','success','warning','danger','info']) pair(fg,bg,7);
   for (const fg of ['border','borderSoft']) pair(fg,bg,3);
 }
-for (const [fg,bg] of [['onAccent','accent'],['onAccent','accentSecondary'],['onSuccess','success'],['onWarning','warning'],['onDanger','danger'],['riskHighOnFill','riskHighFill'],['riskMediumOnFill','riskMediumFill'],['riskLowOnFill','riskLowFill']]) pair(fg,bg,7);
-console.log(`PASS: CSS mirrors; Capacitor import; ${colorChecks} color roles across 3 themes × 2 mobile ports; space/radius/targets/durations.`);
-console.log('High-contrast token pairs (AAA text >=7; non-text borders >=3; excludes disabled/decorative subtle role):\n'+measurements.join('\n'));
+for (const [fg,bg] of [['onAccent','accent'],['onAccent','accentSecondary'],['onSuccess','success'],['onWarning','warning'],['onDanger','danger'],['onInfo','info'],['riskHighOnFill','riskHighFill'],['riskMediumOnFill','riskMediumFill'],['riskLowOnFill','riskLowFill']]) pair(fg,bg,7);
+// Wave 0 / INO-123 — the pressed (:active) accent fill, audited in EVERY theme, not just
+// high-contrast. Two independent budgets, and it is easy to fix one by breaking the other:
+//   1. onAccent must stay legible ON the pressed fill (AA 4.5:1; AAA 7:1 in high-contrast).
+//   2. The pressed fill must stay perceivable AGAINST the surface behind it — WCAG 2.2
+//      SC 1.4.11 non-text contrast, 3:1. Darkening a filled control helps (1) and hurts (2),
+//      which is precisely why accent-active is a picked-and-pinned value rather than a
+//      filter: brightness() applied at the component level.
+const activeBudget = { dark: 4.5, light: 4.5, 'high-contrast': 7 };
+for (const [theme, min] of Object.entries(activeBudget)) {
+  const palette = resolved[theme];
+  assert.ok(palette, `accent-active audit: unknown theme ${theme}`);
+  pair('onAccent','accentActive',min,palette,`${theme} `);
+  for (const bg of ['surface','surfaceRaised','surfaceSunken']) pair('accentActive',bg,3,palette,`${theme} `);
+}
+// The focus ring is a width+colour shorthand, not a colour role, so it cannot go through the
+// palette audit above. Assert its shape instead: every theme that overrides it must still
+// resolve its colour from --ino-color-accent (so an accent swap re-themes focus for free) and
+// must never inline a literal, which is the drift this token was created to end.
+for (const [theme, vars] of Object.entries(themes)) {
+  const ring = vars['--ino-focus-ring'];
+  assert.ok(ring, `${theme}: --ino-focus-ring missing`);
+  assert.match(ring, /^\d+px solid var\(--ino-color-accent\)$/, `${theme}: --ino-focus-ring must stay "<n>px solid var(--ino-color-accent)", got "${ring}"`);
+  assert.match(vars['--ino-focus-ring-offset'] ?? '', /^\d+px$/, `${theme}: --ino-focus-ring-offset must be a px length`);
+}
+console.log(`PASS: CSS mirrors; Capacitor import; ${colorChecks} color roles across 3 themes × 2 mobile ports; space/radius/targets/durations; focus-ring shape; pressed-accent contrast in 3 themes.`);
+console.log('High-contrast token pairs (AAA text >=7; non-text borders >=3; excludes disabled/decorative subtle role);\nplus per-theme pressed-accent pairs (INO-123):\n'+measurements.join('\n'));

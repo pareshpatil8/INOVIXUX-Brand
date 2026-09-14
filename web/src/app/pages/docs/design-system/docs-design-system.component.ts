@@ -14,6 +14,7 @@ import { InoToastContainerComponent } from '../../../components/toast-container/
 import { ToastService } from '../../../services/toast.service';
 
 const TOAST_MESSAGE: Record<InoAlertStatus, string> = {
+  info: 'Sanctions screening re-runs nightly at 02:00 IST.',
   success: 'Changes saved.',
   warning: 'This action needs a second reviewer.',
   danger: 'Could not reach the verification service.',

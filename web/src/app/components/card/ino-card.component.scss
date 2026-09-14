@@ -39,14 +39,24 @@
     border-color: var(--ino-color-accent);
   }
 
+  &:active {
+    border-color: var(--ino-color-accent-active);
+  }
+
   &:focus-visible {
-    outline: 2px solid var(--ino-color-accent);
-    outline-offset: 2px;
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
   }
 
   @media (prefers-reduced-motion: no-preference) {
     &:hover {
       transform: translateY(-2px);
+    }
+
+    /* Press cancels the hover lift rather than adding a second transform — the card returns to
+       the page plane under the pointer, which is the physical metaphor the 2px raise sets up. */
+    &:active {
+      transform: translateY(0);
     }
   }
 }

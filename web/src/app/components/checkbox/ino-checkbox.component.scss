@@ -14,8 +14,15 @@
   cursor: pointer;
 
   &:focus-visible {
-    outline: 2px solid var(--ino-color-accent);
-    outline-offset: 2px;
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+
+  /* `accent-color` is the only paintable surface a native checkbox exposes, so the press is
+     expressed there. Guarded on :not(:disabled) because a disabled native control still matches
+     :active on some engines. */
+  &:active:not(:disabled) {
+    accent-color: var(--ino-color-accent-active);
   }
 
   &:disabled {

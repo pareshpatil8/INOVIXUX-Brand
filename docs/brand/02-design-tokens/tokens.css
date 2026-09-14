@@ -18,6 +18,34 @@
  * dark/light pair. Existing dark/light values unchanged. See
  * docs/brand/09-design-system-standards.md §8 for the recipe.
  *
+ * 2026-09-14 (INO-123, Wave 0 item W0-1): added the interaction-state layer —
+ * --ino-color-accent-active (the pressed/:active accent fill, §2) and the
+ * --ino-focus-ring / --ino-focus-ring-offset pair (§12). Both exist because
+ * they were being hand-repeated per component and had already drifted:
+ * outline-offset was 2px on button/checkbox/card/modal/radio/toggle but 1px on
+ * input/select, and there were zero :active selectors in the entire component
+ * set. Every component now consumes these two tokens instead of hand-rolling
+ * an outline. Nothing else in dark/light/high-contrast changed. See
+ * docs/brand/06-angular-components/wave-0-interaction-states.md.
+ *
+ * 2026-09-14 (INO-128, Wave 0): completed the severity role set with
+ * --ino-color-info / --ino-color-on-info in all three themes (+ the
+ * prefers-color-scheme fallback), backed by new sky-500/sky-700/hc-sky
+ * primitives. success/warning/danger could only express "good / caution /
+ * bad"; a KYB product constantly needs a fourth, non-alarming register
+ * ("this check runs nightly", "3 documents pending"), and forcing that into
+ * `warning` trains reviewers to ignore real warnings. No existing value
+ * changed. Contrast audit: docs/brand/02-design-tokens/README.md §Contrast.
+ *
+ * 2026-09-14 (INO-124, Wave 0): added §12, the control-size scale behind
+ * every component's size="sm" | "default" | "lg" API — control height,
+ * inline padding (two tracks: fields and label-bearing pressables), font
+ * size, icon size and gap, each re-resolved under [data-density="dense"]
+ * and [data-density="fluid"]. Nothing existing changed: size="default" in
+ * fluid/base density reproduces the 44px control every one of the 16
+ * existing components already hardcodes. Rationale and the per-component
+ * adoption recipe: docs/brand/06-angular-components/control-size-scale.md.
+ *
  * This file is the single source of truth for color, type, space, radius,
  * elevation, and motion. Angular consumes it as-is: drop it into
  * src/styles/tokens.css and import once in angular.json's global styles
@@ -75,9 +103,26 @@
   --ino-primitive-blue-500: #3B6EF6;   /* retired accent (Signal Blue) — kept only for diffing/rollback, unreferenced below */
   --ino-primitive-violet-500: #7C5CFC; /* Adaptive Synapse accent — Deep Tech Violet */
   --ino-primitive-indigo-500: #4F46E5; /* Adaptive Synapse accent — Electric Indigo */
+  --ino-primitive-violet-600: #6A44E8; /* pressed/:active step below violet-500 (INO-123). Chosen
+                                          by search, not by eye: darkening a filled accent RAISES
+                                          its white-text contrast (4.38 -> 5.83:1) but LOWERS its
+                                          contrast against the near-black dark surface. This is the
+                                          darkest violet that still clears SC 1.4.11's 3:1 non-text
+                                          floor against surface-raised (3.33:1); one step further
+                                          (#5F3BD6) drops to 2.91:1 and the pressed button loses its
+                                          own edge. */
+  --ino-primitive-indigo-600: #3F37C9; /* pressed/:active step below indigo-500, for light mode,
+                                          where the filled-accent role is accent-text-safe (indigo)
+                                          rather than the dark theme's violet. 8.07:1 with white. */
   --ino-primitive-green-500: #3A9B6B;
   --ino-primitive-red-500: #C24C43;
   --ino-primitive-amber-500: #B98A3C;
+  --ino-primitive-sky-500: #3D92BD;    /* info — hsl(200, 51%, 49%), built on the same
+                                          saturation/lightness recipe as the RAG -500 trio above
+                                          so an informational chip reads as the same weight of
+                                          thing, not a fourth visual language. Deliberately NOT
+                                          the accent violet/indigo: an info notice must not look
+                                          like a call to action. */
 
   /* Light-mode semantic-color primitives — darkened variants of the RAG
      colors so white text on a filled chip clears 4.5:1 on white/off-white
@@ -86,6 +131,7 @@
   --ino-primitive-green-700: #1F7A4F;
   --ino-primitive-amber-800: #8A5D1E;
   --ino-primitive-red-600: #A6362D;
+  --ino-primitive-sky-700: #226587;  /* hue-locked to sky-500 (200°), darkened to l=33% */
 
   /* High-contrast-only primitives (WCAG 2.2 AAA target, section 2c) — unused
      while dark/light is active, kept here so every raw value in the system
@@ -99,6 +145,11 @@
   --ino-primitive-hc-white: #FFFFFF;
   --ino-primitive-hc-gray-muted: #AAAAAA;
   --ino-primitive-hc-yellow: #FFD60A;  /* accent */
+  --ino-primitive-hc-yellow-deep: #E6BC00; /* accent-active (pressed). Still 11.56:1 against black
+                                           text, so the pressed state keeps its AAA budget; the
+                                           step away from hc-yellow is 1.29:1, the same perceptual
+                                           size as dark mode's violet-500 -> violet-600 press, so
+                                           "pressed" reads consistently across all three themes. */
   --ino-primitive-hc-cyan: #00E5FF;    /* accent-secondary */
   --ino-primitive-hc-green: #00E676;   /* success */
   --ino-primitive-hc-amber: #FFC400;   /* warning */
@@ -107,6 +158,11 @@
                                            chip-text-on-red); this coral is the
                                            brightest red that still clears 7:1 both
                                            ways, see README §Contrast (high-contrast) */
+  --ino-primitive-hc-sky: #6BB6FF;     /* info — a true blue, not a second cyan: hc-cyan
+                                           (#00E5FF) is already accent-secondary, and the one
+                                           theme whose users most need severity told apart at a
+                                           glance is the worst place to ship two near-identical
+                                           hues. 9.76:1 on the black surface, both directions. */
 
   /* ---------------------------------------------------------------------
    * 2. SEMANTIC ROLES — what components actually bind to. Modeled on
@@ -129,6 +185,7 @@
   --ino-color-accent: var(--ino-primitive-violet-500);    /* swap token */
   --ino-color-accent-secondary: var(--ino-primitive-indigo-500);
   --ino-color-accent-text-safe: var(--ino-primitive-violet-500); /* role for filled buttons/links needing 4.5:1 text AA — see README, differs from --ino-color-accent per theme */
+  --ino-color-accent-active: var(--ino-primitive-violet-600); /* pressed/:active fill, INO-123. A filled accent control swaps its gradient for this FLAT colour while held — flat-vs-gradient is itself part of the press signal, and it guarantees --ino-color-on-accent stays legible (5.83:1) which a moving gradient stop cannot. */
   --ino-color-on-accent: #FFFFFF;                         /* verified 4.79:1 (black also passes at 4.79:1; white chosen to match on-accent-secondary) */
   --ino-gradient-accent: linear-gradient(135deg, var(--ino-primitive-violet-500), var(--ino-primitive-indigo-500));
   --ino-glow-accent: radial-gradient(circle, rgba(124, 92, 252, 0.35), transparent 70%);
@@ -139,6 +196,8 @@
   --ino-color-on-warning: #000000;                        /* 6.76:1 */
   --ino-color-danger: var(--ino-primitive-red-500);
   --ino-color-on-danger: #FFFFFF;                         /* 4.76:1 */
+  --ino-color-info: var(--ino-primitive-sky-500);
+  --ino-color-on-info: #000000;                           /* 6.04:1 */
 
   --ino-elevation-0: none;
   --ino-elevation-1: 0 40px 80px -40px rgba(0, 0, 0, 0.6);   /* resting raised surfaces — cards, tier cards */
@@ -247,6 +306,116 @@
      level in Angular (see angular-theme-contract.md), not by zeroing
      durations here — zeroing here would also kill non-motion transitions
      components rely on for state (focus rings, etc). */
+
+  /* ---------------------------------------------------------------------
+   * 12. CONTROL SIZE SCALE — the values behind every component's
+   *     `size="sm" | "default" | "lg"` @Input (INO-124, Wave 0).
+   *
+   *     Two axes, deliberately NOT merged (doc 16 §4.3, Layers 2 and 3):
+   *       - DENSITY is container-scoped and describes a *screen*. The
+   *         [data-density] blocks in §10 re-resolve this entire scale.
+   *       - SIZE is per-instance and describes *one control on that screen*.
+   *     A `size="sm"` button is small on a dense risk table and small on a
+   *     fluid marketing page — small relative to its neighbours, not a fixed
+   *     pixel count. That is why the rows below are re-declared per density
+   *     instead of being one absolute ramp.
+   *
+   *     Only height, inline padding, icon size and the -default font size
+   *     vary by density. Gap does not: the next step below 8px on the space
+   *     scale is 4px, which is a within-component step, and tightening an
+   *     icon-to-label gap buys 4px while measurably hurting scannability.
+   *
+   *     Two inline-padding tracks, because one cannot serve both halves of
+   *     the library: the unsuffixed track is for FIELDS (input, select,
+   *     textarea — the value must align under its label), `-roomy` is for
+   *     LABEL-BEARING PRESSABLES (button, tab, menu item — the label needs
+   *     air). Both are logical (`inline`), so RTL is free.
+   *
+   *     Components never read the per-size tokens in their base rule. They
+   *     read the six unsuffixed ALIASES at the end of this section, and the
+   *     size class re-points the aliases — full recipe in
+   *     docs/brand/06-angular-components/control-size-scale.md §3.
+   * ------------------------------------------------------------------- */
+  --ino-control-height-sm: 36px;
+  --ino-control-height-default: 44px; /* == --ino-target-comfortable — the height all 16 existing components already hardcode, so adopting the scale is a no-op for them */
+  --ino-control-height-lg: 52px;
+
+  /* Fields — input, select, textarea, date picker. */
+  --ino-control-padding-inline-sm: var(--ino-space-3);
+  --ino-control-padding-inline-default: var(--ino-space-4);
+  --ino-control-padding-inline-lg: var(--ino-space-5);
+
+  /* Label-bearing pressables — button, tab, menu item, chip. */
+  --ino-control-padding-inline-roomy-sm: var(--ino-space-4);
+  --ino-control-padding-inline-roomy-default: var(--ino-space-5);
+  --ino-control-padding-inline-roomy-lg: var(--ino-space-6);
+
+  /* Aliases into the §4 type scale — a control size never invents a font
+     size. -default is re-declared in both §10 density blocks so it tracks
+     that block's own --ino-type-body-size (see the alias note below for why
+     re-declaring is required and not redundant). */
+  --ino-control-font-size-sm: var(--ino-type-body-sm-size);
+  --ino-control-font-size-default: var(--ino-type-body-size);
+  --ino-control-font-size-lg: var(--ino-type-body-lg-size);
+
+  /* The icon rows already published in docs/brand/14-icon-system.md §2
+     (16 inline/dense, 20 default UI control, 24 nav-weight) — not a new ramp. */
+  --ino-control-icon-size-sm: 16px;
+  --ino-control-icon-size-default: 20px;
+  --ino-control-icon-size-lg: 24px;
+
+  --ino-control-gap-sm: var(--ino-space-2);
+  --ino-control-gap-default: var(--ino-space-2); /* same 8px as -sm on purpose: --ino-space-1 (4px) is a within-component step, and 6px would be a new primitive for a 2px win */
+  --ino-control-gap-lg: var(--ino-space-3);
+
+  /* CONSUMPTION ALIASES — what component CSS actually reads, resolved to
+     size="default". A size class re-points them on the host element:
+       :host(.ino-btn--sm) { --ino-control-height: var(--ino-control-height-sm); … }
+     These six lines are repeated verbatim inside both §10 density blocks,
+     and that repetition is load-bearing rather than sloppy: CSS substitutes
+     var() at computed-value time, so an alias declared only here freezes to
+     its :root resolution (44px) and inherits that frozen value — a
+     [data-density="dense"] container further down the tree could never move
+     it. Re-declaring inside the density block re-resolves it in that scope.
+     Same reason --ino-control-font-size-default is repeated there. */
+  --ino-control-height: var(--ino-control-height-default);
+  --ino-control-padding-inline: var(--ino-control-padding-inline-default);
+  --ino-control-padding-inline-roomy: var(--ino-control-padding-inline-roomy-default);
+  --ino-control-font-size: var(--ino-control-font-size-default);
+  --ino-control-icon-size: var(--ino-control-icon-size-default);
+  --ino-control-gap: var(--ino-control-gap-default);
+
+  /* ---------------------------------------------------------------------
+   * 12. FOCUS RING (INO-123, Wave 0). One token pair, consumed as:
+   *
+   *      &:focus-visible {
+   *        outline: var(--ino-focus-ring);
+   *        outline-offset: var(--ino-focus-ring-offset);
+   *      }
+   *
+   *    Components must never hand-roll `outline: 2px solid …` again. Before
+   *    this token existed the ring was copy-pasted into nine components and
+   *    had already drifted three ways — offset 2px on button/checkbox/card/
+   *    modal/radio/toggle, 1px on input/select, and alert used `currentColor`
+   *    instead of the accent. That drift is invisible in review (each file
+   *    looks self-consistent) and is exactly the class of bug a token exists
+   *    to make impossible.
+   *
+   *    Shipped as a whole `outline` shorthand rather than separate width/
+   *    style/colour tokens so that a theme can change the ring's WEIGHT, not
+   *    just its hue — high-contrast (§2c) goes to 3px, and no component needs
+   *    to know that happened. The colour deliberately stays `var(--ino-color-
+   *    accent)` rather than a frozen literal, so an accent swap (the one
+   *    documented re-brand path, see the header) re-themes focus for free.
+   *
+   *    `outline` is used rather than `box-shadow` on purpose: it follows
+   *    border-radius in every current browser, is not clipped by
+   *    `overflow: hidden` ancestors, and survives forced-colors mode.
+   * ------------------------------------------------------------------- */
+  --ino-focus-ring: 2px solid var(--ino-color-accent);
+  --ino-focus-ring-offset: 2px; /* the drift-winner: 2px was already the majority spelling, and it
+                                   keeps the ring clear of a 1px component border instead of
+                                   sitting on top of it */
 }
 
 /* ---------------------------------------------------------------------
@@ -271,6 +440,7 @@
   --ino-color-accent: var(--ino-primitive-violet-500);          /* gradients/glow/icons/large text only — 4.38:1, non-text AA (3:1 min), NOT body-text safe on light */
   --ino-color-accent-secondary: var(--ino-primitive-indigo-500);
   --ino-color-accent-text-safe: var(--ino-primitive-indigo-500); /* 6.29:1 on white/off-white — use for links, filled buttons, any accent TEXT on light surfaces */
+  --ino-color-accent-active: var(--ino-primitive-indigo-600);    /* pressed fill — darkens the INDIGO, not the violet, because light mode's filled-accent role is accent-text-safe. 8.07:1 with white; 7.73:1 against surface. */
   --ino-color-on-accent: #FFFFFF;                                /* 6.29:1 against accent-text-safe */
   --ino-gradient-accent: linear-gradient(135deg, var(--ino-primitive-violet-500), var(--ino-primitive-indigo-500));
   --ino-glow-accent: radial-gradient(circle, rgba(79, 70, 229, 0.14), transparent 70%); /* lower alpha — dark-mode glow opacity reads muddy on white */
@@ -281,6 +451,8 @@
   --ino-color-on-warning: #FFFFFF;                      /* 5.73:1 */
   --ino-color-danger: var(--ino-primitive-red-600);
   --ino-color-on-danger: #FFFFFF;                       /* 6.59:1 */
+  --ino-color-info: var(--ino-primitive-sky-700);
+  --ino-color-on-info: #FFFFFF;                         /* 6.40:1 */
 
   --ino-elevation-1: 0 20px 48px -24px rgba(20, 20, 26, 0.16); /* dark-mode shadow reads as a black smear on white; lighter + tighter spread */
   --ino-elevation-2: 0 32px 72px -20px rgba(20, 20, 26, 0.24);
@@ -336,6 +508,7 @@
   --ino-color-accent: var(--ino-primitive-hc-yellow);            /* 14.88:1 on surface — AAA even as running text, unlike dark/light's accent */
   --ino-color-accent-secondary: var(--ino-primitive-hc-cyan);    /* 13.65:1 on surface */
   --ino-color-accent-text-safe: var(--ino-primitive-hc-yellow);  /* 14.88:1 */
+  --ino-color-accent-active: var(--ino-primitive-hc-yellow-deep); /* 11.56:1 with black — the pressed state keeps AAA, it does not spend the high-contrast budget to buy a press affordance */
   --ino-color-on-accent: #000000;                                /* white text on this yellow is 1.41:1 — must be black */
   --ino-gradient-accent: linear-gradient(135deg, var(--ino-primitive-hc-yellow), var(--ino-primitive-hc-cyan));
   --ino-glow-accent: none; /* decorative glow disabled in high-contrast mode, see note above */
@@ -346,6 +519,8 @@
   --ino-color-on-warning: #000000;                        /* 13.15:1 */
   --ino-color-danger: var(--ino-primitive-hc-coral);
   --ino-color-on-danger: #000000;                         /* 7.57:1 */
+  --ino-color-info: var(--ino-primitive-hc-sky);
+  --ino-color-on-info: #000000;                           /* 9.76:1 */
 
   --ino-elevation-1: none; /* see note above — no shadow gradients in high-contrast mode */
   --ino-elevation-2: none;
@@ -361,6 +536,13 @@
   --ino-color-risk-low-dot: var(--ino-primitive-hc-green);
   --ino-color-risk-low-fill: var(--ino-primitive-hc-green);
   --ino-color-risk-low-on-fill: #000000;                  /* 12.58:1 */
+
+  /* Focus ring (§12) — width only. The colour still comes from --ino-color-accent,
+     which this block already re-points at hc-yellow, so the ring re-themes for free.
+     3px rather than dark/light's 2px: this is the one theme whose users are most
+     likely to be tracking focus at low acuity or high magnification, and a 2px ring
+     is the first thing to disappear at 200% zoom on a small viewport. */
+  --ino-focus-ring: 3px solid var(--ino-color-accent);
 }
 
 /* Respect the OS preference the FIRST time a visitor arrives, before
@@ -380,6 +562,7 @@
     --ino-color-border: var(--ino-primitive-line-dark);
     --ino-color-border-soft: var(--ino-primitive-line-dark-soft);
     --ino-color-accent-text-safe: var(--ino-primitive-indigo-500);
+    --ino-color-accent-active: var(--ino-primitive-indigo-600);
     --ino-glow-accent: radial-gradient(circle, rgba(79, 70, 229, 0.14), transparent 70%);
     --ino-color-success: var(--ino-primitive-green-700);
     --ino-color-on-success: #FFFFFF;
@@ -387,6 +570,8 @@
     --ino-color-on-warning: #FFFFFF;
     --ino-color-danger: var(--ino-primitive-red-600);
     --ino-color-on-danger: #FFFFFF;
+    --ino-color-info: var(--ino-primitive-sky-700);
+    --ino-color-on-info: #FFFFFF;
     --ino-elevation-1: 0 20px 48px -24px rgba(20, 20, 26, 0.16);
     --ino-elevation-2: 0 32px 72px -20px rgba(20, 20, 26, 0.24);
     --ino-color-risk-high-fill: var(--ino-primitive-red-600);
@@ -413,6 +598,32 @@
   --ino-type-body-size: 12.5px;
   --ino-type-body-line: 1.4;
   --ino-row-min-height: 32px; /* WCAG 2.2 2.5.8 floor is 24px; padded above it deliberately */
+
+  /* §12 control scale, dense resolution. -default is pinned to
+     --ino-row-min-height (32px) so a control dropped into a dense table row
+     is exactly row height; -sm at 28px still clears the 24px WCAG 2.2 2.5.8
+     floor with 4px to spare, which is the real lower bound on this axis.
+     Verified by scripts/check-theme-parity.mjs, which fails the build if any
+     control height in any density falls below --ino-target-min. */
+  --ino-control-height-sm: 28px;
+  --ino-control-height-default: 32px;
+  --ino-control-height-lg: 40px;
+  --ino-control-padding-inline-sm: var(--ino-space-2);
+  --ino-control-padding-inline-default: var(--ino-space-3);
+  --ino-control-padding-inline-lg: var(--ino-space-4);
+  --ino-control-padding-inline-roomy-sm: var(--ino-space-3);
+  --ino-control-padding-inline-roomy-default: var(--ino-space-4);
+  --ino-control-padding-inline-roomy-lg: var(--ino-space-5);
+  --ino-control-icon-size-sm: 16px; /* 16px is the icon floor in every density — 14-icon-system.md §2 */
+  --ino-control-icon-size-default: 16px;
+  --ino-control-icon-size-lg: 20px;
+  --ino-control-font-size-default: var(--ino-type-body-size); /* re-resolved against this block's 12.5px body size */
+  --ino-control-height: var(--ino-control-height-default);
+  --ino-control-padding-inline: var(--ino-control-padding-inline-default);
+  --ino-control-padding-inline-roomy: var(--ino-control-padding-inline-roomy-default);
+  --ino-control-font-size: var(--ino-control-font-size-default);
+  --ino-control-icon-size: var(--ino-control-icon-size-default);
+  --ino-control-gap: var(--ino-control-gap-default);
 }
 
 [data-density="fluid"] {
@@ -420,6 +631,33 @@
   --ino-type-body-size: 15px;
   --ino-type-body-line: 1.65;
   --ino-row-min-height: 44px;
+
+  /* §12 control scale, fluid resolution. Numerically identical to the :root
+     values, and repeated anyway on purpose: a fluid island nested inside a
+     dense shell (a B2C onboarding step embedded in an ops console) would
+     otherwise inherit the dense resolution and silently render 32px
+     controls. This block is what makes density nesting work in both
+     directions. Mobile ports carry exactly these numbers — mobile is always
+     fluid, never dense. */
+  --ino-control-height-sm: 36px;
+  --ino-control-height-default: 44px;
+  --ino-control-height-lg: 52px;
+  --ino-control-padding-inline-sm: var(--ino-space-3);
+  --ino-control-padding-inline-default: var(--ino-space-4);
+  --ino-control-padding-inline-lg: var(--ino-space-5);
+  --ino-control-padding-inline-roomy-sm: var(--ino-space-4);
+  --ino-control-padding-inline-roomy-default: var(--ino-space-5);
+  --ino-control-padding-inline-roomy-lg: var(--ino-space-6);
+  --ino-control-icon-size-sm: 16px;
+  --ino-control-icon-size-default: 20px;
+  --ino-control-icon-size-lg: 24px;
+  --ino-control-font-size-default: var(--ino-type-body-size); /* re-resolved against this block's 15px body size */
+  --ino-control-height: var(--ino-control-height-default);
+  --ino-control-padding-inline: var(--ino-control-padding-inline-default);
+  --ino-control-padding-inline-roomy: var(--ino-control-padding-inline-roomy-default);
+  --ino-control-font-size: var(--ino-control-font-size-default);
+  --ino-control-icon-size: var(--ino-control-icon-size-default);
+  --ino-control-gap: var(--ino-control-gap-default);
 }
 
 /* ---------------------------------------------------------------------
