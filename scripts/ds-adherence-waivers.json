@@ -17,13 +17,6 @@
   "waivers": [
     {
       "rule": "off-scale-font-size",
-      "file": "docs/brand/06-angular-components/src/components/alert/ino-alert.component.scss",
-      "match": "font-size: 13px",
-      "reason": "the type scale has no role at this size; needs a token decision, not a find-and-replace",
-      "issue": "INO-172"
-    },
-    {
-      "rule": "off-scale-font-size",
       "file": "docs/brand/06-angular-components/src/components/feature-grid/ino-feature-grid.component.scss",
       "match": "font-size: 20px",
       "reason": "the type scale has no role at this size; needs a token decision, not a find-and-replace",
@@ -31,29 +24,8 @@
     },
     {
       "rule": "off-scale-font-size",
-      "file": "docs/brand/06-angular-components/src/components/select/ino-select.component.scss",
-      "match": "font-size: 12px",
-      "reason": "the type scale has no role at this size; needs a token decision, not a find-and-replace",
-      "issue": "INO-172"
-    },
-    {
-      "rule": "off-scale-font-size",
-      "file": "mobile/capacitor/app/src/app/pages/detail/detail.component.scss",
-      "match": "font-size: 13px",
-      "reason": "the type scale has no role at this size; needs a token decision, not a find-and-replace",
-      "issue": "INO-172"
-    },
-    {
-      "rule": "off-scale-font-size",
       "file": "mobile/capacitor/app/src/app/pages/detail/detail.component.scss",
       "match": "font-size: 19px",
-      "reason": "the type scale has no role at this size; needs a token decision, not a find-and-replace",
-      "issue": "INO-172"
-    },
-    {
-      "rule": "off-scale-font-size",
-      "file": "mobile/capacitor/app/src/app/pages/home/home.component.scss",
-      "match": "font-size: 13px",
       "reason": "the type scale has no role at this size; needs a token decision, not a find-and-replace",
       "issue": "INO-172"
     },
@@ -73,20 +45,6 @@
     },
     {
       "rule": "off-scale-font-size",
-      "file": "mobile/capacitor/app/src/app/pages/search/search.component.scss",
-      "match": "font-size: 13px",
-      "reason": "the type scale has no role at this size; needs a token decision, not a find-and-replace",
-      "issue": "INO-172"
-    },
-    {
-      "rule": "off-scale-font-size",
-      "file": "mobile/capacitor/app/src/app/pages/settings/settings.component.scss",
-      "match": "font-size: 13px",
-      "reason": "the type scale has no role at this size; needs a token decision, not a find-and-replace",
-      "issue": "INO-172"
-    },
-    {
-      "rule": "off-scale-font-size",
       "file": "mobile/capacitor/app/src/app/pages/settings/settings.component.scss",
       "match": "font-size: 18px",
       "reason": "the type scale has no role at this size; needs a token decision, not a find-and-replace",
@@ -101,36 +59,8 @@
     },
     {
       "rule": "off-scale-font-size",
-      "file": "web/src/app/components/alert/ino-alert.component.scss",
-      "match": "font-size: 13px",
-      "reason": "the type scale has no role at this size; needs a token decision, not a find-and-replace",
-      "issue": "INO-172"
-    },
-    {
-      "rule": "off-scale-font-size",
       "file": "web/src/app/components/feature-grid/ino-feature-grid.component.scss",
       "match": "font-size: 20px",
-      "reason": "the type scale has no role at this size; needs a token decision, not a find-and-replace",
-      "issue": "INO-172"
-    },
-    {
-      "rule": "off-scale-font-size",
-      "file": "web/src/app/components/select/ino-select.component.scss",
-      "match": "font-size: 12px",
-      "reason": "the type scale has no role at this size; needs a token decision, not a find-and-replace",
-      "issue": "INO-172"
-    },
-    {
-      "rule": "off-scale-font-size",
-      "file": "web/src/app/pages/contact/contact.component.scss",
-      "match": "font-size: 13px",
-      "reason": "the type scale has no role at this size; needs a token decision, not a find-and-replace",
-      "issue": "INO-172"
-    },
-    {
-      "rule": "off-scale-font-size",
-      "file": "web/src/app/pages/not-found/not-found.component.scss",
-      "match": "font-size: 13px",
       "reason": "the type scale has no role at this size; needs a token decision, not a find-and-replace",
       "issue": "INO-172"
     },
@@ -143,22 +73,8 @@
     },
     {
       "rule": "off-scale-font-size",
-      "file": "web/src/app/pages/trust-governance/trust-governance.component.scss",
-      "match": "font-size: 13px",
-      "reason": "the type scale has no role at this size; needs a token decision, not a find-and-replace",
-      "issue": "INO-172"
-    },
-    {
-      "rule": "off-scale-font-size",
       "file": "web/src/styles/page-sections.scss",
       "match": "font-size: 10.5px",
-      "reason": "the type scale has no role at this size; needs a token decision, not a find-and-replace",
-      "issue": "INO-172"
-    },
-    {
-      "rule": "off-scale-font-size",
-      "file": "web/src/styles/page-sections.scss",
-      "match": "font-size: 11.5px",
       "reason": "the type scale has no role at this size; needs a token decision, not a find-and-replace",
       "issue": "INO-172"
     },
