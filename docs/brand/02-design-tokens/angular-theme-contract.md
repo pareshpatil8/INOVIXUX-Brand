@@ -37,8 +37,8 @@ Component SCSS then reads tokens the normal way:
   color: var(--ino-color-risk-high-on-fill);
   border-radius: var(--ino-radius-pill);
   padding: var(--ino-space-1) var(--ino-space-3);
-  font: var(--ino-type-label-weight) var(--ino-type-label-size) / 1 var(--ino-font-mono);
-  letter-spacing: var(--ino-type-label-tracking);
+  font: var(--ino-type-eyebrow-weight) var(--ino-type-eyebrow-size) / 1 var(--ino-font-mono);
+  letter-spacing: var(--ino-type-eyebrow-tracking);
 }
 ```
 

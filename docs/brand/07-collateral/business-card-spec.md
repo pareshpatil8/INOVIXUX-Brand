@@ -48,7 +48,7 @@ card with the resolved-checkmark B2C mark."*
 - Mark placement: **top-left**, sized so its longest edge = 9mm (small — this is a card, not a
   billboard; the mark should read as a maker's mark, not a hero lockup).
 - Wordmark: bottom-right, 7pt equivalent, same finish as the mark, tracked +2% (matches
-  `--ino-type-label-tracking` intent, scaled for foil-stamp legibility at small size).
+  `--ino-type-eyebrow-tracking` intent, scaled for foil-stamp legibility at small size).
 - Everything else on the front stays empty black — the card's negative space *is* the "Resilience
   & Governance" tone claim from the brief, not a decoration to fill.
 
