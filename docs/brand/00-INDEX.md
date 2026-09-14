@@ -113,12 +113,12 @@ Per your 2026-09-07 directive, the following are **on hold**, not silently in pr
 - **KYB MVP integration / rollout** (activity-plan workstream F, and the KYB-specific row of
   workstream C) — anything that would connect this brand/design work to a live external system.
   Nothing here has been touched this round.
-- **Final vector logo artwork via Figma** — you said you'll authorize the Figma connector
-  yourself via claude.ai connector settings. Nothing pushed to a Figma file yet; we'll wait for
-  your confirmation that it's actually authorized before touching it, since Figma tools showing
-  as available in this session isn't the same as your account being connected. (The SVG mark
-  files in `/assets/brand/logo/` are hand-built vector paths, not a Figma export — they're real
-  and usable now, but a designer pass in Figma would still refine curve quality before press.)
+- **Final vector logo artwork via Figma** — ✅ **connector authorized 2026-09-14** and verified live
+  (`whoami` → `Paresh`, plan `INVC`, seat Full, tier starter). This is no longer a hold; it moves into
+  Phase 2 scope alongside the Figma library (doc 16 register item L-17). One caveat to confirm against a
+  real file rather than assume: the starter tier may cap library-publishing features. (The SVG mark files
+  in `/assets/brand/logo/` are hand-built vector paths, not a Figma export — they're real and usable now,
+  but a designer pass in Figma would still refine curve quality before press.)
 - **Angular port of the *live marketing website* into a production repo** — `/web/` (this round)
   is the design-system showcase app, not the production site; still correctly sequenced after
   design-system sign-off, and still no live/external wiring (no KYB, no backend calls).
