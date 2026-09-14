@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - "web/**"
+      - "package.json"
+      - "package-lock.json"
       - "assets/brand/**"
       - "docs/brand/mockups/**"
       - "mobile/react-native/**"
@@ -30,10 +32,12 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: web/package-lock.json
+          cache-dependency-path: package-lock.json
 
+      # web/ and mobile/capacitor/app/ are npm workspaces sharing one root
+      # install so their @angular/* deps can't drift apart (INO-99) — install
+      # from the repo root, not from web/.
       - name: Install dependencies
-        working-directory: web
         run: npm ci
 
       - name: Build (production, base href for project pages)

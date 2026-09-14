@@ -1,0 +1,11 @@
+{
+  "name": "inovixux-brand",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Root npm workspace for INOVIXUX-Brand. Owns the single node_modules install shared by web/ and mobile/capacitor/app/, which import each other's source directly (mobile/capacitor/app uses a @web-app/* path alias into web/src/app) and must resolve identical copies of @angular/* (see INO-99).",
+  "workspaces": [
+    "web",
+    "mobile/capacitor/app"
+  ],
+  "packageManager": "npm@11.19.0"
+}
