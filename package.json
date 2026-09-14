@@ -9,8 +9,9 @@
   ],
   "scripts": {
     "check:parity": "node scripts/check-theme-parity.mjs",
+    "check:deep-link-parity": "node scripts/check-deep-link-parity.mjs",
     "check:adherence": "node scripts/check-ds-adherence.mjs",
-    "check:ds": "npm run check:parity && npm run check:adherence"
+    "check:ds": "npm run check:parity && npm run check:deep-link-parity && npm run check:adherence"
   },
   "packageManager": "npm@11.19.0"
 }
