@@ -86,6 +86,27 @@ for (const name of ['fast','base','slow']) {
   assert.match(rn, new RegExp(`duration${name[0].toUpperCase()+name.slice(1)}: ${n}`));
   assert.match(dart, new RegExp(`${name} = Duration\\(milliseconds: ${n}\\)`));
 }
+
+// Devanagari typography pairing (INO-119) — tokens.css §4/§4b mandatory fallback chain +
+// :lang(hi) vertical-rhythm override, mirrored into RN (full parity) and Flutter (font pairing
+// only — Flutter has no ported line-height scale to mirror the ratios into, see README).
+assert.match(base['--ino-font-display'], /"Noto Sans Devanagari"/, 'canonical font-display fallback chain includes Noto Sans Devanagari');
+const langHi = Object.assign({}, ...blocks.filter(m => m[1].trim() === ':lang(hi)').map(m => declarations(m[2])));
+for (const cssVar of ['--ino-type-display-line', '--ino-type-h2-line', '--ino-type-h3-line']) {
+  assert.ok(langHi[cssVar], `:lang(hi) override for ${cssVar} present`);
+}
+const rnFont = Object.fromEntries([...rnGroup('fontFamily').matchAll(/(\w+):\s*'([^']+)'/g)].map(m => [m[1], m[2]]));
+assert.equal(rnFont.display, 'Geist', 'RN display font name matches canonical chain');
+assert.equal(rnFont.displayDevanagariFallback, 'Noto Sans Devanagari', 'RN Devanagari fallback name matches canonical chain');
+const rnType = rn.match(/export const type = \{([\s\S]*?)\n\};/)?.[1];
+assert.ok(rnType, 'RN type scale present');
+for (const [role, cssVar] of [['displaySmHi', '--ino-type-display-line'], ['h2Hi', '--ino-type-h2-line'], ['h3Hi', '--ino-type-h3-line']]) {
+  const m = rnType.match(new RegExp(`${role}:\\s*\\{\\s*fontSize:\\s*[\\d.]+,\\s*lineHeight:\\s*[\\d.]+\\s*\\*\\s*([\\d.]+)`));
+  assert.ok(m, `RN type.${role} present`);
+  assert.equal(Number(m[1]), parseFloat(langHi[cssVar]), `RN type.${role} line-height ratio matches tokens.css :lang(hi) override`);
+}
+assert.match(dart, /static const String display = 'Geist';/, 'Flutter InoFont.display matches canonical chain');
+assert.match(dart, /static const List<String> displayFallback = \['Noto Sans Devanagari'\];/, 'Flutter InoFont.displayFallback matches canonical chain');
 function luminance(c) {
   const v = c.slice(0,3).map(n => n/255).map(n => n <= .04045 ? n/12.92 : ((n+.055)/1.055)**2.4);
   return v[0]*.2126+v[1]*.7152+v[2]*.0722;
@@ -105,5 +126,5 @@ for (const bg of ['surface','surfaceRaised','surfaceSunken']) {
   for (const fg of ['border','borderSoft']) pair(fg,bg,3);
 }
 for (const [fg,bg] of [['onAccent','accent'],['onAccent','accentSecondary'],['onSuccess','success'],['onWarning','warning'],['onDanger','danger'],['riskHighOnFill','riskHighFill'],['riskMediumOnFill','riskMediumFill'],['riskLowOnFill','riskLowFill']]) pair(fg,bg,7);
-console.log(`PASS: CSS mirrors; Capacitor import; ${colorChecks} color roles across 3 themes × 2 mobile ports; space/radius/targets/durations.`);
+console.log(`PASS: CSS mirrors; Capacitor import; ${colorChecks} color roles across 3 themes × 2 mobile ports; space/radius/targets/durations; Devanagari font pairing + line-height parity.`);
 console.log('High-contrast token pairs (AAA text >=7; non-text borders >=3; excludes disabled/decorative subtle role):\n'+measurements.join('\n'));
