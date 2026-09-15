@@ -196,6 +196,28 @@ function scanUniversal(file, src, { allowPrimitives }) {
   }
 }
 
+// A token's own declared values can themselves be a pure var() reference — e.g. INO-126/W0-4 made
+// --ino-type-body-line resolve as var(--ino-leading-8) / var(--ino-leading-5) / var(--ino-leading-9)
+// instead of a bare decimal in every theme/density block. Chase those chains down to their terminal
+// literals before comparing against a fallback below, or every existing `var(--ino-type-body-line,
+// 1.65)` in the Capacitor track would misreport as stale the moment a token starts aliasing a scale
+// instead of typing its own literal — exactly the move the primitive -> semantic-role architecture
+// (and now the leading/tracking scale) asks every token in this file to make eventually.
+const resolvedDeclaredCache = new Map();
+function resolveDeclared(name, seen = new Set()) {
+  if (resolvedDeclaredCache.has(name)) return resolvedDeclaredCache.get(name);
+  if (seen.has(name)) return new Set(); // cyclic guard, should never trigger on real tokens
+  seen.add(name);
+  const out = new Set();
+  for (const v of tokenValues.get(name) ?? []) {
+    const pure = v.match(/^var\((--ino-[\w-]+)\)$/);
+    if (pure && tokenValues.has(pure[1])) for (const r of resolveDeclared(pure[1], seen)) out.add(r);
+    else out.add(v);
+  }
+  resolvedDeclaredCache.set(name, out);
+  return out;
+}
+
 /*
  * `var(--ino-radius-md, 8px)` is the house idiom: the Capacitor track uses fallbacks so a
  * component still renders if tokens.css has not loaded. The fallback is therefore NOT a
@@ -223,7 +245,7 @@ function resolveVars(file, value, at, whole) {
     // it renders a value the design system never approved, only when the stylesheet is
     // slow. Only checked for --ino-* tokens whose values are plain literals.
     if (fallback && tokenValues.has(name) && !fallback.startsWith('var(')) {
-      const declared = tokenValues.get(name);
+      const declared = resolveDeclared(name);
       const norm = fallback.replace(/\s+/g, ' ');
       const numeric = norm.match(/^(-?\d*\.?\d+)px$/);
       const sameNumber = d => {

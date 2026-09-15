@@ -886,8 +886,8 @@ the current component count and get monotonically more expensive. §4.4 makes th
 | **M-12** | App store listing assets — screenshots, feature graphic, store copy × 3 tracks | ❌ Missing | partly **INO-82** |
 | **M-13** | **PrimeNG AI tooling adoption** *(NEW)* — install the Plugin; pin `llms.txt` to `specs/primeng/llms-22.1.1.txt` | ❌ Not started | §2 | 
 | **M-14** | **Decompose `ino-metric-panel`** *(NEW)* into `Tag` + `MeterGroup` inside a `Card` | 🔲 Decision | §7 |
-| **N-5** | Composite type aliases + `--leading-*` / `--tracking-*` scales | ❌ Missing | — |
-| **N-6** | Shadow/elevation scale — 2 steps today vs 6 + 3 brand + 2 inset | ⚠️ Partial | — |
+| **N-5** | Composite type aliases + `--leading-*` / `--tracking-*` scales | ✅ **Closed** by **INO-126** (W0-4) — `tokens.css` §4c: 9-step `--ino-leading-*` + 7-step `--ino-tracking-*` scale, every existing role re-pointed at it, plus one `font`-shorthand composite alias per role, asserted by `check-theme-parity.mjs` | — |
+| **N-6** | Shadow/elevation scale — 2 steps today vs 6 + 3 brand + 2 inset | ✅ **Closed** by **INO-126** (W0-4) — `tokens.css` §2: `--ino-elevation-neutral-1..6` / `-brand-1..3` / `-inset-1..2`, brand parametric on `var(--ino-color-accent)`, all 11 flatten to `none` in high-contrast (recorded decision), old `-0/-1/-2` left in place for existing consumers | — |
 | **N-7** | `prefers-reduced-motion` coverage — 5 of 16 components | ⚠️ Partial | — |
 | **N-8** | **Info severity tier** — `info` on both Toast and Message | ✅ **Closed** by **INO-128** (W0-6) — `InoAlertStatus` is `info\|success\|warning\|danger`; `--ino-color-info` / `--ino-color-on-info` in all 3 themes + both mobile ports, asserted by `check-theme-parity.mjs` | — |
 | **N-9** | Icon slots + `danger` button variant | ❌ Missing | rebaselined to `IconField` + `InputGroup` (§3.2) |
