@@ -1,0 +1,256 @@
+<!-- @dsCard group="Layout" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ino-card — header / footer / media slots (INO-161)</title>
+<!-- Canonical token file, linked rather than copied: this preview must repaint with the system,
+     and must never become a second place raw hex values live. -->
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-eyebrow-size);
+    letter-spacing: var(--ino-type-eyebrow-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 60ch; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--ino-space-6); }
+  .row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); align-items: flex-start; }
+
+  /* Mirrors web/src/app/components/card/ino-card.component.scss — same token bindings, so a
+     divergence between this preview and the shipped component is visible as a visual diff. */
+  .ino-card {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background: var(--ino-color-surface-raised);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-xl);
+    box-shadow: var(--ino-elevation-1);
+    overflow: hidden;
+    transition: border-color var(--ino-motion-duration-base) var(--ino-motion-easing-standard),
+      box-shadow var(--ino-motion-duration-base) var(--ino-motion-easing-standard),
+      transform var(--ino-motion-duration-base) var(--ino-motion-easing-standard),
+      opacity var(--ino-motion-duration-base) var(--ino-motion-easing-standard);
+  }
+  .ino-card--sunken { background: var(--ino-color-surface-sunken); box-shadow: var(--ino-elevation-0); }
+  .ino-card--overlay { background: var(--ino-color-surface-raised); box-shadow: var(--ino-elevation-2); }
+
+  .ino-card--interactive { cursor: pointer; }
+  .ino-card--interactive:hover, .ino-card--interactive:focus-visible { border-color: var(--ino-color-accent); }
+  .ino-card--interactive:active { border-color: var(--ino-color-accent-active); }
+  .ino-card--interactive:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .ino-card--interactive:hover { transform: translateY(-2px); }
+    .ino-card--interactive:active { transform: translateY(0); }
+  }
+
+  .ino-card--disabled { opacity: 0.5; }
+  .ino-card--interactive.ino-card--disabled { cursor: not-allowed; pointer-events: none; }
+  .ino-card--loading .ino-card__body { opacity: 0.5; }
+
+  .ino-card__media:empty { display: none; }
+  .ino-card__media { line-height: 0; }
+  .ino-card__media img { display: block; width: 100%; height: auto; object-fit: cover; }
+
+  .ino-card__header:empty, .ino-card__footer:empty { display: none; }
+  .ino-card__header {
+    padding-block: var(--ino-control-padding-inline-roomy);
+    padding-inline: var(--ino-control-padding-inline-roomy);
+    border-block-end: 1px solid var(--ino-color-border-soft);
+    font-size: var(--ino-control-font-size);
+    font-weight: 600;
+  }
+  .ino-card__footer {
+    padding-block: var(--ino-control-padding-inline-roomy);
+    padding-inline: var(--ino-control-padding-inline-roomy);
+    border-block-start: 1px solid var(--ino-color-border-soft);
+  }
+  .ino-card--sm {
+    --ino-control-padding-inline-roomy: var(--ino-control-padding-inline-roomy-sm);
+    --ino-control-font-size: var(--ino-control-font-size-sm);
+    --ino-control-icon-size: var(--ino-control-icon-size-sm);
+  }
+  .ino-card--lg {
+    --ino-control-padding-inline-roomy: var(--ino-control-padding-inline-roomy-lg);
+    --ino-control-font-size: var(--ino-control-font-size-lg);
+    --ino-control-icon-size: var(--ino-control-icon-size-lg);
+  }
+
+  .ino-card__body {
+    flex: 1;
+    position: relative;
+    padding-block: var(--ino-space-6);
+    padding-inline: var(--ino-space-6);
+    color: var(--ino-color-on-surface);
+  }
+  .ino-card--pad-sm .ino-card__body { padding-block: var(--ino-space-4); padding-inline: var(--ino-space-4); }
+  .ino-card--pad-lg .ino-card__body { padding-block: var(--ino-space-8); padding-inline: var(--ino-space-8); }
+
+  .ino-card__body p { margin: 0; color: var(--ino-color-on-surface-muted); }
+
+  .ino-card__spinner-wrap {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .ino-card__spinner {
+    width: var(--ino-control-icon-size, 20px);
+    height: var(--ino-control-icon-size, 20px);
+    border-radius: 50%;
+    border: 2px solid var(--ino-color-on-surface-muted);
+    border-inline-start-color: transparent;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .ino-card__spinner { animation: ino-card-spin var(--ino-motion-duration-slow) linear infinite; }
+  }
+  @keyframes ino-card-spin { to { transform: rotate(360deg); } }
+
+  .media-fill {
+    width: 100%; height: 120px;
+    background: var(--ino-gradient-accent);
+  }
+</style>
+</head>
+<body>
+
+<h1>Card — header / footer / media slots</h1>
+<p class="lede">
+  The generic surface container: bento-grid tiles, KYB finding cards, mobile list rows, dashboard
+  widgets. This uplift adds a full-bleed <code>media</code> slot (PrimeNG <code>Card</code>'s
+  <code>header</code> template shape), a <code>size</code> API for the header/footer chrome, and
+  <code>disabled</code>/<code>loading</code> states — see
+  <a href="../card.md"><code>card.md</code></a> for the full API and
+  <code>web/src/app/components/card/SPEC.md</code> for the decisions behind them.
+</p>
+
+<h2>States × theme</h2>
+<div class="grid">
+
+  <div>
+    <h3 style="margin: 0 0 var(--ino-space-3); font-size: var(--ino-type-body-sm-size); color: var(--ino-color-on-surface-muted);">dark — :root (default)</h3>
+    <article class="ino-card">
+      <div class="ino-card__header">Default surface</div>
+      <div class="ino-card__body"><p>Standard raised card for page/section content.</p></div>
+    </article>
+  </div>
+
+  <div data-theme="light" style="background: var(--ino-color-surface); padding: var(--ino-space-4); border-radius: var(--ino-radius-xl);">
+    <h3 style="margin: 0 0 var(--ino-space-3); font-size: var(--ino-type-body-sm-size); color: var(--ino-color-on-surface-muted);">light — [data-theme="light"]</h3>
+    <article class="ino-card">
+      <div class="ino-card__header">Default surface</div>
+      <div class="ino-card__body"><p>Standard raised card for page/section content.</p></div>
+    </article>
+  </div>
+
+  <div data-theme="high-contrast" style="background: var(--ino-color-surface); padding: var(--ino-space-4); border-radius: var(--ino-radius-xl);">
+    <h3 style="margin: 0 0 var(--ino-space-3); font-size: var(--ino-type-body-sm-size); color: var(--ino-color-on-surface-muted);">high-contrast — [data-theme="high-contrast"]</h3>
+    <article class="ino-card">
+      <div class="ino-card__header">Default surface</div>
+      <div class="ino-card__body"><p>Standard raised card for page/section content.</p></div>
+    </article>
+  </div>
+
+</div>
+
+<h2>Media slot (new)</h2>
+<p class="lede">Full-bleed, clipped to the card's own corner radius — PrimeNG <code>Card</code>'s <code>header</code> template shape.</p>
+<div class="row">
+  <article class="ino-card" style="max-width: 320px;">
+    <div class="ino-card__media"><div class="media-fill"></div></div>
+    <div class="ino-card__header">KYB / Vendor Underwriting</div>
+    <div class="ino-card__body"><p>Media, header, body and footer, all in one card.</p></div>
+    <div class="ino-card__footer">View the KYB module &rarr;</div>
+  </article>
+</div>
+
+<h2>Surface roles</h2>
+<div class="row">
+  <article class="ino-card ino-card--interactive" tabindex="0" style="max-width: 260px;">
+    <div class="ino-card__header">Default surface</div>
+    <div class="ino-card__body"><p>Hover/focus to see the elevation state.</p></div>
+  </article>
+  <article class="ino-card ino-card--sunken" style="max-width: 260px;">
+    <div class="ino-card__header">Sunken surface</div>
+    <div class="ino-card__body"><p>Inset panel — nested card or recessed block.</p></div>
+  </article>
+  <article class="ino-card ino-card--overlay" style="max-width: 260px;">
+    <div class="ino-card__header">Overlay surface</div>
+    <div class="ino-card__body"><p>Modal/sheet/popover body, at elevation-2.</p></div>
+    <div class="ino-card__footer">Not a live modal — shown in-flow.</div>
+  </article>
+</div>
+
+<h2>Size (control-size scale — header/footer chrome)</h2>
+<div class="row">
+  <article class="ino-card ino-card--sm" style="max-width: 220px;">
+    <div class="ino-card__header">sm</div>
+    <div class="ino-card__body"><p>Compact header/footer padding + type.</p></div>
+    <div class="ino-card__footer">Action</div>
+  </article>
+  <article class="ino-card" style="max-width: 220px;">
+    <div class="ino-card__header">default</div>
+    <div class="ino-card__body"><p>Standard header/footer padding + type.</p></div>
+    <div class="ino-card__footer">Action</div>
+  </article>
+  <article class="ino-card ino-card--lg" style="max-width: 220px;">
+    <div class="ino-card__header">lg</div>
+    <div class="ino-card__body"><p>Roomy header/footer padding + type.</p></div>
+    <div class="ino-card__footer">Action</div>
+  </article>
+</div>
+
+<h2>Padding (body content, independent of size)</h2>
+<div class="row">
+  <article class="ino-card ino-card--pad-sm" style="max-width: 220px;">
+    <div class="ino-card__header">padding="sm"</div>
+    <div class="ino-card__body"><p>Tight body content padding.</p></div>
+  </article>
+  <article class="ino-card ino-card--pad-lg" style="max-width: 220px;">
+    <div class="ino-card__header">padding="lg"</div>
+    <div class="ino-card__body"><p>Roomy body content padding.</p></div>
+  </article>
+</div>
+
+<h2>Disabled &amp; loading (new)</h2>
+<div class="row">
+  <article class="ino-card ino-card--interactive ino-card--disabled" style="max-width: 240px;">
+    <div class="ino-card__header">Disabled</div>
+    <div class="ino-card__body"><p>Superseded finding — visible but inert.</p></div>
+  </article>
+  <article class="ino-card ino-card--loading" style="max-width: 240px;">
+    <div class="ino-card__header">Loading</div>
+    <div class="ino-card__body">
+      <p>Fetching the latest KYB result&hellip;</p>
+      <div class="ino-card__spinner-wrap" aria-hidden="true"><span class="ino-card__spinner"></span></div>
+    </div>
+  </article>
+</div>
+
+<h2>RTL</h2>
+<div class="row" dir="rtl">
+  <article class="ino-card" style="max-width: 260px;">
+    <div class="ino-card__header">بطاقة نتيجة التحقق</div>
+    <div class="ino-card__body"><p>محتوى البطاقة يتبع اتجاه القراءة.</p></div>
+    <div class="ino-card__footer">عرض التفاصيل</div>
+  </article>
+</div>
+
+</body>
+</html>
