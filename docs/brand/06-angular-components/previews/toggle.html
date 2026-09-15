@@ -1,0 +1,210 @@
+<!-- @dsCard group="Forms" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ino-toggle — icon overlay, invalid state, size API (INO-160)</title>
+<!-- Canonical token file, linked rather than copied: this preview must repaint with the system,
+     and must never become a second place raw hex values live. -->
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-eyebrow-size);
+    letter-spacing: var(--ino-type-eyebrow-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 60ch; }
+
+  .theme-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); }
+  .theme-pane {
+    flex: 1 1 280px;
+    padding: var(--ino-space-5);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-xl);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+  }
+  .theme-pane > h3 {
+    margin: 0 0 var(--ino-space-4);
+    font-size: var(--ino-type-body-sm-size);
+    color: var(--ino-color-on-surface-muted);
+    font-weight: 600;
+  }
+
+  .col { display: flex; flex-direction: column; gap: var(--ino-space-3); }
+  .row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--ino-space-6); }
+
+  /* Mirrors web/src/app/components/toggle/ino-toggle.component.scss — same token bindings, so a
+     divergence between this preview and the shipped component is visible as a visual diff. */
+  .ino-toggle__control {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--ino-control-gap-default);
+    min-height: var(--ino-target-comfortable);
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+  }
+  .ino-toggle__control:hover:not(:disabled) .ino-toggle__track { filter: brightness(1.15); }
+  .ino-toggle__control:focus-visible .ino-toggle__track {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+  .ino-toggle__control:disabled { cursor: not-allowed; opacity: 0.5; }
+  .ino-toggle__control--invalid .ino-toggle__track {
+    outline: 2px solid var(--ino-color-danger);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+  .ino-toggle__control--readonly { cursor: default; }
+  .ino-toggle__control--readonly .ino-toggle__track:hover { filter: none; }
+
+  .ino-toggle__track {
+    position: relative;
+    width: calc(var(--ino-control-icon-size-default) * 2 + 4px);
+    height: calc(var(--ino-control-icon-size-default) + 4px);
+    flex: none;
+    border-radius: var(--ino-radius-pill);
+    background: var(--ino-color-surface-sunken);
+    border: 1px solid var(--ino-color-border);
+    transition: background var(--ino-motion-duration-base) var(--ino-motion-easing-standard),
+      filter var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+  }
+  .ino-toggle__track--sm { width: calc(var(--ino-control-icon-size-sm) * 2 + 4px); height: calc(var(--ino-control-icon-size-sm) + 4px); }
+  .ino-toggle__track--lg { width: calc(var(--ino-control-icon-size-lg) * 2 + 4px); height: calc(var(--ino-control-icon-size-lg) + 4px); }
+
+  .ino-toggle__thumb {
+    position: absolute;
+    inset-block-start: 2px;
+    inset-inline-start: 2px;
+    width: var(--ino-control-icon-size-default);
+    height: var(--ino-control-icon-size-default);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--ino-color-on-surface-muted);
+    transition: inset-inline-start var(--ino-motion-duration-base) var(--ino-motion-easing-standard),
+      background var(--ino-motion-duration-base) var(--ino-motion-easing-standard);
+  }
+  .ino-toggle__track--sm .ino-toggle__thumb { width: var(--ino-control-icon-size-sm); height: var(--ino-control-icon-size-sm); }
+  .ino-toggle__track--lg .ino-toggle__thumb { width: var(--ino-control-icon-size-lg); height: var(--ino-control-icon-size-lg); }
+  .ino-toggle__icon { font-size: calc(var(--ino-control-icon-size-default) * 0.6); line-height: 1; color: var(--ino-color-surface); }
+  .ino-toggle__track[data-checked='true'] {
+    background: var(--ino-gradient-accent);
+    border-color: transparent;
+  }
+  .ino-toggle__track[data-checked='true'] .ino-toggle__thumb {
+    inset-inline-start: calc(var(--ino-control-icon-size-default) + 2px);
+    background: var(--ino-color-on-accent);
+  }
+  .ino-toggle__track--sm[data-checked='true'] .ino-toggle__thumb { inset-inline-start: calc(var(--ino-control-icon-size-sm) + 2px); }
+  .ino-toggle__track--lg[data-checked='true'] .ino-toggle__thumb { inset-inline-start: calc(var(--ino-control-icon-size-lg) + 2px); }
+  .ino-toggle__track[data-checked='true'] .ino-toggle__icon { color: var(--ino-color-accent); }
+
+  .ino-toggle__label { font-size: var(--ino-type-body-size); }
+
+  .ino-toggle__spinner {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    border: 2px solid var(--ino-color-on-surface-muted);
+    border-inline-start-color: transparent;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .ino-toggle__spinner { animation: ino-toggle-spin var(--ino-motion-duration-slow) linear infinite; }
+  }
+  @keyframes ino-toggle-spin { to { transform: rotate(360deg); } }
+
+  .ino-toggle__error { margin: 0; font-size: var(--ino-type-body-sm-size); color: var(--ino-color-danger); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<h1>Toggle — icon overlay, invalid state, size API</h1>
+<p class="lede">
+  A boolean switch (<code>role="switch"</code> on a native <code>&lt;button&gt;</code>), now
+  carrying an on/off icon overlay riding inside the thumb, the full eight-state contract, and the
+  <code>size</code> API.
+</p>
+
+<h2>States × theme</h2>
+<div class="theme-row">
+
+  <div class="theme-pane">
+    <h3>dark — :root (default)</h3>
+    <div class="col">
+      <button type="button" class="ino-toggle__control" role="switch" aria-checked="false"><span class="ino-toggle__track"><span class="ino-toggle__thumb"><span class="ino-toggle__icon" aria-hidden="true">✕</span></span></span><span class="ino-toggle__label">Default (off)</span></button>
+      <button type="button" class="ino-toggle__control" role="switch" aria-checked="true"><span class="ino-toggle__track" data-checked="true"><span class="ino-toggle__thumb"><span class="ino-toggle__icon" aria-hidden="true">✓</span></span></span><span class="ino-toggle__label">Checked (on)</span></button>
+      <button type="button" class="ino-toggle__control" role="switch" aria-checked="true" disabled><span class="ino-toggle__track" data-checked="true"><span class="ino-toggle__thumb"><span class="ino-toggle__icon" aria-hidden="true">✓</span></span></span><span class="ino-toggle__label">Disabled</span></button>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="light">
+    <h3>light — [data-theme="light"]</h3>
+    <div class="col">
+      <button type="button" class="ino-toggle__control" role="switch" aria-checked="false"><span class="ino-toggle__track"><span class="ino-toggle__thumb"><span class="ino-toggle__icon" aria-hidden="true">✕</span></span></span><span class="ino-toggle__label">Default (off)</span></button>
+      <button type="button" class="ino-toggle__control" role="switch" aria-checked="true"><span class="ino-toggle__track" data-checked="true"><span class="ino-toggle__thumb"><span class="ino-toggle__icon" aria-hidden="true">✓</span></span></span><span class="ino-toggle__label">Checked (on)</span></button>
+      <button type="button" class="ino-toggle__control" role="switch" aria-checked="true" disabled><span class="ino-toggle__track" data-checked="true"><span class="ino-toggle__thumb"><span class="ino-toggle__icon" aria-hidden="true">✓</span></span></span><span class="ino-toggle__label">Disabled</span></button>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="high-contrast">
+    <h3>high-contrast — [data-theme="high-contrast"]</h3>
+    <div class="col">
+      <button type="button" class="ino-toggle__control" role="switch" aria-checked="false"><span class="ino-toggle__track"><span class="ino-toggle__thumb"><span class="ino-toggle__icon" aria-hidden="true">✕</span></span></span><span class="ino-toggle__label">Default (off)</span></button>
+      <button type="button" class="ino-toggle__control" role="switch" aria-checked="true"><span class="ino-toggle__track" data-checked="true"><span class="ino-toggle__thumb"><span class="ino-toggle__icon" aria-hidden="true">✓</span></span></span><span class="ino-toggle__label">Checked (on)</span></button>
+      <button type="button" class="ino-toggle__control" role="switch" aria-checked="true" disabled><span class="ino-toggle__track" data-checked="true"><span class="ino-toggle__thumb"><span class="ino-toggle__icon" aria-hidden="true">✓</span></span></span><span class="ino-toggle__label">Disabled</span></button>
+    </div>
+  </div>
+
+</div>
+
+<h2>Icon overlay</h2>
+<p class="lede">The glyph rides inside the thumb and swaps with state — a checkmark on, a cross off — rather than sitting fixed under the track.</p>
+<div class="row">
+  <button type="button" class="ino-toggle__control" role="switch" aria-checked="false"><span class="ino-toggle__track"><span class="ino-toggle__thumb"><span class="ino-toggle__icon" aria-hidden="true">✕</span></span></span><span class="ino-toggle__label">Off</span></button>
+  <button type="button" class="ino-toggle__control" role="switch" aria-checked="true"><span class="ino-toggle__track" data-checked="true"><span class="ino-toggle__thumb"><span class="ino-toggle__icon" aria-hidden="true">✓</span></span></span><span class="ino-toggle__label">On</span></button>
+</div>
+
+<h2>Size (control-size scale)</h2>
+<div class="row">
+  <button type="button" class="ino-toggle__control" role="switch" aria-checked="true"><span class="ino-toggle__track ino-toggle__track--sm" data-checked="true"><span class="ino-toggle__thumb"><span class="ino-toggle__icon" aria-hidden="true">✓</span></span></span><span class="ino-toggle__label">sm</span></button>
+  <button type="button" class="ino-toggle__control" role="switch" aria-checked="true"><span class="ino-toggle__track" data-checked="true"><span class="ino-toggle__thumb"><span class="ino-toggle__icon" aria-hidden="true">✓</span></span></span><span class="ino-toggle__label">default</span></button>
+  <button type="button" class="ino-toggle__control" role="switch" aria-checked="true"><span class="ino-toggle__track ino-toggle__track--lg" data-checked="true"><span class="ino-toggle__thumb"><span class="ino-toggle__icon" aria-hidden="true">✓</span></span></span><span class="ino-toggle__label">lg</span></button>
+</div>
+
+<h2>Readonly &amp; loading</h2>
+<div class="row">
+  <button type="button" class="ino-toggle__control ino-toggle__control--readonly" role="switch" aria-checked="true" aria-readonly="true" onclick="return false;"><span class="ino-toggle__track" data-checked="true"><span class="ino-toggle__thumb"><span class="ino-toggle__icon" aria-hidden="true">✓</span></span></span><span class="ino-toggle__label">Readonly (on, locked)</span></button>
+  <button type="button" class="ino-toggle__control" role="switch" aria-checked="true" disabled aria-busy="true"><span class="ino-toggle__track" data-checked="true"><span class="ino-toggle__thumb"><span class="ino-toggle__icon" aria-hidden="true">✓</span></span></span><span class="ino-toggle__spinner" aria-hidden="true"></span><span class="ino-toggle__label">Saving&hellip;</span></button>
+</div>
+
+<h2>Invalid</h2>
+<div class="col" style="align-items: flex-start;">
+  <button type="button" class="ino-toggle__control ino-toggle__control--invalid" role="switch" aria-checked="false" aria-invalid="true"><span class="ino-toggle__track"><span class="ino-toggle__thumb"><span class="ino-toggle__icon" aria-hidden="true">✕</span></span></span><span class="ino-toggle__label">Enable two-factor auth</span></button>
+  <p class="ino-toggle__error" role="alert">Required before you can continue</p>
+</div>
+
+<h2>RTL</h2>
+<div class="row" dir="rtl">
+  <button type="button" class="ino-toggle__control" role="switch" aria-checked="true"><span class="ino-toggle__track" data-checked="true"><span class="ino-toggle__thumb"><span class="ino-toggle__icon" aria-hidden="true">✓</span></span></span><span class="ino-toggle__label">تفعيل الإشعارات</span></button>
+</div>
+
+</body>
+</html>
