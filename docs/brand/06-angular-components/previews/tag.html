@@ -1,0 +1,211 @@
+<!-- @dsCard group="Misc" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ino-tag — RAG severity chip (INO-143)</title>
+<!-- Canonical token file, linked rather than copied: this preview must repaint with the system,
+     and must never become a second place raw hex values live. -->
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-eyebrow-size);
+    letter-spacing: var(--ino-type-eyebrow-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 60ch; }
+
+  .theme-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); }
+  .theme-pane {
+    flex: 1 1 280px;
+    padding: var(--ino-space-5);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-xl);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+  }
+  .theme-pane > h3 {
+    margin: 0 0 var(--ino-space-4);
+    font-size: var(--ino-type-body-sm-size);
+    color: var(--ino-color-on-surface-muted);
+    font-weight: 600;
+  }
+
+  .row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--ino-space-3); }
+
+  /* Mirrors web/src/app/components/tag/ino-tag.component.scss — same token bindings, so a
+     divergence between this preview and the shipped component is visible as a visual diff. */
+  .ino-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--ino-control-gap-default);
+    vertical-align: middle;
+    padding-inline: var(--ino-control-padding-inline-default);
+    padding-block: var(--ino-space-1);
+    border-radius: var(--ino-radius-sm);
+    font-family: var(--ino-font-mono);
+    font-size: var(--ino-control-font-size-default);
+    font-weight: var(--ino-type-eyebrow-weight);
+    letter-spacing: var(--ino-type-eyebrow-tracking);
+    line-height: 1;
+    white-space: nowrap;
+    transition: opacity var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+  }
+  .ino-tag--info   { background: var(--ino-color-info);              color: var(--ino-color-on-info); }
+  .ino-tag--low    { background: var(--ino-color-risk-low-fill);     color: var(--ino-color-risk-low-on-fill); }
+  .ino-tag--medium { background: var(--ino-color-risk-medium-fill);  color: var(--ino-color-risk-medium-on-fill); }
+  .ino-tag--high   { background: var(--ino-color-risk-high-fill);    color: var(--ino-color-risk-high-on-fill); }
+
+  .ino-tag--rounded { border-radius: var(--ino-radius-pill); }
+  .ino-tag--disabled { opacity: 0.5; }
+
+  .ino-tag--sm { font-size: var(--ino-control-font-size-sm); padding-inline: var(--ino-control-padding-inline-sm); gap: var(--ino-control-gap-sm); }
+  .ino-tag--lg { font-size: var(--ino-control-font-size-lg); padding-inline: var(--ino-control-padding-inline-lg); gap: var(--ino-control-gap-lg); }
+
+  .ino-tag__icon { display: inline-flex; align-items: center; justify-content: center; width: var(--ino-control-icon-size-default); height: var(--ino-control-icon-size-default); }
+
+  .ino-tag__spinner {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    border-inline-start-color: transparent;
+    opacity: 0.85;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .ino-tag__spinner { animation: ino-tag-spin var(--ino-motion-duration-slow) linear infinite; }
+  }
+  @keyframes ino-tag-spin { to { transform: rotate(360deg); } }
+
+  .ino-tag--dot { background: transparent; padding-inline: 0; color: var(--ino-color-on-surface-muted); }
+  .ino-tag__dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .ino-tag__dot--info   { background: var(--ino-color-info); }
+  .ino-tag__dot--low    { background: var(--ino-color-risk-low-dot); }
+  .ino-tag__dot--medium { background: var(--ino-color-risk-medium-dot); }
+  .ino-tag__dot--high   { background: var(--ino-color-risk-high-dot); }
+
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  }
+</style>
+</head>
+<body>
+
+<h1>Tag — RAG severity chip</h1>
+<p class="lede">
+  Extracted out of <code>ino-metric-panel</code> so any table cell, filter bar or detail header can
+  reuse the same audited severity chip instead of re-deriving one from raw colour.
+  <strong>info</strong> (W0-6) is the non-alarming fourth tier — a fact worth noting, not a risk
+  level.
+</p>
+
+<h2>Severity × theme</h2>
+<div class="theme-row">
+
+  <div class="theme-pane">
+    <h3>dark — :root (default)</h3>
+    <div class="row">
+      <span class="ino-tag ino-tag--info">Info</span>
+      <span class="ino-tag ino-tag--low">Low risk</span>
+      <span class="ino-tag ino-tag--medium">Medium risk</span>
+      <span class="ino-tag ino-tag--high">High risk</span>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="light">
+    <h3>light — [data-theme="light"]</h3>
+    <div class="row">
+      <span class="ino-tag ino-tag--info">Info</span>
+      <span class="ino-tag ino-tag--low">Low risk</span>
+      <span class="ino-tag ino-tag--medium">Medium risk</span>
+      <span class="ino-tag ino-tag--high">High risk</span>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="high-contrast">
+    <h3>high-contrast — [data-theme="high-contrast"]</h3>
+    <div class="row">
+      <span class="ino-tag ino-tag--info">Info</span>
+      <span class="ino-tag ino-tag--low">Low risk</span>
+      <span class="ino-tag ino-tag--medium">Medium risk</span>
+      <span class="ino-tag ino-tag--high">High risk</span>
+    </div>
+  </div>
+
+</div>
+
+<h2>Rounded variant</h2>
+<div class="row">
+  <span class="ino-tag ino-tag--high ino-tag--rounded">High risk</span>
+  <span class="ino-tag ino-tag--medium ino-tag--rounded">Medium risk</span>
+  <span class="ino-tag ino-tag--low ino-tag--rounded">Low risk</span>
+</div>
+
+<h2>Size (control-size scale)</h2>
+<div class="row">
+  <span class="ino-tag ino-tag--high ino-tag--sm">High risk</span>
+  <span class="ino-tag ino-tag--high">High risk</span>
+  <span class="ino-tag ino-tag--high ino-tag--lg">High risk</span>
+</div>
+
+<h2>Icon slot &amp; loading</h2>
+<div class="row">
+  <span class="ino-tag ino-tag--medium">
+    <span class="ino-tag__icon" aria-hidden="true">&#9888;</span>
+    Medium risk
+  </span>
+  <span class="ino-tag ino-tag--medium" aria-busy="true">
+    <span class="ino-tag__icon"><span class="ino-tag__spinner" aria-hidden="true"></span></span>
+    Re-screening&hellip;
+  </span>
+</div>
+
+<h2>Dot form</h2>
+<p class="lede">Same severity tokens, promoted from <code>ino-metric-panel</code>'s row indicator to a standalone variant. The label moves to a screen-reader-only node.</p>
+<div class="row">
+  <span class="ino-tag ino-tag--dot">
+    <span class="ino-tag__dot ino-tag__dot--high" aria-hidden="true"></span>
+    <span class="sr-only">High risk</span>
+  </span>
+  <span class="ino-tag ino-tag--dot">
+    <span class="ino-tag__dot ino-tag__dot--medium" aria-hidden="true"></span>
+    <span class="sr-only">Medium risk</span>
+  </span>
+  <span class="ino-tag ino-tag--dot">
+    <span class="ino-tag__dot ino-tag__dot--low" aria-hidden="true"></span>
+    <span class="sr-only">Low risk</span>
+  </span>
+  <span class="ino-tag ino-tag--dot">
+    <span class="ino-tag__dot ino-tag__dot--info" aria-hidden="true"></span>
+    <span class="sr-only">Info</span>
+  </span>
+</div>
+
+<h2>Disabled</h2>
+<div class="row">
+  <span class="ino-tag ino-tag--high ino-tag--disabled" aria-disabled="true">High risk</span>
+</div>
+
+<h2>RTL</h2>
+<div class="row" dir="rtl">
+  <span class="ino-tag ino-tag--high">
+    <span class="ino-tag__icon" aria-hidden="true">&#9888;</span>
+    خطر مرتفع
+  </span>
+</div>
+
+</body>
+</html>
