@@ -95,7 +95,11 @@ was recovered, but only because the author noticed and rebuilt it from the commi
 Whenever two contributions can be in flight at the same time — which is the normal case for the
 INO-31 waves — the following is a ship gate, not a preference:
 
-1. **A run that will commit must own its checkout.** Use `git worktree add <path> -b <branch>
+1. **A run that will commit must own its checkout.** As of INO-184, this is enforced by the
+   platform: the project's execution-workspace policy defaults every issue to
+   `isolated_workspace` / `git_worktree`, so Paperclip provisions a dedicated worktree per issue
+   run instead of reusing the shared primary checkout. Treat the manual procedure below as the
+   fallback for environments where that policy isn't active: `git worktree add <path> -b <branch>
    origin/ino-31-design-system-parity`, work there, and never `git checkout` a different branch in
    a directory you did not create. A shared primary checkout is read-only for concurrent work.
 2. **Verify the branch immediately before every commit**, not once at the start of the run.
