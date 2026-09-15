@@ -84,6 +84,33 @@ needed: five concept revisions and no single source of truth.
      surface-depth tokens from the 2026-09-08 round were built token-correct and re-verified
      against this gate (`web/` toggle confirmed working, `ng build` clean) rather than assumed.
 
+## 5a. Branch & workspace isolation — one worktree per issue
+
+The component rule is already *"one component = one directory = one branch = one issue."* That rule
+is about the repo. It is silent about the **checkout**, and that gap caused a real incident on
+2026-09-15 (INO-162): three concurrent agent runs shared a single working directory, each ran
+`git checkout <its-own-branch>` in it, and one run's commit landed on another run's branch. The work
+was recovered, but only because the author noticed and rebuilt it from the commit hash.
+
+Whenever two contributions can be in flight at the same time — which is the normal case for the
+INO-31 waves — the following is a ship gate, not a preference:
+
+1. **A run that will commit must own its checkout.** Use `git worktree add <path> -b <branch>
+   origin/ino-31-design-system-parity`, work there, and never `git checkout` a different branch in
+   a directory you did not create. A shared primary checkout is read-only for concurrent work.
+2. **Verify the branch immediately before every commit**, not once at the start of the run.
+   `git rev-parse --abbrev-ref HEAD` must match your issue's branch. A branch can change under you
+   between two commands if the directory is shared.
+3. **Never push a branch that is not yours,** even to "fix" it. If you find you have committed onto
+   someone else's branch, recover your commit by hash into your own worktree and restore the other
+   branch's local ref to `origin` — do not rewrite its remote history, and say so in the issue
+   thread.
+4. **Remove the worktree when the branch is merged or abandoned** (`git worktree remove <path>`), so
+   stale checkouts do not accumulate and get reused by a later run.
+
+This is a workflow rule, not a design-system rule, and it applies to any concurrent work in this
+repo. It lives here because the component waves are where the concurrency actually happens.
+
 ## 6. Asset request process (logo, Figma, print files)
 
 1. Final vector artwork (logo `.svg` lockups, favicon crop, monochrome variant) requires either a
