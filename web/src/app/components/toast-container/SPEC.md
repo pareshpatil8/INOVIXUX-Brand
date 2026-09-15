@@ -100,7 +100,8 @@ component unchanged.
 
 ## 7. Registry finding (recorded per prior precedent)
 
-Same finding as `tag/SPEC.md` §8, `radio-group/SPEC.md` (bottom), and `checkbox/SPEC.md`: DoD row
+Same finding as `tag/SPEC.md` §8 and — as forward references, not settled precedent on this base —
+`radio-group/SPEC.md` (bottom; pending INO-159) and `checkbox/SPEC.md` (pending INO-158): DoD row
 11 describes "one appended line in the `check-theme-parity.mjs` component registry," but no such
 registry exists in the file (confirmed by reading it in full — it is a token-contract audit script,
 not a per-component list). Nothing appended here either; `node scripts/check-theme-parity.mjs`
