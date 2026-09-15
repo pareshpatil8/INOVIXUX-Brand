@@ -4,8 +4,6 @@
 .ino-toast-container {
   position: fixed;
   z-index: 2000;
-  inset-inline-end: var(--ino-space-6);
-  bottom: calc(var(--ino-space-6) + var(--ino-safe-area-bottom));
   display: flex;
   flex-direction: column;
   gap: var(--ino-space-3);
@@ -16,10 +14,49 @@
   }
 }
 
+/* The 6 standard corners/edges (INO-163 / N-8). Only `inset-inline-*`/`inset-block-*` — never
+   `top`/`bottom`/`left`/`right` — so every position mirrors correctly under dir="rtl" (DoD §8).
+   `*-center` sets both inline insets equal and centers the stack with `align-items` rather than a
+   `left: 50%; transform: translateX(-50%)` pair, which would be a physical (non-logical) offset. */
+.ino-toast-container--bottom-end {
+  inset-inline-end: var(--ino-space-6);
+  inset-block-end: calc(var(--ino-space-6) + var(--ino-safe-area-bottom));
+}
+
+.ino-toast-container--bottom-start {
+  inset-inline-start: var(--ino-space-6);
+  inset-block-end: calc(var(--ino-space-6) + var(--ino-safe-area-bottom));
+}
+
+.ino-toast-container--bottom-center {
+  inset-inline: var(--ino-space-6);
+  inset-block-end: calc(var(--ino-space-6) + var(--ino-safe-area-bottom));
+  align-items: center;
+}
+
+.ino-toast-container--top-end {
+  inset-inline-end: var(--ino-space-6);
+  inset-block-start: calc(var(--ino-space-6) + var(--ino-safe-area-top));
+}
+
+.ino-toast-container--top-start {
+  inset-inline-start: var(--ino-space-6);
+  inset-block-start: calc(var(--ino-space-6) + var(--ino-safe-area-top));
+}
+
+.ino-toast-container--top-center {
+  inset-inline: var(--ino-space-6);
+  inset-block-start: calc(var(--ino-space-6) + var(--ino-safe-area-top));
+  align-items: center;
+}
+
 @media (max-width: 640px) {
   .ino-toast-container {
-    /* Logical, not left/right, so the stack mirrors correctly under dir="rtl" (DoD §8). */
+    /* Logical, not left/right, so the stack mirrors correctly under dir="rtl" (DoD §8). Applies to
+       every position: on a narrow viewport the stack always goes full-bleed inline, regardless of
+       which corner/edge it is anchored to on the block axis. */
     inset-inline: var(--ino-space-4);
+    align-items: stretch;
   }
 }
 
@@ -30,7 +67,12 @@
 
    Both keyframes move on the Y axis only. There is no `translateX`, and therefore nothing to
    mirror under dir="rtl" (DoD §8): the stack already flips via `inset-inline-end`, and an
-   axis-neutral slide stays correct in both directions without a second stylesheet. */
+   axis-neutral slide stays correct in both directions without a second stylesheet.
+
+   The Y direction itself DOES depend on `position` (INO-163): a toast anchored to the top should
+   slide down out of the edge it lives on, not up out of the opposite one. `animation-name` alone
+   is overridden per position group below — it is a longhand of the `animation` shorthand above, so
+   the duration/easing/fill-mode set here are untouched. */
 @media (prefers-reduced-motion: no-preference) {
   .ino-toast-enter {
     animation: ino-toast-in var(--ino-motion-duration-base) var(--ino-motion-easing-decelerate);
@@ -43,6 +85,18 @@
        arrival (`base` + `decelerate`) has to be slow enough to be noticed at all. */
     animation: ino-toast-out var(--ino-motion-duration-fast) var(--ino-motion-easing-accelerate)
       forwards;
+  }
+
+  .ino-toast-container--top-start .ino-toast-enter,
+  .ino-toast-container--top-center .ino-toast-enter,
+  .ino-toast-container--top-end .ino-toast-enter {
+    animation-name: ino-toast-in-top;
+  }
+
+  .ino-toast-container--top-start .ino-toast-leave,
+  .ino-toast-container--top-center .ino-toast-leave,
+  .ino-toast-container--top-end .ino-toast-leave {
+    animation-name: ino-toast-out-top;
   }
 }
 
@@ -62,5 +116,19 @@
   to {
     opacity: 0;
     transform: translateY(8px);
+  }
+}
+
+@keyframes ino-toast-in-top {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes ino-toast-out-top {
+  to {
+    opacity: 0;
+    transform: translateY(-8px);
   }
 }
