@@ -1,7 +1,7 @@
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useTheme } from '../theme/ThemeProvider';
-import { control, ControlSize, radius } from '../theme/tokens';
+import { control, ControlSize, radius, rowMinHeight } from '../theme/tokens';
 
 export type InoToggleSize = ControlSize;
 
@@ -18,17 +18,20 @@ export interface InoToggleProps {
 
 /**
  * `<InoToggle>` — RN port of `<ino-toggle>` (web/src/app/components/toggle, INO-160 / INO-31
- * U-5). RN's own `Switch` pulls its own OS-themed chrome (like `Checkbox`'s reasoning for
- * `InoCheckbox`), so this is a from-scratch `Pressable`-drawn track + thumb instead of a wrap.
+ * U-5). RN's own `Switch` pulls its own OS-themed chrome that doesn't track this design system's
+ * token set (the same reason `InoButton`'s RN port doesn't wrap a native control either), so this
+ * is a from-scratch `Pressable`-drawn track + thumb instead of a wrap.
  *
- * The icon overlay is drawn the same way `InoCheckbox`'s indeterminate dash is — a `Text` glyph
- * positioned inside the thumb, swapped by `checked` — rather than an image asset. No `Animated`
- * wiring: the thumb re-renders at its new `left` on every `checked` change with no transition,
- * the same "no shared spin/animation primitive exists yet" scope call `InoCheckbox`'s spinner
- * already made.
+ * The icon overlay is a `Text` glyph positioned inside the thumb, swapped by `checked`, rather
+ * than an image asset — plain text, not an icon-font dependency, mirroring the web component's
+ * own glyph choice (§2 of that component's SPEC.md). The thumb position uses RN's logical
+ * `start`/`end` layout props (not `left`/`right`), which RN mirrors automatically under RTL —
+ * the same fix the web component's `inset-inline-start` migration made (SPEC.md §7/§9). No
+ * `Animated` wiring: the thumb re-renders at its new position on every `checked` change with no
+ * transition — a scope reduction for this issue, not a hard technical constraint.
  *
  * `accessibilityRole="switch"` + `accessibilityState.checked` (a real boolean, never `'mixed'` —
- * unlike `InoCheckbox`, a switch has no indeterminate state) carry the ARIA-equivalent contract.
+ * a switch has no indeterminate state) carry the ARIA-equivalent contract.
  */
 export function InoToggle({
   label,
@@ -61,7 +64,7 @@ export function InoToggle({
       accessibilityRole="switch"
       accessibilityState={{ checked, disabled: disabled || loading, busy: loading }}
       accessibilityLabel={label}
-      style={[styles.row, { gap: dims.gap, minHeight: dims.height }]}
+      style={[styles.row, { gap: dims.gap, minHeight: rowMinHeight }]}
     >
       <View
         style={[
@@ -71,7 +74,11 @@ export function InoToggle({
             height: trackHeight,
             borderRadius: radius.pill,
             backgroundColor: checked ? colors.accent : colors.surfaceSunken,
-            borderWidth: checked ? 0 : 1,
+            // `invalid` always gets a visible border, checked or not — a border that only shows
+            // up when unchecked (the old `checked ? 0 : 1`) makes the danger colour disappear on
+            // exactly the state most likely to need it (an invalid control the user just turned
+            // on). Un-invalid keeps the prior checked/unchecked border-width split.
+            borderWidth: invalid ? 2 : checked ? 0 : 1,
             borderColor: invalid ? colors.danger : colors.border,
             opacity: disabled ? 0.5 : 1,
           },
@@ -85,7 +92,9 @@ export function InoToggle({
               height: thumbSize,
               borderRadius: thumbSize / 2,
               top: inset,
-              left: checked ? trackWidth - thumbSize - inset : inset,
+              // Logical `start`, not `left` — RN mirrors `start`/`end` under RTL automatically,
+              // the same fix the web component's `inset-inline-start` migration made.
+              start: checked ? trackWidth - thumbSize - inset : inset,
               backgroundColor: checked ? colors.onAccent : colors.onSurfaceMuted,
             },
           ]}

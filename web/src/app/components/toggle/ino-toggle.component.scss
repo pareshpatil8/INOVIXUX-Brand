@@ -57,8 +57,9 @@
   }
 
   /* State 3 — active/pressed. Unchecked press — the track has no fill to darken, so the pressed
-     accent lands on its border. */
-  &:active:not(:disabled) .ino-toggle__track {
+     accent lands on its border. Excludes readonly directly in the selector, same as the hover
+     rule above — readonly withdraws every interactive affordance, not just hover's. */
+  &:active:not(:disabled):not(.ino-toggle__control--readonly) .ino-toggle__track {
     border-color: var(--ino-color-accent-active);
   }
 
@@ -150,8 +151,9 @@
 
   /* Checked press — flat pressed accent replaces the gradient, matching the primary button, so
      "held down" looks the same whether the control is a button or a switch. The `background`
-     shorthand (not background-color) is required here to actually clear the gradient image above. */
-  &:active:not(:disabled) .ino-toggle__track {
+     shorthand (not background-color) is required here to actually clear the gradient image above.
+     Excludes readonly, same as the unchecked press rule above. */
+  &:active:not(:disabled):not(.ino-toggle__control--readonly) .ino-toggle__track {
     background: var(--ino-color-accent-active);
   }
 }
