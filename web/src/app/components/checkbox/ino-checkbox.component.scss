@@ -1,40 +1,106 @@
+/*
+ * Size API — DoD row 3. Reads the Wave 0 control-size scale's icon-size, font-size and gap
+ * aliases (tokens.css §12), same three-alias subset `ino-tag` reads for the same reason: a
+ * checkbox is a compact inline control, not a full-height one like `ino-button`/`ino-input`, so
+ * `--ino-control-height` itself is deliberately not consumed here — see SPEC.md §3.
+ */
+.ino-checkbox {
+  --ino-checkbox-box-size: var(--ino-control-icon-size-default);
+  --ino-checkbox-font-size: var(--ino-control-font-size-default);
+  --ino-checkbox-gap: var(--ino-control-gap-default);
+
+  &[data-size='sm'] {
+    --ino-checkbox-box-size: var(--ino-control-icon-size-sm);
+    --ino-checkbox-font-size: var(--ino-control-font-size-sm);
+    --ino-checkbox-gap: var(--ino-control-gap-sm);
+  }
+
+  &[data-size='lg'] {
+    --ino-checkbox-box-size: var(--ino-control-icon-size-lg);
+    --ino-checkbox-font-size: var(--ino-control-font-size-lg);
+    --ino-checkbox-gap: var(--ino-control-gap-lg);
+  }
+}
+
 .ino-checkbox__row {
   display: inline-flex;
   align-items: center;
-  gap: var(--ino-space-3);
-  min-height: var(--ino-target-comfortable);
+  gap: var(--ino-checkbox-gap);
+  /* DoD row 4 — density. Reads the density-scoped row floor where one is in scope (32px dense /
+     44px fluid, tokens.css §10) and falls back to the standalone comfortable target outside any
+     [data-density] ancestor — a token fallback, not a literal pixel value. */
+  min-height: var(--ino-row-min-height, var(--ino-target-comfortable));
   cursor: pointer;
 }
 
+.ino-checkbox__box {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
 .ino-checkbox__input {
-  width: 20px;
-  height: 20px;
+  inline-size: var(--ino-checkbox-box-size);
+  block-size: var(--ino-checkbox-box-size);
   flex-shrink: 0;
   accent-color: var(--ino-color-accent);
   cursor: pointer;
 
+  /* State 1 — default (accent-color above). Motion: state changes (hover brightness, invalid
+     ring) animate in/out on the fast duration+easing pair; collapses under reduced motion. */
+  transition: filter var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+    box-shadow var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+
+  /* State 2 — hover. `accent-color` offers no "lighten" hook of its own, so this reuses the same
+     `filter: brightness()` idiom ino-button's primary variant already uses for the same reason. */
+  &:hover:not(:disabled) {
+    filter: brightness(1.15);
+  }
+
+  /* State 4 — focus-visible. Ring comes from the Wave 0 tokens; never hand-rolled. */
   &:focus-visible {
     outline: var(--ino-focus-ring);
     outline-offset: var(--ino-focus-ring-offset);
   }
 
-  /* `accent-color` is the only paintable surface a native checkbox exposes, so the press is
-     expressed there. Guarded on :not(:disabled) because a disabled native control still matches
-     :active on some engines. */
+  /* State 3 — active/pressed. Guarded on :not(:disabled) because a disabled native control still
+     matches :active on some engines. Dims via the same brightness hook hover uses, direction
+     reversed, plus the pressed accent fill for the checked/indeterminate paint. */
   &:active:not(:disabled) {
     accent-color: var(--ino-color-accent-active);
+    filter: brightness(0.9);
   }
 
+  /* State 5 — disabled. */
   &:disabled {
     cursor: not-allowed;
+  }
+
+  /* State 7 — invalid. An outline ring, not `border` or `box-shadow` — a native checkbox's own
+     chrome isn't a reliably paintable `border` across browsers without `appearance: none` (which
+     this component deliberately avoids, see the class doc comment), and `box-shadow` is reserved
+     for the themed elevation scale (tokens.css §8) everywhere else in this codebase. `outline`
+     paints outside the box in every evergreen browser regardless of native appearance, the same
+     property :focus-visible below already relies on for exactly that reason.
+     `:not(:focus-visible)` so the two rings never have to fight over the one `outline` property —
+     focus wins outright while focused, the invalid ring resumes the moment focus moves on, and
+     the danger-coloured error text below stays the invalid signal that's always present either
+     way. */
+  &[aria-invalid='true']:not(:focus-visible) {
+    outline: 2px solid var(--ino-color-danger);
+    outline-offset: var(--ino-focus-ring-offset);
   }
 }
 
 .ino-checkbox__label {
-  font-size: var(--ino-type-body-size);
+  font-size: var(--ino-checkbox-font-size);
   color: var(--ino-color-on-surface);
 }
 
+/* State 5 — disabled (row-level). */
 .ino-checkbox--disabled {
   .ino-checkbox__row {
     cursor: not-allowed;
@@ -42,6 +108,49 @@
 
   .ino-checkbox__label {
     color: var(--ino-color-on-surface-muted);
+  }
+}
+
+/* State 6 — readonly. Same trade `ino-virtual-scroller` already documents for its own readonly:
+   content stays fully legible (unlike disabled's dimming) and the control stays keyboard-reachable
+   and focusable — only the interactive affordances (hover feedback, pointer cursor) withdraw. The
+   actual value lock is enforced in the component (`onClick` calls `preventDefault()`), this block
+   is presentation only. `.ino-checkbox--readonly` is (0,3,0) on `.ino-checkbox__input:hover`,
+   outranking the (0,2,0) hover rule above regardless of source order. */
+.ino-checkbox--readonly {
+  .ino-checkbox__row {
+    cursor: default;
+  }
+
+  .ino-checkbox__input {
+    cursor: default;
+
+    &:hover:not(:disabled) {
+      filter: none;
+    }
+  }
+}
+
+/* State 8 — loading/busy. The box keeps its last committed value on screen (never blanks mid
+   round-trip); a spinner appears alongside it, matching ino-tag/ino-button's spinner treatment.
+   The input is natively disabled while loading (template `[disabled]="disabled || loading"`), so
+   the disabled cursor is intentionally not reapplied here — "busy" and "inert" read differently. */
+.ino-checkbox__spinner {
+  inline-size: calc(var(--ino-checkbox-box-size) / 2);
+  block-size: calc(var(--ino-checkbox-box-size) / 2);
+  border-radius: 50%;
+  border: 2px solid var(--ino-color-on-surface-muted);
+  border-inline-start-color: transparent; /* logical, not border-top — RTL-safe */
+  flex-shrink: 0;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: ino-checkbox-spin var(--ino-motion-duration-slow) linear infinite;
+  }
+}
+
+@keyframes ino-checkbox-spin {
+  to {
+    transform: rotate(360deg);
   }
 }
 
