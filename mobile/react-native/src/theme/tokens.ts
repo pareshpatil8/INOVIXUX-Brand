@@ -115,7 +115,27 @@ export const type = {
   body: { fontSize: 15, lineHeight: 15 * 1.65, fontWeight: '400' as const }, // fluid-density body size
   bodySm: { fontSize: 12.5, lineHeight: 12.5 * 1.55, fontWeight: '400' as const },
   label: { fontSize: 11, letterSpacing: 1.54, fontWeight: '600' as const }, // 0.14em @ 11px
+
+  // Devanagari-safe line-height variants (INO-119), mirroring tokens.css §4b's `:lang(hi)`
+  // override 1:1 — same rationale: Noto Sans Devanagari's shirorekha/matra metrics clip at the
+  // Latin-tuned ratios above. Not wired to a locale check yet — see tokens.css README
+  // §Indic/Devanagari typography pairing, "RN locale-aware font/line-height wiring".
+  displaySmHi: { fontSize: 38, lineHeight: 38 * 1.35, fontWeight: '600' as const },
+  h2Hi: { fontSize: 32, lineHeight: 32 * 1.5, fontWeight: '600' as const },
+  h3Hi: { fontSize: 16, lineHeight: 16 * 1.6, fontWeight: '600' as const },
 };
+
+// Font pairing (INO-119) — tokens.css §4's mandatory fallback chain, ported as data. RN's
+// `fontFamily` style prop takes exactly one linked font name per <Text> node — there is no
+// CSS-style automatic per-glyph fallback the way web resolves "Geist", "Noto Sans Devanagari" —
+// so a screen rendering lang="hi" content must explicitly select `displayDevanagariFallback`
+// rather than relying on RN to substitute it automatically. Neither name is linked as a native
+// font asset in this repo yet (same "flagged, not fetched" status as Geist itself on this
+// platform) — see tokens.css README §Indic/Devanagari typography pairing.
+export const fontFamily = {
+  display: 'Geist',
+  displayDevanagariFallback: 'Noto Sans Devanagari',
+} as const;
 
 export const motion = {
   durationFast: 120,
