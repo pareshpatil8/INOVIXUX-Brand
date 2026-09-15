@@ -53,15 +53,22 @@ contract verbatim in its description. An issue is not `done` until all eleven ro
 | 3 | **Size API** — `size="sm" \| "default" \| "lg"` as a typed `@Input`, driven by the Wave 0 control-height scale. | typed input present; preview renders all three |
 | 4 | **Density** — correct under both dense and fluid, including `--ino-row-min-height` where the component is row-based. | preview renders both |
 | 5 | **Eight states** — default, hover, **active/pressed**, focus-visible, disabled, readonly, invalid, loading/busy. `:active` and the focus ring both come from Wave 0 tokens, never hand-rolled. | preview renders the full state grid |
-| 6 | **Variants** — the per-component list named in the issue, derived from the PrimeNG route pinned in `specs/primeng/llms-22.1.1.txt`. Deliberate omissions are written down in the component spec, not silently dropped. | spec file lists every variant with build / decline |
+| 6 | **Variants** — the per-component list named in the issue, derived from the PrimeNG route pinned in `specs/primeng/llms-22.1.1.txt`. Deliberate omissions are written down in the component spec, not silently dropped. **Every path the spec cites resolves on the merge base**; a precedent that has not landed yet is written `(pending INO-nnn)`, never as settled precedent (doc 09 §5b). | spec file lists every variant with build / decline; `node scripts/check-spec-citations.mjs` clean |
 | 7 | **Motion** — enter/exit use named duration + easing tokens; a `prefers-reduced-motion: reduce` branch exists and is tested. | preview + reduced-motion screenshot |
 | 8 | **Accessibility** — documented role/ARIA contract; full keyboard map; visible focus; WCAG 2.2 AA text **and** non-text contrast (1.4.11); 24px minimum target (2.5.8), 44px comfortable; RTL-safe (logical properties, no `left`/`right`). | axe/pa11y clean once INO-118's gate lands; until then, the issue's keyboard-map checklist |
 | 9 | **Mobile parity** — the tracks named in the issue (§5) ship the same semantic roles; or the issue records an explicit "web-only" decision with a reason. | `check-theme-parity.mjs`, extended to component level |
 | 10 | **Docs artifact** — `docs/brand/06-angular-components/<name>.md` (API + variants + a11y contract) **and** a standalone preview HTML whose first line is `<!-- @dsCard group="…" -->`. | file exists; §8 depends on this marker |
 | 11 | **Merge hygiene** — touches only its own directory plus the append-only registry line (§6). No edits to `tokens.css` after Wave 0. | diff review |
 
-Two notes on this contract:
+Three notes on this contract:
 
+- **Row 6's citation clause is the one rule that gets stricter as the waves widen.** Siblings are
+  built on parallel unmerged branches, so a spec that cites `checkbox/SPEC.md` is routinely citing a
+  file the reviewer cannot open. A decision record whose precedent is unverifiable is worse than no
+  record — the next implementer copies a pattern that was never agreed. The full rule, the four
+  cases it covers and the `(pending INO-nnn)` escape hatch are in doc 09 §5b; the gate is
+  `scripts/check-spec-citations.mjs`, which runs in `npm run check:ds` and in the `design-system.yml`
+  PR job alongside the parity and adherence scripts (S-10 / INO-185).
 - **Row 10 is not documentation busywork.** The `@dsCard` preview file is the exact artifact Claude
   Design ingests (§8) and the exact artifact the hosted docs site (INO-116/H-6) renders. Writing it
   per component costs minutes; retrofitting 101 of them later is its own project.
@@ -438,6 +445,7 @@ to claim now); the rest are `backlog` and will surface as their blockers merge.
 | S-7 | **INO-169** | PrimeNG AI tooling + pinned `llms.txt` drift check |
 | S-8 | **INO-170** | Sound/haptics + public accessibility statement |
 | S-9 | **INO-171** | Component-level theme-parity check (resolves P-7) |
+| S-10 | **INO-185** | SPEC.md citation gate — `check-spec-citations.mjs` + doc 09 §5b (§2 row 6) |
 | H-6 | **INO-116** | Hosted component docs site *(re-scoped, promoted to high)* |
 | M-10 | **INO-117** | Foundation + motion specimen cards |
 | H-4 | **INO-120** | KYB report PDF/print theme |
