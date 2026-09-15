@@ -78,3 +78,9 @@
 .ino-field--disabled .ino-field__label {
   color: var(--ino-color-on-surface-muted);
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .ino-field__control {
+    transition: none;
+  }
+}
