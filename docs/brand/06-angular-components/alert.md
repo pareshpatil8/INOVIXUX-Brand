@@ -110,6 +110,12 @@ Neither keyframe uses `translateX`, so there is nothing to mirror under `dir="rt
 removes it on the next frame. Toasts therefore still dismiss promptly — and still dismiss *at all* —
 with motion switched off, which is the failure mode a naive `animationend` wait would introduce.
 
+`<ino-alert>` itself has one further motion surface outside the toast shape: `.ino-alert__dismiss`'s
+hover `border-color` transition. That's state feedback, not decoration, so it follows the other
+pattern in `motion-contract.md` §2 — the transition runs normally, then a
+`@media (prefers-reduced-motion: reduce) { transition: none; }` block at the end of the stylesheet
+nulls it (INO-127).
+
 ---
 
 ## Accessibility contract
