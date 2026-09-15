@@ -299,5 +299,110 @@ for (const [density, decls] of [['dense', rawDense], ['fluid', rawFluid]]) {
   }
 }
 
-console.log(`PASS: CSS mirrors; Capacitor import; ${colorChecks} color roles across 3 themes × 2 mobile ports; space/radius/targets/durations; focus-ring shape; pressed-accent contrast in 3 themes; control-size scale across 3 densities + ${controlChecks} mobile port values; form-label tokens across 3 themes × 2 densities.`);
+// ── Wave 0 / INO-126 (W0-4) — elevation scale expansion (tokens.css §2) ─────────────────────────
+// 6 neutral + 3 brand + 2 inset, on top of the untouched --ino-elevation-0/-1/-2. Three shapes,
+// three sets of invariants: neutral is a plain shadow ramp that must get stronger monotonically and
+// must still agree with -1/-2 at the two rungs it reuses; brand must stay parametric on
+// var(--ino-color-accent) (never a literal rgb triple, or the documented accent-swap contract in the
+// file header silently breaks); inset must be an inset shadow, not a drop shadow. High-contrast
+// flattens all 11 to `none`, same as -1/-2 — assert that decision directly so it cannot regress.
+const ELEVATION_GROUPS = {
+  neutral: [1, 2, 3, 4, 5, 6].map(n => `--ino-elevation-neutral-${n}`),
+  brand: [1, 2, 3].map(n => `--ino-elevation-brand-${n}`),
+  inset: [1, 2].map(n => `--ino-elevation-inset-${n}`),
+};
+const ALL_ELEVATION_KEYS = Object.values(ELEVATION_GROUPS).flat();
+for (const [theme, vars] of Object.entries(themes)) {
+  for (const key of ALL_ELEVATION_KEYS) assert.ok(vars[key], `${theme}: ${key} missing`);
+}
+for (const key of ALL_ELEVATION_KEYS) {
+  assert.equal(themes['high-contrast'][key], 'none', `high-contrast: ${key} must flatten to none (recorded decision, see tokens.css §2)`);
+}
+for (const theme of ['dark', 'light']) {
+  const vars = themes[theme];
+  const blurOf = key => {
+    const m = vars[key].match(/^0 -?\d+px (\d+)px -?\d+px rgba?\(/);
+    assert.ok(m, `${theme}: ${key} does not match the neutral shadow shape, got "${vars[key]}"`);
+    return Number(m[1]);
+  };
+  const blurs = ELEVATION_GROUPS.neutral.map(blurOf);
+  for (let i = 1; i < blurs.length; i++) {
+    assert.ok(blurs[i] > blurs[i - 1], `${theme}: --ino-elevation-neutral-* blur must strictly increase, got ${blurs.join(', ')}`);
+  }
+  // neutral-4/-5 are the two rungs the OLD 2-step scale already picked — pin the equality so the
+  // two names can never quietly diverge (a component still reading -1/-2 would silently stop
+  // matching a component reading -neutral-4/-neutral-5).
+  assert.equal(vars['--ino-elevation-neutral-4'], vars['--ino-elevation-1'], `${theme}: --ino-elevation-neutral-4 must stay numerically identical to --ino-elevation-1`);
+  assert.equal(vars['--ino-elevation-neutral-5'], vars['--ino-elevation-2'], `${theme}: --ino-elevation-neutral-5 must stay numerically identical to --ino-elevation-2`);
+
+  const pctOf = key => {
+    const m = vars[key].match(/color-mix\(in srgb, var\(--ino-color-accent\) (\d+)%, transparent\)/);
+    assert.ok(m, `${theme}: ${key} must stay parametric on color-mix(… var(--ino-color-accent) …) — a literal rgb triple breaks the accent-swap contract, got "${vars[key]}"`);
+    return Number(m[1]);
+  };
+  const pcts = ELEVATION_GROUPS.brand.map(pctOf);
+  for (let i = 1; i < pcts.length; i++) {
+    assert.ok(pcts[i] > pcts[i - 1], `${theme}: --ino-elevation-brand-* color-mix % must strictly increase, got ${pcts.join(', ')}`);
+  }
+
+  for (const key of ELEVATION_GROUPS.inset) {
+    assert.match(vars[key], /^inset /, `${theme}: ${key} must be an inset shadow, got "${vars[key]}"`);
+  }
+}
+// Brand elevation must read distinctly LOWER against light than dark at every step — the same
+// "lower alpha, dark-mode glow reads muddy on white" relief rule --ino-glow-accent already follows.
+for (let i = 0; i < ELEVATION_GROUPS.brand.length; i++) {
+  const key = ELEVATION_GROUPS.brand[i];
+  const pct = t => Number(themes[t][key].match(/(\d+)%/)[1]);
+  assert.ok(pct('light') < pct('dark'), `${key}: light color-mix % (${pct('light')}) must be lower than dark (${pct('dark')})`);
+}
+
+// ── Wave 0 / INO-126 (W0-4) — leading/tracking rhythm scale + composite type aliases (§4c) ──────
+// Two independent claims: (1) the --ino-leading-*/--ino-tracking-* primitives form a strictly
+// ascending scale and every type role's -line/-tracking now resolves through one of them, never a
+// bare literal; (2) every role has a --ino-type-<role> composite `font` shorthand alias, so a
+// component can stop hand-composing size/line/weight/family across four separate declarations.
+const LEADING_STEPS = Array.from({ length: 9 }, (_, i) => `--ino-leading-${i + 1}`);
+const TRACKING_STEPS = Array.from({ length: 7 }, (_, i) => `--ino-tracking-${i + 1}`);
+for (const key of [...LEADING_STEPS, ...TRACKING_STEPS]) assert.ok(base[key], `${key} missing at :root`);
+const asNum = v => parseFloat(v);
+for (const steps of [LEADING_STEPS, TRACKING_STEPS]) {
+  const vals = steps.map(k => asNum(base[k]));
+  for (let i = 1; i < vals.length; i++) {
+    assert.ok(vals[i] > vals[i - 1], `${steps[i]} (${vals[i]}) must be strictly greater than ${steps[i - 1]} (${vals[i - 1]}) — the scale must stay ascending`);
+  }
+}
+// Every -line / -tracking token this issue touched must be a var() reference into the scale above,
+// never a bare number — across :root AND both density blocks, so a future edit can't reintroduce a
+// hand-typed literal that quietly drifts from its named rung.
+const RHYTHM_ROLES = ['display', 'h2', 'h3', 'body-lg', 'body', 'body-sm', 'eyebrow', 'label-lg', 'label', 'label-sm', 'hint', 'caption'];
+for (const [scope, decls] of [[':root', base], ['[data-density="dense"]', rawDense], ['[data-density="fluid"]', rawFluid]]) {
+  for (const role of RHYTHM_ROLES) {
+    const lineKey = `--ino-type-${role}-line`;
+    if (decls[lineKey]) assert.match(decls[lineKey], /^var\(--ino-leading-\d\)$/, `${scope}: ${lineKey} must reference the --ino-leading-* scale, got "${decls[lineKey]}"`);
+    const trackKey = `--ino-type-${role}-tracking`;
+    if (decls[trackKey]) assert.match(decls[trackKey], /^var\(--ino-tracking-\d\)$/, `${scope}: ${trackKey} must reference the --ino-tracking-* scale, got "${decls[trackKey]}"`);
+  }
+}
+// Composite aliases: one per role (metric has no -line token, so its shorthand omits the
+// /line-height segment — that segment is optional in the `font` shorthand grammar).
+const COMPOSITE_ROLES = [...RHYTHM_ROLES, 'metric'];
+for (const role of COMPOSITE_ROLES) {
+  const key = `--ino-type-${role}`;
+  assert.ok(base[key], `${key} composite alias missing at :root`);
+  assert.ok(base[key].includes(`var(--ino-type-${role}-weight)`), `${key} must reference --ino-type-${role}-weight`);
+  assert.ok(base[key].includes(`var(--ino-type-${role}-size)`), `${key} must reference --ino-type-${role}-size`);
+  if (role !== 'metric') assert.ok(base[key].includes(`var(--ino-type-${role}-line)`), `${key} must reference --ino-type-${role}-line`);
+  const family = role === 'eyebrow' || role === 'metric' ? '--ino-font-mono' : '--ino-font-display';
+  assert.ok(base[key].includes(`var(${family})`), `${key} must reference ${family}`);
+}
+// Density-varying composites (body/label/hint/caption) must be re-declared in BOTH density blocks —
+// same rule §12's CONSUMPTION ALIASES and §4b's label/hint/caption sizes already follow in this file.
+for (const [scope, decls] of [['[data-density="dense"]', rawDense], ['[data-density="fluid"]', rawFluid]]) {
+  for (const role of ['body', 'label', 'hint', 'caption']) {
+    assert.ok(decls[`--ino-type-${role}`], `${scope} must re-declare the composite --ino-type-${role} alias`);
+  }
+}
+
+console.log(`PASS: CSS mirrors; Capacitor import; ${colorChecks} color roles across 3 themes × 2 mobile ports; space/radius/targets/durations; focus-ring shape; pressed-accent contrast in 3 themes; control-size scale across 3 densities + ${controlChecks} mobile port values; form-label tokens across 3 themes × 2 densities; elevation scale (6 neutral + 3 brand + 2 inset) across 3 themes; leading/tracking rhythm scale + composite type aliases across 3 densities.`);
 console.log('High-contrast token pairs (AAA text >=7; non-text borders >=3; excludes disabled/decorative subtle role);\nplus per-theme pressed-accent pairs (INO-123):\n'+measurements.join('\n'));
