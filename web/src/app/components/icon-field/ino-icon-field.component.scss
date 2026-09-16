@@ -1,0 +1,120 @@
+/*
+ * <ino-icon-field> — INO-138 / INO-31 T-16.
+ *
+ * Zero hardcoded values (DoD row 1): every declaration below reads a semantic token or a
+ * `--ino-control-*` alias from tokens.css §12, never a literal color/space/radius/duration/
+ * font-size. No `[data-theme]` branch here — theming is entirely inherited via the tokens
+ * `.ino-icon-field__icon` reads.
+ */
+/*
+ * Layout is CSS Grid, not flexbox, and that choice is load-bearing (see SPEC.md §2): under
+ * Angular's Emulated view encapsulation, content projected via `<ng-content>` carries the
+ * CONSUMER template's scoping attribute, not this component's — a selector authored here can
+ * never match a projected element (that is precisely the well-known reason `::ng-deep` exists),
+ * and this repo's `check-ds-adherence.mjs` bans `::ng-deep` outright (no sanctioned escape hatch
+ * yet — doc 16 §4.3 Layer 4 / N-11). Grid's `justify-items`/`align-items: stretch` (both defaults,
+ * left un-set here) apply to every grid item PURELY BY STRUCTURAL POSITION — no selector ever has
+ * to "reach" the projected control or icon for it to stretch to fill its track. Flexbox's
+ * equivalent (`flex-grow`) is a property of the ITEM, which would need exactly the selector this
+ * component is structurally unable to write.
+ */
+:host(.ino-icon-field) {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--ino-control-gap);
+  inline-size: 100%;
+}
+
+/*
+ * Size API (DoD row 3) — only the two aliases this component actually renders with are
+ * re-pointed; no local pixel value is ever introduced. Density (DoD row 4) falls out for free:
+ * these are the SAME `--ino-control-icon-size-*` / `--ino-control-gap-*` rungs `ino-button` and
+ * `ino-tag` read, and tokens.css §12 re-resolves them per [data-density] — this component adds no
+ * density branch of its own.
+ */
+:host(.ino-icon-field--sm) {
+  --ino-control-icon-size: var(--ino-control-icon-size-sm);
+  --ino-control-gap: var(--ino-control-gap-sm);
+}
+
+:host(.ino-icon-field--lg) {
+  --ino-control-icon-size: var(--ino-control-icon-size-lg);
+  --ino-control-gap: var(--ino-control-gap-lg);
+}
+
+/*
+ * The projected control's slot. Pinned to column 2 explicitly (rather than relying on grid
+ * auto-placement order) so an empty, `display: none`-collapsed icon slot next to it never shifts
+ * it into the wrong track. It is ITSELF a single-column grid (`minmax(0, 1fr)`), which is what
+ * makes its projected child (whatever control the caller drops in — `<ino-input>`, a native
+ * `<input>`, …) stretch to the slot's full width: the CHILD becomes a grid item of THIS inner
+ * grid purely by being its direct child, and stretches via the same unset-default
+ * `justify-items: stretch` — again no selector ever targets the child itself.
+ */
+.ino-icon-field__control {
+  grid-column: 2;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-inline-size: 0;
+}
+
+/*
+ * Icon boxes, pinned to their own explicit columns for the same auto-placement-safety reason as
+ * `.ino-icon-field__control` above. Each is ALSO a one-cell grid (`place-items: stretch`, the
+ * unset default for both axes) so a projected `<svg>` fills the token-sized box completely instead
+ * of rendering at whatever intrinsic width/height attributes it happens to carry — callers still
+ * don't need to pass `width="100%" height="100%"` themselves, though doing so is harmless
+ * (percentage SVG dimensions resolve against this box regardless).
+ *
+ * `:empty` (no projected content matched the slot) collapses the box entirely — this is what makes
+ * leading-only / trailing-only / both / neither (DoD row 6 variants) fall out of one template with
+ * no `*ngIf` needed, same trick as `ino-tag`'s `.ino-tag__icon:empty`.
+ */
+.ino-icon-field__icon {
+  display: grid;
+  inline-size: var(--ino-control-icon-size);
+  block-size: var(--ino-control-icon-size);
+  color: var(--ino-color-on-surface-muted);
+  transition: color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+}
+
+.ino-icon-field__icon--leading {
+  grid-column: 1;
+}
+
+.ino-icon-field__icon--trailing {
+  grid-column: 3;
+}
+
+.ino-icon-field__icon:empty {
+  display: none;
+}
+
+/*
+ * State 5 — focus-within. The icons live OUTSIDE the control's own box (see the component's doc
+ * comment), so the control's native `:focus-visible` ring is never at risk of being clipped by
+ * this wrapper — this rule only recolors the icons to the accent role while the projected control
+ * has focus, so the icon reads as part of the same interactive unit instead of a static neighbour.
+ * It is a color echo, not a second ring; `check-theme-parity.mjs` already audits
+ * on-surface/accent per theme, so no new contrast pair is introduced.
+ */
+:host(.ino-icon-field:focus-within) .ino-icon-field__icon {
+  color: var(--ino-color-accent);
+}
+
+/*
+ * State 6 — disabled. `disabled` is a caller-mirrored flag (see the component's doc comment for
+ * why this wrapper cannot read the projected control's own `disabled` state) — it only dims the
+ * icons here; the projected control's own disabled rendering is unaffected and must be set by the
+ * caller directly on that control.
+ */
+:host(.ino-icon-field--disabled) .ino-icon-field__icon {
+  opacity: 0.5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ino-icon-field__icon {
+    transition: none;
+  }
+}

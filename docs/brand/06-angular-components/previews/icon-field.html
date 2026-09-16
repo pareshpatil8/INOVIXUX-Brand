@@ -1,0 +1,271 @@
+<!-- @dsCard group="Form" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ino-icon-field — icon-slot wrapper (INO-138)</title>
+<!-- Canonical token file, linked rather than copied: this preview must repaint with the system,
+     and must never become a second place raw hex values live. -->
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-eyebrow-size);
+    letter-spacing: var(--ino-type-eyebrow-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 60ch; }
+
+  .theme-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); }
+  .theme-pane {
+    flex: 1 1 300px;
+    padding: var(--ino-space-5);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-xl);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+  }
+  .theme-pane > h3 {
+    margin: 0 0 var(--ino-space-4);
+    font-size: var(--ino-type-body-sm-size);
+    color: var(--ino-color-on-surface-muted);
+    font-weight: 600;
+  }
+
+  .row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--ino-space-4); }
+  .col { display: flex; flex-direction: column; gap: var(--ino-space-3); }
+
+  /* Mirrors web/src/app/components/icon-field/ino-icon-field.component.scss — same token
+     bindings, so a divergence between this preview and the shipped component is visible as a
+     visual diff. */
+  /* CSS Grid, matching the shipped component exactly (SPEC.md §2) — NOT flexbox + ::ng-deep. This
+     preview is plain static HTML with no Angular view-encapsulation boundary, so a flex row +
+     descendant selectors would actually work here; it deliberately mirrors the real component's
+     grid structure anyway so a divergence between preview and shipped CSS is visible as a diff. */
+  .ino-icon-field {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--ino-control-gap-default);
+    inline-size: 100%;
+    max-inline-size: 260px;
+  }
+  .ino-icon-field--sm { gap: var(--ino-control-gap-sm); }
+  .ino-icon-field--lg { gap: var(--ino-control-gap-lg); }
+
+  .ino-icon-field__control { grid-column: 2; display: grid; grid-template-columns: minmax(0, 1fr); min-inline-size: 0; }
+  .ino-icon-field__control > * { inline-size: 100%; box-sizing: border-box; }
+
+  .ino-icon-field__icon {
+    display: grid;
+    inline-size: var(--ino-control-icon-size-default);
+    block-size: var(--ino-control-icon-size-default);
+    color: var(--ino-color-on-surface-muted);
+    transition: color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+  }
+  .ino-icon-field__icon:first-child { grid-column: 1; }
+  .ino-icon-field__icon:last-child { grid-column: 3; }
+  .ino-icon-field--sm .ino-icon-field__icon { inline-size: var(--ino-control-icon-size-sm); block-size: var(--ino-control-icon-size-sm); }
+  .ino-icon-field--lg .ino-icon-field__icon { inline-size: var(--ino-control-icon-size-lg); block-size: var(--ino-control-icon-size-lg); }
+  .ino-icon-field__icon svg { inline-size: 100%; block-size: 100%; }
+  .ino-icon-field__icon:empty { display: none; }
+
+  .ino-icon-field--focus .ino-icon-field__icon { color: var(--ino-color-accent); }
+  .ino-icon-field--disabled .ino-icon-field__icon { opacity: 0.5; }
+
+  /* Stand-in text control matching ino-input's own token bindings, so the preview reads like the
+     real composed component without needing an Angular runtime. */
+  .fake-input {
+    min-height: var(--ino-target-comfortable);
+    width: 100%;
+    box-sizing: border-box;
+    padding-inline: var(--ino-space-4);
+    background: var(--ino-color-surface-sunken);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-md);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+  }
+  .fake-input:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+    border-color: var(--ino-color-accent);
+  }
+  .fake-input:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .caption { font-size: var(--ino-type-body-sm-size); color: var(--ino-color-on-surface-muted); margin: var(--ino-space-2) 0 0; }
+</style>
+</head>
+<body>
+
+<h1>Icon field — icon-slot wrapper</h1>
+<p class="lede">
+  The sanctioned leading/trailing icon mechanism for Tier-1 form controls — a wrapper around a
+  projected control, not an <code>@Input() icon</code> re-implemented per control. Layout is
+  side-by-side (icon outside the control's own box), not PrimeNG's icon-overlaps-input pattern —
+  see <code>SPEC.md</code> §1 for why.
+</p>
+
+<h2>Variants × theme</h2>
+<div class="theme-row">
+
+  <div class="theme-pane">
+    <h3>dark — :root (default)</h3>
+    <div class="col">
+      <div class="ino-icon-field">
+        <span class="ino-icon-field__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </span>
+        <span class="ino-icon-field__control"><input class="fake-input" placeholder="Search (leading only)"></span>
+        <span class="ino-icon-field__icon" aria-hidden="true"></span>
+      </div>
+      <div class="ino-icon-field">
+        <span class="ino-icon-field__icon" aria-hidden="true"></span>
+        <span class="ino-icon-field__control"><input class="fake-input" type="password" placeholder="Password (trailing only)"></span>
+        <span class="ino-icon-field__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+        </span>
+      </div>
+      <div class="ino-icon-field">
+        <span class="ino-icon-field__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </span>
+        <span class="ino-icon-field__control"><input class="fake-input" placeholder="Amount (both)"></span>
+        <span class="ino-icon-field__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="light">
+    <h3>light — [data-theme="light"]</h3>
+    <div class="col">
+      <div class="ino-icon-field">
+        <span class="ino-icon-field__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </span>
+        <span class="ino-icon-field__control"><input class="fake-input" placeholder="Search (leading only)"></span>
+        <span class="ino-icon-field__icon" aria-hidden="true"></span>
+      </div>
+      <div class="ino-icon-field">
+        <span class="ino-icon-field__icon" aria-hidden="true"></span>
+        <span class="ino-icon-field__control"><input class="fake-input" type="password" placeholder="Password (trailing only)"></span>
+        <span class="ino-icon-field__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+        </span>
+      </div>
+      <div class="ino-icon-field">
+        <span class="ino-icon-field__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </span>
+        <span class="ino-icon-field__control"><input class="fake-input" placeholder="Amount (both)"></span>
+        <span class="ino-icon-field__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="high-contrast">
+    <h3>high-contrast — [data-theme="high-contrast"]</h3>
+    <div class="col">
+      <div class="ino-icon-field">
+        <span class="ino-icon-field__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </span>
+        <span class="ino-icon-field__control"><input class="fake-input" placeholder="Search (leading only)"></span>
+        <span class="ino-icon-field__icon" aria-hidden="true"></span>
+      </div>
+      <div class="ino-icon-field">
+        <span class="ino-icon-field__icon" aria-hidden="true"></span>
+        <span class="ino-icon-field__control"><input class="fake-input" type="password" placeholder="Password (trailing only)"></span>
+        <span class="ino-icon-field__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+        </span>
+      </div>
+      <div class="ino-icon-field">
+        <span class="ino-icon-field__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </span>
+        <span class="ino-icon-field__control"><input class="fake-input" placeholder="Amount (both)"></span>
+        <span class="ino-icon-field__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        </span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<h2>Size (control-size scale)</h2>
+<div class="col">
+  <div class="ino-icon-field ino-icon-field--sm">
+    <span class="ino-icon-field__icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </span>
+    <span class="ino-icon-field__control"><input class="fake-input" placeholder="sm"></span>
+    <span class="ino-icon-field__icon" aria-hidden="true"></span>
+  </div>
+  <div class="ino-icon-field">
+    <span class="ino-icon-field__icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </span>
+    <span class="ino-icon-field__control"><input class="fake-input" placeholder="default"></span>
+    <span class="ino-icon-field__icon" aria-hidden="true"></span>
+  </div>
+  <div class="ino-icon-field ino-icon-field--lg">
+    <span class="ino-icon-field__icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </span>
+    <span class="ino-icon-field__control"><input class="fake-input" placeholder="lg"></span>
+    <span class="ino-icon-field__icon" aria-hidden="true"></span>
+  </div>
+</div>
+
+<h2>States — focus &amp; disabled</h2>
+<div class="row">
+  <div class="ino-icon-field ino-icon-field--focus">
+    <span class="ino-icon-field__icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </span>
+    <span class="ino-icon-field__control"><input class="fake-input" placeholder="focus-within (icon recolors)" autofocus></span>
+    <span class="ino-icon-field__icon" aria-hidden="true"></span>
+  </div>
+  <div class="ino-icon-field ino-icon-field--disabled" aria-disabled="true">
+    <span class="ino-icon-field__icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </span>
+    <span class="ino-icon-field__control"><input class="fake-input" placeholder="disabled" disabled></span>
+    <span class="ino-icon-field__icon" aria-hidden="true"></span>
+  </div>
+</div>
+<p class="caption">Focus-visible on the projected control itself is unaffected by the wrapper — the ring is native to the control, never clipped (SPEC.md §7).</p>
+
+<h2>RTL</h2>
+<div class="row" dir="rtl">
+  <div class="ino-icon-field">
+    <span class="ino-icon-field__icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </span>
+    <span class="ino-icon-field__control"><input class="fake-input" placeholder="بحث"></span>
+    <span class="ino-icon-field__icon" aria-hidden="true"></span>
+  </div>
+</div>
+<p class="caption">The leading icon (first in template order) mirrors to the trailing visual edge under <code>dir="rtl"</code> for free — <code>flex-direction: row</code> is an inline-axis direction, not a physical one.</p>
+
+</body>
+</html>
