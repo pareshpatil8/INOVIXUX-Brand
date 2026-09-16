@@ -45,7 +45,7 @@ would compose multiple PrimeNG `<p-skeleton>` elements today.
 
 ## 3. Size API + explicit overrides (DoD row 3)
 
-`size="sm" | "default" | "lg"` is the closed `InoControlSize` union (`../control-size.ts`), reading
+`size="sm" | "default" | "lg"` is the closed `InoControlSize` union (`control-size.ts`), reading
 the Wave 0 control-height scale's `--ino-control-height` alias for `rectangle`/`circle` and the
 `--ino-control-font-size` alias (driving the `1em` `block-size`) for `text` — the same
 `control-size-scale.md` §3 adoption recipe every sized component already uses (`:host([data-size])`
