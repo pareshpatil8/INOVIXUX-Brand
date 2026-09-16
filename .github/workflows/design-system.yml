@@ -57,3 +57,13 @@ jobs:
       # file cannot quietly become a parking lot.
       - name: Design-system adherence
         run: node scripts/check-ds-adherence.mjs
+
+      # PrimeNG's own AI tooling (the Plugin / @primeng/mcp) needs Node 22 *and* network
+      # access to primeng.dev, so it cannot back this gate — see INO-169. This is the
+      # CI-safe counterpart: it checks the pinned specs/primeng/llms-*.txt snapshot
+      # against the provenance README.md declares for it, offline, no --drift. It
+      # answers "did the pin get silently edited", distinct from "did PrimeNG upstream
+      # move" (that question is scripts/check-primeng-snapshot.mjs --drift, which needs
+      # network and runs on a schedule instead — see primeng-drift.yml).
+      - name: PrimeNG pinned-snapshot integrity
+        run: node scripts/check-primeng-snapshot.mjs
