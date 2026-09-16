@@ -1,0 +1,347 @@
+<!-- @dsCard group="Form" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ino-input-group — text/button/checkbox addons, multi-addon, states (INO-139)</title>
+<!-- Canonical token file, linked rather than copied: this preview must repaint with the system,
+     and must never become a second place raw hex values live. -->
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-label-size);
+    letter-spacing: var(--ino-type-label-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 60ch; }
+
+  .theme-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); }
+  .theme-pane {
+    flex: 1 1 320px;
+    padding: var(--ino-space-5);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-xl);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+  }
+  .theme-pane > h3 {
+    margin: 0 0 var(--ino-space-4);
+    font-size: var(--ino-type-body-sm-size);
+    color: var(--ino-color-on-surface-muted);
+    font-weight: 600;
+  }
+
+  .row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--ino-space-4); }
+  .stack { display: flex; flex-direction: column; gap: var(--ino-space-3); align-items: stretch; }
+
+  /* Mirrors web/src/app/components/input-group/ino-input-group.component.scss — same token
+     bindings, so a divergence between this preview and the shipped component is visible as a
+     visual diff. */
+  .ino-input-group {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: stretch;
+    inline-size: 260px;
+    min-block-size: var(--ino-control-height);
+    --ino-ig-border: var(--ino-color-border);
+    border: 1px solid var(--ino-ig-border);
+    border-radius: var(--ino-radius-md);
+    background: var(--ino-color-surface-sunken);
+    transition: border-color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+  }
+  .ino-input-group--sm {
+    --ino-control-height: var(--ino-control-height-sm);
+    --ino-control-padding-inline: var(--ino-control-padding-inline-sm);
+    --ino-control-gap: var(--ino-control-gap-sm);
+    --ino-control-font-size: var(--ino-control-font-size-sm);
+  }
+  .ino-input-group--lg {
+    --ino-control-height: var(--ino-control-height-lg);
+    --ino-control-padding-inline: var(--ino-control-padding-inline-lg);
+    --ino-control-gap: var(--ino-control-gap-lg);
+    --ino-control-font-size: var(--ino-control-font-size-lg);
+  }
+  .ino-input-group__control {
+    grid-column: 2;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: stretch;
+    min-inline-size: 0;
+  }
+  .ino-input-group__control input {
+    inline-size: 100%;
+    min-inline-size: 0;
+    border: none;
+    background: transparent;
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-control-font-size, var(--ino-type-body-size));
+    padding-inline: var(--ino-control-padding-inline);
+    outline: none;
+  }
+  .ino-input-group__addon {
+    display: flex;
+    align-items: center;
+    gap: var(--ino-control-gap);
+    padding-inline: var(--ino-control-padding-inline);
+    color: var(--ino-color-on-surface-muted);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-control-font-size, var(--ino-type-body-size));
+  }
+  .ino-input-group__addon:empty { display: none; padding-inline: 0; }
+  .ino-input-group__addon--start:not(:empty) { border-inline-end: 1px solid var(--ino-color-border-soft); }
+  .ino-input-group__addon--end:not(:empty) { border-inline-start: 1px solid var(--ino-color-border-soft); }
+
+  .ino-input-group:hover { --ino-ig-border: var(--ino-color-on-surface-muted); }
+  .ino-input-group.is-focus-within {
+    --ino-ig-border: var(--ino-color-accent);
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+  .ino-input-group__control input:focus-visible ~ * { outline: none; }
+  .ino-input-group:has(input:focus-visible) {
+    --ino-ig-border: var(--ino-color-accent);
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+  .ino-input-group[data-disabled] { opacity: 0.5; cursor: not-allowed; }
+  .ino-input-group[data-readonly] { background: var(--ino-color-surface); }
+  .ino-input-group[data-invalid] { --ino-ig-border: var(--ino-color-danger); }
+  .ino-input-group[data-busy] { cursor: progress; }
+
+  /* Addon buttons — mirrors ino-button's own shape/tokens at sm size so they read consistently
+     with a real <button ino-button> inside a group. */
+  .ino-ig-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--ino-control-gap-sm);
+    min-height: calc(var(--ino-control-height) - 2px);
+    padding-inline: var(--ino-control-padding-inline-roomy-sm);
+    border: none;
+    background: transparent;
+    color: var(--ino-color-accent);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-control-font-size-sm);
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .ino-ig-btn:hover { color: var(--ino-color-accent-active); }
+  .ino-ig-btn:focus-visible { outline: var(--ino-focus-ring); outline-offset: var(--ino-focus-ring-offset); }
+
+  .ino-ig-checkbox {
+    accent-color: var(--ino-color-accent);
+    inline-size: var(--ino-control-icon-size-default);
+    block-size: var(--ino-control-icon-size-default);
+  }
+</style>
+</head>
+<body>
+
+<h1>Input group — text, button, checkbox and multi-addon variants</h1>
+<p class="lede">
+  The general prefix/suffix ADDON mechanism (INO-139) — a shared frame around a projected control
+  plus one or more addons per side. Distinct from <code>ino-icon-field</code> (INO-138), which only
+  wraps a single decorative icon. Each pane below is the same markup under a different
+  <code>data-theme</code>.
+</p>
+
+<h2>Text addon — start, end, both</h2>
+<div class="theme-row">
+  <div class="theme-pane">
+    <h3>dark — :root (default)</h3>
+    <div class="stack">
+      <div class="ino-input-group">
+        <span class="ino-input-group__addon ino-input-group__addon--start">$</span>
+        <span class="ino-input-group__control"><input type="text" placeholder="0.00" aria-label="Amount"></span>
+        <span class="ino-input-group__addon ino-input-group__addon--end"></span>
+      </div>
+      <div class="ino-input-group">
+        <span class="ino-input-group__addon ino-input-group__addon--start"></span>
+        <span class="ino-input-group__control"><input type="text" placeholder="acme" aria-label="Subdomain"></span>
+        <span class="ino-input-group__addon ino-input-group__addon--end">.example.com</span>
+      </div>
+      <div class="ino-input-group">
+        <span class="ino-input-group__addon ino-input-group__addon--start">https://</span>
+        <span class="ino-input-group__control"><input type="text" placeholder="company" aria-label="Website"></span>
+        <span class="ino-input-group__addon ino-input-group__addon--end">.com</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="light">
+    <h3>light — [data-theme="light"]</h3>
+    <div class="stack">
+      <div class="ino-input-group">
+        <span class="ino-input-group__addon ino-input-group__addon--start">$</span>
+        <span class="ino-input-group__control"><input type="text" placeholder="0.00" aria-label="Amount"></span>
+        <span class="ino-input-group__addon ino-input-group__addon--end"></span>
+      </div>
+      <div class="ino-input-group">
+        <span class="ino-input-group__addon ino-input-group__addon--start"></span>
+        <span class="ino-input-group__control"><input type="text" placeholder="acme" aria-label="Subdomain"></span>
+        <span class="ino-input-group__addon ino-input-group__addon--end">.example.com</span>
+      </div>
+      <div class="ino-input-group">
+        <span class="ino-input-group__addon ino-input-group__addon--start">https://</span>
+        <span class="ino-input-group__control"><input type="text" placeholder="company" aria-label="Website"></span>
+        <span class="ino-input-group__addon ino-input-group__addon--end">.com</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="high-contrast">
+    <h3>high-contrast — [data-theme="high-contrast"]</h3>
+    <div class="stack">
+      <div class="ino-input-group">
+        <span class="ino-input-group__addon ino-input-group__addon--start">$</span>
+        <span class="ino-input-group__control"><input type="text" placeholder="0.00" aria-label="Amount"></span>
+        <span class="ino-input-group__addon ino-input-group__addon--end"></span>
+      </div>
+      <div class="ino-input-group">
+        <span class="ino-input-group__addon ino-input-group__addon--start"></span>
+        <span class="ino-input-group__control"><input type="text" placeholder="acme" aria-label="Subdomain"></span>
+        <span class="ino-input-group__addon ino-input-group__addon--end">.example.com</span>
+      </div>
+      <div class="ino-input-group">
+        <span class="ino-input-group__addon ino-input-group__addon--start">https://</span>
+        <span class="ino-input-group__control"><input type="text" placeholder="company" aria-label="Website"></span>
+        <span class="ino-input-group__addon ino-input-group__addon--end">.com</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>Button addon — search, clear, copy</h2>
+<div class="row">
+  <div class="ino-input-group">
+    <span class="ino-input-group__addon ino-input-group__addon--start"></span>
+    <span class="ino-input-group__control"><input type="search" placeholder="Search companies" aria-label="Search companies"></span>
+    <span class="ino-input-group__addon ino-input-group__addon--end">
+      <button type="button" class="ino-ig-btn" aria-label="Search">&#128269;</button>
+    </span>
+  </div>
+  <div class="ino-input-group">
+    <span class="ino-input-group__addon ino-input-group__addon--start"></span>
+    <span class="ino-input-group__control"><input type="text" value="a1B2c3D4-copy-me" aria-label="API key" readonly></span>
+    <span class="ino-input-group__addon ino-input-group__addon--end">
+      <button type="button" class="ino-ig-btn" aria-label="Copy">Copy</button>
+    </span>
+  </div>
+</div>
+
+<h2>Checkbox addon — select this row</h2>
+<div class="row">
+  <div class="ino-input-group" role="group" aria-label="Select and rename entity">
+    <span class="ino-input-group__addon ino-input-group__addon--start">
+      <input type="checkbox" class="ino-ig-checkbox" aria-label="Select this entity">
+    </span>
+    <span class="ino-input-group__control"><input type="text" placeholder="Entity legal name" aria-label="Entity legal name"></span>
+    <span class="ino-input-group__addon ino-input-group__addon--end"></span>
+  </div>
+</div>
+
+<h2>Multi-addon groups — two buttons on the same side, select + text prefix</h2>
+<div class="row">
+  <div class="ino-input-group">
+    <span class="ino-input-group__addon ino-input-group__addon--start"></span>
+    <span class="ino-input-group__control"><input type="text" value="a1B2c3D4-copy-me" aria-label="API key" readonly></span>
+    <span class="ino-input-group__addon ino-input-group__addon--end">
+      <button type="button" class="ino-ig-btn" aria-label="Copy">Copy</button>
+      <button type="button" class="ino-ig-btn" aria-label="Clear">Clear</button>
+    </span>
+  </div>
+  <div class="ino-input-group">
+    <span class="ino-input-group__addon ino-input-group__addon--start">
+      <select aria-label="Protocol" style="background:transparent;border:none;color:var(--ino-color-on-surface-muted);font-family:var(--ino-font-display);">
+        <option>https://</option>
+        <option>http://</option>
+      </select>
+      <span>www.</span>
+    </span>
+    <span class="ino-input-group__control"><input type="text" placeholder="company" aria-label="Website"></span>
+  </div>
+</div>
+
+<h2>Size API — sm / default / lg</h2>
+<div class="row">
+  <div class="ino-input-group ino-input-group--sm">
+    <span class="ino-input-group__addon ino-input-group__addon--start">$</span>
+    <span class="ino-input-group__control"><input type="text" placeholder="Small" aria-label="Small"></span>
+    <span class="ino-input-group__addon ino-input-group__addon--end"></span>
+  </div>
+  <div class="ino-input-group">
+    <span class="ino-input-group__addon ino-input-group__addon--start">$</span>
+    <span class="ino-input-group__control"><input type="text" placeholder="Default" aria-label="Default"></span>
+    <span class="ino-input-group__addon ino-input-group__addon--end"></span>
+  </div>
+  <div class="ino-input-group ino-input-group--lg">
+    <span class="ino-input-group__addon ino-input-group__addon--start">$</span>
+    <span class="ino-input-group__control"><input type="text" placeholder="Large" aria-label="Large"></span>
+    <span class="ino-input-group__addon ino-input-group__addon--end"></span>
+  </div>
+</div>
+
+<h2>States — default, hover, focus-within, disabled, readonly, invalid, loading</h2>
+<p class="lede">Tab into a field below to see the real <code>:focus-within</code> frame recolor
+  (<code>.is-focus-within</code> on the first one fakes it for the screenshot pass, since a static
+  page can't hold real focus).</p>
+<div class="row">
+  <div class="ino-input-group is-focus-within">
+    <span class="ino-input-group__addon ino-input-group__addon--start">$</span>
+    <span class="ino-input-group__control"><input type="text" placeholder="Focused" aria-label="Focused"></span>
+    <span class="ino-input-group__addon ino-input-group__addon--end"></span>
+  </div>
+  <div class="ino-input-group" data-disabled="true">
+    <span class="ino-input-group__addon ino-input-group__addon--start">$</span>
+    <span class="ino-input-group__control"><input type="text" placeholder="Disabled" aria-label="Disabled" disabled></span>
+    <span class="ino-input-group__addon ino-input-group__addon--end"></span>
+  </div>
+  <div class="ino-input-group" data-readonly="true">
+    <span class="ino-input-group__addon ino-input-group__addon--start">$</span>
+    <span class="ino-input-group__control"><input type="text" value="1,204.00" aria-label="Readonly amount" readonly></span>
+    <span class="ino-input-group__addon ino-input-group__addon--end"></span>
+  </div>
+  <div class="ino-input-group" data-invalid="true">
+    <span class="ino-input-group__addon ino-input-group__addon--start">$</span>
+    <span class="ino-input-group__control"><input type="text" placeholder="Invalid" aria-label="Invalid" aria-invalid="true"></span>
+    <span class="ino-input-group__addon ino-input-group__addon--end"></span>
+  </div>
+  <div class="ino-input-group" data-busy="true" aria-busy="true">
+    <span class="ino-input-group__addon ino-input-group__addon--start"></span>
+    <span class="ino-input-group__control"><input type="text" placeholder="Validating…" aria-label="Validating"></span>
+    <span class="ino-input-group__addon ino-input-group__addon--end"></span>
+  </div>
+</div>
+
+<h2>RTL</h2>
+<div class="row" dir="rtl">
+  <div class="ino-input-group">
+    <span class="ino-input-group__addon ino-input-group__addon--start">ر.س</span>
+    <span class="ino-input-group__control"><input type="text" placeholder="٠٫٠٠" aria-label="المبلغ"></span>
+    <span class="ino-input-group__addon ino-input-group__addon--end"></span>
+  </div>
+  <div class="ino-input-group">
+    <span class="ino-input-group__addon ino-input-group__addon--start"></span>
+    <span class="ino-input-group__control"><input type="search" placeholder="بحث" aria-label="بحث عن الشركات"></span>
+    <span class="ino-input-group__addon ino-input-group__addon--end">
+      <button type="button" class="ino-ig-btn" aria-label="بحث">&#128269;</button>
+    </span>
+  </div>
+</div>
+
+</body>
+</html>

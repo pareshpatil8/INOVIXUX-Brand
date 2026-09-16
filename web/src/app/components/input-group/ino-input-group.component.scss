@@ -1,0 +1,204 @@
+/*
+ * <ino-input-group> — INO-139 / INO-31 T-17.
+ *
+ * Zero hardcoded values (DoD row 1): every declaration below reads a semantic token or a
+ * `--ino-control-*` alias from tokens.css §12, never a literal color/space/radius/duration/
+ * font-size. No `[data-theme]` branch here — theming is entirely inherited via the tokens this
+ * file reads.
+ */
+
+/*
+ * Layout is the same 3-column CSS Grid `<ino-icon-field>` uses, and for the same structural
+ * reason: content projected via `<ng-content>` carries the CONSUMER template's Emulated-
+ * encapsulation scoping attribute, not this component's, so a selector authored here can never
+ * match a projected addon or control (that is the well-known reason `::ng-deep` exists, and this
+ * repo's `check-ds-adherence.mjs` bans it outright — no sanctioned escape hatch yet, doc 16 §4.3
+ * Layer 4 / N-11). That is also why this component does NOT attempt Bootstrap's/PrimeNG's
+ * border-collapsing trick (stripping the touching border-radius off each addon) — that trick
+ * requires selecting into the projected element itself. See the class doc comment and SPEC.md §1.
+ *
+ * Grid's `justify-items`/`align-items: stretch` (both left at their default, unset here) apply to
+ * every grid item PURELY BY STRUCTURAL POSITION — no selector ever has to "reach" the projected
+ * control for it to stretch to fill its track, the same reasoning `<ino-icon-field>` documents.
+ */
+:host(.ino-input-group) {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: stretch;
+  inline-size: 100%;
+  min-block-size: var(--ino-control-height);
+
+  /*
+   * The shared frame (DoD row 5's "shared visual border/shape as one unit"). Deliberately the
+   * SAME tokens `ino-input`'s own `.ino-field__control` reads (`--ino-color-border`,
+   * `--ino-radius-md`, `--ino-color-surface-sunken`) — a group wrapping one control is a visual
+   * superset of that control's own border treatment, not a mismatched frame, per the DoD text.
+   * This is a border the GROUP owns; it does not attempt to strip or merge with a nested
+   * control's own border (see the class doc comment) — DoD row 5's own phrasing ("the whole
+   * group's border") frames the group's frame as a distinct thing that recolors on state, not as
+   * a seam-removal mechanism, which is exactly what encapsulation allows here.
+   */
+  --ino-input-group-border-color: var(--ino-color-border);
+  border: 1px solid var(--ino-input-group-border-color);
+  border-radius: var(--ino-radius-md);
+  background: var(--ino-color-surface-sunken);
+  transition: border-color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+}
+
+/*
+ * Size API (DoD row 3) — only the aliases this component actually renders with are re-pointed;
+ * no local pixel value is ever introduced. Density (DoD row 4) falls out for free: these are the
+ * SAME `--ino-control-height-*` / `--ino-control-padding-inline-*` / `--ino-control-gap-*` /
+ * `--ino-control-font-size-*` rungs `ino-button`/`ino-input` read, and tokens.css §12 re-resolves
+ * them per [data-density] — this component adds no density branch of its own.
+ */
+:host(.ino-input-group--sm) {
+  --ino-control-height: var(--ino-control-height-sm);
+  --ino-control-padding-inline: var(--ino-control-padding-inline-sm);
+  --ino-control-gap: var(--ino-control-gap-sm);
+  --ino-control-font-size: var(--ino-control-font-size-sm);
+}
+
+:host(.ino-input-group--lg) {
+  --ino-control-height: var(--ino-control-height-lg);
+  --ino-control-padding-inline: var(--ino-control-padding-inline-lg);
+  --ino-control-gap: var(--ino-control-gap-lg);
+  --ino-control-font-size: var(--ino-control-font-size-lg);
+}
+
+/*
+ * The projected control's slot. Pinned to column 2 explicitly (rather than relying on grid
+ * auto-placement order) so an empty, `display: none`-collapsed addon slot next to it never shifts
+ * it into the wrong track — same reasoning as `<ino-icon-field>`'s `.ino-icon-field__control`.
+ * It is ITSELF a single-column grid so its projected child (an `<ino-input>`, a native `<input>`,
+ * a `<select>`, …) stretches to the slot's full size purely by becoming that inner grid's one
+ * item — no selector ever targets the projected child.
+ */
+.ino-input-group__control {
+  grid-column: 2;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: stretch;
+  min-inline-size: 0;
+}
+
+/*
+ * Addon slots. Each is a flex ROW (not a single-item grid like the control slot above) because
+ * "more than one addon on the same side" (DoD row 6's multi-addon variant) needs its own children
+ * laid out left-to-right-in-the-inline-direction at their own intrinsic size — a text label, a
+ * checkbox, and a button never need to stretch to fill the slot the way a lone control does.
+ * `align-items: stretch` here is what still asks a SINGLE addon (the common case) to fill the
+ * slot's block size, purely by container default — no selector needed.
+ *
+ * Typography (`color`, `font-family`, `font-size`) is set here deliberately: these are INHERITED
+ * CSS properties, and inheritance follows the real DOM tree regardless of Emulated
+ * encapsulation's scoping-attribute selector restriction (only SELECTOR MATCHING is blocked
+ * across that boundary, not property inheritance) — so a plain projected text addon
+ * (`<span groupAddonStart>$</span>`) picks up the right look for free, with no selector targeting
+ * it. An addon that is itself a styled component (`ino-button`, a native `<input>`) simply sets
+ * its own explicit color/font and is unaffected, which is correct: those addons keep looking like
+ * themselves (class doc comment, point 3).
+ */
+.ino-input-group__addon {
+  display: flex;
+  align-items: stretch;
+  gap: var(--ino-control-gap);
+  padding-inline: var(--ino-control-padding-inline);
+  color: var(--ino-color-on-surface-muted);
+  font-family: var(--ino-font-display);
+  font-size: var(--ino-control-font-size);
+}
+
+/* A slot with nothing projected into it collapses to zero footprint — leading-only /
+   trailing-only / both variants (DoD row 6) fall out of one template with no `*ngIf` needed, same
+   trick `<ino-icon-field>` and `ino-tag` already use. */
+.ino-input-group__addon:empty {
+  display: none;
+  padding-inline: 0;
+}
+
+/* Divider between an addon segment and the control — a border on THIS component's own wrapper
+   element, never on the projected addon/control itself, so no cross-boundary selector is needed
+   (see the class doc comment for why that constraint exists). `-soft` (not the full-strength
+   border token) because this is an internal seam inside one already-bordered unit, not the
+   unit's own outer boundary — SC 1.4.11's 3:1 non-text-contrast requirement applies to the OUTER
+   frame, which stays at the full-strength `--ino-color-border`/state color. */
+.ino-input-group__addon--start:not(:empty) {
+  border-inline-end: 1px solid var(--ino-color-border-soft);
+}
+
+.ino-input-group__addon--end:not(:empty) {
+  border-inline-start: 1px solid var(--ino-color-border-soft);
+}
+
+/* -------------------------------------------------------------------------------------------
+ * States (DoD row 5 — default, hover, active/pressed, focus-visible, disabled, readonly,
+ * invalid, loading/busy). This wrapper has no native control or activation of its own, so several
+ * of these are either a caller-mirrored flag or documented as living entirely on the wrapped
+ * control/addon instead — recorded here, not silently skipped. See SPEC.md §5 for the full
+ * per-state breakdown.
+ * ------------------------------------------------------------------------------------------- */
+
+/* State 2 — hover. The frame darkens toward on-surface-muted, mirroring ino-input's own
+   `:hover` border treatment (same token), so hovering anywhere in the unit reads consistently
+   with hovering the bare control it wraps. */
+:host(.ino-input-group:hover) {
+  --ino-input-group-border-color: var(--ino-color-on-surface-muted);
+}
+
+/* State 3 — active/pressed: deliberately NOT implemented on the group itself. The group is not
+   an activatable/pressable element (no click handler, no native semantics of its own) — "pressed"
+   belongs to whichever addon button is actually pressed, and that is entirely that native
+   `<button>`'s own `:active` styling, untouched by this wrapper. Documented per SPEC.md §5 rather
+   than silently omitted. */
+
+/* State 4 — focus-visible (approximated via :focus-within, since the host itself is never
+   directly focusable — it has no tabindex of its own). Mirrors `<ino-icon-field>`'s
+   `:focus-within` color-echo pattern, applied to this component's own border instead of icon
+   color: the shared frame recolors to the accent role while the projected control has focus, so
+   the whole unit reads as one interactive group rather than a static frame around an active
+   control. */
+:host(.ino-input-group:focus-within) {
+  --ino-input-group-border-color: var(--ino-color-accent);
+  outline: var(--ino-focus-ring);
+  outline-offset: var(--ino-focus-ring-offset);
+}
+
+/* State 5 — disabled. Caller-mirrored (`disabled` @Input — this wrapper has no native `disabled`
+   of its own to read). Dims the whole frame; the projected control's own disabled rendering is
+   unaffected and must be set by the caller directly on that control (same contract as
+   `<ino-icon-field>`'s `disabled`). */
+:host(.ino-input-group[data-disabled]) {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* State 6 — readonly. The opposite trade from disabled (same convention as
+   `ino-virtual-scroller`'s [data-readonly]): content stays fully legible and the frame stays at
+   its full-strength border — only the surface flattens from "sunken/writable" to the flat
+   `--ino-color-surface` role, so a readonly group reads as settled rather than editable, without
+   implying the control inside is unreachable. */
+:host(.ino-input-group[data-readonly]) {
+  background: var(--ino-color-surface);
+}
+
+/* State 7 — invalid. Caller-mirrored (`invalid` @Input). Border only — the fill stays neutral so
+   addon/control content keeps its audited contrast against `--ino-color-surface-sunken` rather
+   than against a tinted background, same trade `ino-virtual-scroller`'s [data-invalid] makes. */
+:host(.ino-input-group[data-invalid]) {
+  --ino-input-group-border-color: var(--ino-color-danger);
+}
+
+/* State 8 — loading/busy. Caller-mirrored (`loading` @Input, reflected as `aria-busy` in the
+   component). `cursor: progress` only — deliberately not also dimmed like disabled, because a
+   busy group is still genuinely interactive input from the reviewer's point of view (e.g.
+   awaiting an async validation), unlike disabled which truly blocks it. */
+:host(.ino-input-group[data-busy]) {
+  cursor: progress;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :host(.ino-input-group) {
+    transition: none;
+  }
+}
