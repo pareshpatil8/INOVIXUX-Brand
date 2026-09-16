@@ -1,0 +1,230 @@
+// Zero hardcoded values (DoD row 1): every colour/space/radius/duration/font-size below resolves
+// through a semantic token. Active-tab indication is a plain `border-block-end` on the tab button
+// itself rather than a JS-measured sliding underline — it repaints correctly under scroll, RTL and
+// resize for free, where a measured indicator would need a ResizeObserver + scroll-offset
+// recompute just to stay aligned (the exact bug class `ino-tag`'s SPEC.md warns extracting
+// components away from: don't build a second source of truth for something CSS already tracks).
+
+:host {
+  display: block;
+  --ino-control-height: var(--ino-control-height-default);
+  --ino-control-padding-inline-roomy: var(--ino-control-padding-inline-roomy-default);
+  --ino-control-font-size: var(--ino-control-font-size-default);
+  --ino-control-gap: var(--ino-control-gap-default);
+  --ino-control-icon-size: var(--ino-control-icon-size-default);
+}
+
+:host([data-size='sm']) {
+  --ino-control-height: var(--ino-control-height-sm);
+  --ino-control-padding-inline-roomy: var(--ino-control-padding-inline-roomy-sm);
+  --ino-control-font-size: var(--ino-control-font-size-sm);
+  --ino-control-gap: var(--ino-control-gap-sm);
+  --ino-control-icon-size: var(--ino-control-icon-size-sm);
+}
+
+:host([data-size='lg']) {
+  --ino-control-height: var(--ino-control-height-lg);
+  --ino-control-padding-inline-roomy: var(--ino-control-padding-inline-roomy-lg);
+  --ino-control-font-size: var(--ino-control-font-size-lg);
+  --ino-control-gap: var(--ino-control-gap-lg);
+  --ino-control-icon-size: var(--ino-control-icon-size-lg);
+}
+
+.ino-tabs__strip {
+  display: flex;
+  align-items: stretch;
+  border-block-end: 1px solid var(--ino-color-border);
+}
+
+.ino-tabs__track {
+  display: flex;
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+// Non-scrollable (default) mode: let the strip wrap instead of clipping/scrolling, so a caller
+// that didn't opt into `scrollable` never silently loses tabs off-screen.
+:host(:not(.ino-tabs--scrollable)) .ino-tabs__track {
+  overflow-x: visible;
+  flex-wrap: wrap;
+}
+
+.ino-tabs__scroll {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--ino-control-height);
+  block-size: var(--ino-control-height);
+  background: transparent;
+  border: none;
+  color: var(--ino-color-on-surface-muted);
+  font-size: var(--ino-type-h3-size);
+  line-height: 1;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--ino-color-on-surface);
+    background: var(--ino-color-surface-raised);
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: calc(-1 * var(--ino-focus-ring-offset));
+  }
+}
+
+// The ‹ / › glyphs are the one piece of this component whose *meaning* is directional rather than
+// logical — a chevron pointing at the inline-start edge is "backward" in LTR and "forward" in RTL.
+// Flipping the glyph is correct where flipping a box would not be: the flex row already reverses
+// the buttons' positions for free, so only the arrowheads need mirroring.
+:host(:dir(rtl)) .ino-tabs__scroll {
+  transform: scaleX(-1);
+}
+
+.ino-tabs__tab {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: var(--ino-control-gap);
+  min-block-size: var(--ino-control-height);
+  padding-inline: var(--ino-control-padding-inline-roomy);
+  border: none;
+  border-block-end: 2px solid transparent;
+  background: transparent;
+  color: var(--ino-color-on-surface-muted);
+  font-family: var(--ino-font-display);
+  font-size: var(--ino-control-font-size);
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+    border-color var(--ino-motion-duration-base) var(--ino-motion-easing-standard),
+    background-color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  &:hover:not(:disabled) {
+    color: var(--ino-color-on-surface);
+  }
+
+  &:active:not(:disabled) {
+    color: var(--ino-color-accent-active);
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: calc(-1 * var(--ino-focus-ring-offset));
+  }
+
+  &:disabled {
+    color: var(--ino-color-on-surface-subtle);
+    cursor: not-allowed;
+  }
+}
+
+.ino-tabs__tab--active {
+  color: var(--ino-color-on-surface);
+  border-block-end-color: var(--ino-color-accent);
+}
+
+.ino-tabs__tab--invalid {
+  color: var(--ino-color-danger-text-safe);
+}
+
+.ino-tabs__tab--invalid.ino-tabs__tab--active {
+  border-block-end-color: var(--ino-color-danger-text-safe);
+}
+
+// Readonly: roving-tabindex focus navigation still works (DoD row 8 keyboard map), but the strip
+// signals that activation is locked — same dimmed, non-interactive-looking treatment
+// `ino-input[readonly]` already uses, without removing focusability the way `disabled` does.
+.ino-tabs__track[data-readonly] .ino-tabs__tab:not(.ino-tabs__tab--active) {
+  cursor: default;
+
+  // Hover must not promise an activation that `selectTab()` will refuse — but the tab is still
+  // focusable (unlike `:disabled`), so the focus ring below is untouched.
+  &:hover:not(:disabled) {
+    color: var(--ino-color-on-surface-muted);
+  }
+}
+
+.ino-tabs__tab-invalid-dot {
+  inline-size: 6px;
+  block-size: 6px;
+  border-radius: var(--ino-radius-pill);
+  background: var(--ino-color-danger-text-safe);
+  flex-shrink: 0;
+}
+
+.ino-tabs__tab-spinner {
+  display: inline-block;
+  inline-size: calc(var(--ino-control-icon-size) * 0.7);
+  block-size: calc(var(--ino-control-icon-size) * 0.7);
+  border: 2px solid currentColor;
+  border-inline-start-color: transparent;
+  border-radius: 50%;
+  opacity: 0.85;
+  flex-shrink: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ino-tabs__tab-spinner {
+    animation: ino-tabs-spin var(--ino-motion-duration-slow) linear infinite;
+  }
+}
+
+@keyframes ino-tabs-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Pointer target (SC 2.5.8): `--ino-control-icon-size` is 20px fluid / 16px dense, both under the
+// 24px floor — so the *hit box* is floored at --ino-target-min while the glyph keeps the icon-size
+// optical weight. `max()` rather than a flat 24px because `lg` (24px icon) must not be shrunk.
+.ino-tabs__tab-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: max(var(--ino-control-icon-size), var(--ino-target-min));
+  block-size: max(var(--ino-control-icon-size), var(--ino-target-min));
+  margin-inline-end: calc(-1 * var(--ino-space-1));
+  border-radius: var(--ino-radius-sm);
+  color: var(--ino-color-on-surface-muted);
+  font-size: var(--ino-type-eyebrow-size);
+  line-height: 1;
+  flex-shrink: 0;
+
+  &:hover {
+    background: var(--ino-color-surface-raised);
+    color: var(--ino-color-on-surface);
+  }
+}
+
+// Same clip idiom as `ino-alert__sr-status`: the close affordance is a painted ✕ with no keyboard
+// role (see the template), so its keyboard contract has to reach AT through the tab's own
+// accessible name instead.
+.ino-tabs__sr-only {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  // `clip-path: inset(50%)` rather than the legacy `clip: rect(0,0,0,0)` + `margin: -1px` pair
+  // `ino-alert__sr-status` still uses: the negative margin only ever existed to stop the clipped
+  // box nudging layout, which a `clip-path`ed absolutely-positioned box does not do — and -1px is
+  // off the space scale, which `check-ds-adherence.mjs` (rightly) rejects inside a component.
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ino-tabs__tab {
+    transition: none;
+  }
+}
