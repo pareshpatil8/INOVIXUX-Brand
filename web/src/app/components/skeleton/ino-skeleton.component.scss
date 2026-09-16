@@ -1,0 +1,96 @@
+/*
+ * <ino-skeleton> — INO-131 / INO-31 T-14.
+ *
+ * No literal colour/space/radius/duration/font-size — every declaration resolves through a
+ * semantic role in tokens.css, and logical properties only (RTL is one code path, see SPEC.md §6).
+ *
+ * Size API (DoD row 3) — same adoption recipe as every other Wave 0/1/2 component
+ * (control-size-scale.md §3): the base rule reads only the bare `--ino-control-height` /
+ * `--ino-control-font-size` aliases (already unsuffixed-aliased to `-default` in tokens.css §12),
+ * and the size attribute re-points them.
+ */
+:host([data-size='sm']) {
+  --ino-control-height: var(--ino-control-height-sm);
+  --ino-control-font-size: var(--ino-control-font-size-sm);
+}
+
+:host([data-size='lg']) {
+  --ino-control-height: var(--ino-control-height-lg);
+  --ino-control-font-size: var(--ino-control-font-size-lg);
+}
+
+:host {
+  display: block;
+  position: relative; /* containing block for .ino-skeleton__sr, see below */
+  inline-size: 100%;
+  flex-shrink: 0;
+  overflow: hidden; /* clips the shimmer sweep to the placeholder's own box */
+  background: var(--ino-color-border-soft);
+
+  /* State 1 — default (below), State 8 — loading/busy (this component's entire reason for
+     being; see SPEC.md §1 for why the other 6 of 8 DoD states are N/A). */
+}
+
+/* Shape defaults (DoD row 6) — each sets its own block-size/inline-size/border-radius; a caller's
+   explicit width/height/borderRadius input (bound as an inline style, see the .ts host bindings)
+   wins over all three because inline style specificity beats these attribute-selector rules. */
+:host([data-shape='rectangle']) {
+  block-size: var(--ino-control-height);
+  border-radius: var(--ino-radius-md);
+}
+
+:host([data-shape='circle']) {
+  inline-size: var(--ino-control-height);
+  block-size: var(--ino-control-height);
+  border-radius: 50%; /* not --ino-radius-pill (20px) — a circle must stay exactly half its own
+    box at every size, which no fixed-px radius token can express; 50% is shape geometry, not a
+    design value, the same reasoning ino-tag's SPEC.md gives for its own deliberate exceptions. */
+}
+
+:host([data-shape='text']) {
+  font-size: var(--ino-control-font-size);
+  block-size: 1em;
+  border-radius: var(--ino-radius-sm);
+}
+
+/*
+ * Motion (DoD row 7) — Pattern B from motion-contract.md §2 (decorative, opt-in under
+ * no-preference): the resting flat fill above is the reduced-motion state by default, nothing to
+ * cancel. Same token pair (`--ino-motion-duration-slow` + `--ino-motion-easing-standard`) and same
+ * gradient roles (`--ino-color-border-soft` / `--ino-color-border`) as ino-virtual-scroller's
+ * built-in skeleton bar (motion-contract.md §2, Pattern B list) — one shimmer recipe reused, not a
+ * second one invented for this component.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  :host(:not(.ino-skeleton--static)) {
+    background: linear-gradient(
+      90deg,
+      var(--ino-color-border-soft) 0%,
+      var(--ino-color-border) 50%,
+      var(--ino-color-border-soft) 100%
+    );
+    background-size: 200% 100%;
+    animation: ino-skeleton-shimmer var(--ino-motion-duration-slow) var(--ino-motion-easing-standard)
+      infinite;
+  }
+}
+
+@keyframes ino-skeleton-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* Visually hidden but still announced accessible label (DoD row 8) — house sr-only clip idiom,
+   same pattern as ino-alert__sr-status / ino-tag__label--sr-only / ino-vs__sr. */
+.ino-skeleton__sr {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
