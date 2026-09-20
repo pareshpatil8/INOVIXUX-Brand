@@ -1,0 +1,51 @@
+<div
+  #track
+  class="ino-stepper__track"
+  role="tablist"
+  [attr.aria-orientation]="orientation"
+  [attr.data-readonly]="readonly || null"
+>
+  <ng-container *ngFor="let step of steps; let i = index; let last = last">
+    <div
+      *ngIf="i > 0"
+      class="ino-stepper__connector"
+      [class.ino-stepper__connector--filled]="steps[i - 1].completed"
+      aria-hidden="true"
+    ></div>
+
+    <button
+      role="tab"
+      type="button"
+      class="ino-stepper__step"
+      [id]="step.tabButtonId"
+      [attr.aria-controls]="step.panelId"
+      [attr.aria-selected]="step.id === currentActiveId"
+      [attr.aria-busy]="step.loading || null"
+      [attr.aria-invalid]="step.invalid || null"
+      [attr.aria-disabled]="!isReachable(i) || readonly ? 'true' : null"
+      [attr.tabindex]="step.id === currentActiveId ? 0 : -1"
+      [disabled]="step.disabled"
+      [class.ino-stepper__step--active]="step.id === currentActiveId"
+      [class.ino-stepper__step--completed]="step.completed"
+      [class.ino-stepper__step--invalid]="step.invalid"
+      [class.ino-stepper__step--locked]="!isReachable(i)"
+      (click)="selectStep(step, i)"
+      (keydown)="onKeydown($event, i)"
+    >
+      <span class="ino-stepper__indicator" aria-hidden="true">
+        <span *ngIf="step.loading" class="ino-stepper__spinner"></span>
+        <span *ngIf="!step.loading && step.completed" class="ino-stepper__check">✓</span>
+        <span *ngIf="!step.loading && !step.completed">{{ i + 1 }}</span>
+      </span>
+      <span class="ino-stepper__text">
+        <span class="ino-stepper__label">{{ step.label }}</span>
+        <span *ngIf="step.description" class="ino-stepper__description">{{ step.description }}</span>
+      </span>
+      <span class="ino-stepper__sr-only">
+        , step {{ i + 1 }} of {{ steps.length }}<ng-container *ngIf="!isReachable(i)">, locked until earlier steps are completed</ng-container>
+      </span>
+    </button>
+  </ng-container>
+</div>
+
+<ng-content></ng-content>

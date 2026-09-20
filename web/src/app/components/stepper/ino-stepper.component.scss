@@ -1,0 +1,253 @@
+// Zero hardcoded values (DoD row 1): every colour/space/radius/duration/font-size below resolves
+// through a semantic token. The connector line is a flex sibling of each step button rather than
+// a JS-measured absolutely-positioned line — same "let CSS track it, not a ResizeObserver" rule
+// `ino-tabs`'s underline follows, and it means the line repairs itself for free under RTL,
+// wrapping and resize.
+
+:host {
+  display: block;
+  --ino-control-height: var(--ino-control-height-default);
+  --ino-control-padding-inline-roomy: var(--ino-control-padding-inline-roomy-default);
+  --ino-control-font-size: var(--ino-control-font-size-default);
+  --ino-control-gap: var(--ino-control-gap-default);
+  --ino-control-icon-size: var(--ino-control-icon-size-default);
+}
+
+:host([data-size='sm']) {
+  --ino-control-height: var(--ino-control-height-sm);
+  --ino-control-padding-inline-roomy: var(--ino-control-padding-inline-roomy-sm);
+  --ino-control-font-size: var(--ino-control-font-size-sm);
+  --ino-control-gap: var(--ino-control-gap-sm);
+  --ino-control-icon-size: var(--ino-control-icon-size-sm);
+}
+
+:host([data-size='lg']) {
+  --ino-control-height: var(--ino-control-height-lg);
+  --ino-control-padding-inline-roomy: var(--ino-control-padding-inline-roomy-lg);
+  --ino-control-font-size: var(--ino-control-font-size-lg);
+  --ino-control-gap: var(--ino-control-gap-lg);
+  --ino-control-icon-size: var(--ino-control-icon-size-lg);
+}
+
+// The indicator circle carries the number/check/spinner, so it needs the SC 2.5.8 hit-target
+// floor, not just the icon's optical size — same `max()` idiom `ino-tabs__tab-close` uses, so
+// `lg`'s 24px icon (already at the floor) is never shrunk.
+.ino-stepper__track {
+  --ino-stepper-indicator-size: max(var(--ino-control-icon-size), var(--ino-target-min));
+  display: flex;
+  align-items: flex-start;
+}
+
+:host([data-orientation='vertical']) .ino-stepper__track {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.ino-stepper__connector {
+  flex: 1 1 auto;
+  background: var(--ino-color-border);
+  transition: background-color var(--ino-motion-duration-base) var(--ino-motion-easing-standard);
+}
+
+// Horizontal: a flat line vertically centred on the indicator circle.
+:host(:not([data-orientation='vertical'])) .ino-stepper__connector {
+  block-size: 2px;
+  align-self: flex-start;
+  margin-block-start: calc(var(--ino-stepper-indicator-size) / 2);
+  min-inline-size: var(--ino-space-5);
+}
+
+// Vertical: an upright line, inset from the step's start edge so it lines up under the
+// indicator's centre instead of the row's edge.
+:host([data-orientation='vertical']) .ino-stepper__connector {
+  inline-size: 2px;
+  min-block-size: var(--ino-space-7);
+  margin-inline-start: calc(var(--ino-stepper-indicator-size) / 2);
+}
+
+.ino-stepper__connector--filled {
+  background: var(--ino-color-accent);
+}
+
+.ino-stepper__step {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--ino-control-gap);
+  flex: 0 0 auto;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  text-align: start;
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+:host(:not([data-orientation='vertical'])) .ino-stepper__step {
+  flex-direction: column;
+  align-items: center;
+  padding-inline: var(--ino-control-padding-inline-roomy);
+  text-align: center;
+}
+
+.ino-stepper__indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--ino-stepper-indicator-size);
+  block-size: var(--ino-stepper-indicator-size);
+  flex-shrink: 0;
+  border: 2px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-pill);
+  color: var(--ino-color-on-surface-muted);
+  font-family: var(--ino-font-display);
+  font-size: var(--ino-control-font-size);
+  font-weight: 600;
+  transition:
+    border-color var(--ino-motion-duration-base) var(--ino-motion-easing-standard),
+    background-color var(--ino-motion-duration-base) var(--ino-motion-easing-standard),
+    color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+}
+
+.ino-stepper__text {
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+}
+
+.ino-stepper__label {
+  color: var(--ino-color-on-surface-muted);
+  font-family: var(--ino-font-display);
+  font-size: var(--ino-control-font-size);
+  font-weight: 600;
+  transition: color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+}
+
+.ino-stepper__description {
+  color: var(--ino-color-on-surface-muted);
+  font: var(--ino-type-hint);
+}
+
+.ino-stepper__step:hover:not(:disabled):not(.ino-stepper__step--locked) {
+  .ino-stepper__indicator {
+    border-color: var(--ino-color-accent);
+  }
+  .ino-stepper__label {
+    color: var(--ino-color-on-surface);
+  }
+}
+
+.ino-stepper__step:active:not(:disabled):not(.ino-stepper__step--locked) {
+  .ino-stepper__indicator {
+    border-color: var(--ino-color-accent-active);
+  }
+}
+
+.ino-stepper__step:focus-visible {
+  outline: var(--ino-focus-ring);
+  outline-offset: var(--ino-focus-ring-offset);
+  border-radius: var(--ino-radius-sm);
+}
+
+.ino-stepper__step--active {
+  .ino-stepper__indicator {
+    border-color: var(--ino-color-accent);
+    color: var(--ino-color-accent);
+  }
+  .ino-stepper__label {
+    color: var(--ino-color-on-surface);
+  }
+}
+
+.ino-stepper__step--completed {
+  .ino-stepper__indicator {
+    background: var(--ino-color-accent);
+    border-color: var(--ino-color-accent);
+    color: var(--ino-color-on-accent);
+  }
+}
+
+.ino-stepper__step--invalid {
+  .ino-stepper__indicator {
+    border-color: var(--ino-color-danger-text-safe);
+    color: var(--ino-color-danger-text-safe);
+  }
+  .ino-stepper__label {
+    color: var(--ino-color-danger-text-safe);
+  }
+}
+
+.ino-stepper__step:disabled {
+  .ino-stepper__indicator,
+  .ino-stepper__label {
+    color: var(--ino-color-on-surface-subtle);
+  }
+  .ino-stepper__indicator {
+    border-color: var(--ino-color-on-surface-subtle);
+  }
+}
+
+// Locked (linear gating, DoD "validation gating between steps") and readonly share the same
+// "focusable but inert" dimmed treatment `ino-tabs`'s readonly rows use — neither is `disabled`,
+// because roving-tabindex focus must still be able to reach the step (§6/§7 of SPEC.md).
+.ino-stepper__step--locked,
+.ino-stepper__track[data-readonly] .ino-stepper__step:not(.ino-stepper__step--active) {
+  cursor: default;
+
+  &:hover:not(:disabled) {
+    .ino-stepper__indicator {
+      border-color: var(--ino-color-border);
+    }
+    .ino-stepper__label {
+      color: var(--ino-color-on-surface-muted);
+    }
+  }
+}
+
+.ino-stepper__check {
+  line-height: 1;
+}
+
+.ino-stepper__spinner {
+  display: inline-block;
+  inline-size: 70%;
+  block-size: 70%;
+  border: 2px solid currentColor;
+  border-inline-start-color: transparent;
+  border-radius: 50%;
+  opacity: 0.85;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ino-stepper__spinner {
+    animation: ino-stepper-spin var(--ino-motion-duration-slow) linear infinite;
+  }
+}
+
+@keyframes ino-stepper-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Same clip idiom as `ino-tabs__sr-only` — `clip-path: inset(50%)` rather than the legacy
+// `clip: rect(0,0,0,0)` + negative-margin pair, so the box never nudges layout and never needs an
+// off-scale `-1px` margin (`check-ds-adherence.mjs` rejects those inside a component).
+.ino-stepper__sr-only {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ino-stepper__connector,
+  .ino-stepper__indicator,
+  .ino-stepper__label {
+    transition: none;
+  }
+}
