@@ -1,0 +1,8 @@
+<div class="ino-progress-bar__track">
+  <div
+    class="ino-progress-bar__fill"
+    [class.ino-progress-bar__fill--indeterminate]="mode === 'indeterminate'"
+    [style.inline-size.%]="mode === 'determinate' ? clampedValue : null"
+  ></div>
+</div>
+<span class="ino-progress-bar__label" *ngIf="mode === 'determinate' && showValue">{{ valueText }}</span>
