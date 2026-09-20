@@ -137,11 +137,12 @@ boxed one. No new token was needed.
   Capacitor-only-gate component.
 - **React Native** — `mobile/react-native/src/components/InoInput.tsx`. Ports label/hint/error,
   `size`, `variant` (outline/filled), `disabled`/`readOnly`/`loading` states, using
-  `theme/tokens.ts`'s `control` scale and palette roles. No icon-slot prop, matching §1 — RN
-  composition for icon/addon wrappers is a separate future issue (T-16/T-17 are marked
-  Capacitor-only in the porting rule table, so RN has no equivalent wrapper to compose with yet).
+  `mobile/react-native/src/theme/tokens.ts`'s `control` scale and palette roles. No icon-slot
+  prop, matching §1 — RN composition for icon/addon wrappers is a separate future issue
+  (T-16/T-17 are marked Capacitor-only in the porting rule table, so RN has no equivalent
+  wrapper to compose with yet).
 - **Flutter** — `mobile/flutter/lib/widgets/ino_input.dart`. Same scope as the RN port, using
-  `theme/tokens.dart`'s `InoControlSize` scale and `InoPalette`.
+  `mobile/flutter/lib/theme/tokens.dart`'s `InoControlSize` scale and `InoPalette`.
 
 ---
 
