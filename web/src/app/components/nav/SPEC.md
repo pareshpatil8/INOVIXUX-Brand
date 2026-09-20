@@ -6,7 +6,7 @@
 installs it.
 **Prior art:** `docs/brand/02-design-tokens/angular-theme-contract.md` §3 (base nav contract),
 `web/src/app/components/focus-trap/SPEC.md` (INO-130, `[inoFocusTrap]`, reused here rather than
-hand-rolled), `web/src/app/components/control-size-scale.md` (INO-124, `size` adoption recipe).
+hand-rolled), `docs/brand/06-angular-components/control-size-scale.md` (INO-124, `size` adoption recipe).
 
 This file records the decisions the DoD requires to be written down rather than silently made.
 
@@ -108,7 +108,7 @@ written in this file.
 | Focus-visible | Yes | Every interactive element gets `--ino-focus-ring`; colour-only hover/active is never the sole indicator (SC 2.4.11), same correction the pre-existing nav already carried forward from `ino-footer` |
 | Disabled | Yes | `InoNavLink.disabled` → `aria-disabled`, `.is-disabled` (opacity 0.5, `pointer-events: none`), `routerLink` set to `null` so it cannot navigate even via a stray click that pointer-events somehow misses |
 | Loading/busy | **Deliberate minimal treatment, not full state.** No per-link async-load state exists in the current `InoNavLink` API — nav items are a static config array, not a fetched list, in every current call site. A future "items loaded async" case would reasonably want a skeleton row, but inventing that API now with no caller has the same cost the toast-container/tag specs already flag for speculative API: a typed input nobody exercises is worse than not shipping it. Recorded here rather than silently dropped. |
-| Readonly | **N/A.** A navigation link either takes you somewhere or it's `disabled`; "read-only navigation" isn't a meaningful third state — same reasoning `ino-tag/SPEC.md` §1 gives for its own non-applicable states. |
+| Readonly | **N/A.** A navigation link either takes you somewhere or it's `disabled`; "read-only navigation" isn't a meaningful third state — same reasoning `tag/SPEC.md` §1 gives for its own non-applicable states. |
 | Invalid | **N/A.** "Invalid" describes a form control that failed its own validation. A nav item is not a form control and has no value to validate. |
 
 ---
@@ -207,7 +207,7 @@ Component-level adherence is `check-ds-adherence.mjs`'s directory-scope walk ins
 |---|---|
 | `node scripts/check-theme-parity.mjs` | PASS |
 | `node scripts/check-ds-adherence.mjs --json` | 0 violations, 0 stale/malformed waivers |
-| `npx ng build` | Succeeds. One pre-existing, unrelated warning (`src/styles.scss` Sass `@import` deprecation) and one `anyComponentStyle` *warning* (7.83kB vs the 4kB warning line, well under the 8kB error line) for this component — see §9 |
+| `npx ng build` | Succeeds. One pre-existing, unrelated warning (`styles.scss` Sass `@import` deprecation) and one `anyComponentStyle` *warning* (7.83kB vs the 4kB warning line, well under the 8kB error line) for this component — see §9 |
 
 ---
 
