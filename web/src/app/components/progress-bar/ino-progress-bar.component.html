@@ -1,0 +1,12 @@
+<span class="ino-progress-bar__track">
+  <span
+    class="ino-progress-bar__fill"
+    [class.ino-progress-bar__fill--indeterminate]="mode === 'indeterminate'"
+    [style.inline-size.%]="mode === 'determinate' ? value : null"
+  ></span>
+</span>
+<!-- Decorative duplicate of the value already conveyed programmatically via aria-valuenow /
+     aria-valuetext (host bindings, .ts) — aria-hidden avoids a double announcement. -->
+<span class="ino-progress-bar__value" *ngIf="showValue && mode === 'determinate'" aria-hidden="true"
+  >{{ value }}%</span
+>
