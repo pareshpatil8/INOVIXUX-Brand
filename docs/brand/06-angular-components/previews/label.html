@@ -1,0 +1,145 @@
+<!-- @dsCard group="Form" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ino-label — form-label leaf (INO-140)</title>
+<!-- Canonical token file, linked rather than copied: this preview must repaint with the system,
+     and must never become a second place raw hex values live. -->
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-eyebrow-size);
+    letter-spacing: var(--ino-type-eyebrow-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 60ch; }
+
+  .theme-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); }
+  .theme-pane {
+    flex: 1 1 240px;
+    padding: var(--ino-space-5);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-xl);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+  }
+  .theme-pane > h3 {
+    margin: 0 0 var(--ino-space-4);
+    font-size: var(--ino-type-body-sm-size);
+    color: var(--ino-color-on-surface-muted);
+    font-weight: 600;
+  }
+
+  .row { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--ino-space-5); }
+
+  /* Mirrors web/src/app/components/label/ino-label.component.scss — same token bindings, so a
+     divergence between this preview and the shipped component is visible as a visual diff. */
+  .ino-label {
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--ino-space-1);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-label-size);
+    line-height: var(--ino-type-label-line);
+    font-weight: var(--ino-type-label-weight);
+    letter-spacing: var(--ino-type-label-tracking);
+    color: var(--ino-color-label);
+  }
+  .ino-label--sm {
+    font-size: var(--ino-type-label-sm-size);
+    line-height: var(--ino-type-label-sm-line);
+    font-weight: var(--ino-type-label-sm-weight);
+    letter-spacing: var(--ino-type-label-sm-tracking);
+  }
+  .ino-label--lg {
+    font-size: var(--ino-type-label-lg-size);
+    line-height: var(--ino-type-label-lg-line);
+    font-weight: var(--ino-type-label-lg-weight);
+    letter-spacing: var(--ino-type-label-lg-tracking);
+  }
+  .ino-label--readonly { color: var(--ino-color-label-muted); }
+  .ino-label--invalid { color: var(--ino-color-label-invalid); }
+  .ino-label--disabled { color: var(--ino-color-label-disabled); }
+  .ino-label__required { color: var(--ino-color-required-marker); }
+</style>
+</head>
+<body>
+
+<h1>Label — form-label leaf</h1>
+<p class="lede">
+  A real <code>&lt;label for&gt;</code>, three size tiers bound to the Wave 0 form-label token set
+  (INO-125), and a decorative required marker. Presentational and non-interactive — the control it
+  names owns hover/active/focus-visible/loading; see <code>SPEC.md</code> §1.
+</p>
+
+<h2>Theme × state</h2>
+<div class="theme-row">
+
+  <div class="theme-pane">
+    <h3>dark — :root (default)</h3>
+    <div class="row">
+      <label class="ino-label" for="demo-dark-1">Email<span class="ino-label__required" aria-hidden="true"> *</span></label>
+      <label class="ino-label ino-label--readonly" for="demo-dark-2">Account ID</label>
+      <label class="ino-label ino-label--invalid" for="demo-dark-3">Email</label>
+      <label class="ino-label ino-label--disabled" for="demo-dark-4">Legal name</label>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="light">
+    <h3>light — [data-theme="light"]</h3>
+    <div class="row">
+      <label class="ino-label" for="demo-light-1">Email<span class="ino-label__required" aria-hidden="true"> *</span></label>
+      <label class="ino-label ino-label--readonly" for="demo-light-2">Account ID</label>
+      <label class="ino-label ino-label--invalid" for="demo-light-3">Email</label>
+      <label class="ino-label ino-label--disabled" for="demo-light-4">Legal name</label>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="high-contrast">
+    <h3>high-contrast — [data-theme="high-contrast"]</h3>
+    <div class="row">
+      <label class="ino-label" for="demo-hc-1">Email<span class="ino-label__required" aria-hidden="true"> *</span></label>
+      <label class="ino-label ino-label--readonly" for="demo-hc-2">Account ID</label>
+      <label class="ino-label ino-label--invalid" for="demo-hc-3">Email</label>
+      <label class="ino-label ino-label--disabled" for="demo-hc-4">Legal name</label>
+    </div>
+  </div>
+
+</div>
+
+<h2>Size (control-size scale)</h2>
+<div class="row">
+  <label class="ino-label ino-label--sm" for="demo-sm">Small</label>
+  <label class="ino-label" for="demo-default">Default</label>
+  <label class="ino-label ino-label--lg" for="demo-lg">Large</label>
+</div>
+
+<h2>Density</h2>
+<div class="row" data-density="dense">
+  <label class="ino-label" for="demo-dense">Dense — label</label>
+</div>
+<div class="row" data-density="fluid">
+  <label class="ino-label" for="demo-fluid">Fluid — label</label>
+</div>
+
+<h2>RTL</h2>
+<div class="row" dir="rtl">
+  <label class="ino-label" for="demo-rtl">البريد الإلكتروني<span class="ino-label__required" aria-hidden="true"> *</span></label>
+</div>
+
+</body>
+</html>
