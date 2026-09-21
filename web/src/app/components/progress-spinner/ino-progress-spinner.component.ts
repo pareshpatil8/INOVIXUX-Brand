@@ -3,6 +3,7 @@ import {
   Component,
   Input,
   OnChanges,
+  OnInit,
   SimpleChanges,
   booleanAttribute,
   numberAttribute,
@@ -56,7 +57,7 @@ const CENTER = VIEWBOX_SIZE / 2;
     '[attr.aria-label]': 'accessibleLabel',
   },
 })
-export class InoProgressSpinnerComponent implements OnChanges {
+export class InoProgressSpinnerComponent implements OnInit, OnChanges {
   @Input() size: InoControlSize = 'default';
   @Input() mode: InoProgressSpinnerMode = 'indeterminate';
   @Input({ transform: numberAttribute }) value = 0;
@@ -112,6 +113,10 @@ export class InoProgressSpinnerComponent implements OnChanges {
       return this.label;
     }
     return this.mode === 'determinate' ? `${this.clampedValue}% complete` : 'Loading';
+  }
+
+  ngOnInit(): void {
+    this.updateAnnouncement();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
