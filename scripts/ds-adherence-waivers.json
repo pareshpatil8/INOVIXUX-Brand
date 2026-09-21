@@ -241,6 +241,13 @@
     },
     {
       "rule": "off-scale-spacing",
+      "file": "web/src/app/components/progress-spinner/ino-progress-spinner.component.scss",
+      "match": "margin: -1px",
+      "reason": "sub-4px / 10px / 48px step the space scale does not define; pending the micro-step decision",
+      "issue": "INO-173"
+    },
+    {
+      "rule": "off-scale-spacing",
       "file": "web/src/app/pages/not-found/not-found.component.scss",
       "match": "padding: 1px 6px",
       "reason": "sub-4px / 10px / 48px step the space scale does not define; pending the micro-step decision",
