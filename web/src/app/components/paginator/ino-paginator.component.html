@@ -1,0 +1,110 @@
+<div class="ino-paginator__report" *ngIf="showCurrentPageReport" aria-live="polite">{{ reportText }}</div>
+
+<div class="ino-paginator__rows" *ngIf="rowsPerPageOptions.length">
+  <label class="ino-paginator__rows-label" [for]="rowsSelectId">Rows per page</label>
+  <select
+    class="ino-paginator__rows-select"
+    [id]="rowsSelectId"
+    [disabled]="disabled || loading"
+    [attr.aria-readonly]="readonly ? 'true' : null"
+    (change)="onRowsPerPageChange($any($event.target).value)"
+  >
+    <option *ngFor="let option of rowsPerPageOptions" [value]="option" [selected]="option === rows">{{ option }}</option>
+  </select>
+</div>
+
+<ul class="ino-paginator__links">
+  <li *ngIf="showFirstLastIcon">
+    <button
+      type="button"
+      class="ino-paginator__btn ino-paginator__btn--nav"
+      aria-label="Go to first page"
+      [disabled]="disabled || loading || isFirstPage"
+      [attr.aria-disabled]="readonly ? 'true' : null"
+      (click)="goFirst()"
+    >
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M18 6 12 12l6 6M11 6 5 12l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
+  </li>
+
+  <li>
+    <button
+      type="button"
+      class="ino-paginator__btn ino-paginator__btn--nav"
+      aria-label="Go to previous page"
+      [disabled]="disabled || loading || isFirstPage"
+      [attr.aria-disabled]="readonly ? 'true' : null"
+      (click)="goPrev()"
+    >
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M15 6 9 12l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
+  </li>
+
+  <ng-container *ngFor="let link of pageLinks; trackBy: trackPageLink">
+    <li *ngIf="isEllipsis(link); else pageLinkTpl" class="ino-paginator__ellipsis" aria-hidden="true">&hellip;</li>
+    <ng-template #pageLinkTpl>
+      <li>
+        <button
+          type="button"
+          class="ino-paginator__btn ino-paginator__btn--page"
+          [class.ino-paginator__btn--active]="link === currentPage"
+          [attr.aria-current]="link === currentPage ? 'page' : null"
+          [attr.aria-label]="'Page ' + ($any(link) + 1)"
+          [disabled]="disabled || loading"
+          [attr.aria-disabled]="readonly ? 'true' : null"
+          (click)="goToPage($any(link))"
+        >{{ $any(link) + 1 }}</button>
+      </li>
+    </ng-template>
+  </ng-container>
+
+  <li>
+    <button
+      type="button"
+      class="ino-paginator__btn ino-paginator__btn--nav"
+      aria-label="Go to next page"
+      [disabled]="disabled || loading || isLastPage"
+      [attr.aria-disabled]="readonly ? 'true' : null"
+      (click)="goNext()"
+    >
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
+  </li>
+
+  <li *ngIf="showFirstLastIcon">
+    <button
+      type="button"
+      class="ino-paginator__btn ino-paginator__btn--nav"
+      aria-label="Go to last page"
+      [disabled]="disabled || loading || isLastPage"
+      [attr.aria-disabled]="readonly ? 'true' : null"
+      (click)="goLast()"
+    >
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M6 6l6 6-6 6M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
+  </li>
+</ul>
+
+<div class="ino-paginator__jump" *ngIf="showJumpToPageInput">
+  <label class="ino-paginator__jump-label" [for]="jumpInputId">Go to page</label>
+  <input
+    type="number"
+    class="ino-paginator__jump-input"
+    [id]="jumpInputId"
+    min="1"
+    [max]="pageCount"
+    [value]="currentPage + 1"
+    [disabled]="disabled || loading"
+    [readOnly]="readonly"
+    [attr.aria-readonly]="readonly ? 'true' : null"
+    (change)="onJumpToPage($any($event.target).value)"
+  />
+</div>

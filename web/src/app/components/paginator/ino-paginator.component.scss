@@ -1,0 +1,202 @@
+/*
+ * <ino-paginator> — INO-137 / INO-31 T-2.
+ *
+ * No literal colour/space/radius/duration/font-size — every declaration resolves through a
+ * semantic role in tokens.css, and logical properties only (RTL is one code path, see SPEC.md §4).
+ * Flex row order mirrors automatically under `dir="rtl"` (the inline axis, not a hardcoded
+ * left-to-right assumption); only the nav-icon glyphs need an explicit flip, see the RTL block
+ * at the bottom of this file.
+ */
+:host(.ino-paginator) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ino-space-4);
+  padding-block: var(--ino-space-2);
+  font-family: var(--ino-font-display);
+  color: var(--ino-color-on-surface);
+  min-block-size: var(--ino-row-min-height, 44px); /* DoD row 4 — sits below a table as a row-like
+    bar; fallback matches the fluid default so a bare <ino-paginator> outside a [data-density]
+    ancestor still gets a sane floor, same idiom ino-tag uses for --ino-row-min-height. */
+
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      transition: none !important;
+      animation: none !important;
+    }
+  }
+}
+
+/*
+ * Size API (DoD row 3) — all six Wave 0 control-size aliases, including `--ino-control-height`:
+ * unlike ino-tag (a static label), the paginator's buttons are real interactive controls, so they
+ * follow the ino-button/ino-virtual-scroller precedent of reading the full alias set.
+ */
+:host([data-size='sm']) {
+  --ino-control-height: var(--ino-control-height-sm);
+  --ino-control-font-size: var(--ino-control-font-size-sm);
+  --ino-control-padding-inline: var(--ino-control-padding-inline-sm);
+  --ino-control-gap: var(--ino-control-gap-sm);
+}
+
+:host([data-size='lg']) {
+  --ino-control-height: var(--ino-control-height-lg);
+  --ino-control-font-size: var(--ino-control-font-size-lg);
+  --ino-control-padding-inline: var(--ino-control-padding-inline-lg);
+  --ino-control-gap: var(--ino-control-gap-lg);
+}
+
+/* State 5 — disabled. Buttons/select/input also carry the native `disabled`/`aria-disabled`
+   attribute (see template) so they truly leave the tab order, not just look inert. */
+:host([data-disabled]) {
+  opacity: 0.5;
+}
+
+/* State 8 — loading/busy. Lighter dimming than disabled — data is in flight, not unavailable —
+   plus a "progress" cursor on the interactive controls instead of "not-allowed". */
+:host([data-loading]) {
+  opacity: 0.75;
+
+  .ino-paginator__btn,
+  .ino-paginator__rows-select,
+  .ino-paginator__jump-input {
+    cursor: progress;
+  }
+}
+
+/* State 6 — readonly. Deliberately NOT dimmed (SPEC.md §3): every control stays focusable and
+   visually identical to default so a screen-reader/keyboard user can still perceive "page 3 of 9";
+   only the hover affordance is suppressed so the surface doesn't imply an action that won't fire. */
+:host([data-readonly]) .ino-paginator__btn:hover {
+  background: transparent;
+  color: var(--ino-color-on-surface-muted);
+}
+
+.ino-paginator__report {
+  font-size: var(--ino-control-font-size);
+  color: var(--ino-color-on-surface-muted);
+  white-space: nowrap;
+}
+
+.ino-paginator__rows,
+.ino-paginator__jump {
+  display: flex;
+  align-items: center;
+  gap: var(--ino-space-2);
+}
+
+.ino-paginator__rows-label,
+.ino-paginator__jump-label {
+  font-size: var(--ino-control-font-size);
+  color: var(--ino-color-on-surface-muted);
+  white-space: nowrap;
+}
+
+.ino-paginator__rows-select,
+.ino-paginator__jump-input {
+  min-block-size: var(--ino-control-height);
+  padding-inline: var(--ino-control-padding-inline);
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-md);
+  background: var(--ino-color-surface-sunken);
+  color: var(--ino-color-on-surface);
+  font-family: inherit;
+  font-size: var(--ino-control-font-size);
+  transition: border-color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+  &:hover:not(:disabled) {
+    border-color: var(--ino-color-on-surface-muted);
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+    border-color: var(--ino-color-accent);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.ino-paginator__jump-input {
+  inline-size: calc(var(--ino-control-height) * 1.6);
+}
+
+.ino-paginator__links {
+  display: flex;
+  align-items: center;
+  gap: var(--ino-space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Square nav/page buttons, same "min-width tracks min-height" idiom as ino-button--icon so they
+   stay square at every size and density (>= 24px SC 2.5.8 floor at every rung). */
+.ino-paginator__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-inline-size: var(--ino-control-height);
+  min-block-size: var(--ino-control-height);
+  padding-inline: var(--ino-space-1);
+  border: 1px solid transparent;
+  border-radius: var(--ino-radius-sm);
+  background: transparent;
+  color: var(--ino-color-on-surface-muted);
+  font-family: inherit;
+  font-size: var(--ino-control-font-size);
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  transition: background var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+    color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  /* State 2 — hover. */
+  &:hover:not(:disabled) {
+    background: var(--ino-color-surface-sunken);
+    color: var(--ino-color-on-surface);
+  }
+
+  /* State 3 — active/pressed. */
+  &:active:not(:disabled) {
+    background: var(--ino-color-surface-sunken);
+    color: var(--ino-color-accent-active);
+  }
+
+  /* State 4 — focus-visible. Wave 0 ring token, never a hand-rolled outline. */
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+
+  /* State 5 — disabled (per-button, e.g. Prev on page 1 even when the paginator overall isn't). */
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+.ino-paginator__btn--page.ino-paginator__btn--active,
+.ino-paginator__btn--page.ino-paginator__btn--active:hover:not(:disabled) {
+  background: var(--ino-color-accent);
+  color: var(--ino-color-on-accent);
+}
+
+.ino-paginator__ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-inline-size: var(--ino-control-height);
+  color: var(--ino-color-on-surface-muted);
+  user-select: none;
+}
+
+/* RTL — the flex row above already mirrors automatically via the inline axis. The nav-icon SVGs
+   are drawn pointing left (first/prev) and right (next/last); under RTL the semantic direction of
+   "back" and "forward" reverses, so the glyphs need an explicit horizontal flip. Same class of
+   "known, deliberate physical-direction exception" ino-virtual-scroller's SPEC.md §5 records for
+   its skeleton shimmer gradient — logical properties can't express glyph chirality. */
+:host-context([dir='rtl']) .ino-paginator__btn--nav svg {
+  transform: scaleX(-1);
+}
