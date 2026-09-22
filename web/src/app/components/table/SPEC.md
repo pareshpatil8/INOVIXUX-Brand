@@ -88,7 +88,7 @@ the same `@Input`, not an API break.
 | Active/pressed | ✅ | Inherited from native `<button>`/`<input>`/`<select>` `:active` — no custom pressed treatment was needed beyond what the browser already gives those controls, matching `ino-paginator`'s reasoning for its own native sub-controls |
 | Focus-visible | ✅ | Every focusable node (grid cells via roving tabindex, reorder buttons, resize handle's owning header, filter inputs, edit input) reads `--ino-focus-ring`/`--ino-focus-ring-offset` — never a hand-rolled outline |
 | Disabled | ✅ | `disabled` @Input → `[data-disabled]` host attribute, 0.5 opacity + `pointer-events: none`, same idiom as `ino-paginator`/`ino-virtual-scroller` |
-| Readonly | ✅ | `readonly` @Input → `[data-readonly]` host attribute; the `interactive` getter (`!disabled && !readonly && !loading`) gates every mutating handler (sort, filter, select, expand, edit, resize, reorder) without removing controls from the tab order — same rationale `ino-paginator/SPEC.md` §3 records for its own readonly state |
+| Readonly | ✅ | `readonly` @Input → `[data-readonly]` host attribute; the `interactive` getter (`!disabled && !readonly && !loading`) gates every mutating handler (sort, filter, select, expand, edit, resize, reorder) without removing controls from the tab order — same rationale `ino-paginator.component.ts` follows for its own readonly state (no SPEC.md exists yet for that component; pending INO-31 backfill) |
 | Invalid | ✅ | `invalid` @Input → `[data-invalid]` host attribute → `.ino-table` border reads `--ino-color-danger`. Unlike `ino-paginator` (no form-validity concept), a table can back a form-adjacent bulk-edit view where the whole grid needs to signal a server-side validation failure |
 | Loading/busy | ✅ | `loading` @Input → `[data-loading]` host attribute (`cursor: progress` on the scroll port) + skeleton-row body content + `aria-busy` on the `role="grid"` element |
 
@@ -196,9 +196,10 @@ direction because it is expressed in logical terms, and `handleResizeMove()` mul
 delta by `-1` under `dir="rtl"` (via the `isRtl` getter, which reads `getComputedStyle(...).direction`)
 since a leftward drag under RTL should grow a column, not shrink it.
 
-No known physical-direction exception remains (contrast `ino-paginator/SPEC.md` §6's chevron-glyph
-exception) — this component draws no directional glyph that isn't already handled by the sort-icon
-rotation and the chevron's `border-inline-start` construction, both of which are logical-property-safe.
+No known physical-direction exception remains (contrast `ino-paginator.component.scss`'s chevron-glyph
+exception; no SPEC.md exists yet for that component, pending INO-31 backfill) — this component draws
+no directional glyph that isn't already handled by the sort-icon rotation and the chevron's
+`border-inline-start` construction, both of which are logical-property-safe.
 
 ---
 
