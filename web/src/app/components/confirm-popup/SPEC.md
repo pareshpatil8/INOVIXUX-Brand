@@ -117,8 +117,8 @@ panel to reliably avoid covering its own anchor), reinforcing rather than contra
 ## 6. Merge hygiene (DoD row 11)
 
 See `confirm-dialog/SPEC.md` §6 — covers both components in this issue together, including the
-one recorded deviation (no line appended to `scripts/check-theme-parity.mjs`, because it has no
-per-component registry to append to).
+INO-250 watchdog correction (both components now have `COMPONENT_REGISTRY` entries in
+`scripts/check-theme-parity.mjs`).
 
 ---
 

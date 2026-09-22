@@ -449,6 +449,18 @@ const COMPONENT_REGISTRY = [
     ],
   },
   {
+    name: 'confirm-dialog',
+    web: 'web/src/app/components/confirm-dialog',
+    mobile: { reactNative: 'web-only', flutter: 'web-only' },
+    reason: 'web-only by explicit decision (INO-148, plan rev 9 §5 desktop-idiom porting rule) — the mobile counterpart is a native action-sheet idiom (`ino-confirm-action-sheet`, already shipped on all three mobile tracks), not a port of the centered card-with-scrim dialog. See web/src/app/components/confirm-dialog/SPEC.md §5 and docs/brand/06-angular-components/confirm-dialog.md#mobile.',
+  },
+  {
+    name: 'confirm-popup',
+    web: 'web/src/app/components/confirm-popup',
+    mobile: { reactNative: 'web-only', flutter: 'web-only' },
+    reason: 'web-only by explicit decision (INO-148, plan rev 9 §5 desktop-idiom porting rule) — same rationale as confirm-dialog above; `ino-confirm-action-sheet` already covers mobile confirm. See web/src/app/components/confirm-popup/SPEC.md §5 and docs/brand/06-angular-components/confirm-popup.md#mobile.',
+  },
+  {
     name: 'datepicker',
     web: 'web/src/app/components/datepicker',
     mobile: {

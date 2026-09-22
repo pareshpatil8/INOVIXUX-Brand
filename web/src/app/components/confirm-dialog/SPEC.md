@@ -140,16 +140,14 @@ Touches only:
 - `docs/brand/06-angular-components/confirm-dialog.md` + `confirm-popup.md`
 - `docs/brand/06-angular-components/previews/confirm-dialog.html` + `confirm-popup.html`
 
-**One deviation from the issue brief's row 11 wording**, recorded here rather than silently
-resolved, following the precedent `focus-trap/SPEC.md` §6 and `input/SPEC.md` §9 already set for
-this exact question: the brief asks for "one appended line in `scripts/check-theme-parity.mjs`'s
-component registry." Reading that script confirms — again — that no such registry exists; it is a
-pure token-level audit (byte-parity of `tokens.css` across web/Capacitor, RN/Flutter palette
-completeness, contrast budgets) with no per-component list anywhere in it. **No edit was made to
-that script.** The component-aware gate is its sibling, `scripts/check-ds-adherence.mjs`, which walks
-`web/src` automatically and needs no registration step — confirmed by this component contributing
-**zero** violations to it (§7). `web/src/tokens.css` was not touched; every value this pair of
-components needed already existed.
+**Correction (post-merge, INO-250 watchdog review):** the original version of this section claimed
+`scripts/check-theme-parity.mjs` had no per-component registry. That was wrong — `COMPONENT_REGISTRY`
+(added by INO-171 S-9, merged before this component) does exist, and this pair of components landed
+without an entry, missing DoD row 11. Fixed by appending `confirm-dialog` and `confirm-popup` entries
+(both `web-only` on `reactNative`/`flutter`, same rationale as `focus-trap`/`table`/`virtual-scroller`)
+to the registry. `web/src/tokens.css` was not touched; every value this pair of components needed
+already existed. The component-aware gate `scripts/check-ds-adherence.mjs` still needs no registration
+step and this component still contributes zero violations to it (§7).
 
 ---
 
