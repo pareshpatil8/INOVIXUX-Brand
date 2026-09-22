@@ -1,5 +1,6 @@
 import React from 'react';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import * as Haptics from 'expo-haptics';
 import { useTheme } from '../theme/ThemeProvider';
 import { radius, space, targetComfortable, type } from '../theme/tokens';
 
@@ -31,6 +32,16 @@ export function ConfirmActionSheet({
 }) {
   const { colors } = useTheme();
 
+  // Consequential-decision feedback (L-14): the confirm action here is the moment a human commits
+  // to a binary decision, so it gets a perceptible cue that doesn't require looking at the screen.
+  // notificationAsync rather than impactAsync — it's a decision-outcome signal, not a UI touch echo.
+  const handleConfirm = () => {
+    Haptics.notificationAsync(
+      destructive ? Haptics.NotificationFeedbackType.Warning : Haptics.NotificationFeedbackType.Success
+    ).catch(() => {});
+    onConfirm();
+  };
+
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onCancel}>
       <Pressable
@@ -45,7 +56,7 @@ export function ConfirmActionSheet({
 
         <Pressable
           accessibilityRole="button"
-          onPress={onConfirm}
+          onPress={handleConfirm}
           style={[styles.confirm, { backgroundColor: destructive ? colors.danger : colors.accent }]}
         >
           <Text style={[styles.confirmLabel, { color: destructive ? colors.onDanger : colors.onAccent }]}>
