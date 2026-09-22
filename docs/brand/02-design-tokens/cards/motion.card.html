@@ -1,0 +1,162 @@
+<!-- @dsCard group="Foundations" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Motion — durations &amp; easings (live) · INOVIXUX Design Tokens</title>
+<!-- Closes M-10 (docs/brand/16-design-system-parity-vs-echeque-reference.md §14) — we had duration
+     and easing tokens but nothing you could actually watch, so motion was unreviewable. Every run
+     below re-triggers a real CSS transition/animation built from the live token values, not a
+     canned GIF or a description. -->
+<link rel="stylesheet" href="../tokens.css">
+<style>
+  body { margin: 0; padding: var(--ino-space-7); background: var(--ino-color-surface); color: var(--ino-color-on-surface); font-family: var(--ino-font-display); }
+  h1 { font: var(--ino-type-h3); font-family: var(--ino-font-display); margin: 0 0 var(--ino-space-2); }
+  h2 { font: var(--ino-type-eyebrow); font-family: var(--ino-font-mono); letter-spacing: var(--ino-type-eyebrow-tracking); text-transform: uppercase; color: var(--ino-color-on-surface-muted); margin: var(--ino-space-7) 0 var(--ino-space-3); }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 68ch; }
+  p.note { color: var(--ino-color-on-surface-muted); font-size: 12.5px; margin: var(--ino-space-3) 0 0; max-width: 68ch; }
+
+  table.matrix { border-collapse: collapse; width: 100%; }
+  table.matrix th, table.matrix td { border: 1px solid var(--ino-color-border); padding: var(--ino-space-3); vertical-align: middle; }
+  table.matrix th { font-family: var(--ino-font-mono); font-size: 10.5px; color: var(--ino-color-on-surface-muted); text-transform: uppercase; letter-spacing: .06em; text-align: left; }
+  table.matrix td:first-child { font-family: var(--ino-font-mono); font-size: 10.5px; color: var(--ino-color-on-surface-muted); white-space: nowrap; }
+
+  .track { position: relative; height: 28px; background: var(--ino-color-surface-sunken); border-radius: var(--ino-radius-pill); overflow: hidden; min-width: 160px; }
+  .puck { position: absolute; top: 2px; left: 2px; width: 24px; height: 24px; border-radius: 50%; background: var(--ino-color-accent-text-safe); }
+  .puck.run { transform: translateX(calc(100% * 4)); }
+
+  .replay-row { display: flex; align-items: center; gap: var(--ino-space-3); margin-bottom: var(--ino-space-5); }
+  button.replay-all { font: inherit; font-size: 12.5px; padding: var(--ino-space-2) var(--ino-space-4); border-radius: var(--ino-radius-pill); border: 1px solid var(--ino-color-border); background: var(--ino-color-surface-raised); color: var(--ino-color-on-surface); cursor: pointer; }
+  button.replay-all:hover { border-color: var(--ino-color-accent); }
+  button.replay-all:focus-visible { outline: var(--ino-focus-ring); outline-offset: var(--ino-focus-ring-offset); }
+
+  /* Real component motion, not a synthetic demo — same recipe as
+     docs/brand/06-angular-components/previews/skeleton.html and progress-spinner.html. */
+  .component-row { display: flex; gap: var(--ino-space-6); align-items: center; flex-wrap: wrap; }
+  .spinner { width: 32px; height: 32px; border-radius: 50%; border: 3px solid var(--ino-color-border); border-top-color: var(--ino-color-accent); }
+  @media (prefers-reduced-motion: no-preference) {
+    .spinner { animation: ino-spin var(--ino-motion-duration-slow) linear infinite; }
+  }
+  @keyframes ino-spin { to { transform: rotate(360deg); } }
+
+  .shimmer { width: 220px; height: 16px; border-radius: var(--ino-radius-sm); background: linear-gradient(90deg, var(--ino-color-surface-raised) 25%, var(--ino-color-border) 50%, var(--ino-color-surface-raised) 75%); background-size: 200% 100%; }
+  @media (prefers-reduced-motion: no-preference) {
+    .shimmer { animation: ino-shimmer var(--ino-motion-duration-slow) var(--ino-motion-easing-standard) infinite; }
+  }
+  @keyframes ino-shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+
+  .countup { font: var(--ino-type-metric); font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+
+<h1>Motion — durations &amp; easings</h1>
+<p class="lede">
+  Every duration × easing pair from <code>tokens.css</code> §9, each driving a real CSS transition
+  you can watch and re-trigger — not a prose description of a curve. Angular consumes these same
+  token strings 1:1 in <code>animate()</code>.
+</p>
+
+<div class="replay-row">
+  <button class="replay-all" id="replay-all" type="button">▶ Replay all</button>
+  <span style="font-size:12px;color:var(--ino-color-on-surface-muted)">or click a row's track to replay just that one</span>
+</div>
+
+<table class="matrix" id="matrix"></table>
+
+<h2>Reduced motion</h2>
+<p class="note">
+  With <code>prefers-reduced-motion: reduce</code>, the two live component demos below (spinner spin,
+  skeleton shimmer) stop entirely rather than continuing at a different speed — durations are never
+  zeroed globally, since that would also kill non-motion transitions components rely on for state
+  (focus rings, etc). See <code>tokens.css</code> §9.
+</p>
+
+<h2>Real components using these tokens</h2>
+<div class="component-row">
+  <div style="display:flex;flex-direction:column;align-items:center;gap:var(--ino-space-2)">
+    <div class="spinner"></div>
+    <span style="font-size:10.5px;font-family:var(--ino-font-mono);color:var(--ino-color-on-surface-muted)">duration-slow, linear, infinite</span>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:var(--ino-space-2)">
+    <div class="shimmer"></div>
+    <span style="font-size:10.5px;font-family:var(--ino-font-mono);color:var(--ino-color-on-surface-muted)">duration-slow, easing-standard, infinite</span>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:var(--ino-space-2)">
+    <div class="countup" id="countup">0</div>
+    <button class="replay-all" id="replay-countup" type="button" style="font-size:11px">▶ duration-countup (900ms)</button>
+  </div>
+</div>
+
+<script>
+  const DURATIONS = [
+    ['fast',     '--ino-motion-duration-fast'],
+    ['base',     '--ino-motion-duration-base'],
+    ['slow',     '--ino-motion-duration-slow'],
+    ['countup',  '--ino-motion-duration-countup'],
+  ];
+  const EASINGS = [
+    ['standard',    '--ino-motion-easing-standard'],
+    ['decelerate',  '--ino-motion-easing-decelerate'],
+    ['accelerate',  '--ino-motion-easing-accelerate'],
+  ];
+  const root = getComputedStyle(document.documentElement);
+  const val = name => root.getPropertyValue(name).trim();
+
+  const matrix = document.getElementById('matrix');
+  const header = document.createElement('tr');
+  header.innerHTML = '<th>duration \\ easing</th>' + EASINGS.map(([name]) => `<th>${name}</th>`).join('');
+  matrix.appendChild(header);
+
+  const tracks = [];
+  for (const [dName, dVar] of DURATIONS) {
+    const row = document.createElement('tr');
+    const dCell = document.createElement('td');
+    dCell.innerHTML = `${dName}<br>${val(dVar)}`;
+    row.appendChild(dCell);
+    for (const [eName, eVar] of EASINGS) {
+      const cell = document.createElement('td');
+      const track = document.createElement('div');
+      track.className = 'track';
+      const puck = document.createElement('div');
+      puck.className = 'puck';
+      puck.style.transition = `transform ${val(dVar)} ${val(eVar)}`;
+      track.appendChild(puck);
+      track.title = `${val(dVar)} · ${eName} — click to replay`;
+      track.style.cursor = 'pointer';
+      const replay = () => {
+        puck.classList.remove('run');
+        // eslint-disable-next-line no-unused-expressions
+        puck.offsetHeight; // force reflow so the removed class re-triggers the transition
+        puck.classList.add('run');
+      };
+      track.addEventListener('click', replay);
+      tracks.push(replay);
+      cell.appendChild(track);
+      row.appendChild(cell);
+    }
+    matrix.appendChild(row);
+  }
+
+  document.getElementById('replay-all').addEventListener('click', () => {
+    tracks.forEach((replay, i) => setTimeout(replay, i * 40));
+  });
+
+  const countupEl = document.getElementById('countup');
+  document.getElementById('replay-countup').addEventListener('click', () => {
+    const duration = parseFloat(val('--ino-motion-duration-countup'));
+    const target = 2481;
+    const startTime = Date.now();
+    function tick() {
+      const elapsed = Date.now() - startTime;
+      const t = Math.min(1, elapsed / duration);
+      countupEl.textContent = Math.round(target * t).toLocaleString();
+      if (t < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  });
+</script>
+
+</body>
+</html>

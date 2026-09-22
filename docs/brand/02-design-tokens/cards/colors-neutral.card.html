@@ -1,0 +1,82 @@
+<!-- @dsCard group="Foundations" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Colors — Neutral (text &amp; borders) · INOVIXUX Design Tokens</title>
+<link rel="stylesheet" href="../tokens.css">
+<style>
+  body { margin: 0; padding: var(--ino-space-7); background: var(--ino-color-surface); color: var(--ino-color-on-surface); font-family: var(--ino-font-display); }
+  h1 { font: var(--ino-type-h3); font-family: var(--ino-font-display); margin: 0 0 var(--ino-space-2); }
+  h2 { font: var(--ino-type-eyebrow); font-family: var(--ino-font-mono); letter-spacing: var(--ino-type-eyebrow-tracking); text-transform: uppercase; color: var(--ino-color-on-surface-muted); margin: var(--ino-space-7) 0 var(--ino-space-3); }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 68ch; }
+
+  .theme-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); }
+  .theme-pane { flex: 1 1 280px; padding: var(--ino-space-5); border: 1px solid var(--ino-color-border); border-radius: var(--ino-radius-xl); background: var(--ino-color-surface); color: var(--ino-color-on-surface); }
+  .theme-pane > h3 { margin: 0 0 var(--ino-space-4); font-size: var(--ino-type-body-sm-size); color: var(--ino-color-on-surface-muted); font-weight: 600; }
+
+  .text-row { display: flex; align-items: baseline; justify-content: space-between; gap: var(--ino-space-3); padding: var(--ino-space-2) 0; border-bottom: 1px solid var(--ino-color-border-soft); font-size: 13px; }
+  .text-row:last-of-type { border-bottom: none; }
+  .text-row code { font-family: var(--ino-font-mono); font-size: 11px; color: var(--ino-color-on-surface-muted); }
+
+  .border-demo { display: flex; gap: var(--ino-space-3); margin-top: var(--ino-space-4); }
+  .border-box { flex: 1; height: 56px; border-radius: var(--ino-radius-md); display: flex; align-items: center; justify-content: center; font-family: var(--ino-font-mono); font-size: 10.5px; color: var(--ino-color-on-surface-muted); background: var(--ino-color-surface-raised); }
+  .border-box.hairline { border: 1px solid var(--ino-color-border); }
+  .border-box.soft { border: 1px solid var(--ino-color-border-soft); }
+</style>
+</head>
+<body>
+
+<h1>Colors — Neutral</h1>
+<p class="lede">
+  The text and hairline roles every component reads by default: <code>on-surface</code> body text,
+  <code>on-surface-muted</code> secondary text, <code>on-surface-subtle</code> (decorative/disabled
+  only — fails AA as text at any size), and the two border weights. Source: <code>tokens.css</code> §2.
+</p>
+
+<h2>Theme × neutral roles</h2>
+<div class="theme-row">
+
+  <div class="theme-pane">
+    <h3>dark — :root (default)</h3>
+    <div class="text-row"><span style="color:var(--ino-color-on-surface)">On-surface — primary reading text</span><code>on-surface</code></div>
+    <div class="text-row"><span style="color:var(--ino-color-on-surface-muted)">On-surface-muted — secondary text</span><code>on-surface-muted</code></div>
+    <div class="text-row"><span style="color:var(--ino-color-on-surface-subtle)">On-surface-subtle — decorative only</span><code>on-surface-subtle</code></div>
+    <div class="border-demo">
+      <div class="border-box hairline">border</div>
+      <div class="border-box soft">border-soft</div>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="light">
+    <h3>light — [data-theme="light"]</h3>
+    <div class="text-row"><span style="color:var(--ino-color-on-surface)">On-surface — primary reading text</span><code>on-surface</code></div>
+    <div class="text-row"><span style="color:var(--ino-color-on-surface-muted)">On-surface-muted — secondary text</span><code>on-surface-muted</code></div>
+    <div class="text-row"><span style="color:var(--ino-color-on-surface-subtle)">On-surface-subtle — decorative only</span><code>on-surface-subtle</code></div>
+    <div class="border-demo">
+      <div class="border-box hairline">border</div>
+      <div class="border-box soft">border-soft</div>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="high-contrast">
+    <h3>high-contrast — [data-theme="high-contrast"]</h3>
+    <div class="text-row"><span style="color:var(--ino-color-on-surface)">On-surface — primary reading text</span><code>on-surface</code></div>
+    <div class="text-row"><span style="color:var(--ino-color-on-surface-muted)">On-surface-muted — secondary text</span><code>on-surface-muted</code></div>
+    <div class="text-row"><span style="color:var(--ino-color-on-surface-subtle)">On-surface-subtle — decorative only</span><code>on-surface-subtle</code></div>
+    <div class="border-demo">
+      <div class="border-box hairline">border</div>
+      <div class="border-box soft">border-soft</div>
+    </div>
+  </div>
+
+</div>
+
+<p style="color:var(--ino-color-on-surface-muted);font-size:12.5px;margin-top:var(--ino-space-5);">
+  High-contrast trades translucent hairlines for a fully opaque border — a high-contrast theme's
+  entire job is to not be subtle; see <code>tokens.css</code> §2c.
+</p>
+
+</body>
+</html>

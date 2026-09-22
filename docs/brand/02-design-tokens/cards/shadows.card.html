@@ -1,0 +1,106 @@
+<!-- @dsCard group="Foundations" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shadows — Elevation · INOVIXUX Design Tokens</title>
+<link rel="stylesheet" href="../tokens.css">
+<style>
+  body { margin: 0; padding: var(--ino-space-7); background: var(--ino-color-surface); color: var(--ino-color-on-surface); font-family: var(--ino-font-display); }
+  h1 { font: var(--ino-type-h3); font-family: var(--ino-font-display); margin: 0 0 var(--ino-space-2); }
+  h2 { font: var(--ino-type-eyebrow); font-family: var(--ino-font-mono); letter-spacing: var(--ino-type-eyebrow-tracking); text-transform: uppercase; color: var(--ino-color-on-surface-muted); margin: var(--ino-space-7) 0 var(--ino-space-3); }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 68ch; }
+
+  .theme-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); }
+  .theme-pane { flex: 1 1 280px; padding: var(--ino-space-5); border: 1px solid var(--ino-color-border); border-radius: var(--ino-radius-xl); background: var(--ino-color-surface); color: var(--ino-color-on-surface); }
+  .theme-pane > h3 { margin: 0 0 var(--ino-space-4); font-size: var(--ino-type-body-sm-size); color: var(--ino-color-on-surface-muted); font-weight: 600; }
+
+  .swatch-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-3); }
+  .swatch { width: 92px; height: 64px; border-radius: var(--ino-radius-lg); background: var(--ino-color-surface-raised); display: flex; align-items: flex-end; justify-content: center; padding-bottom: var(--ino-space-2); font-family: var(--ino-font-mono); font-size: 9.5px; color: var(--ino-color-on-surface-muted); }
+  .swatch.inset { background: var(--ino-color-surface-sunken); }
+</style>
+</head>
+<body>
+
+<h1>Shadows — Elevation</h1>
+<p class="lede">
+  6 neutral + 3 brand (accent-tinted, <code>color-mix()</code> parametric) + 2 inset steps
+  (<code>tokens.css</code> §2). Neutral is the general-purpose depth ramp; brand marks a
+  chosen/featured surface; inset is for sunken UI. All 11 flatten to <code>none</code> in
+  high-contrast — elevation is border-only there, a recorded accessibility decision, not a gap.
+</p>
+
+<h2>Theme × elevation</h2>
+<div class="theme-row">
+
+  <div class="theme-pane">
+    <h3>dark — :root (default)</h3>
+    <p style="font-size:11px;color:var(--ino-color-on-surface-muted);margin:0 0 var(--ino-space-2)">neutral</p>
+    <div class="swatch-row">
+      <div class="swatch" style="box-shadow:var(--ino-elevation-neutral-1)">n-1</div>
+      <div class="swatch" style="box-shadow:var(--ino-elevation-neutral-2)">n-2</div>
+      <div class="swatch" style="box-shadow:var(--ino-elevation-neutral-3)">n-3</div>
+      <div class="swatch" style="box-shadow:var(--ino-elevation-neutral-4)">n-4</div>
+      <div class="swatch" style="box-shadow:var(--ino-elevation-neutral-5)">n-5</div>
+      <div class="swatch" style="box-shadow:var(--ino-elevation-neutral-6)">n-6</div>
+    </div>
+    <p style="font-size:11px;color:var(--ino-color-on-surface-muted);margin:var(--ino-space-4) 0 var(--ino-space-2)">brand</p>
+    <div class="swatch-row">
+      <div class="swatch" style="box-shadow:var(--ino-elevation-brand-1)">b-1</div>
+      <div class="swatch" style="box-shadow:var(--ino-elevation-brand-2)">b-2</div>
+      <div class="swatch" style="box-shadow:var(--ino-elevation-brand-3)">b-3</div>
+    </div>
+    <p style="font-size:11px;color:var(--ino-color-on-surface-muted);margin:var(--ino-space-4) 0 var(--ino-space-2)">inset</p>
+    <div class="swatch-row">
+      <div class="swatch inset" style="box-shadow:var(--ino-elevation-inset-1)">i-1</div>
+      <div class="swatch inset" style="box-shadow:var(--ino-elevation-inset-2)">i-2</div>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="light">
+    <h3>light — [data-theme="light"]</h3>
+    <p style="font-size:11px;color:var(--ino-color-on-surface-muted);margin:0 0 var(--ino-space-2)">neutral</p>
+    <div class="swatch-row">
+      <div class="swatch" style="box-shadow:var(--ino-elevation-neutral-1)">n-1</div>
+      <div class="swatch" style="box-shadow:var(--ino-elevation-neutral-2)">n-2</div>
+      <div class="swatch" style="box-shadow:var(--ino-elevation-neutral-3)">n-3</div>
+      <div class="swatch" style="box-shadow:var(--ino-elevation-neutral-4)">n-4</div>
+      <div class="swatch" style="box-shadow:var(--ino-elevation-neutral-5)">n-5</div>
+      <div class="swatch" style="box-shadow:var(--ino-elevation-neutral-6)">n-6</div>
+    </div>
+    <p style="font-size:11px;color:var(--ino-color-on-surface-muted);margin:var(--ino-space-4) 0 var(--ino-space-2)">brand</p>
+    <div class="swatch-row">
+      <div class="swatch" style="box-shadow:var(--ino-elevation-brand-1)">b-1</div>
+      <div class="swatch" style="box-shadow:var(--ino-elevation-brand-2)">b-2</div>
+      <div class="swatch" style="box-shadow:var(--ino-elevation-brand-3)">b-3</div>
+    </div>
+    <p style="font-size:11px;color:var(--ino-color-on-surface-muted);margin:var(--ino-space-4) 0 var(--ino-space-2)">inset</p>
+    <div class="swatch-row">
+      <div class="swatch inset" style="box-shadow:var(--ino-elevation-inset-1)">i-1</div>
+      <div class="swatch inset" style="box-shadow:var(--ino-elevation-inset-2)">i-2</div>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="high-contrast">
+    <h3>high-contrast — [data-theme="high-contrast"]</h3>
+    <p style="font-size:11px;color:var(--ino-color-on-surface-muted);margin:0 0 var(--ino-space-2)">neutral (flattened)</p>
+    <div class="swatch-row">
+      <div class="swatch" style="box-shadow:var(--ino-elevation-neutral-1);border:1px solid var(--ino-color-border)">n-1</div>
+      <div class="swatch" style="box-shadow:var(--ino-elevation-neutral-4);border:1px solid var(--ino-color-border)">n-4</div>
+      <div class="swatch" style="box-shadow:var(--ino-elevation-neutral-6);border:1px solid var(--ino-color-border)">n-6</div>
+    </div>
+    <p style="font-size:11px;color:var(--ino-color-on-surface-muted);margin:var(--ino-space-4) 0 var(--ino-space-2)">brand (flattened)</p>
+    <div class="swatch-row">
+      <div class="swatch" style="box-shadow:var(--ino-elevation-brand-2);border:1px solid var(--ino-color-border)">b-2</div>
+    </div>
+    <p style="font-size:11px;color:var(--ino-color-on-surface-muted);margin:var(--ino-space-4) 0 var(--ino-space-2)">inset (flattened)</p>
+    <div class="swatch-row">
+      <div class="swatch inset" style="box-shadow:var(--ino-elevation-inset-1);border:1px solid var(--ino-color-border)">i-1</div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

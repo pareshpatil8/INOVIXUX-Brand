@@ -1,0 +1,95 @@
+<!-- @dsCard group="Foundations" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Colors — Primary (accent) · INOVIXUX Design Tokens</title>
+<!-- Canonical token file, linked rather than copied: this card must repaint with the system and
+     never become a second place raw hex values live. Embeddable standalone in a deck, doc page,
+     or partner email — see docs/brand/16-design-system-parity-vs-echeque-reference.md §13 row 13. -->
+<link rel="stylesheet" href="../tokens.css">
+<style>
+  body { margin: 0; padding: var(--ino-space-7); background: var(--ino-color-surface); color: var(--ino-color-on-surface); font: var(--ino-type-body); font-family: var(--ino-font-display); }
+  h1 { font: var(--ino-type-h3); font-family: var(--ino-font-display); margin: 0 0 var(--ino-space-2); }
+  h2 { font: var(--ino-type-eyebrow); font-family: var(--ino-font-mono); letter-spacing: var(--ino-type-eyebrow-tracking); text-transform: uppercase; color: var(--ino-color-on-surface-muted); margin: var(--ino-space-7) 0 var(--ino-space-3); }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 68ch; }
+
+  .theme-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); }
+  .theme-pane { flex: 1 1 280px; padding: var(--ino-space-5); border: 1px solid var(--ino-color-border); border-radius: var(--ino-radius-xl); background: var(--ino-color-surface); color: var(--ino-color-on-surface); }
+  .theme-pane > h3 { margin: 0 0 var(--ino-space-4); font-size: var(--ino-type-body-sm-size); color: var(--ino-color-on-surface-muted); font-weight: 600; }
+
+  .swatch-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--ino-space-4); }
+  .swatch { border: 1px solid var(--ino-color-border); border-radius: var(--ino-radius-lg); overflow: hidden; }
+  .swatch .fill { height: 52px; }
+  .swatch .meta { padding: var(--ino-space-2) var(--ino-space-3); font-family: var(--ino-font-mono); font-size: 11px; color: var(--ino-color-on-surface-muted); background: var(--ino-color-surface-raised); }
+  .swatch .meta b { display: block; color: var(--ino-color-on-surface); font-size: 12px; margin-bottom: 2px; font-family: var(--ino-font-display); }
+
+  .glow-demo { height: 96px; border-radius: var(--ino-radius-xl); border: 1px solid var(--ino-color-border); background: var(--ino-color-surface-raised); position: relative; overflow: hidden; margin-top: var(--ino-space-3); }
+  .glow-demo .glow { position: absolute; inset: 0; background: var(--ino-glow-accent); }
+  .gradient-demo { height: 52px; border-radius: var(--ino-radius-lg); background: var(--ino-gradient-accent); margin-top: var(--ino-space-3); }
+  .cta-demo { display: inline-flex; align-items: center; gap: var(--ino-space-2); margin-top: var(--ino-space-3); padding: var(--ino-space-3) var(--ino-space-5); border-radius: var(--ino-radius-pill); background: var(--ino-color-accent-text-safe); color: var(--ino-color-on-accent); font-weight: 600; font-size: 13px; }
+  code { font-family: var(--ino-font-mono); font-size: 11.5px; }
+</style>
+</head>
+<body>
+
+<h1>Colors — Primary</h1>
+<p class="lede">
+  The single swap point for a mark change (<code>--ino-color-accent</code> / <code>--ino-gradient-accent</code> /
+  <code>--ino-glow-accent</code>) plus its safe derivatives. <code>accent</code> is decorative/non-text
+  only — <code>accent-text-safe</code> is the AA-verified role for accent text and filled buttons.
+  Source: <code>tokens.css</code> §2.
+</p>
+
+<h2>Theme × accent roles</h2>
+<div class="theme-row">
+
+  <div class="theme-pane">
+    <h3>dark — :root (default)</h3>
+    <div class="swatch-grid">
+      <div class="swatch"><div class="fill" style="background:var(--ino-color-accent)"></div><div class="meta"><b>accent</b>decorative/non-text</div></div>
+      <div class="swatch"><div class="fill" style="background:var(--ino-color-accent-secondary)"></div><div class="meta"><b>accent-secondary</b>indigo</div></div>
+      <div class="swatch"><div class="fill" style="background:var(--ino-color-accent-text-safe)"></div><div class="meta"><b>accent-text-safe</b>AA text-safe</div></div>
+      <div class="swatch"><div class="fill" style="background:var(--ino-color-accent-active)"></div><div class="meta"><b>accent-active</b>pressed fill</div></div>
+    </div>
+    <div class="gradient-demo"></div>
+    <div class="glow-demo"><div class="glow"></div></div>
+    <div class="cta-demo">Filled CTA <span style="opacity:.7">on-accent text</span></div>
+  </div>
+
+  <div class="theme-pane" data-theme="light">
+    <h3>light — [data-theme="light"]</h3>
+    <div class="swatch-grid">
+      <div class="swatch"><div class="fill" style="background:var(--ino-color-accent)"></div><div class="meta"><b>accent</b>decorative/non-text</div></div>
+      <div class="swatch"><div class="fill" style="background:var(--ino-color-accent-secondary)"></div><div class="meta"><b>accent-secondary</b>indigo</div></div>
+      <div class="swatch"><div class="fill" style="background:var(--ino-color-accent-text-safe)"></div><div class="meta"><b>accent-text-safe</b>AA text-safe</div></div>
+      <div class="swatch"><div class="fill" style="background:var(--ino-color-accent-active)"></div><div class="meta"><b>accent-active</b>pressed fill</div></div>
+    </div>
+    <div class="gradient-demo"></div>
+    <div class="glow-demo"><div class="glow"></div></div>
+    <div class="cta-demo">Filled CTA <span style="opacity:.7">on-accent text</span></div>
+  </div>
+
+  <div class="theme-pane" data-theme="high-contrast">
+    <h3>high-contrast — [data-theme="high-contrast"]</h3>
+    <div class="swatch-grid">
+      <div class="swatch"><div class="fill" style="background:var(--ino-color-accent)"></div><div class="meta"><b>accent</b>decorative/non-text</div></div>
+      <div class="swatch"><div class="fill" style="background:var(--ino-color-accent-secondary)"></div><div class="meta"><b>accent-secondary</b>cyan</div></div>
+      <div class="swatch"><div class="fill" style="background:var(--ino-color-accent-text-safe)"></div><div class="meta"><b>accent-text-safe</b>AAA text-safe</div></div>
+      <div class="swatch"><div class="fill" style="background:var(--ino-color-accent-active)"></div><div class="meta"><b>accent-active</b>pressed fill</div></div>
+    </div>
+    <div class="gradient-demo"></div>
+    <div class="glow-demo"><div class="glow"></div></div>
+    <div class="cta-demo">Filled CTA <span style="opacity:.7">on-accent text</span></div>
+  </div>
+
+</div>
+
+<p class="note" style="color:var(--ino-color-on-surface-muted);font-size:12.5px;margin-top:var(--ino-space-5);">
+  High-contrast disables <code>--ino-glow-accent</code> (<code>none</code>) — soft luminance-gradient
+  glow reduces edge clarity for low-vision users; see <code>tokens.css</code> §2c.
+</p>
+
+</body>
+</html>
