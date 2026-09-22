@@ -1,0 +1,221 @@
+<!-- @dsCard group="Foundations" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Elevation scale + composite type aliases + leading/tracking scales (INO-126)</title>
+<!-- Canonical token file, linked rather than copied: every number rendered below is resolved by
+     the browser from tokens.css §2/§4c — none of it is typed into this file. -->
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font: var(--ino-type-body);
+  }
+  h1 { font: var(--ino-type-h3); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font: var(--ino-type-eyebrow);
+    letter-spacing: var(--ino-type-eyebrow-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 68ch; }
+  p.note { color: var(--ino-color-on-surface-muted); margin: var(--ino-space-3) 0 0; max-width: 68ch; }
+
+  .row { display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--ino-space-6); }
+  .panes { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); }
+
+  /* -------------------------------------------------------------------------------------------
+   * 1 — Elevation swatches. Flat tiles on the surface so the shadow itself is the only cue —
+   * exactly how a card/CTA/modal actually reads it.
+   * ----------------------------------------------------------------------------------------- */
+  .swatch {
+    width: 132px;
+    height: 88px;
+    border-radius: var(--ino-radius-lg);
+    background: var(--ino-color-surface-raised);
+    display: flex;
+    align-items: flex-end;
+    padding: var(--ino-space-2) var(--ino-space-3);
+    font: var(--ino-type-caption);
+    color: var(--ino-color-on-surface-muted);
+  }
+  .neutral-1 { box-shadow: var(--ino-elevation-neutral-1); }
+  .neutral-2 { box-shadow: var(--ino-elevation-neutral-2); }
+  .neutral-3 { box-shadow: var(--ino-elevation-neutral-3); }
+  .neutral-4 { box-shadow: var(--ino-elevation-neutral-4); }
+  .neutral-5 { box-shadow: var(--ino-elevation-neutral-5); }
+  .neutral-6 { box-shadow: var(--ino-elevation-neutral-6); }
+  .brand-1 { box-shadow: var(--ino-elevation-brand-1); }
+  .brand-2 { box-shadow: var(--ino-elevation-brand-2); }
+  .brand-3 { box-shadow: var(--ino-elevation-brand-3); }
+  .inset-1 { box-shadow: var(--ino-elevation-inset-1); background: var(--ino-color-surface-sunken); }
+  .inset-2 { box-shadow: var(--ino-elevation-inset-2); background: var(--ino-color-surface-sunken); }
+
+  /* -------------------------------------------------------------------------------------------
+   * 2 — Composite type aliases. Every rule below is ONE `font` declaration + `letter-spacing`,
+   * not four separate size/line/weight/family declarations.
+   * ----------------------------------------------------------------------------------------- */
+  .type-row { display: flex; align-items: baseline; gap: var(--ino-space-4); padding-block: var(--ino-space-2); border-block-end: 1px solid var(--ino-color-border-soft); }
+  .type-row code { font: var(--ino-type-caption); color: var(--ino-color-on-surface-muted); width: 15ch; flex: none; }
+  .t-display { font: var(--ino-type-display); letter-spacing: var(--ino-type-display-tracking); }
+  .t-h2 { font: var(--ino-type-h2); letter-spacing: var(--ino-type-h2-tracking); }
+  .t-h3 { font: var(--ino-type-h3); letter-spacing: var(--ino-type-h3-tracking); }
+  .t-body-lg { font: var(--ino-type-body-lg); }
+  .t-body { font: var(--ino-type-body); }
+  .t-body-sm { font: var(--ino-type-body-sm); }
+  .t-metric { font: var(--ino-type-metric); }
+  .t-eyebrow { font: var(--ino-type-eyebrow); letter-spacing: var(--ino-type-eyebrow-tracking); text-transform: uppercase; }
+  .t-label-lg { font: var(--ino-type-label-lg); letter-spacing: var(--ino-type-label-lg-tracking); }
+  .t-label { font: var(--ino-type-label); letter-spacing: var(--ino-type-label-tracking); }
+  .t-label-sm { font: var(--ino-type-label-sm); letter-spacing: var(--ino-type-label-sm-tracking); }
+  .t-hint { font: var(--ino-type-hint); letter-spacing: var(--ino-type-hint-tracking); }
+  .t-caption { font: var(--ino-type-caption); letter-spacing: var(--ino-type-caption-tracking); }
+
+  /* -------------------------------------------------------------------------------------------
+   * 3 — Rhythm scale swatches.
+   * ----------------------------------------------------------------------------------------- */
+  .rhythm-pane { flex: 1 1 260px; padding: var(--ino-space-5); border: 1px solid var(--ino-color-border); border-radius: var(--ino-radius-xl); background: var(--ino-color-surface-raised); }
+  .rhythm-pane > h3 { font-size: var(--ino-type-body-size); font-weight: 600; margin: 0 0 var(--ino-space-3); color: var(--ino-color-on-surface-muted); }
+  .rhythm-row { display: flex; align-items: baseline; gap: var(--ino-space-3); padding-block: var(--ino-space-1); }
+  .rhythm-row code { width: 9ch; flex: none; font: var(--ino-type-caption); color: var(--ino-color-on-surface-muted); }
+  .rhythm-row span.sample { color: var(--ino-color-on-surface); }
+
+  table { border-collapse: collapse; width: 100%; font-size: var(--ino-type-body-sm-size); }
+  th, td { text-align: start; padding: var(--ino-space-2) var(--ino-space-3); border-bottom: 1px solid var(--ino-color-border-soft); }
+  th { color: var(--ino-color-on-surface-muted); font-weight: 600; white-space: nowrap; }
+  caption { text-align: start; color: var(--ino-color-on-surface-muted); padding-bottom: var(--ino-space-3); }
+  .ok   { color: var(--ino-color-success); font-weight: 600; }
+  .fail { color: var(--ino-color-danger);  font-weight: 600; }
+</style>
+</head>
+<body>
+
+<h1>Elevation scale + composite type aliases + leading/tracking scales</h1>
+<p class="lede">
+  Wave 0, INO-126 (W0-4). 6 neutral + 3 brand + 2 inset elevation steps (<code>tokens.css</code> §2),
+  a named <code>--ino-leading-*</code> / <code>--ino-tracking-*</code> rhythm scale, and one
+  <code>font</code>-shorthand composite alias per type role (both §4c). Full contract:
+  <a href="../elevation-type-rhythm-tokens.md">elevation-type-rhythm-tokens.md</a>.
+</p>
+
+<h2>1 — Neutral elevation (6 steps)</h2>
+<div class="row">
+  <div class="swatch neutral-1">neutral-1</div>
+  <div class="swatch neutral-2">neutral-2</div>
+  <div class="swatch neutral-3">neutral-3</div>
+  <div class="swatch neutral-4">neutral-4</div>
+  <div class="swatch neutral-5">neutral-5</div>
+  <div class="swatch neutral-6">neutral-6</div>
+</div>
+<p class="note">
+  <code>neutral-4</code> and <code>neutral-5</code> are numerically identical to the existing
+  <code>--ino-elevation-1</code> / <code>--ino-elevation-2</code> — same two rungs, now named inside
+  a real 6-step progression.
+</p>
+
+<h2>2 — Brand elevation (3 steps, accent-tinted)</h2>
+<div class="row">
+  <div class="swatch brand-1">brand-1</div>
+  <div class="swatch brand-2">brand-2</div>
+  <div class="swatch brand-3">brand-3</div>
+</div>
+<p class="note">
+  Built on <code>color-mix(in srgb, var(--ino-color-accent) N%, transparent)</code>, not a literal
+  rgb triple — an accent swap re-themes these for free.
+</p>
+
+<h2>3 — Inset elevation (2 steps, sunken)</h2>
+<div class="row">
+  <div class="swatch inset-1">inset-1</div>
+  <div class="swatch inset-2">inset-2</div>
+</div>
+
+<h2>4 — High-contrast: the flatten decision</h2>
+<div class="row" data-theme="high-contrast" style="background:var(--ino-color-surface); padding:var(--ino-space-5); border-radius:var(--ino-radius-lg);">
+  <div class="swatch neutral-4" style="background:var(--ino-color-surface-raised); border:1px solid var(--ino-color-border);">neutral-4</div>
+  <div class="swatch brand-2" style="background:var(--ino-color-surface-raised); border:1px solid var(--ino-color-border);">brand-2</div>
+  <div class="swatch inset-1" style="border:1px solid var(--ino-color-border);">inset-1</div>
+</div>
+<p class="note">All three resolve to <code>none</code> here — elevation is border-only in high-contrast, a recorded a11y decision, not a gap.</p>
+
+<h2>5 — Composite type aliases</h2>
+<div>
+  <div class="type-row"><code>--ino-type-display</code><span class="t-display">Design tokens, not decoration</span></div>
+  <div class="type-row"><code>--ino-type-h2</code><span class="t-h2">Elevation scale + type rhythm</span></div>
+  <div class="type-row"><code>--ino-type-h3</code><span class="t-h3">One token, not four declarations</span></div>
+  <div class="type-row"><code>--ino-type-body-lg</code><span class="t-body-lg">Every consumer stops hand-composing font shorthand.</span></div>
+  <div class="type-row"><code>--ino-type-body</code><span class="t-body">The default reading size, resolved through one alias.</span></div>
+  <div class="type-row"><code>--ino-type-body-sm</code><span class="t-body-sm">A tighter body role for dense contexts.</span></div>
+  <div class="type-row"><code>--ino-type-metric</code><span class="t-metric">1,204</span></div>
+  <div class="type-row"><code>--ino-type-eyebrow</code><span class="t-eyebrow">Section kicker</span></div>
+  <div class="type-row"><code>--ino-type-label-lg</code><span class="t-label-lg">Legal entity name</span></div>
+  <div class="type-row"><code>--ino-type-label</code><span class="t-label">Registered address</span></div>
+  <div class="type-row"><code>--ino-type-label-sm</code><span class="t-label-sm">Postal code</span></div>
+  <div class="type-row"><code>--ino-type-hint</code><span class="t-hint">Matches the certificate of incorporation.</span></div>
+  <div class="type-row"><code>--ino-type-caption</code><span class="t-caption">Last synced 2 minutes ago</span></div>
+</div>
+
+<h2>6 — Leading / tracking rhythm scale</h2>
+<div class="panes">
+  <div class="rhythm-pane">
+    <h3>--ino-leading-*</h3>
+    <div id="leading-rows"></div>
+  </div>
+  <div class="rhythm-pane">
+    <h3>--ino-tracking-*</h3>
+    <div id="tracking-rows"></div>
+  </div>
+</div>
+
+<h2>7 — Measured in this browser</h2>
+<table>
+  <caption>
+    Read off <code>getComputedStyle</code> of the composite-alias rows above — not typed into this file.
+  </caption>
+  <thead>
+    <tr><th>Role</th><th>Font size</th><th>Line height</th><th>Weight</th><th>Family resolves</th></tr>
+  </thead>
+  <tbody id="measured"></tbody>
+</table>
+
+<script>
+  const rootStyle = getComputedStyle(document.documentElement);
+  const leadingRows = document.getElementById('leading-rows');
+  const trackingRows = document.getElementById('tracking-rows');
+  for (let i = 1; i <= 9; i++) {
+    const v = rootStyle.getPropertyValue(`--ino-leading-${i}`).trim();
+    leadingRows.insertAdjacentHTML('beforeend', `<div class="rhythm-row"><code>leading-${i}</code><span class="sample" style="line-height:${v}">${v}</span></div>`);
+  }
+  for (let i = 1; i <= 7; i++) {
+    const v = rootStyle.getPropertyValue(`--ino-tracking-${i}`).trim();
+    trackingRows.insertAdjacentHTML('beforeend', `<div class="rhythm-row"><code>tracking-${i}</code><span class="sample" style="letter-spacing:${v}">ABCDEF ${v}</span></div>`);
+  }
+
+  const ROLES = [
+    ['display', 't-display'], ['h2', 't-h2'], ['h3', 't-h3'],
+    ['body-lg', 't-body-lg'], ['body', 't-body'], ['body-sm', 't-body-sm'],
+    ['metric', 't-metric'], ['eyebrow', 't-eyebrow'],
+    ['label-lg', 't-label-lg'], ['label', 't-label'], ['label-sm', 't-label-sm'],
+    ['hint', 't-hint'], ['caption', 't-caption'],
+  ];
+  const rows = ROLES.map(([role, cls]) => {
+    const el = document.querySelector(`.${cls}`);
+    const cs = getComputedStyle(el);
+    return { role, font: cs.fontSize, line: cs.lineHeight, weight: cs.fontWeight, family: cs.fontFamily };
+  });
+  document.getElementById('measured').innerHTML = rows.map(r => `
+    <tr>
+      <td><code>${r.role}</code></td>
+      <td>${r.font}</td><td>${r.line}</td><td>${r.weight}</td>
+      <td class="${r.family ? 'ok' : 'fail'}">${r.family || 'MISSING'}</td>
+    </tr>`).join('');
+</script>
+
+</body>
+</html>

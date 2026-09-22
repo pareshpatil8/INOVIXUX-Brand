@@ -1,0 +1,46 @@
+<div
+  *ngIf="open"
+  #panel
+  class="ino-confirm-popup"
+  [class.ino-confirm-popup--top]="effectivePosition === 'top'"
+  [class.ino-confirm-popup--bottom]="effectivePosition === 'bottom'"
+  [class.ino-confirm-popup--left]="effectivePosition === 'left'"
+  [class.ino-confirm-popup--right]="effectivePosition === 'right'"
+  [style.top.px]="top"
+  [style.left.px]="left"
+  role="alertdialog"
+  [attr.aria-labelledby]="heading ? headingId : null"
+  [attr.aria-describedby]="message ? messageId : null"
+  tabindex="-1"
+  inoFocusTrap
+  (keydown)="onKeydown($event)"
+>
+  <span class="ino-confirm-popup__arrow" aria-hidden="true"></span>
+
+  <h2 *ngIf="heading" [id]="headingId" class="ino-confirm-popup__heading">{{ heading }}</h2>
+  <p *ngIf="message" [id]="messageId" class="ino-confirm-popup__message">{{ message }}</p>
+  <ng-content></ng-content>
+
+  <div class="ino-confirm-popup__footer">
+    <button
+      type="button"
+      ino-button
+      variant="secondary"
+      [size]="size"
+      [disabled]="loading"
+      (click)="requestCancel()"
+    >
+      {{ cancelLabel }}
+    </button>
+    <button
+      type="button"
+      ino-button
+      [variant]="severity === 'danger' ? 'danger' : 'primary'"
+      [size]="size"
+      [loading]="loading"
+      (click)="onConfirm()"
+    >
+      {{ confirmLabel }}
+    </button>
+  </div>
+</div>

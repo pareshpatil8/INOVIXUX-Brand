@@ -9,7 +9,7 @@ here installs it.
 **Depended on:** W0-2 (INO-124, control-size scale), merged (`done`) before this issue started.
 **Predecessor note:** `ino-checkbox`'s own uplift (INO-158) deferred creating a standalone single
 radio to this issue rather than fixing it under `checkbox/**`'s merge-hygiene rule — see
-`checkbox/SPEC.md` §6. This issue is that deferred work.
+`checkbox/SPEC.md` §6 (pending INO-158). This issue is that deferred work.
 
 This file records the decisions the DoD requires to be written down rather than silently made.
 
@@ -152,11 +152,11 @@ three themes by `node scripts/check-theme-parity.mjs`.
   WebView (plan rev 9 §5, "Capacitor is not a port").
 - **React Native** — `mobile/react-native/src/components/InoRadio.tsx` + `InoRadioGroup.tsx`. RN has
   no native radio primitive, so this is a from-scratch `Pressable`-drawn dot, mirroring
-  `InoCheckbox.tsx`'s own from-scratch approach; `accessibilityRole="radio"` +
+  `InoCheckbox.tsx`'s own from-scratch approach (pending INO-158); `accessibilityRole="radio"` +
   `accessibilityState={{ checked }}` (boolean only — no `'mixed'` state exists for radios, unlike
   checkbox's tri-state).
 - **Flutter** — `mobile/flutter/lib/widgets/ino_radio.dart` + `ino_radio_group.dart`, same
-  from-scratch `GestureDetector` + `Container` approach as `ino_checkbox.dart` (not Material's
+  from-scratch `GestureDetector` + `Container` approach as `ino_checkbox.dart` (pending INO-158; not Material's
   built-in `Radio`, to keep full `InoPalette`/`InoControlSize` token control); `Semantics.checked`
   set directly (no `mixed`).
 
@@ -168,7 +168,7 @@ equivalent of the web group's `[checked]="option.value === value"` binding.
 
 ## 9. `check-theme-parity.mjs` — not modified (DoD row 11 deviation)
 
-Same finding as `tag/SPEC.md` §8 and `checkbox/SPEC.md`, re-verified for this issue: DoD row 11
+Same finding as `tag/SPEC.md` §8 and `checkbox/SPEC.md` (pending INO-158), re-verified for this issue: DoD row 11
 describes "one appended line in the `check-theme-parity.mjs` component registry", but no such
 registry exists in the file (confirmed by reading it in full). Nothing appended;
 `node scripts/check-theme-parity.mjs` passes unchanged. Component-level token adherence is covered

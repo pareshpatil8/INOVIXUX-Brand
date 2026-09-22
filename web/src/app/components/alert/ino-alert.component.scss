@@ -134,3 +134,9 @@
   background: var(--ino-color-on-danger);
   color: var(--ino-color-danger);
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .ino-alert__dismiss {
+    transition: none;
+  }
+}

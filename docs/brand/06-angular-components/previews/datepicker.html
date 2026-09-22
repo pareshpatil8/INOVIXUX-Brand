@@ -1,0 +1,419 @@
+<!-- @dsCard group="Form" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ino-datepicker — calendar date / range / time picker (INO-154)</title>
+<!-- Canonical token file, linked rather than copied: this preview must repaint with the system,
+     and must never become a second place raw hex values live. -->
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-eyebrow-size);
+    letter-spacing: var(--ino-type-eyebrow-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 60ch; }
+
+  .theme-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); }
+  .theme-pane {
+    flex: 1 1 300px;
+    padding: var(--ino-space-5);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-xl);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+  }
+  .theme-pane > h3 {
+    margin: 0 0 var(--ino-space-4);
+    font-size: var(--ino-type-body-sm-size);
+    color: var(--ino-color-on-surface-muted);
+    font-weight: 600;
+  }
+
+  .row { display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--ino-space-5); }
+
+  /* Mirrors web/src/app/components/datepicker/ino-datepicker.component.scss — same token
+     bindings (including the same local --_x aliases, so a divergence between this preview and
+     the shipped component is visible as a visual diff), so this is a static illustrative
+     snapshot, not a live Angular instance. */
+  .dp-panel {
+    display: inline-flex;
+    flex-direction: column;
+    gap: var(--ino-space-3);
+    min-inline-size: 260px;
+    padding: var(--ino-space-4);
+    background: var(--ino-color-surface-raised);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-lg);
+    box-shadow: var(--ino-elevation-neutral-4);
+  }
+  .dp-panel--inline { box-shadow: none; }
+
+  .dp-header { display: flex; align-items: center; justify-content: space-between; gap: var(--ino-space-2); }
+  .dp-nav, .dp-heading {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-inline-size: var(--ino-target-min); min-block-size: var(--ino-target-min);
+    border: none; border-radius: var(--ino-radius-sm); background: transparent; cursor: pointer;
+    font-family: inherit; color: var(--ino-color-on-surface-muted); font-size: var(--ino-type-body-size);
+  }
+  .dp-heading { flex: 1; color: var(--ino-color-on-surface); font-weight: 600; }
+  .dp-nav:focus-visible, .dp-heading:focus-visible, .dp-cell:focus-visible, .dp-confirm:focus-visible {
+    outline: var(--ino-focus-ring); outline-offset: var(--ino-focus-ring-offset);
+  }
+
+  .dp-weekdays, .dp-week { display: grid; grid-template-columns: repeat(7, 1fr); gap: var(--ino-space-1); }
+  .dp-weekday {
+    display: flex; align-items: center; justify-content: center;
+    min-block-size: var(--ino-target-min); color: var(--ino-color-on-surface-muted);
+    font-size: var(--ino-type-caption-size); font-weight: 600; text-transform: uppercase;
+  }
+  .dp-cell {
+    display: flex; align-items: center; justify-content: center;
+    min-inline-size: var(--ino-target-min); min-block-size: var(--ino-target-min);
+    border: 1px solid transparent; border-radius: var(--ino-radius-sm);
+    background: transparent; color: var(--ino-color-on-surface);
+    font-family: inherit; font-size: var(--ino-type-body-sm-size); cursor: pointer;
+  }
+  .dp-cell--out { color: var(--ino-color-on-surface-subtle); }
+  .dp-cell--today { border-color: var(--ino-color-border-soft); font-weight: 600; }
+  .dp-cell--in-range { background: var(--ino-color-surface-sunken); color: var(--ino-color-accent-text-safe); }
+  .dp-cell--selected {
+    background: var(--ino-color-accent); color: var(--ino-color-on-accent); font-weight: 600;
+  }
+  .dp-cell:disabled { color: var(--ino-color-on-surface-subtle); cursor: not-allowed; opacity: .5; }
+
+  .dp-time {
+    display: flex; align-items: center; justify-content: center; gap: var(--ino-space-2);
+    padding-block-start: var(--ino-space-3); border-block-start: 1px solid var(--ino-color-border-soft);
+  }
+  .dp-time-value { font-variant-numeric: tabular-nums; font-size: var(--ino-type-body-size); font-weight: 600; color: var(--ino-color-on-surface); }
+  .dp-time-sep { color: var(--ino-color-on-surface-muted); font-weight: 600; }
+  .dp-confirm {
+    min-inline-size: var(--ino-target-min); min-block-size: var(--ino-target-min);
+    padding-inline: var(--ino-space-3); border: 1px solid var(--ino-color-accent);
+    border-radius: var(--ino-radius-sm); background: var(--ino-color-accent); color: var(--ino-color-on-accent);
+    font-family: inherit; font-size: var(--ino-type-body-sm-size); font-weight: 600; cursor: pointer;
+  }
+
+  /* Trigger field — mirrors .ino-field__control */
+  .field { display: flex; flex-direction: column; gap: var(--ino-space-2); min-width: 220px; }
+  .field__label { font-size: var(--ino-type-body-sm-size); font-weight: 600; color: var(--ino-color-on-surface); }
+  .field__control {
+    box-sizing: border-box; display: flex; align-items: center; justify-content: space-between;
+    inline-size: 100%; min-block-size: var(--ino-control-height-default);
+    padding-inline: var(--ino-control-padding-inline-default);
+    background: var(--ino-color-surface-sunken); border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-md); color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display); font-size: var(--ino-control-font-size-default);
+  }
+  .field__control--sm { min-block-size: var(--ino-control-height-sm); padding-inline: var(--ino-control-padding-inline-sm); font-size: var(--ino-control-font-size-sm); }
+  .field__control--lg { min-block-size: var(--ino-control-height-lg); padding-inline: var(--ino-control-padding-inline-lg); font-size: var(--ino-control-font-size-lg); }
+  .field__control--error { border-color: var(--ino-color-danger); }
+  .field__control:disabled { opacity: .5; cursor: not-allowed; }
+  .field__control[aria-readonly='true'] { background: var(--ino-color-surface-raised); cursor: default; }
+  .field__placeholder { color: var(--ino-color-on-surface-subtle); }
+  .field__icon { color: var(--ino-color-on-surface-muted); }
+  .field__hint { margin: 0; font-size: var(--ino-type-body-sm-size); color: var(--ino-color-on-surface-muted); }
+  .field__error { margin: 0; font-size: var(--ino-type-body-sm-size); color: var(--ino-color-danger); font-weight: 600; }
+  .field__spinner {
+    inline-size: 14px; block-size: 14px; border-radius: 50%;
+    border: 2px solid var(--ino-color-on-surface-muted); border-top-color: transparent;
+  }
+</style>
+</head>
+<body>
+
+<h1>DatePicker — calendar date / range / time picker</h1>
+<p class="lede">
+  Single/range/multiple selection, month/year drill-up views, a time picker, min/max + disabled
+  dates, and inline vs. overlay display. Full WAI-ARIA APG "Date Picker Dialog" keyboard grid
+  navigation (arrow keys, Home/End, PageUp/PageDown, Shift+PageUp/PageDown, Enter/Space, Escape).
+  See <code>SPEC.md</code> for the locale, range and time-picker contracts.
+</p>
+
+<h2>Theme × trigger field</h2>
+<div class="theme-row">
+
+  <div class="theme-pane">
+    <h3>dark — :root (default)</h3>
+    <div class="row">
+      <label class="field">
+        <span class="field__label">Travel date</span>
+        <span class="field__control">
+          <span>15 Sept 2026</span>
+          <svg class="field__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4" stroke-linecap="round"/></svg>
+        </span>
+      </label>
+      <label class="field">
+        <span class="field__label">Placeholder</span>
+        <span class="field__control"><span class="field__placeholder">Select date</span></span>
+      </label>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="light">
+    <h3>light — [data-theme="light"]</h3>
+    <div class="row">
+      <label class="field">
+        <span class="field__label">Travel date</span>
+        <span class="field__control">
+          <span>15 Sept 2026</span>
+          <svg class="field__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4" stroke-linecap="round"/></svg>
+        </span>
+      </label>
+      <label class="field">
+        <span class="field__label">Placeholder</span>
+        <span class="field__control"><span class="field__placeholder">Select date</span></span>
+      </label>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="high-contrast">
+    <h3>high-contrast — [data-theme="high-contrast"]</h3>
+    <div class="row">
+      <label class="field">
+        <span class="field__label">Travel date</span>
+        <span class="field__control">
+          <span>15 Sept 2026</span>
+          <svg class="field__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4" stroke-linecap="round"/></svg>
+        </span>
+      </label>
+      <label class="field">
+        <span class="field__label">Placeholder</span>
+        <span class="field__control"><span class="field__placeholder">Select date</span></span>
+      </label>
+    </div>
+  </div>
+
+</div>
+
+<h2>Size (control-size scale, trigger field)</h2>
+<div class="row">
+  <label class="field">
+    <span class="field__label">Small</span>
+    <span class="field__control field__control--sm"><span>15 Sept 2026</span></span>
+  </label>
+  <label class="field">
+    <span class="field__label">Default</span>
+    <span class="field__control"><span>15 Sept 2026</span></span>
+  </label>
+  <label class="field">
+    <span class="field__label">Large</span>
+    <span class="field__control field__control--lg"><span>15 Sept 2026</span></span>
+  </label>
+</div>
+
+<h2>Trigger states</h2>
+<div class="row">
+  <label class="field">
+    <span class="field__label">Hint</span>
+    <span class="field__control"><span>15 Sept 2026</span></span>
+    <p class="field__hint">DD/MM/YYYY, India/APAC default.</p>
+  </label>
+  <label class="field">
+    <span class="field__label">Invalid</span>
+    <span class="field__control field__control--error" aria-invalid="true"><span>32/13/2026</span></span>
+    <p class="field__error" role="alert">Enter a valid date.</p>
+  </label>
+  <label class="field">
+    <span class="field__label">Readonly</span>
+    <span class="field__control" aria-readonly="true"><span>15 Sept 2026</span></span>
+  </label>
+  <label class="field">
+    <span class="field__label">Loading</span>
+    <span class="field__control" aria-busy="true">
+      <span>Syncing…</span>
+      <span class="field__spinner" aria-hidden="true"></span>
+    </span>
+  </label>
+  <label class="field">
+    <span class="field__label">Disabled</span>
+    <span class="field__control" disabled><span>Locked</span></span>
+  </label>
+</div>
+
+<h2>Selection modes — inline calendar grid</h2>
+<div class="row">
+
+  <div>
+    <p class="field__label" style="margin-bottom: var(--ino-space-2)">Single</p>
+    <div class="dp-panel dp-panel--inline">
+      <div class="dp-header">
+        <button class="dp-nav" aria-label="Previous month">‹</button>
+        <button class="dp-heading">September 2026</button>
+        <button class="dp-nav" aria-label="Next month">›</button>
+      </div>
+      <div role="grid" aria-label="September 2026">
+        <div class="dp-weekdays" role="row">
+          <span class="dp-weekday" role="columnheader">Mon</span><span class="dp-weekday" role="columnheader">Tue</span><span class="dp-weekday" role="columnheader">Wed</span><span class="dp-weekday" role="columnheader">Thu</span><span class="dp-weekday" role="columnheader">Fri</span><span class="dp-weekday" role="columnheader">Sat</span><span class="dp-weekday" role="columnheader">Sun</span>
+        </div>
+        <div class="dp-week" role="row">
+          <button class="dp-cell dp-cell--out" role="gridcell">31</button>
+          <button class="dp-cell" role="gridcell">1</button>
+          <button class="dp-cell" role="gridcell">2</button>
+          <button class="dp-cell" role="gridcell">3</button>
+          <button class="dp-cell" role="gridcell">4</button>
+          <button class="dp-cell" role="gridcell">5</button>
+          <button class="dp-cell" role="gridcell">6</button>
+        </div>
+        <div class="dp-week" role="row">
+          <button class="dp-cell" role="gridcell">7</button>
+          <button class="dp-cell" role="gridcell">8</button>
+          <button class="dp-cell" role="gridcell">9</button>
+          <button class="dp-cell dp-cell--today" role="gridcell" aria-current="date">10</button>
+          <button class="dp-cell" role="gridcell">11</button>
+          <button class="dp-cell" role="gridcell">12</button>
+          <button class="dp-cell" role="gridcell">13</button>
+        </div>
+        <div class="dp-week" role="row">
+          <button class="dp-cell" role="gridcell">14</button>
+          <button class="dp-cell dp-cell--selected" role="gridcell" aria-selected="true" tabindex="0">15</button>
+          <button class="dp-cell" role="gridcell">16</button>
+          <button class="dp-cell" role="gridcell" disabled>17</button>
+          <button class="dp-cell" role="gridcell">18</button>
+          <button class="dp-cell" role="gridcell">19</button>
+          <button class="dp-cell" role="gridcell">20</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <p class="field__label" style="margin-bottom: var(--ino-space-2)">Range</p>
+    <div class="dp-panel dp-panel--inline">
+      <div class="dp-header">
+        <button class="dp-nav" aria-label="Previous month">‹</button>
+        <button class="dp-heading">September 2026</button>
+        <button class="dp-nav" aria-label="Next month">›</button>
+      </div>
+      <div role="grid" aria-label="September 2026">
+        <div class="dp-weekdays" role="row">
+          <span class="dp-weekday" role="columnheader">Mon</span><span class="dp-weekday" role="columnheader">Tue</span><span class="dp-weekday" role="columnheader">Wed</span><span class="dp-weekday" role="columnheader">Thu</span><span class="dp-weekday" role="columnheader">Fri</span><span class="dp-weekday" role="columnheader">Sat</span><span class="dp-weekday" role="columnheader">Sun</span>
+        </div>
+        <div class="dp-week" role="row">
+          <button class="dp-cell" role="gridcell">7</button>
+          <button class="dp-cell" role="gridcell">8</button>
+          <button class="dp-cell" role="gridcell">9</button>
+          <button class="dp-cell dp-cell--today" role="gridcell" aria-current="date">10</button>
+          <button class="dp-cell" role="gridcell">11</button>
+          <button class="dp-cell" role="gridcell">12</button>
+          <button class="dp-cell" role="gridcell">13</button>
+        </div>
+        <div class="dp-week" role="row">
+          <button class="dp-cell dp-cell--selected" role="gridcell" aria-selected="true">14</button>
+          <button class="dp-cell dp-cell--in-range" role="gridcell">15</button>
+          <button class="dp-cell dp-cell--in-range" role="gridcell">16</button>
+          <button class="dp-cell dp-cell--in-range" role="gridcell">17</button>
+          <button class="dp-cell dp-cell--selected" role="gridcell" aria-selected="true" tabindex="0">18</button>
+          <button class="dp-cell" role="gridcell">19</button>
+          <button class="dp-cell" role="gridcell">20</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <p class="field__label" style="margin-bottom: var(--ino-space-2)">Multiple</p>
+    <div class="dp-panel dp-panel--inline">
+      <div class="dp-header">
+        <button class="dp-nav" aria-label="Previous month">‹</button>
+        <button class="dp-heading">September 2026</button>
+        <button class="dp-nav" aria-label="Next month">›</button>
+      </div>
+      <div role="grid" aria-label="September 2026">
+        <div class="dp-weekdays" role="row">
+          <span class="dp-weekday" role="columnheader">Mon</span><span class="dp-weekday" role="columnheader">Tue</span><span class="dp-weekday" role="columnheader">Wed</span><span class="dp-weekday" role="columnheader">Thu</span><span class="dp-weekday" role="columnheader">Fri</span><span class="dp-weekday" role="columnheader">Sat</span><span class="dp-weekday" role="columnheader">Sun</span>
+        </div>
+        <div class="dp-week" role="row">
+          <button class="dp-cell" role="gridcell">7</button>
+          <button class="dp-cell dp-cell--selected" role="gridcell" aria-selected="true">8</button>
+          <button class="dp-cell" role="gridcell">9</button>
+          <button class="dp-cell dp-cell--today" role="gridcell" aria-current="date">10</button>
+          <button class="dp-cell dp-cell--selected" role="gridcell" aria-selected="true">11</button>
+          <button class="dp-cell" role="gridcell">12</button>
+          <button class="dp-cell dp-cell--selected" role="gridcell" aria-selected="true" tabindex="0">13</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<h2>Month / year drill-up views</h2>
+<div class="row">
+  <div class="dp-panel dp-panel--inline" style="min-inline-size: 220px">
+    <div class="dp-header">
+      <span></span>
+      <button class="dp-heading">2026</button>
+      <span></span>
+    </div>
+    <div role="grid" aria-label="2026" style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--ino-space-2)">
+      <button class="dp-cell" role="gridcell" style="min-block-size:var(--ino-target-comfortable)">Jan</button>
+      <button class="dp-cell" role="gridcell" style="min-block-size:var(--ino-target-comfortable)">Aug</button>
+      <button class="dp-cell dp-cell--selected" role="gridcell" style="min-block-size:var(--ino-target-comfortable)">Sep</button>
+      <button class="dp-cell" role="gridcell" style="min-block-size:var(--ino-target-comfortable)">Oct</button>
+      <button class="dp-cell" role="gridcell" style="min-block-size:var(--ino-target-comfortable)">Nov</button>
+      <button class="dp-cell" role="gridcell" style="min-block-size:var(--ino-target-comfortable)">Dec</button>
+    </div>
+  </div>
+  <div class="dp-panel dp-panel--inline" style="min-inline-size: 220px">
+    <div class="dp-header">
+      <button class="dp-nav" aria-label="Previous years">‹</button>
+      <button class="dp-heading">2020 – 2031</button>
+      <button class="dp-nav" aria-label="Next years">›</button>
+    </div>
+    <div role="grid" aria-label="2020 – 2031" style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--ino-space-2)">
+      <button class="dp-cell" role="gridcell" style="min-block-size:var(--ino-target-comfortable)">2024</button>
+      <button class="dp-cell" role="gridcell" style="min-block-size:var(--ino-target-comfortable)">2025</button>
+      <button class="dp-cell dp-cell--selected" role="gridcell" style="min-block-size:var(--ino-target-comfortable)">2026</button>
+      <button class="dp-cell" role="gridcell" style="min-block-size:var(--ino-target-comfortable)">2027</button>
+      <button class="dp-cell" role="gridcell" style="min-block-size:var(--ino-target-comfortable)">2028</button>
+      <button class="dp-cell" role="gridcell" style="min-block-size:var(--ino-target-comfortable)">2029</button>
+    </div>
+  </div>
+</div>
+
+<h2>Time picker (showTime)</h2>
+<div class="row">
+  <div class="dp-panel dp-panel--inline" style="min-inline-size: 260px">
+    <div class="dp-header">
+      <button class="dp-nav" aria-label="Previous month">‹</button>
+      <button class="dp-heading">15 Sept 2026</button>
+      <button class="dp-nav" aria-label="Next month">›</button>
+    </div>
+    <div class="dp-time" role="group" aria-label="Time">
+      <span class="dp-time-value" aria-live="polite">14</span>
+      <span class="dp-time-sep" aria-hidden="true">:</span>
+      <span class="dp-time-value" aria-live="polite">30</span>
+      <button class="dp-confirm">Done</button>
+    </div>
+  </div>
+</div>
+
+<h2>RTL</h2>
+<div class="row" dir="rtl">
+  <label class="field">
+    <span class="field__label">تاريخ السفر</span>
+    <span class="field__control">
+      <span>١٥ سبتمبر ٢٠٢٦</span>
+      <svg class="field__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4" stroke-linecap="round"/></svg>
+    </span>
+  </label>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,156 @@
+<div class="ino-field" [class.ino-field--disabled]="disabled">
+  <label *ngIf="label && !inline" [for]="fieldId" class="ino-field__label">
+    {{ label }}<span *ngIf="required" class="ino-field__required" aria-hidden="true"> *</span>
+  </label>
+
+  <!-- Trigger field (overlay mode only) -->
+  <span *ngIf="!inline" class="ino-field__control-wrap" style="position:relative;display:block">
+    <button
+      #trigger
+      [id]="fieldId"
+      type="button"
+      class="ino-field__control"
+      [style.border-color]="error ? 'var(--ino-color-danger)' : null"
+      [disabled]="disabled"
+      [attr.aria-haspopup]="'dialog'"
+      [attr.aria-expanded]="panelOpen"
+      [attr.aria-invalid]="error ? true : null"
+      [attr.aria-describedby]="error ? errorId : (hint ? hintId : null)"
+      [attr.aria-readonly]="readonly || null"
+      (click)="toggleOpen()"
+    >
+      <span class="ino-field__value" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap" [style.color]="!displayValue ? 'var(--ino-color-on-surface-subtle)' : null">
+        {{ displayValue || placeholder }}
+      </span>
+      <svg class="ino-field__calendar-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <rect x="3" y="5" width="18" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/>
+        <path d="M3 9h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+    </button>
+    <span class="ino-field__spinner" *ngIf="loading" aria-hidden="true"></span>
+  </span>
+
+  <p *ngIf="hint && !error && !inline" [id]="hintId" class="ino-field__hint">{{ hint }}</p>
+  <p *ngIf="error && !inline" [id]="errorId" class="ino-field__error" role="alert">{{ error }}</p>
+
+  <!-- Overlay backdrop + popover panel -->
+  <div *ngIf="!inline && panelOpen" class="ino-datepicker__overlay" (keydown)="onKeydown($event)">
+    <!-- Invisible, full-viewport click-catcher for backdrop-dismiss — no design token involved
+         (pure layout mechanics), so styled inline rather than spending anyComponentStyle budget
+         on a rule with no color/space/radius/duration/font-size to route through tokens.css. -->
+    <div class="ino-datepicker__scrim" style="position:fixed;inset:0;background:transparent" (click)="onBackdropClick()"></div>
+    <div
+      class="ino-datepicker__panel"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-labelledby]="headingId"
+      inoFocusTrap
+      [inoFocusTrapInitialFocus]="'[tabindex=\'0\']'"
+    >
+      <ng-container *ngTemplateOutlet="calendarBody"></ng-container>
+    </div>
+  </div>
+
+  <!-- Inline calendar -->
+  <div *ngIf="inline" class="ino-datepicker__panel" style="box-shadow:none">
+    <ng-container *ngTemplateOutlet="calendarBody"></ng-container>
+  </div>
+</div>
+
+<ng-template #calendarBody>
+  <div class="ino-datepicker__header">
+    <button type="button" class="ino-datepicker__btn ino-datepicker__nav" (click)="goToPreviousMonth()" *ngIf="view === 'date'" aria-label="Previous month">‹</button>
+    <button type="button" class="ino-datepicker__btn ino-datepicker__nav" (click)="yearPageBack()" *ngIf="view === 'year'" aria-label="Previous years">‹</button>
+
+    <button
+      type="button"
+      class="ino-datepicker__btn ino-datepicker__heading"
+      [id]="headingId"
+      (click)="view === 'date' ? showMonthPicker() : (view === 'month' ? showYearPicker() : null)"
+    >
+      <ng-container [ngSwitch]="view">
+        <span *ngSwitchCase="'date'">{{ headerLabel }}</span>
+        <span *ngSwitchCase="'month'">{{ viewDate.getFullYear() }}</span>
+        <span *ngSwitchCase="'year'">{{ yearRangeLabel() }}</span>
+      </ng-container>
+    </button>
+
+    <button type="button" class="ino-datepicker__btn ino-datepicker__nav" (click)="goToNextMonth()" *ngIf="view === 'date'" aria-label="Next month">›</button>
+    <button type="button" class="ino-datepicker__btn ino-datepicker__nav" (click)="yearPageForward()" *ngIf="view === 'year'" aria-label="Next years">›</button>
+  </div>
+
+  <!-- Date grid -->
+  <div *ngIf="view === 'date'" #grid class="ino-datepicker__grid" role="grid" [attr.aria-labelledby]="headingId">
+    <div class="ino-datepicker__weekdays" role="row">
+      <span *ngFor="let wd of weekdayLabels" role="columnheader" class="ino-datepicker__weekday">{{ wd }}</span>
+    </div>
+    <div class="ino-datepicker__week" role="row" *ngFor="let week of weeks">
+      <button
+        *ngFor="let cell of week"
+        type="button"
+        role="gridcell"
+        class="ino-datepicker__btn ino-datepicker__cell"
+        [class.ino-datepicker__cell--out]="!cell.inMonth"
+        [class.ino-datepicker__cell--today]="cell.today"
+        [class.ino-datepicker__cell--selected]="cell.selected"
+        [class.ino-datepicker__cell--range-start]="cell.rangeStart"
+        [class.ino-datepicker__cell--range-end]="cell.rangeEnd"
+        [class.ino-datepicker__cell--in-range]="cell.inRange"
+        [attr.aria-selected]="cell.selected"
+        [attr.aria-disabled]="cell.disabled || null"
+        [attr.aria-current]="cell.today ? 'date' : null"
+        [tabindex]="cell.tabbable ? 0 : -1"
+        [disabled]="cell.disabled"
+        (click)="selectDate(cell)"
+        (keydown)="onGridKeydown($event, cell)"
+      >{{ cell.day }}</button>
+    </div>
+  </div>
+
+  <!-- Month grid -->
+  <div *ngIf="view === 'month'" class="ino-datepicker__grid ino-datepicker__grid--months" role="grid" [attr.aria-labelledby]="headingId">
+    <div class="ino-datepicker__week" role="row">
+      <button
+        *ngFor="let name of monthNames; let i = index"
+        type="button"
+        role="gridcell"
+        class="ino-datepicker__btn ino-datepicker__cell ino-datepicker__cell--month"
+        [class.ino-datepicker__cell--selected]="i === viewDate.getMonth()"
+        (click)="pickMonth(i)"
+      >{{ name }}</button>
+    </div>
+  </div>
+
+  <!-- Year grid -->
+  <div *ngIf="view === 'year'" class="ino-datepicker__grid ino-datepicker__grid--years" role="grid" [attr.aria-labelledby]="headingId">
+    <div class="ino-datepicker__week" role="row">
+      <button
+        *ngFor="let year of years"
+        type="button"
+        role="gridcell"
+        class="ino-datepicker__btn ino-datepicker__cell ino-datepicker__cell--year"
+        [class.ino-datepicker__cell--selected]="year === viewDate.getFullYear()"
+        (click)="pickYear(year)"
+      >{{ year }}</button>
+    </div>
+  </div>
+
+  <!-- Time picker -->
+  <div *ngIf="showTime && view === 'date'" class="ino-datepicker__time" role="group" aria-label="Time">
+    <div class="ino-datepicker__time-field">
+      <button type="button" class="ino-datepicker__btn ino-datepicker__spin" (click)="adjustHour(1)" aria-label="Increase hour">▲</button>
+      <span class="ino-datepicker__time-value" aria-live="polite">{{ displayHour < 10 ? '0' + displayHour : displayHour }}</span>
+      <button type="button" class="ino-datepicker__btn ino-datepicker__spin" (click)="adjustHour(-1)" aria-label="Decrease hour">▼</button>
+    </div>
+    <span class="ino-datepicker__time-sep" aria-hidden="true">:</span>
+    <div class="ino-datepicker__time-field">
+      <button type="button" class="ino-datepicker__btn ino-datepicker__spin" (click)="adjustMinute(1)" aria-label="Increase minute">▲</button>
+      <span class="ino-datepicker__time-value" aria-live="polite">{{ displayMinute < 10 ? '0' + displayMinute : displayMinute }}</span>
+      <button type="button" class="ino-datepicker__btn ino-datepicker__spin" (click)="adjustMinute(-1)" aria-label="Decrease minute">▼</button>
+    </div>
+    <button *ngIf="hourFormat === '12'" type="button" class="ino-datepicker__btn ino-datepicker__ampm" (click)="toggleAmPm()">
+      {{ isPm ? 'PM' : 'AM' }}
+    </button>
+    <button type="button" class="ino-datepicker__btn ino-datepicker__confirm" (click)="confirmTime()" *ngIf="!inline">Done</button>
+  </div>
+</ng-template>

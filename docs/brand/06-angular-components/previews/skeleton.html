@@ -1,0 +1,178 @@
+<!-- @dsCard group="Misc" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ino-skeleton — loading placeholder (INO-131)</title>
+<!-- Canonical token file, linked rather than copied: this preview must repaint with the system,
+     and must never become a second place raw hex values live. -->
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-eyebrow-size);
+    letter-spacing: var(--ino-type-eyebrow-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 60ch; }
+
+  .theme-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); }
+  .theme-pane {
+    flex: 1 1 280px;
+    padding: var(--ino-space-5);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-xl);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+  }
+  .theme-pane > h3 {
+    margin: 0 0 var(--ino-space-4);
+    font-size: var(--ino-type-body-sm-size);
+    color: var(--ino-color-on-surface-muted);
+    font-weight: 600;
+  }
+
+  .row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--ino-space-4); }
+  .col { display: flex; flex-direction: column; gap: var(--ino-space-3); max-width: 16rem; }
+
+  /* Mirrors web/src/app/components/skeleton/ino-skeleton.component.scss — same token bindings, so
+     a divergence between this preview and the shipped component is visible as a visual diff. */
+  .ino-skeleton {
+    display: block;
+    position: relative;
+    inline-size: 100%;
+    flex-shrink: 0;
+    overflow: hidden;
+    background: var(--ino-color-border-soft);
+  }
+  .ino-skeleton--rectangle {
+    inline-size: 8rem;
+    block-size: var(--ino-control-height-default);
+    border-radius: var(--ino-radius-md);
+  }
+  .ino-skeleton--circle {
+    inline-size: var(--ino-control-height-default);
+    block-size: var(--ino-control-height-default);
+    border-radius: 50%;
+  }
+  .ino-skeleton--text {
+    inline-size: 10rem;
+    font-size: var(--ino-control-font-size-default);
+    block-size: 1em;
+    border-radius: var(--ino-radius-sm);
+  }
+  .ino-skeleton--sm.ino-skeleton--rectangle,
+  .ino-skeleton--sm.ino-skeleton--circle { block-size: var(--ino-control-height-sm); }
+  .ino-skeleton--sm.ino-skeleton--circle { inline-size: var(--ino-control-height-sm); }
+  .ino-skeleton--lg.ino-skeleton--rectangle,
+  .ino-skeleton--lg.ino-skeleton--circle { block-size: var(--ino-control-height-lg); }
+  .ino-skeleton--lg.ino-skeleton--circle { inline-size: var(--ino-control-height-lg); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .ino-skeleton:not(.ino-skeleton--static) {
+      background: linear-gradient(
+        90deg,
+        var(--ino-color-border-soft) 0%,
+        var(--ino-color-border) 50%,
+        var(--ino-color-border-soft) 100%
+      );
+      background-size: 200% 100%;
+      animation: ino-skeleton-shimmer var(--ino-motion-duration-slow) var(--ino-motion-easing-standard) infinite;
+    }
+  }
+  @keyframes ino-skeleton-shimmer {
+    from { background-position: 200% 0; }
+    to { background-position: -200% 0; }
+  }
+
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  }
+</style>
+</head>
+<body>
+
+<h1>Skeleton — loading placeholder</h1>
+<p class="lede">
+  A pure CSS placeholder for content that hasn't loaded yet. Closes doc 16 finding E-4 (no
+  loading state on <code>ino-card</code>/<code>ino-metric-panel</code>). Decorative and
+  non-interactive — it never reserves space for content it hasn't seen, it just paints the box the
+  caller sizes via <code>shape</code>/<code>size</code>/<code>width</code>/<code>height</code>.
+</p>
+
+<h2>Shapes × theme</h2>
+<div class="theme-row">
+
+  <div class="theme-pane">
+    <h3>dark — :root (default)</h3>
+    <div class="row">
+      <span class="ino-skeleton ino-skeleton--rectangle" aria-hidden="true"></span>
+      <span class="ino-skeleton ino-skeleton--circle" aria-hidden="true"></span>
+      <span class="ino-skeleton ino-skeleton--text" aria-hidden="true"></span>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="light">
+    <h3>light — [data-theme="light"]</h3>
+    <div class="row">
+      <span class="ino-skeleton ino-skeleton--rectangle" aria-hidden="true"></span>
+      <span class="ino-skeleton ino-skeleton--circle" aria-hidden="true"></span>
+      <span class="ino-skeleton ino-skeleton--text" aria-hidden="true"></span>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="high-contrast">
+    <h3>high-contrast — [data-theme="high-contrast"]</h3>
+    <div class="row">
+      <span class="ino-skeleton ino-skeleton--rectangle" aria-hidden="true"></span>
+      <span class="ino-skeleton ino-skeleton--circle" aria-hidden="true"></span>
+      <span class="ino-skeleton ino-skeleton--text" aria-hidden="true"></span>
+    </div>
+  </div>
+
+</div>
+
+<h2>Size (control-size scale)</h2>
+<div class="row">
+  <span class="ino-skeleton ino-skeleton--rectangle ino-skeleton--sm" aria-hidden="true"></span>
+  <span class="ino-skeleton ino-skeleton--rectangle" aria-hidden="true"></span>
+  <span class="ino-skeleton ino-skeleton--rectangle ino-skeleton--lg" aria-hidden="true"></span>
+</div>
+
+<h2>Composed: card placeholder</h2>
+<p class="lede">Stacked <code>text</code> lines compose a paragraph — no built-in multi-line prop, matching the PrimeNG benchmark.</p>
+<div class="col">
+  <span class="ino-skeleton ino-skeleton--circle" style="inline-size: 2.5rem; block-size: 2.5rem;" aria-hidden="true"></span>
+  <span class="ino-skeleton ino-skeleton--text" style="inline-size: 60%;" aria-hidden="true"></span>
+  <span class="ino-skeleton ino-skeleton--text" style="inline-size: 90%;" aria-hidden="true"></span>
+  <span class="ino-skeleton ino-skeleton--text" style="inline-size: 40%;" aria-hidden="true"></span>
+</div>
+
+<h2>Accessible loading announcement</h2>
+<p class="lede">Opt-in only — use where there is genuinely no other loading announcement on the page.</p>
+<div class="row">
+  <span class="ino-skeleton ino-skeleton--rectangle" style="inline-size: 12rem;" role="status" aria-live="polite" aria-busy="true">
+    <span class="sr-only">Loading trades&hellip;</span>
+  </span>
+</div>
+
+<h2>Static (animate = false)</h2>
+<div class="row">
+  <span class="ino-skeleton ino-skeleton--rectangle ino-skeleton--static" aria-hidden="true"></span>
+</div>
+
+</body>
+</html>
