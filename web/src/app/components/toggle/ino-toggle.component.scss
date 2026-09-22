@@ -1,73 +1,190 @@
+/*
+ * Size API — DoD row 3. Thumb size reads the same `--ino-control-icon-size-*` /
+ * `--ino-control-font-size-*` / `--ino-control-gap-*` alias trio `ino-checkbox` reads (see that
+ * component's SPEC.md §3) rather than `--ino-control-height` — a track/thumb pair is a compact
+ * inline shape, not a full-height control like `ino-button`/`ino-input`. Track width/height and
+ * thumb travel distance are pure `calc()` geometry off the one thumb-size alias, not new
+ * literals: a pill exactly `2 * thumb + 2 * inset` wide is standard switch proportion, so every
+ * size only has to change the one alias for the whole shape to follow.
+ */
 .ino-toggle {
+  --ino-toggle-thumb: var(--ino-control-icon-size-default);
+  --ino-toggle-inset: 2px;
+  --ino-toggle-track-width: calc(var(--ino-toggle-thumb) * 2 + var(--ino-toggle-inset) * 2);
+  --ino-toggle-track-height: calc(var(--ino-toggle-thumb) + var(--ino-toggle-inset) * 2);
+  --ino-toggle-font-size: var(--ino-control-font-size-default);
+  --ino-toggle-gap: var(--ino-control-gap-default);
+
+  &[data-size='sm'] {
+    --ino-toggle-thumb: var(--ino-control-icon-size-sm);
+    --ino-toggle-font-size: var(--ino-control-font-size-sm);
+    --ino-toggle-gap: var(--ino-control-gap-sm);
+  }
+
+  &[data-size='lg'] {
+    --ino-toggle-thumb: var(--ino-control-icon-size-lg);
+    --ino-toggle-font-size: var(--ino-control-font-size-lg);
+    --ino-toggle-gap: var(--ino-control-gap-lg);
+  }
+}
+
+.ino-toggle__control {
   display: inline-flex;
   align-items: center;
-  gap: var(--ino-space-3);
-  min-height: var(--ino-target-comfortable);
+  gap: var(--ino-toggle-gap);
+  /* DoD row 4 — density. Reads the density-scoped row floor where one is in scope (32px dense /
+     44px fluid, tokens.css §10) and falls back to the standalone comfortable target outside any
+     [data-density] ancestor. */
+  min-height: var(--ino-row-min-height, var(--ino-target-comfortable));
   background: transparent;
   border: none;
   padding: 0;
   cursor: pointer;
   color: var(--ino-color-on-surface);
   font-family: var(--ino-font-display);
-  font-size: var(--ino-type-body-size);
+  font-size: var(--ino-toggle-font-size);
 
+  /* State 2 — hover (new). Excludes readonly directly in the selector rather than a separate
+     override rule, per state 6 below. */
+  &:hover:not(:disabled):not(.ino-toggle__control--readonly) .ino-toggle__track {
+    filter: brightness(1.15);
+  }
+
+  /* State 4 — focus-visible. Ring comes from the Wave 0 tokens; never hand-rolled. */
   &:focus-visible .ino-toggle__track {
     outline: var(--ino-focus-ring);
     outline-offset: var(--ino-focus-ring-offset);
   }
 
-  /* Unchecked press — the track has no fill to darken, so the pressed accent lands on its border. */
-  &:active:not(:disabled) .ino-toggle__track {
+  /* State 3 — active/pressed. Unchecked press — the track has no fill to darken, so the pressed
+     accent lands on its border. Excludes readonly directly in the selector, same as the hover
+     rule above — readonly withdraws every interactive affordance, not just hover's. */
+  &:active:not(:disabled):not(.ino-toggle__control--readonly) .ino-toggle__track {
     border-color: var(--ino-color-accent-active);
   }
 
+  /* State 5 — disabled. */
   &:disabled {
     cursor: not-allowed;
     opacity: 0.5;
+  }
+
+  /* State 7 — invalid (new). Same outline-ring idiom `ino-checkbox` uses: paints outside the
+     shape regardless of the track's own background, yields to the focus ring via
+     `:not(:focus-visible)` so the two never fight over one `outline` property. */
+  &[aria-invalid='true']:not(:focus-visible) .ino-toggle__track {
+    outline: 2px solid var(--ino-color-danger);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+
+  /* State 6 — readonly (new). Same trade `ino-checkbox`/`ino-virtual-scroller` document: content
+     stays fully legible and the control stays focusable — only the interactive affordances
+     withdraw (the hover rule above excludes this class directly). */
+  &.ino-toggle__control--readonly {
+    cursor: default;
   }
 }
 
 .ino-toggle__track {
   position: relative;
-  width: 40px;
-  height: 22px;
-  flex-shrink: 0;
+  inline-size: var(--ino-toggle-track-width);
+  block-size: var(--ino-toggle-track-height);
+  flex: none;
   border-radius: var(--ino-radius-pill);
   background: var(--ino-color-surface-sunken);
   border: 1px solid var(--ino-color-border);
   transition: background var(--ino-motion-duration-base) var(--ino-motion-easing-standard),
-    border-color var(--ino-motion-duration-base) var(--ino-motion-easing-standard);
+    border-color var(--ino-motion-duration-base) var(--ino-motion-easing-standard),
+    filter var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
 }
 
 .ino-toggle__thumb {
   position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 16px;
-  height: 16px;
+  inset-block-start: var(--ino-toggle-inset);
+  /* Logical, not `left` — closes a pre-existing DoD §8 gap: the prior implementation animated
+     `transform: translateX(18px)`, a physical-axis move that does not mirror under `dir="rtl"`.
+     Animating `inset-inline-start` directly does, in every evergreen browser, with no second
+     stylesheet. */
+  inset-inline-start: var(--ino-toggle-inset);
+  inline-size: var(--ino-toggle-thumb);
+  block-size: var(--ino-toggle-thumb);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 50%;
   background: var(--ino-color-on-surface-muted);
-  transition: transform var(--ino-motion-duration-base) var(--ino-motion-easing-standard),
+  transition: inset-inline-start var(--ino-motion-duration-base) var(--ino-motion-easing-standard),
     background var(--ino-motion-duration-base) var(--ino-motion-easing-standard);
 }
 
-.ino-toggle[aria-checked='true'] {
+/*
+ * Icon overlay — issue scope. A glyph drawn inside the thumb, swapped by `checked`, riding with
+ * the thumb rather than fixed under the track (PrimeNG ToggleSwitch's handle-icon shape).
+ * Colours are the same guaranteed-AA pairs the rest of the system already relies on, just read in
+ * both directions — contrast ratio is symmetric, it does not depend on which of the two colours
+ * is foreground vs background:
+ *   - unchecked: thumb fill `--ino-color-on-surface-muted`, icon `--ino-color-surface` — the same
+ *     pair already proven as muted-text-on-surface, reversed.
+ *   - checked: thumb fill `--ino-color-on-accent`, icon `--ino-color-accent` — the same pair
+ *     `ino-button`'s primary variant already proves (fill accent / text on-accent), reversed.
+ */
+.ino-toggle__icon {
+  font-size: calc(var(--ino-toggle-thumb) * 0.6);
+  line-height: 1;
+  color: var(--ino-color-surface);
+}
+
+.ino-toggle__control[aria-checked='true'] {
   .ino-toggle__track {
     background: var(--ino-gradient-accent);
     border-color: transparent;
   }
 
   .ino-toggle__thumb {
-    transform: translateX(18px);
+    inset-inline-start: calc(var(--ino-toggle-inset) + var(--ino-toggle-thumb));
     background: var(--ino-color-on-accent);
+  }
+
+  .ino-toggle__icon {
+    color: var(--ino-color-accent);
   }
 
   /* Checked press — flat pressed accent replaces the gradient, matching the primary button, so
      "held down" looks the same whether the control is a button or a switch. The `background`
-     shorthand (not background-color) is required here to actually clear the gradient image above. */
-  &:active:not(:disabled) .ino-toggle__track {
+     shorthand (not background-color) is required here to actually clear the gradient image above.
+     Excludes readonly, same as the unchecked press rule above. */
+  &:active:not(:disabled):not(.ino-toggle__control--readonly) .ino-toggle__track {
     background: var(--ino-color-accent-active);
   }
+}
+
+/* State 8 — loading/busy (new). The track/thumb keep their last committed position on screen; a
+   spinner appears alongside, matching ino-checkbox/ino-button/ino-tag's spinner treatment. The
+   control is natively disabled while loading (template `[disabled]="disabled || loading"`). */
+.ino-toggle__spinner {
+  inline-size: calc(var(--ino-toggle-thumb) / 2);
+  block-size: calc(var(--ino-toggle-thumb) / 2);
+  border-radius: 50%;
+  border: 2px solid var(--ino-color-on-surface-muted);
+  border-inline-start-color: transparent; /* logical, not border-top — RTL-safe */
+  flex: none;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: ino-toggle-spin var(--ino-motion-duration-slow) linear infinite;
+  }
+}
+
+@keyframes ino-toggle-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.ino-toggle__error {
+  margin: var(--ino-space-1) 0 0;
+  font-size: var(--ino-type-body-sm-size);
+  color: var(--ino-color-danger);
+  font-weight: 600;
 }
 
 @media (prefers-reduced-motion: reduce) {
