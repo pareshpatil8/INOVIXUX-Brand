@@ -1,0 +1,45 @@
+<div *ngIf="open" class="ino-confirm-dialog" (keydown)="onKeydown($event)">
+  <div class="ino-confirm-dialog__scrim" (click)="onBackdropClick()"></div>
+
+  <div
+    class="ino-confirm-dialog__panel"
+    role="alertdialog"
+    aria-modal="true"
+    [attr.aria-labelledby]="heading ? headingId : null"
+    [attr.aria-describedby]="message ? messageId : null"
+    tabindex="-1"
+    inoFocusTrap
+  >
+    <ino-card variant="overlay" padding="lg">
+      <div ino-card-header>
+        <h2 *ngIf="heading" [id]="headingId" class="ino-confirm-dialog__heading">{{ heading }}</h2>
+      </div>
+
+      <p *ngIf="message" [id]="messageId" class="ino-confirm-dialog__message">{{ message }}</p>
+      <ng-content></ng-content>
+
+      <div ino-card-footer class="ino-confirm-dialog__footer">
+        <button
+          type="button"
+          ino-button
+          variant="secondary"
+          [size]="size"
+          [disabled]="loading"
+          (click)="requestCancel()"
+        >
+          {{ cancelLabel }}
+        </button>
+        <button
+          type="button"
+          ino-button
+          [variant]="severity === 'danger' ? 'danger' : 'primary'"
+          [size]="size"
+          [loading]="loading"
+          (click)="onConfirm()"
+        >
+          {{ confirmLabel }}
+        </button>
+      </div>
+    </ino-card>
+  </div>
+</div>

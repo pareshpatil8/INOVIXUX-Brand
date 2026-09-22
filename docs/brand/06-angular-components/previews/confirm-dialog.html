@@ -1,0 +1,182 @@
+<!-- @dsCard group="Overlay" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ino-confirm-dialog — ConfirmDialog (INO-148)</title>
+<!-- Canonical token file, linked rather than copied: this preview must repaint with the system,
+     and must never become a second place raw hex values live. -->
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-eyebrow-size);
+    letter-spacing: var(--ino-type-eyebrow-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 60ch; }
+
+  .theme-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); }
+  .theme-pane {
+    flex: 1 1 260px;
+    padding: var(--ino-space-6);
+    border-radius: var(--ino-radius-xl);
+    background: var(--ino-color-surface-sunken);
+  }
+  .theme-pane > h3 {
+    margin: 0 0 var(--ino-space-4);
+    font-size: var(--ino-type-body-sm-size);
+    color: var(--ino-color-on-surface-muted);
+    font-weight: 600;
+  }
+
+  .row { display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--ino-space-5); }
+
+  /* Mirrors web/src/app/components/confirm-dialog/ino-confirm-dialog.component.scss — rendered
+     `position: static` here (not `fixed`) so the panel sits inline inside the docs card instead
+     of covering the whole preview iframe; the panel's own token bindings are unchanged. */
+  .ino-confirm-dialog__panel {
+    position: static;
+    inline-size: 100%;
+    max-inline-size: 320px;
+    padding: var(--ino-space-6);
+    background: var(--ino-color-surface-raised);
+    border-radius: var(--ino-radius-lg);
+    box-shadow: var(--ino-elevation-2);
+  }
+  .ino-confirm-dialog__heading {
+    margin: 0;
+    font-size: var(--ino-type-h3-size);
+    line-height: var(--ino-type-h3-line);
+    font-weight: var(--ino-type-h3-weight);
+    color: var(--ino-color-on-surface);
+  }
+  .ino-confirm-dialog__message {
+    margin: var(--ino-space-2) 0 0;
+    color: var(--ino-color-on-surface-muted);
+  }
+  .ino-confirm-dialog__footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--ino-space-3);
+    margin-block-start: var(--ino-space-5);
+  }
+
+  button.ino-btn {
+    min-block-size: var(--ino-control-height-default);
+    padding-inline: var(--ino-control-padding-inline-default);
+    border-radius: var(--ino-radius-md);
+    border: 1px solid transparent;
+    font: inherit;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--ino-space-2);
+  }
+  button.ino-btn:focus-visible { outline: var(--ino-focus-ring); outline-offset: var(--ino-focus-ring-offset); }
+  .ino-btn--secondary { background: transparent; border-color: var(--ino-color-border); color: var(--ino-color-on-surface); }
+  .ino-btn--primary { background: var(--ino-gradient-accent); color: var(--ino-color-on-accent); }
+  .ino-btn--danger { background: var(--ino-color-danger); color: var(--ino-color-on-danger); }
+  .ino-btn--loading { opacity: 0.85; cursor: progress; }
+  .ino-btn__spinner {
+    inline-size: 14px; block-size: 14px; border-radius: 50%;
+    border: 2px solid currentColor; border-top-color: transparent;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .ino-btn__spinner { animation: ino-confirm-spin var(--ino-motion-duration-slow) linear infinite; }
+  }
+  @keyframes ino-confirm-spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<h1>ConfirmDialog</h1>
+<p class="lede">
+  Centered, backdrop-modal confirm/cancel prompt — heading + message + exactly two actions, not a
+  generic content shell. Reuses <code>&lt;ino-card variant="overlay"&gt;</code> and
+  <code>[inoFocusTrap]</code> rather than re-implementing either. Panels below render
+  <code>position: static</code> for this preview only; the shipped component is
+  <code>position: fixed</code>, centered over a full-viewport scrim.
+</p>
+
+<h2>Theme × severity</h2>
+<div class="theme-row">
+
+  <div class="theme-pane">
+    <h3>dark — :root (default)</h3>
+    <div class="ino-confirm-dialog__panel">
+      <h2 class="ino-confirm-dialog__heading">Save changes?</h2>
+      <p class="ino-confirm-dialog__message">Your edits will be applied immediately.</p>
+      <div class="ino-confirm-dialog__footer">
+        <button type="button" class="ino-btn ino-btn--secondary">Cancel</button>
+        <button type="button" class="ino-btn ino-btn--primary">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="light">
+    <h3>light — [data-theme="light"]</h3>
+    <div class="ino-confirm-dialog__panel">
+      <h2 class="ino-confirm-dialog__heading">Delete this record?</h2>
+      <p class="ino-confirm-dialog__message">This action cannot be undone.</p>
+      <div class="ino-confirm-dialog__footer">
+        <button type="button" class="ino-btn ino-btn--secondary">Cancel</button>
+        <button type="button" class="ino-btn ino-btn--danger">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="high-contrast">
+    <h3>high-contrast — [data-theme="high-contrast"]</h3>
+    <div class="ino-confirm-dialog__panel">
+      <h2 class="ino-confirm-dialog__heading">Revoke access?</h2>
+      <p class="ino-confirm-dialog__message">The user will be signed out immediately.</p>
+      <div class="ino-confirm-dialog__footer">
+        <button type="button" class="ino-btn ino-btn--secondary">Cancel</button>
+        <button type="button" class="ino-btn ino-btn--danger">Revoke</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<h2>Loading (confirm in flight)</h2>
+<div class="row">
+  <div class="ino-confirm-dialog__panel">
+    <h2 class="ino-confirm-dialog__heading">Delete this record?</h2>
+    <p class="ino-confirm-dialog__message">This action cannot be undone.</p>
+    <div class="ino-confirm-dialog__footer">
+      <button type="button" class="ino-btn ino-btn--secondary" disabled>Cancel</button>
+      <button type="button" class="ino-btn ino-btn--danger ino-btn--loading" aria-busy="true">
+        <span class="ino-btn__spinner" aria-hidden="true"></span> Deleting…
+      </button>
+    </div>
+  </div>
+</div>
+
+<h2>RTL</h2>
+<div class="row" dir="rtl">
+  <div class="ino-confirm-dialog__panel">
+    <h2 class="ino-confirm-dialog__heading">هل تريد الحذف؟</h2>
+    <p class="ino-confirm-dialog__message">لا يمكن التراجع عن هذا الإجراء.</p>
+    <div class="ino-confirm-dialog__footer">
+      <button type="button" class="ino-btn ino-btn--secondary">إلغاء</button>
+      <button type="button" class="ino-btn ino-btn--danger">حذف</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
