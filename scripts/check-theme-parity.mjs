@@ -449,6 +449,28 @@ const COMPONENT_REGISTRY = [
     ],
   },
   {
+    name: 'datepicker',
+    web: 'web/src/app/components/datepicker',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoDatepicker.tsx',
+        roles: ['accent', 'border', 'danger', 'onAccent', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'surfaceRaised', 'surfaceSunken'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_datepicker.dart',
+        roles: ['accent', 'border', 'danger', 'onAccent', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'surfaceRaised', 'surfaceSunken'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['accentActive'], reason: 'same rationale as the input entry above — web reserves accent-active for the transient mousedown-before-focus-settles flash on the trigger and nav buttons (ino-datepicker.component.scss); touch has no pointer-down-before-focus phase, so Pressable goes straight from unfocused to colors.accent on selection, using its built-in pressed style instead of a dedicated role read.' },
+      { platform: 'flutter', roles: ['accentActive'], reason: 'same as the React Native entry above.' },
+      { platform: 'reactNative', roles: ['borderSoft'], reason: 'web reads border-soft for the internal calendar-grid week divider (a lighter rule than the panel border); the mobile ports are scoped to single-selection only (SPEC.md §9) and never render week dividers, so the role has nothing to draw and the port reads border for every border it does draw.' },
+      { platform: 'flutter', roles: ['borderSoft'], reason: 'same as the React Native entry above.' },
+      { platform: 'reactNative', roles: ['accentTextSafe'], reason: 'web reads accent-text-safe only for the in-range cell tint (range-mode text over a flat accent-tinted surface); the mobile ports are single-selection-only (SPEC.md §9) and have no in-range state to color, so the role is never reached.' },
+      { platform: 'flutter', roles: ['accentTextSafe'], reason: 'same as the React Native entry above.' },
+    ],
+  },
+  {
     name: 'focus-trap',
     web: 'web/src/app/components/focus-trap',
     mobile: { reactNative: 'web-only', flutter: 'web-only' },
