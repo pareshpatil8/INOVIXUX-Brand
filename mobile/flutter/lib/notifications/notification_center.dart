@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 
 import '../navigation/deep_link.dart';
 import '../navigation/ino_router.dart';
+import '../theme/tokens.dart';
 import 'notification_category.dart';
 
 /// One received notification. The wire format that produces it is product work (§6.7 item 3);
@@ -95,9 +96,9 @@ class InoNotificationCenter extends ChangeNotifier {
 
   static final InoNotificationCenter instance = InoNotificationCenter();
 
-  /// §6.3.1 dwell — 5000ms, matching web `ToastService`'s default, so the two transient surfaces
-  /// don't feel like different systems.
-  static const Duration bannerDwell = Duration(milliseconds: 5000);
+  /// §6.3.1 dwell — matches web `ToastService`'s default, so the two transient surfaces don't
+  /// feel like different systems. See tokens.css §9b / InoDwell (INO-174).
+  static const Duration bannerDwell = InoDwell.toast;
 
   /// Unread count for both badge surfaces (§6.2).
   ///

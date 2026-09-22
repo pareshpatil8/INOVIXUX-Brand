@@ -201,3 +201,9 @@ class InoMotion {
   static const Curve easingDecelerate = Cubic(0, 0, 0, 1);
   static const Curve easingAccelerate = Cubic(0.3, 0, 1, 1);
 }
+
+/// tokens.css §9b — read-time for transient, self-dismissing surfaces. Not a motion duration
+/// (see tokens.css §9b for why dwell is its own scale, INO-174).
+class InoDwell {
+  static const Duration toast = Duration(milliseconds: 5000);
+}

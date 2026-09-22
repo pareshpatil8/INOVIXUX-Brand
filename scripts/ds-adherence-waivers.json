@@ -11,8 +11,7 @@
     "decision, say so on the owning issue below.",
     "",
     "  INO-172 — adopt the type scale on pages that hardcode font-size",
-    "  INO-173 — decide the sub-4px spacing steps (1px/2px/6px/10px) or restyle off them",
-    "  INO-174 — brand gradient, accent glow and toast dwell do not re-theme"
+    "  INO-173 — decide the sub-4px spacing steps (1px/2px/6px/10px) or restyle off them"
   ],
   "waivers": [
     {
@@ -287,55 +286,6 @@
       "match": "EdgeInsets.symmetric(horizontal: 4, vertical: 1)",
       "reason": "sub-4px / 10px / 48px step the space scale does not define; pending the micro-step decision",
       "issue": "INO-173"
-    },
-    {
-      "rule": "no-hardcoded-icon-color",
-      "file": "web/src/app/app.html",
-      "match": "stop-color=\"#4F46E5\"",
-      "reason": "logo mark SVG gradient stop; an SVG stop cannot read a CSS linear-gradient()",
-      "issue": "INO-174"
-    },
-    {
-      "rule": "no-hardcoded-icon-color",
-      "file": "web/src/app/app.html",
-      "match": "stop-color=\"#7C5CFC\"",
-      "reason": "logo mark SVG gradient stop; an SVG stop cannot read a CSS linear-gradient()",
-      "issue": "INO-174"
-    },
-    {
-      "rule": "no-raw-color",
-      "file": "web/src/app/app.html",
-      "match": "#4F46E5",
-      "reason": "brand gradient stop / accent glow: needs semantic gradient-stop roles so it re-themes",
-      "issue": "INO-174"
-    },
-    {
-      "rule": "no-raw-color",
-      "file": "web/src/app/app.html",
-      "match": "#7C5CFC",
-      "reason": "brand gradient stop / accent glow: needs semantic gradient-stop roles so it re-themes",
-      "issue": "INO-174"
-    },
-    {
-      "rule": "no-raw-color",
-      "file": "web/src/styles/page-sections.scss",
-      "match": "rgba(",
-      "reason": "brand gradient stop / accent glow: needs semantic gradient-stop roles so it re-themes",
-      "issue": "INO-174"
-    },
-    {
-      "rule": "non-token-shadow",
-      "file": "web/src/styles/page-sections.scss",
-      "match": "box-shadow: 0 30px 70px -35px rgba(124, 92, 252, 0.35), var(--ino-elevation-1)",
-      "reason": "hand-rolled accent glow; needs a token so high-contrast can drop it",
-      "issue": "INO-174"
-    },
-    {
-      "rule": "non-token-duration",
-      "file": "mobile/flutter/lib/notifications/notification_center.dart",
-      "match": "Duration(milliseconds: 5000",
-      "reason": "banner dwell timer, matching web ToastService's 5000ms default — a UX read-time, not a CSS motion duration; pending INO-174's toast-dwell re-theme decision",
-      "issue": "INO-174"
     }
   ]
 }

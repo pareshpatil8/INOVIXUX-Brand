@@ -42,7 +42,7 @@
   background: var(--ino-color-surface-raised);
   overflow: hidden;
   margin-top: var(--ino-space-9);
-  box-shadow: 0 30px 70px -35px rgba(124, 92, 252, 0.35), var(--ino-elevation-1);
+  box-shadow: var(--ino-elevation-brand-3); /* spotlighted hero surface — parametric on --ino-color-accent, flattens to none in high-contrast (INO-174) */
 }
 
 .dash-head {

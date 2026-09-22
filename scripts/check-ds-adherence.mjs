@@ -108,10 +108,14 @@ const SPACE_SCALE = scaleOf(['--ino-space-', '--ino-target-', '--ino-row-min-hei
 const RADIUS_SCALE = scaleOf(['--ino-radius-']);
 const TYPE_SCALE = scaleOf(['--ino-type-']);
 
-// Durations, in milliseconds, keyed the same way.
+// Durations, in milliseconds, keyed the same way. Two families share this legal-values map:
+// --ino-motion-duration-* (the 4-step, easing-tied animation scale) and --ino-dwell-duration-*
+// (read-time for transient self-dismissing surfaces, an order of magnitude above motion's
+// 900ms ceiling — deliberately not a 5th motion step, see tokens.css §9b / INO-174).
+const DURATION_PREFIXES = ['--ino-motion-duration', '--ino-dwell-duration'];
 const DURATION_SCALE = new Map();
 for (const [name, value] of tokenDecls) {
-  if (!name.startsWith('--ino-motion-duration')) continue;
+  if (!DURATION_PREFIXES.some(p => name.startsWith(p))) continue;
   const t = value.match(/^(\d*\.?\d+)(ms|s)$/);
   if (!t) continue;
   const ms = parseFloat(t[1]) * (t[2] === 's' ? 1000 : 1);
