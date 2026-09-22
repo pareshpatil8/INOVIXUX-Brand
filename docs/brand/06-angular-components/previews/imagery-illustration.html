@@ -1,0 +1,260 @@
+<!-- @dsCard group="Media" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Imagery &amp; illustration direction — geometry, palette, hero spec (INO-167 / M-11)</title>
+<!-- Canonical token file, linked rather than copied: this preview must repaint with the system,
+     and must never become a second place raw hex values live. -->
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-eyebrow-size);
+    letter-spacing: var(--ino-type-eyebrow-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 60ch; }
+
+  .theme-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); }
+  .theme-pane {
+    flex: 1 1 320px;
+    padding: var(--ino-space-5);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-xl);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+  }
+  .theme-pane > h3 {
+    margin: 0 0 var(--ino-space-4);
+    font-size: var(--ino-type-body-sm-size);
+    color: var(--ino-color-on-surface-muted);
+    font-weight: 600;
+  }
+
+  /* --- Illustration geometry (§1) ------------------------------------- */
+  .illo {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .illo-stroke-primary { stroke: var(--ino-color-on-surface); }
+  .illo-stroke-muted   { stroke: var(--ino-color-on-surface-muted); }
+  .illo-stroke-accent  { stroke: var(--ino-color-accent); }
+  .illo-fill-accent    { fill: var(--ino-color-accent); }
+  .illo-fill-none      { fill: none; }
+
+  /* --- Hero composition (§3) ------------------------------------------ */
+  .hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--ino-radius-xl);
+    background: var(--ino-color-surface);
+    box-shadow: var(--ino-elevation-brand-3);
+    aspect-ratio: 16 / 9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  [data-theme="high-contrast"] .hero { box-shadow: none; border: 1px solid var(--ino-color-border); }
+  .hero__glow {
+    position: absolute;
+    inset: 0;
+    background: var(--ino-glow-accent);
+  }
+  [data-theme="high-contrast"] .hero__glow { display: none; }
+  .hero__mark {
+    position: relative;
+    width: 40%;
+  }
+
+  /* --- Photography duotone (§2) --------------------------------------- */
+  .photo-duotone {
+    aspect-ratio: 4 / 3;
+    border-radius: var(--ino-radius-lg);
+    background:
+      linear-gradient(160deg,
+        color-mix(in srgb, var(--ino-color-accent) 70%, transparent),
+        var(--ino-color-surface));
+    box-shadow: var(--ino-elevation-brand-1);
+  }
+  [data-theme="high-contrast"] .photo-duotone { box-shadow: none; border: 1px solid var(--ino-color-border); }
+
+  /* --- Motion demo (§4) ------------------------------------------------ */
+  .motion-demo { display: flex; align-items: center; gap: var(--ino-space-5); }
+  .motion-demo__trigger {
+    font: inherit;
+    color: var(--ino-color-on-accent);
+    background: var(--ino-gradient-accent);
+    border: none;
+    border-radius: var(--ino-radius-md);
+    padding: var(--ino-space-2) var(--ino-space-4);
+    cursor: pointer;
+  }
+  .motion-demo__stage {
+    flex: 1;
+    min-height: 120px;
+    border: 1px dashed var(--ino-color-border);
+    border-radius: var(--ino-radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .motion-demo__hero-mini { width: 96px; opacity: 0; transform: scale(0.98); }
+  .motion-demo__hero-mini.is-in {
+    opacity: 1;
+    transform: scale(1);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .motion-demo__hero-mini.is-in {
+      transition:
+        opacity var(--ino-motion-duration-slow) var(--ino-motion-easing-decelerate),
+        transform var(--ino-motion-duration-slow) var(--ino-motion-easing-decelerate);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    /* Settled end state renders immediately — nothing to animate into. */
+    .motion-demo__hero-mini { opacity: 1; transform: scale(1); }
+  }
+
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--ino-space-5); }
+  figure { margin: 0; }
+  figcaption {
+    margin-top: var(--ino-space-2);
+    font-size: var(--ino-type-caption-size);
+    color: var(--ino-color-on-surface-muted);
+  }
+</style>
+</head>
+<body>
+
+<h1>Imagery &amp; illustration direction</h1>
+<p class="lede">
+  Geometry, stroke weight, and palette for M-11 — every value below resolves through an existing
+  semantic role (<code>--ino-color-accent</code>, <code>--ino-elevation-brand-*</code>,
+  <code>--ino-gradient-accent</code>, <code>--ino-glow-accent</code>). No new token, no new asset;
+  this preview is inline SVG standing in for artwork a future contractor draws against.
+</p>
+
+<h2>Illustration geometry &amp; stroke × theme (§1)</h2>
+<div class="theme-row">
+
+  <div class="theme-pane">
+    <h3>dark — :root (default)</h3>
+    <svg class="illo illo-fill-none" viewBox="0 0 96 96" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle class="illo-stroke-muted" cx="48" cy="48" r="30"/>
+      <rect class="illo-stroke-accent" x="30" y="30" width="36" height="36" rx="8"/>
+      <path class="illo-stroke-primary" d="M18 78 L40 56 L56 66 L78 40"/>
+      <circle class="illo-fill-accent" cx="78" cy="40" r="4" stroke="none"/>
+    </svg>
+  </div>
+
+  <div class="theme-pane" data-theme="light">
+    <h3>light — [data-theme="light"]</h3>
+    <svg class="illo illo-fill-none" viewBox="0 0 96 96" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle class="illo-stroke-muted" cx="48" cy="48" r="30"/>
+      <rect class="illo-stroke-accent" x="30" y="30" width="36" height="36" rx="8"/>
+      <path class="illo-stroke-primary" d="M18 78 L40 56 L56 66 L78 40"/>
+      <circle class="illo-fill-accent" cx="78" cy="40" r="4" stroke="none"/>
+    </svg>
+  </div>
+
+  <div class="theme-pane" data-theme="high-contrast">
+    <h3>high-contrast — [data-theme="high-contrast"]</h3>
+    <svg class="illo illo-fill-none" viewBox="0 0 96 96" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle class="illo-stroke-muted" cx="48" cy="48" r="30"/>
+      <rect class="illo-stroke-accent" x="30" y="30" width="36" height="36" rx="8"/>
+      <path class="illo-stroke-primary" d="M18 78 L40 56 L56 66 L78 40"/>
+      <circle class="illo-fill-accent" cx="78" cy="40" r="4" stroke="none"/>
+    </svg>
+  </div>
+
+</div>
+<p class="lede">
+  Same markup, three themes — no <code>data-theme</code> branch inside the SVG itself. Only
+  <code>--ino-color-on-surface</code> / <code>-muted</code> / <code>--ino-color-accent</code>
+  change per theme. Note the single accent focal point (the filled dot + accent square) — every
+  other stroke is muted or primary, never a second accent colour (§1 "one focal point" rule).
+</p>
+
+<h2>Hero-image spec (§3)</h2>
+<div class="grid-3">
+  <figure>
+    <div class="hero">
+      <div class="hero__glow"></div>
+      <svg class="illo hero__mark illo-fill-none" viewBox="0 0 96 96" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle class="illo-stroke-muted" cx="48" cy="48" r="34"/>
+        <rect class="illo-stroke-accent" x="28" y="28" width="40" height="40" rx="10"/>
+      </svg>
+    </div>
+    <figcaption>Raised hero (<code>--ino-elevation-brand-3</code>) — glow omitted automatically in high-contrast</figcaption>
+  </figure>
+  <figure>
+    <div class="hero" style="box-shadow:none;border-radius:0;">
+      <div class="hero__glow"></div>
+      <svg class="illo hero__mark illo-fill-none" viewBox="0 0 96 96" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle class="illo-stroke-muted" cx="48" cy="48" r="34"/>
+        <rect class="illo-stroke-accent" x="28" y="28" width="40" height="40" rx="10"/>
+      </svg>
+    </div>
+    <figcaption>Full-bleed hero — <code>--ino-elevation-0</code>, radius <code>0</code></figcaption>
+  </figure>
+  <figure>
+    <div class="hero" style="aspect-ratio:1/1;">
+      <svg class="illo illo-fill-none" viewBox="0 0 96 96" width="40%" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle class="illo-stroke-muted" cx="48" cy="48" r="28"/>
+        <path class="illo-stroke-muted" d="M32 48 h32 M48 32 v32"/>
+      </svg>
+    </div>
+    <figcaption>Empty-state variant — muted-only, no accent focal point (§3)</figcaption>
+  </figure>
+</div>
+
+<h2>Photography duotone treatment (§2)</h2>
+<div class="grid-3">
+  <figure>
+    <div class="photo-duotone"></div>
+    <figcaption>Inline thumbnail — <code>--ino-radius-lg</code>, <code>--ino-elevation-brand-1</code></figcaption>
+  </figure>
+  <figure>
+    <div class="photo-duotone" style="border-radius:var(--ino-radius-xl);box-shadow:var(--ino-elevation-brand-2);"></div>
+    <figcaption>Hero-scale — <code>--ino-radius-xl</code>, <code>--ino-elevation-brand-2</code></figcaption>
+  </figure>
+  <figure data-theme="high-contrast">
+    <div class="photo-duotone"></div>
+    <figcaption>high-contrast — glow/shadow flattened, border only</figcaption>
+  </figure>
+</div>
+
+<h2>Motion — hero enter (§4)</h2>
+<div class="motion-demo">
+  <button type="button" class="motion-demo__trigger" onclick="document.querySelectorAll('.motion-demo__hero-mini').forEach(el => { el.classList.remove('is-in'); void el.offsetWidth; el.classList.add('is-in'); })">
+    Replay enter
+  </button>
+  <div class="motion-demo__stage">
+    <svg class="illo motion-demo__hero-mini is-in illo-fill-none" viewBox="0 0 96 96" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <circle class="illo-stroke-muted" cx="48" cy="48" r="30"/>
+      <rect class="illo-stroke-accent" x="30" y="30" width="36" height="36" rx="8"/>
+    </svg>
+  </div>
+</div>
+<p class="lede">
+  <code>--ino-motion-duration-slow</code> (480ms) + <code>--ino-motion-easing-decelerate</code>,
+  fade + scale(0.98→1). Gated under <code>prefers-reduced-motion: no-preference</code> — under
+  <code>reduce</code> the composition renders directly in its settled end state (see stylesheet).
+</p>
+
+</body>
+</html>

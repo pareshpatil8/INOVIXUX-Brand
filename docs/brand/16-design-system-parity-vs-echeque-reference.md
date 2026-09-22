@@ -827,7 +827,7 @@ source-reading assertion, not a test result** — which is what H-5 exists to fi
 | 9 | *(none in reference)* | §10 density, §7 touch, §11 safe-area | ✅ ahead |
 | 10 | *(none in reference)* | `check-theme-parity.mjs` | ✅ ahead |
 | 11 | `assets/logo*.svg` ×3 | 9 SVGs + 5 PNGs | ✅ ahead *(final artwork still INO-82)* |
-| 12 | `brand-hero.svg`, `brand-illustration.svg` | none | ❌ |
+| 12 | `brand-hero.svg`, `brand-illustration.svg` | direction spec only, no assets — **M-11** | 🟡 spec closed, assets pending |
 | 13 | `guidelines/*.card.html` ×12 | one combined style-guide page | 🟡 → **H-6** |
 | 14 | `guidelines/ds-context.md` | `02-design-tokens/README.md` + theme contract | ✅ |
 | 15 | `components/<group>/X.jsx` | 16 Angular components, mirrored | ✅ |
@@ -882,7 +882,7 @@ the current component count and get monotonically more expensive. §4.4 makes th
 | **M-8** | Print colour specification — CMYK + Pantone for the violet/indigo accent | ❌ Missing | **INO-82** |
 | **M-9** | Social profile kit — LinkedIn/X banner, avatar crops, post templates | ❌ Missing | partly **INO-82** |
 | **M-10** | Motion specimen — rendered page demonstrating durations and easings | ❌ Missing | folded into **H-6** |
-| **M-11** | Imagery / illustration direction | ❌ Missing | — |
+| **M-11** | Imagery / illustration direction | ✅ **Direction spec closed** by **INO-167** (S-5) — `06-angular-components/imagery-illustration.md`: geometry, stroke weight, palette (all existing `--ino-color-accent*` / `--ino-elevation-brand-*` / `--ino-gradient-accent` roles, no new token), photography duotone rules, hero-image spec, cross-theme + motion + a11y contract. No new binary illustration/hero assets ship (contracted-designer scope, per CTO decision on the ticket) and the 6 Media components it feeds remain unbuilt — this closes the "no direction at all" blocker only | Media components (row 12 below) still **❌** |
 | **M-12** | App store listing assets — screenshots, feature graphic, store copy × 3 tracks | ❌ Missing | partly **INO-82** |
 | **M-13** | **PrimeNG AI tooling adoption** *(NEW)* — install the Plugin; pin `llms.txt` to `specs/primeng/llms-22.1.1.txt` | ❌ Not started | §2 | 
 | **M-14** | **Decompose `ino-metric-panel`** *(NEW)* into `Tag` + `MeterGroup` inside a `Card` | 🔲 Decision | §7 |
