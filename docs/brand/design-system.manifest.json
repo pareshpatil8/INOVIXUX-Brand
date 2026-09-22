@@ -1,0 +1,366 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema#",
+  "generatedBy": "scripts/generate-design-system-manifest.mjs",
+  "generatedFrom": "web/src/app/components/*/ino-*.component.ts",
+  "note": "Machine-readable, generated — do not hand-edit. Re-run the generator after any component change.",
+  "viewportConventions": {
+    "mobile": "<=640px",
+    "tablet": "641-900px",
+    "desktop": ">900px"
+  },
+  "componentCount": 16,
+  "components": [
+    {
+      "name": "ino-alert",
+      "className": "InoAlertComponent",
+      "sourcePath": "web/src/app/components/alert/ino-alert.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "status",
+          "type": "InoAlertStatus",
+          "values": [
+            "success",
+            "warning",
+            "danger"
+          ],
+          "default": "'success'",
+          "optional": true
+        },
+        {
+          "name": "variant",
+          "type": "InoAlertVariant",
+          "values": [
+            "inline",
+            "banner",
+            "toast"
+          ],
+          "default": "'inline'",
+          "optional": true
+        }
+      ],
+      "variants": [
+        "success",
+        "warning",
+        "danger"
+      ],
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "button[ino-button], a[ino-button]",
+      "className": "InoButtonComponent",
+      "sourcePath": "web/src/app/components/button/ino-button.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "variant",
+          "type": "InoButtonVariant",
+          "values": [
+            "primary",
+            "secondary",
+            "ghost",
+            "icon"
+          ],
+          "default": "'primary'",
+          "optional": true
+        }
+      ],
+      "variants": [
+        "primary",
+        "secondary",
+        "ghost",
+        "icon"
+      ],
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-card",
+      "className": "InoCardComponent",
+      "sourcePath": "web/src/app/components/card/ino-card.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "variant",
+          "type": "'default' | 'sunken' | 'overlay'",
+          "values": [
+            "default",
+            "sunken",
+            "overlay"
+          ],
+          "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "padding",
+          "type": "'sm' | 'md' | 'lg'",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "'md'",
+          "optional": true
+        }
+      ],
+      "variants": [
+        "default",
+        "sunken",
+        "overlay"
+      ],
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-checkbox",
+      "className": "InoCheckboxComponent",
+      "sourcePath": "web/src/app/components/checkbox/ino-checkbox.component.ts",
+      "previewPath": null,
+      "inputs": [],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-feature-grid",
+      "className": "InoFeatureGridComponent",
+      "sourcePath": "web/src/app/components/feature-grid/ino-feature-grid.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "items",
+          "type": "InoFeatureGridItem[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-footer",
+      "className": "InoFooterComponent",
+      "sourcePath": "web/src/app/components/footer/ino-footer.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "columns",
+          "type": "InoFooterColumn[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-hero",
+      "className": "InoHeroComponent",
+      "sourcePath": "web/src/app/components/hero/ino-hero.component.ts",
+      "previewPath": null,
+      "inputs": [],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-input",
+      "className": "InoInputComponent",
+      "sourcePath": "web/src/app/components/input/ino-input.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "type",
+          "type": "'text' | 'email' | 'password' | 'number' | 'search' | 'tel' | 'url'",
+          "values": [
+            "text",
+            "email",
+            "password",
+            "number",
+            "search",
+            "tel",
+            "url"
+          ],
+          "default": "'text'",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-metric-panel",
+      "className": "InoMetricPanelComponent",
+      "sourcePath": "web/src/app/components/metric-panel/ino-metric-panel.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "rows",
+          "type": "InoMetricPanelRow[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-modal",
+      "className": "InoModalComponent",
+      "sourcePath": "web/src/app/components/modal/ino-modal.component.ts",
+      "previewPath": null,
+      "inputs": [],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-nav",
+      "className": "InoNavComponent",
+      "sourcePath": "web/src/app/components/nav/ino-nav.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "links",
+          "type": "InoNavLink[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-radio-group",
+      "className": "InoRadioGroupComponent",
+      "sourcePath": "web/src/app/components/radio-group/ino-radio-group.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "options",
+          "type": "InoRadioOption[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-select",
+      "className": "InoSelectComponent",
+      "sourcePath": "web/src/app/components/select/ino-select.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "options",
+          "type": "InoSelectOption[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-tier-card",
+      "className": "InoTierCardComponent",
+      "sourcePath": "web/src/app/components/tier-card/ino-tier-card.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "features",
+          "type": "string[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-toast-container",
+      "className": "InoToastContainerComponent",
+      "sourcePath": "web/src/app/components/toast-container/ino-toast-container.component.ts",
+      "previewPath": null,
+      "inputs": [],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-toggle",
+      "className": "InoToggleComponent",
+      "sourcePath": "web/src/app/components/toggle/ino-toggle.component.ts",
+      "previewPath": null,
+      "inputs": [],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    }
+  ]
+}
