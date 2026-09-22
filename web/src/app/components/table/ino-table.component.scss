@@ -1,0 +1,400 @@
+/*
+ * <ino-table> — INO-155 / INO-31 T-1. No literal colour/space/radius/duration/shadow/font-size —
+ * everything resolves through tokens.css, no [data-theme] branch. Logical properties only
+ * (resize/reorder pointer math in the .ts flips sign for RTL). Every row reads
+ * --ino-row-min-height (tokens.css §10) — the token this whole component exists to finally use.
+ */
+
+:host([data-size='sm']) {
+  --ino-control-height: var(--ino-control-height-sm);
+  --ino-control-padding-inline: var(--ino-control-padding-inline-sm);
+  --ino-control-font-size: var(--ino-control-font-size-sm);
+  --ino-control-gap: var(--ino-control-gap-sm);
+}
+
+:host([data-size='lg']) {
+  --ino-control-height: var(--ino-control-height-lg);
+  --ino-control-padding-inline: var(--ino-control-padding-inline-lg);
+  --ino-control-font-size: var(--ino-control-font-size-lg);
+  --ino-control-gap: var(--ino-control-gap-lg);
+}
+
+:host {
+  display: block;
+  --ino-table-border: var(--ino-color-border);
+  /* Local alias for the repeated fast-duration/standard-easing pair below — pure indirection, not
+     a new value (still resolves through the same two tokens.css roles one hop later), kept only to
+     stay inside Angular's anyComponentStyle budget. Same technique datepicker/SPEC.md §8 records. */
+  --_t: var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+  font-family: var(--ino-font-display);
+  font-size: var(--ino-control-font-size);
+  color: var(--ino-color-on-surface);
+
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      transition: none !important;
+      animation: none !important;
+    }
+  }
+}
+
+.ino-table {
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+  border: 1px solid var(--ino-table-border);
+  border-radius: var(--ino-radius-lg);
+  overflow: hidden;
+  background: var(--ino-color-surface);
+}
+
+.ino-table__scroll {
+  overflow: auto;
+  min-inline-size: 0;
+}
+
+.ino-table__table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+/* Shared header/body cell geometry. The transparent border-inline-start is reserved space for the
+   selected-row accent stripe below — declared on every cell so a selected row's cells don't shift
+   width relative to unselected ones when the stripe turns solid. */
+.ino-table__th,
+.ino-table__td {
+  position: relative;
+  box-sizing: border-box;
+  min-block-size: var(--ino-row-min-height);
+  padding-inline: var(--ino-control-padding-inline);
+  padding-block: var(--ino-space-2);
+  border-inline-start: var(--ino-space-1) solid transparent;
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: calc(-1 * var(--ino-focus-ring-offset));
+    z-index: 1;
+  }
+}
+
+.ino-table__th {
+  background: var(--ino-color-surface-raised);
+  border-block-end: 1px solid var(--ino-table-border);
+  color: var(--ino-color-on-surface-muted);
+  font-size: var(--ino-type-label-sm-size);
+  font-weight: var(--ino-type-label-sm-weight);
+  letter-spacing: var(--ino-type-label-sm-tracking);
+  text-align: start;
+  white-space: nowrap;
+  cursor: default;
+  transition: background var(--_t);
+
+  &:focus-visible {
+    z-index: 3;
+  }
+}
+
+.ino-table__th--sortable {
+  cursor: pointer;
+
+  &:hover {
+    background: var(--ino-color-surface-sunken);
+    color: var(--ino-color-on-surface);
+  }
+}
+
+.ino-table__th--frozen,
+.ino-table__td--frozen {
+  position: sticky;
+  z-index: 1;
+  background: inherit;
+}
+
+.ino-table--frozen .ino-table__th--frozen,
+.ino-table--frozen .ino-table__td--frozen {
+  box-shadow: var(--ino-elevation-brand-1);
+}
+
+.ino-table__th--select,
+.ino-table__th--expand,
+.ino-table__td--select,
+.ino-table__td--expand {
+  inline-size: var(--ino-control-height);
+  min-inline-size: var(--ino-control-height);
+  text-align: center;
+}
+
+.ino-table__th-content {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ino-space-1);
+}
+
+.ino-table__sort-icon {
+  display: inline-flex;
+  color: var(--ino-color-on-surface-subtle);
+  transform: rotate(180deg);
+  transition: transform var(--_t),
+    color var(--_t);
+}
+
+.ino-table__sort-icon--asc,
+.ino-table__sort-icon--desc {
+  color: var(--ino-color-accent);
+}
+
+.ino-table__sort-icon--asc {
+  transform: rotate(0deg);
+}
+
+/* Keyboard-accessible column reorder (DoD row 8) — always in the DOM/tab order, never
+   display:none; visually quiet since drag is the primary gesture for a pointer user. */
+.ino-table__reorder-controls {
+  display: inline-flex;
+  gap: var(--ino-space-1);
+  margin-inline-start: var(--ino-space-1);
+  opacity: 0;
+  transition: opacity var(--_t);
+}
+
+.ino-table__th:hover .ino-table__reorder-controls,
+.ino-table__th:focus-within .ino-table__reorder-controls {
+  opacity: 1;
+}
+
+.ino-table__reorder-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-inline-size: var(--ino-target-min);
+  min-block-size: var(--ino-target-min);
+  border: none;
+  border-radius: var(--ino-radius-sm);
+  background: transparent;
+  color: var(--ino-color-on-surface-muted);
+  cursor: pointer;
+  line-height: 1;
+
+  &:hover:not(:disabled) {
+    background: var(--ino-color-surface-sunken);
+    color: var(--ino-color-on-surface);
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+/* Drag-to-resize handle — pointer events driven from the .ts. touch-action:none stops the
+   browser eating the pointermove stream mid-drag on touch/hybrid devices. */
+.ino-table__resize-handle {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  inline-size: var(--ino-space-2);
+  cursor: col-resize;
+  touch-action: none;
+}
+
+/* Filter row. */
+.ino-table__filter-row .ino-table__td {
+  background: var(--ino-color-surface-raised);
+  border-block-end: 1px solid var(--ino-table-border);
+}
+
+/* Shared base for every inline form control this table draws (filter row + cell edit) — merged
+   here to stay inside Angular's anyComponentStyle budget rather than repeating the same block 3x. */
+.ino-table__filter-input,
+.ino-table__filter-select,
+.ino-table__edit-input {
+  inline-size: 100%;
+  padding-inline: var(--ino-space-2);
+  border-radius: var(--ino-radius-sm);
+  background: var(--ino-color-surface-sunken);
+  color: var(--ino-color-on-surface);
+  font: inherit;
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+}
+
+.ino-table__filter-input,
+.ino-table__filter-select {
+  min-block-size: calc(var(--ino-control-height) * 0.8);
+  border: 1px solid var(--ino-color-border);
+
+  &:hover:not(:disabled) {
+    border-color: var(--ino-color-on-surface-muted);
+  }
+
+  &:focus-visible {
+    border-color: var(--ino-color-accent);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
+/* Body rows — every row reads --ino-row-min-height (DoD row 4) via the shared .ino-table__td rule
+   above. */
+.ino-table__row {
+  background: var(--ino-color-surface);
+  transition: background var(--_t);
+
+  &:hover {
+    background: var(--ino-color-surface-sunken);
+  }
+}
+
+/* Solid roles only — check-ds-adherence.mjs's no-raw-color rule bans color-mix() outright (even
+   wrapping a var()), so a translucent accent tint is off the table, and its non-token-shadow rule
+   bans a hand-rolled box-shadow stripe too (same finding datepicker/SPEC.md §7 records for the
+   color-mix half). A flat surface-sunken fill plus a solid accent border-inline-start on the first
+   cell — the transparent reservation on every cell above prevents a width shift — keeps the row
+   distinguishable from a plain :hover (surface-sunken alone, no stripe) without either device. */
+.ino-table__row--selected {
+  background: var(--ino-color-surface-sunken);
+
+  .ino-table__td:first-child {
+    border-inline-start-color: var(--ino-color-accent);
+  }
+}
+
+.ino-table__td {
+  border-block-end: 1px solid var(--ino-color-border-soft);
+  vertical-align: middle;
+}
+
+.ino-table__checkbox {
+  accent-color: var(--ino-color-accent);
+  inline-size: 20px;
+  block-size: 20px;
+  cursor: pointer;
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+/* Row expansion + grouping share one chevron: a right-pointing triangle, rotated 90deg when open.
+   Bind `.ino-table__chevron--open` to `isExpanded(...)` (row) or `!isGroupCollapsed(...)` (group). */
+.ino-table__expand-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-inline-size: var(--ino-target-min);
+  min-block-size: var(--ino-target-min);
+  border-radius: var(--ino-radius-sm);
+  color: var(--ino-color-on-surface-muted);
+}
+
+.ino-table__chevron {
+  display: inline-block;
+  inline-size: 0;
+  block-size: 0;
+  border-inline-start: 5px solid currentColor;
+  border-block: 4px solid transparent;
+  transition: transform var(--_t);
+}
+
+.ino-table__chevron--open {
+  transform: rotate(90deg);
+}
+
+.ino-table__row--detail .ino-table__detail-cell {
+  background: var(--ino-color-surface-sunken);
+  padding: var(--ino-space-4) var(--ino-control-padding-inline);
+}
+
+.ino-table__row--group {
+  background: var(--ino-color-surface-raised);
+}
+
+.ino-table__group-cell {
+  font-weight: 600;
+  color: var(--ino-color-on-surface);
+  cursor: pointer;
+}
+
+/* Editing — base rule (inline-size/padding/radius/background/color/font/focus-visible) merged into
+   the shared filter-input/select/edit-input block above; only what differs lives here. */
+.ino-table__edit-input {
+  min-block-size: calc(var(--ino-row-min-height) - var(--ino-space-2));
+  border: 1px solid var(--ino-color-accent);
+}
+
+/* Empty state. */
+.ino-table__empty-cell {
+  border-block-end: none;
+}
+
+.ino-table__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: calc(var(--ino-row-min-height) * 3);
+  padding: var(--ino-space-6);
+  color: var(--ino-color-on-surface-muted);
+  text-align: center;
+}
+
+/* Loading skeleton — same shimmer idiom as ino-virtual-scroller (both ends are semantic roles). */
+.ino-table__skeleton-bar {
+  display: block;
+  inline-size: 70%;
+  block-size: var(--ino-space-3);
+  border-radius: var(--ino-radius-pill);
+  background: var(--ino-color-border-soft);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ino-table__skeleton-bar {
+    background: linear-gradient(90deg, var(--ino-color-border-soft) 0%, var(--ino-color-border) 50%, var(--ino-color-border-soft) 100%);
+    background-size: 200% 100%;
+    animation: ino-table-shimmer var(--ino-motion-duration-slow) var(--ino-motion-easing-standard) infinite;
+  }
+}
+
+@keyframes ino-table-shimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+/* States 5-8, from host data-attributes — same idiom as ino-virtual-scroller/ino-paginator. */
+:host([data-disabled]) {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Readonly: content stays legible/focusable; mutating actions no-op via the `interactive` guard
+   in the component class rather than a native disabled attribute. */
+:host([data-readonly]) .ino-table__th--sortable:hover {
+  background: var(--ino-color-surface-raised);
+  color: var(--ino-color-on-surface-muted);
+}
+
+:host([data-invalid]) .ino-table {
+  border-color: var(--ino-color-danger);
+}
+
+:host([data-loading]) .ino-table__scroll {
+  cursor: progress;
+}
+
+.ino-table__paginator {
+  flex: none;
+  padding-inline: var(--ino-control-padding-inline);
+  border-block-start: 1px solid var(--ino-table-border);
+  background: var(--ino-color-surface-raised);
+}
