@@ -1,0 +1,318 @@
+<!-- @dsCard group="Form" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ino-input-otp — one-time-password entry (INO-146)</title>
+<!-- Canonical token file, linked rather than copied: this preview must repaint with the system,
+     and must never become a second place raw hex values live. -->
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-eyebrow-size);
+    letter-spacing: var(--ino-type-eyebrow-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 60ch; }
+
+  .theme-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); }
+  .theme-pane {
+    flex: 1 1 280px;
+    padding: var(--ino-space-5);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-xl);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+  }
+  .theme-pane > h3 {
+    margin: 0 0 var(--ino-space-4);
+    font-size: var(--ino-type-body-sm-size);
+    color: var(--ino-color-on-surface-muted);
+    font-weight: 600;
+  }
+
+  .row { display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--ino-space-6); }
+
+  /* Mirrors web/src/app/components/input-otp/ino-input-otp.component.scss — same token bindings,
+     so a divergence between this preview and the shipped component is visible as a visual diff. */
+  .ino-otp-field { display: flex; flex-direction: column; gap: var(--ino-space-2); }
+  .ino-otp-field__label { font-size: var(--ino-type-body-sm-size); font-weight: 600; color: var(--ino-color-on-surface); }
+  .ino-otp-field__required { color: var(--ino-color-danger); }
+
+  .ino-otp-field__cells-wrap { position: relative; display: inline-flex; }
+  .ino-otp-field__cells { display: flex; gap: var(--ino-space-3); }
+
+  .ino-otp-field__cell {
+    box-sizing: border-box;
+    inline-size: var(--ino-control-height-default);
+    min-block-size: var(--ino-control-height-default);
+    padding: 0;
+    background: var(--ino-color-surface-sunken);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-md);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-control-font-size-default);
+    text-align: center;
+  }
+  .ino-otp-field__cell--sm { inline-size: var(--ino-control-height-sm); min-block-size: var(--ino-control-height-sm); font-size: var(--ino-control-font-size-sm); }
+  .ino-otp-field__cell--lg { inline-size: var(--ino-control-height-lg); min-block-size: var(--ino-control-height-lg); font-size: var(--ino-control-font-size-lg); }
+
+  .ino-otp-field__cell:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+    border-color: var(--ino-color-accent);
+  }
+  .ino-otp-field__cell--error { border-color: var(--ino-color-danger); }
+  .ino-otp-field__cell:disabled { opacity: 0.5; cursor: not-allowed; }
+  .ino-otp-field__cell[readonly] { background: var(--ino-color-surface-raised); cursor: default; }
+
+  .ino-otp-field__spinner {
+    position: absolute; inset-inline-end: calc(-1 * var(--ino-space-6)); top: 50%; transform: translateY(-50%);
+    inline-size: 14px; block-size: 14px; border-radius: 50%;
+    border: 2px solid var(--ino-color-on-surface-muted); border-top-color: transparent;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .ino-otp-field__spinner { animation: ino-otp-spin var(--ino-motion-duration-slow) linear infinite; }
+  }
+  @keyframes ino-otp-spin { to { transform: translateY(-50%) rotate(360deg); } }
+
+  .ino-otp-field__hint { margin: 0; font-size: var(--ino-type-body-sm-size); color: var(--ino-color-on-surface-muted); }
+  .ino-otp-field__error { margin: 0; font-size: var(--ino-type-body-sm-size); color: var(--ino-color-danger); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<h1>Input OTP — one-time-password entry</h1>
+<p class="lede">
+  Configurable <code>length</code> boxes, <code>mask</code>/<code>integerOnly</code> toggles, paste
+  distribution across boxes, <code>autocomplete="one-time-code"</code> for platform SMS autofill,
+  and a per-box accessible announcement pattern. Built for KYB verification flows (INO-146). See
+  <code>SPEC.md</code>.
+</p>
+
+<h2>Theme × length</h2>
+<div class="theme-row">
+
+  <div class="theme-pane">
+    <h3>dark — :root (default)</h3>
+    <div class="row">
+      <div class="ino-otp-field">
+        <span class="ino-otp-field__label">Verification code<span class="ino-otp-field__required" aria-hidden="true"> *</span></span>
+        <span class="ino-otp-field__cells-wrap">
+          <span class="ino-otp-field__cells">
+            <input class="ino-otp-field__cell" value="4" aria-label="Digit 1 of 6" />
+            <input class="ino-otp-field__cell" value="2" aria-label="Digit 2 of 6" />
+            <input class="ino-otp-field__cell" value="7" aria-label="Digit 3 of 6" />
+            <input class="ino-otp-field__cell" aria-label="Digit 4 of 6" />
+            <input class="ino-otp-field__cell" aria-label="Digit 5 of 6" />
+            <input class="ino-otp-field__cell" aria-label="Digit 6 of 6" />
+          </span>
+        </span>
+      </div>
+      <div class="ino-otp-field">
+        <span class="ino-otp-field__label">Masked (4 digits)</span>
+        <span class="ino-otp-field__cells-wrap">
+          <span class="ino-otp-field__cells">
+            <input class="ino-otp-field__cell" type="password" value="9" aria-label="Digit 1 of 4" />
+            <input class="ino-otp-field__cell" type="password" value="1" aria-label="Digit 2 of 4" />
+            <input class="ino-otp-field__cell" aria-label="Digit 3 of 4" />
+            <input class="ino-otp-field__cell" aria-label="Digit 4 of 4" />
+          </span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="light">
+    <h3>light — [data-theme="light"]</h3>
+    <div class="row">
+      <div class="ino-otp-field">
+        <span class="ino-otp-field__label">Verification code<span class="ino-otp-field__required" aria-hidden="true"> *</span></span>
+        <span class="ino-otp-field__cells-wrap">
+          <span class="ino-otp-field__cells">
+            <input class="ino-otp-field__cell" value="4" aria-label="Digit 1 of 6" />
+            <input class="ino-otp-field__cell" value="2" aria-label="Digit 2 of 6" />
+            <input class="ino-otp-field__cell" value="7" aria-label="Digit 3 of 6" />
+            <input class="ino-otp-field__cell" aria-label="Digit 4 of 6" />
+            <input class="ino-otp-field__cell" aria-label="Digit 5 of 6" />
+            <input class="ino-otp-field__cell" aria-label="Digit 6 of 6" />
+          </span>
+        </span>
+      </div>
+      <div class="ino-otp-field">
+        <span class="ino-otp-field__label">Masked (4 digits)</span>
+        <span class="ino-otp-field__cells-wrap">
+          <span class="ino-otp-field__cells">
+            <input class="ino-otp-field__cell" type="password" value="9" aria-label="Digit 1 of 4" />
+            <input class="ino-otp-field__cell" type="password" value="1" aria-label="Digit 2 of 4" />
+            <input class="ino-otp-field__cell" aria-label="Digit 3 of 4" />
+            <input class="ino-otp-field__cell" aria-label="Digit 4 of 4" />
+          </span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="high-contrast">
+    <h3>high-contrast — [data-theme="high-contrast"]</h3>
+    <div class="row">
+      <div class="ino-otp-field">
+        <span class="ino-otp-field__label">Verification code<span class="ino-otp-field__required" aria-hidden="true"> *</span></span>
+        <span class="ino-otp-field__cells-wrap">
+          <span class="ino-otp-field__cells">
+            <input class="ino-otp-field__cell" value="4" aria-label="Digit 1 of 6" />
+            <input class="ino-otp-field__cell" value="2" aria-label="Digit 2 of 6" />
+            <input class="ino-otp-field__cell" value="7" aria-label="Digit 3 of 6" />
+            <input class="ino-otp-field__cell" aria-label="Digit 4 of 6" />
+            <input class="ino-otp-field__cell" aria-label="Digit 5 of 6" />
+            <input class="ino-otp-field__cell" aria-label="Digit 6 of 6" />
+          </span>
+        </span>
+      </div>
+      <div class="ino-otp-field">
+        <span class="ino-otp-field__label">Masked (4 digits)</span>
+        <span class="ino-otp-field__cells-wrap">
+          <span class="ino-otp-field__cells">
+            <input class="ino-otp-field__cell" type="password" value="9" aria-label="Digit 1 of 4" />
+            <input class="ino-otp-field__cell" type="password" value="1" aria-label="Digit 2 of 4" />
+            <input class="ino-otp-field__cell" aria-label="Digit 3 of 4" />
+            <input class="ino-otp-field__cell" aria-label="Digit 4 of 4" />
+          </span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<h2>Size (control-size scale)</h2>
+<div class="row">
+  <div class="ino-otp-field">
+    <span class="ino-otp-field__label">Small</span>
+    <span class="ino-otp-field__cells-wrap">
+      <span class="ino-otp-field__cells">
+        <input class="ino-otp-field__cell ino-otp-field__cell--sm" value="1" aria-label="Digit 1 of 4" />
+        <input class="ino-otp-field__cell ino-otp-field__cell--sm" value="2" aria-label="Digit 2 of 4" />
+        <input class="ino-otp-field__cell ino-otp-field__cell--sm" value="3" aria-label="Digit 3 of 4" />
+        <input class="ino-otp-field__cell ino-otp-field__cell--sm" value="4" aria-label="Digit 4 of 4" />
+      </span>
+    </span>
+  </div>
+  <div class="ino-otp-field">
+    <span class="ino-otp-field__label">Default</span>
+    <span class="ino-otp-field__cells-wrap">
+      <span class="ino-otp-field__cells">
+        <input class="ino-otp-field__cell" value="1" aria-label="Digit 1 of 4" />
+        <input class="ino-otp-field__cell" value="2" aria-label="Digit 2 of 4" />
+        <input class="ino-otp-field__cell" value="3" aria-label="Digit 3 of 4" />
+        <input class="ino-otp-field__cell" value="4" aria-label="Digit 4 of 4" />
+      </span>
+    </span>
+  </div>
+  <div class="ino-otp-field">
+    <span class="ino-otp-field__label">Large</span>
+    <span class="ino-otp-field__cells-wrap">
+      <span class="ino-otp-field__cells">
+        <input class="ino-otp-field__cell ino-otp-field__cell--lg" value="1" aria-label="Digit 1 of 4" />
+        <input class="ino-otp-field__cell ino-otp-field__cell--lg" value="2" aria-label="Digit 2 of 4" />
+        <input class="ino-otp-field__cell ino-otp-field__cell--lg" value="3" aria-label="Digit 3 of 4" />
+        <input class="ino-otp-field__cell ino-otp-field__cell--lg" value="4" aria-label="Digit 4 of 4" />
+      </span>
+    </span>
+  </div>
+</div>
+
+<h2>States</h2>
+<div class="row">
+  <div class="ino-otp-field">
+    <span class="ino-otp-field__label">Hint</span>
+    <span class="ino-otp-field__cells-wrap">
+      <span class="ino-otp-field__cells" aria-describedby="otp-hint-demo">
+        <input class="ino-otp-field__cell" value="4" aria-label="Digit 1 of 4" />
+        <input class="ino-otp-field__cell" value="2" aria-label="Digit 2 of 4" />
+        <input class="ino-otp-field__cell" aria-label="Digit 3 of 4" />
+        <input class="ino-otp-field__cell" aria-label="Digit 4 of 4" />
+      </span>
+    </span>
+    <p class="ino-otp-field__hint" id="otp-hint-demo">Sent to +1 •••• ••42.</p>
+  </div>
+  <div class="ino-otp-field">
+    <span class="ino-otp-field__label">Invalid</span>
+    <span class="ino-otp-field__cells-wrap">
+      <span class="ino-otp-field__cells" aria-describedby="otp-error-demo">
+        <input class="ino-otp-field__cell ino-otp-field__cell--error" value="0" aria-invalid="true" aria-label="Digit 1 of 4" />
+        <input class="ino-otp-field__cell ino-otp-field__cell--error" value="0" aria-invalid="true" aria-label="Digit 2 of 4" />
+        <input class="ino-otp-field__cell ino-otp-field__cell--error" value="0" aria-invalid="true" aria-label="Digit 3 of 4" />
+        <input class="ino-otp-field__cell ino-otp-field__cell--error" value="0" aria-invalid="true" aria-label="Digit 4 of 4" />
+      </span>
+    </span>
+    <p class="ino-otp-field__error" id="otp-error-demo" role="alert">That code has expired.</p>
+  </div>
+  <div class="ino-otp-field">
+    <span class="ino-otp-field__label">Readonly</span>
+    <span class="ino-otp-field__cells-wrap">
+      <span class="ino-otp-field__cells">
+        <input class="ino-otp-field__cell" value="4" readonly aria-label="Digit 1 of 4" />
+        <input class="ino-otp-field__cell" value="2" readonly aria-label="Digit 2 of 4" />
+        <input class="ino-otp-field__cell" value="7" readonly aria-label="Digit 3 of 4" />
+        <input class="ino-otp-field__cell" value="1" readonly aria-label="Digit 4 of 4" />
+      </span>
+    </span>
+  </div>
+  <div class="ino-otp-field">
+    <span class="ino-otp-field__label">Loading</span>
+    <span class="ino-otp-field__cells-wrap">
+      <span class="ino-otp-field__cells" aria-busy="true">
+        <input class="ino-otp-field__cell" value="4" readonly aria-label="Digit 1 of 4" />
+        <input class="ino-otp-field__cell" value="2" readonly aria-label="Digit 2 of 4" />
+        <input class="ino-otp-field__cell" value="7" readonly aria-label="Digit 3 of 4" />
+        <input class="ino-otp-field__cell" value="1" readonly aria-label="Digit 4 of 4" />
+      </span>
+      <span class="ino-otp-field__spinner" aria-hidden="true"></span>
+    </span>
+  </div>
+  <div class="ino-otp-field">
+    <span class="ino-otp-field__label">Disabled</span>
+    <span class="ino-otp-field__cells-wrap">
+      <span class="ino-otp-field__cells">
+        <input class="ino-otp-field__cell" value="4" disabled aria-label="Digit 1 of 4" />
+        <input class="ino-otp-field__cell" value="2" disabled aria-label="Digit 2 of 4" />
+        <input class="ino-otp-field__cell" disabled aria-label="Digit 3 of 4" />
+        <input class="ino-otp-field__cell" disabled aria-label="Digit 4 of 4" />
+      </span>
+    </span>
+  </div>
+</div>
+
+<h2>RTL</h2>
+<div class="row" dir="rtl">
+  <div class="ino-otp-field">
+    <span class="ino-otp-field__label">رمز التحقق</span>
+    <span class="ino-otp-field__cells-wrap">
+      <span class="ino-otp-field__cells" aria-busy="true">
+        <input class="ino-otp-field__cell" value="4" readonly aria-label="Digit 1 of 4" />
+        <input class="ino-otp-field__cell" value="2" readonly aria-label="Digit 2 of 4" />
+        <input class="ino-otp-field__cell" value="7" readonly aria-label="Digit 3 of 4" />
+        <input class="ino-otp-field__cell" value="1" readonly aria-label="Digit 4 of 4" />
+      </span>
+      <span class="ino-otp-field__spinner" aria-hidden="true"></span>
+    </span>
+  </div>
+</div>
+
+</body>
+</html>

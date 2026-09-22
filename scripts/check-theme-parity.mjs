@@ -514,6 +514,24 @@ const COMPONENT_REGISTRY = [
     ],
   },
   {
+    name: 'input-otp',
+    web: 'web/src/app/components/input-otp',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoInputOtp.tsx',
+        roles: ['accent', 'border', 'danger', 'onSurface', 'onSurfaceMuted', 'surfaceSunken'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_input_otp.dart',
+        roles: ['accent', 'border', 'danger', 'onSurface', 'onSurfaceMuted', 'surfaceSunken'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['accentActive', 'surfaceRaised'], reason: 'accentActive is the transient mousedown-before-focus-settles flash (same rationale as the input entry above), which touch input never triggers, so the port goes straight from unfocused to colors.accent on focus. surfaceRaised is unused because the mobile ports never swap fills for readonly the way the web component does (ino-input-otp.component.scss :read-only rule) — boxes always render colors.surfaceSunken regardless of readOnly.' },
+      { platform: 'flutter', roles: ['accentActive', 'surfaceRaised'], reason: 'same as the React Native entry above.' },
+    ],
+  },
+  {
     name: 'table',
     web: 'web/src/app/components/table',
     mobile: { reactNative: 'web-only', flutter: 'web-only' },
