@@ -877,7 +877,7 @@ the current component count and get monotonically more expensive. §4.4 makes th
 
 | # | Item | Status | Blocked by |
 |---|---|---|---|
-| **M-6** | Email design system — transactional templates (verification, approval-requested, report-ready) + HTML signature block | ❌ Missing | — |
+| **M-6** | Email design system — transactional templates (verification, approval-requested, report-ready) + HTML signature block | ✅ **Closed** by **INO-121** — `docs/brand/07-collateral/email/`, 4 transactional templates + signature block, values generated from `tokens.css` (`scripts/gen-email-templates.mjs`), drift-checked in CI (`scripts/check-email-tokens.mjs`). Also covers password-reset (not separately listed here). Final logo swap pending **INO-82** | — |
 | **M-7** | Brand guidelines PDF — the single distributable file a vendor/printer/partner gets | ❌ Missing | **INO-82** |
 | **M-8** | Print colour specification — CMYK + Pantone for the violet/indigo accent | ❌ Missing | **INO-82** |
 | **M-9** | Social profile kit — LinkedIn/X banner, avatar crops, post templates | ❌ Missing | partly **INO-82** |
