@@ -197,7 +197,7 @@ Neither mobile palette needed a new field for this component — toggle styling 
 ## 11. `check-theme-parity.mjs` — not modified (DoD row 11 deviation)
 
 Same finding as `virtual-scroller/SPEC.md` §6 and `tag/SPEC.md` §8, re-verified for this issue
-(`checkbox/SPEC.md` does not exist on this merge base, so it is not cited here — see §5/§10 above
+(`checkbox/SPEC.md` does not exist on this merge base (pending INO-158), so it is not cited here — see §5/§10 above
 for the other places this issue re-pointed a stale checkbox citation): DoD row 11 describes "one appended line in the
 `check-theme-parity.mjs` component registry", but no such registry exists in the file (confirmed by
 reading it in full — it is a token-contract audit script: CSS mirror byte-parity, colour roles
