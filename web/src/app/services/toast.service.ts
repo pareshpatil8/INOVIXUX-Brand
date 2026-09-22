@@ -6,8 +6,16 @@ export interface InoToastConfig {
   status?: InoAlertStatus;
   heading?: string;
   message: string;
-  /** ms before auto-dismiss; 0 disables auto-dismiss. Default 5000. */
+  /** ms before auto-dismiss; 0 disables auto-dismiss. Default 5000. Ignored when `sticky` is true. */
   durationMs?: number;
+  /**
+   * Persistent mode (INO-163 / P-3): no auto-dismiss timer is ever set, regardless of `durationMs`,
+   * and the rendered toast carries no close button — see `InoToastContainerComponent`. For
+   * approval-blocking messages in a human-in-the-loop flow, the reviewer must not be able to make
+   * the notice disappear by clicking past it; only the code path that resolves the approval may
+   * call `dismiss(id)`. Default `false`.
+   */
+  sticky?: boolean;
 }
 
 export interface InoToastItem {
@@ -15,6 +23,7 @@ export interface InoToastItem {
   status: InoAlertStatus;
   heading?: string;
   message: string;
+  sticky: boolean;
 }
 
 let idCounter = 0;
@@ -31,16 +40,18 @@ export class ToastService {
 
   show(config: InoToastConfig): number {
     const id = ++idCounter;
+    const sticky = config.sticky ?? false;
     const item: InoToastItem = {
       id,
       status: config.status ?? 'success',
       heading: config.heading,
       message: config.message,
+      sticky,
     };
     this.toasts.update((list) => [...list, item]);
 
     const duration = config.durationMs ?? 5000;
-    if (typeof window !== 'undefined' && duration > 0) {
+    if (!sticky && typeof window !== 'undefined' && duration > 0) {
       window.setTimeout(() => this.dismiss(id), duration);
     }
 

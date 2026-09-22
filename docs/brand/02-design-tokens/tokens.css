@@ -244,6 +244,64 @@
   --ino-elevation-1: 0 40px 80px -40px rgba(0, 0, 0, 0.6);   /* resting raised surfaces — cards, tier cards */
   --ino-elevation-2: 0 60px 120px -32px rgba(0, 0, 0, 0.72); /* surfaces above the overlay scrim — modals, sheets, popovers */
 
+  /* ELEVATION SCALE (INO-126, Wave 0 item W0-4, register items N-5/N-6) —
+     expands the 2-step scale above to 6 neutral + 3 brand + 2 inset.
+     --ino-elevation-0/-1/-2 are UNCHANGED and stay legal: 6 existing
+     component files (card, tier-card, alert, metric-panel, modal) already
+     consume them, and migrating those is each component's own future
+     uplift issue, not this token-layer change. -1 and -2 are numerically
+     identical to -neutral-4 and -neutral-5 below on purpose — they are the
+     same two rungs the old scale already picked, just named inside a real
+     6-step progression now. New work should read the -neutral-N names
+     directly rather than -1/-2.
+
+       NEUTRAL (-neutral-1..6): the general-purpose depth ramp, resting-row
+       hover through full-screen overlay. Same soft-shadow recipe as -1/-2
+       (offset-y, blur, negative spread, black-family rgba), extended to 6
+       steps so intermediate surfaces (menu item, dropdown, drawer) stop
+       rounding to the nearest of only two available depths.
+
+       BRAND (-brand-1..3): an accent-tinted lift for surfaces that must
+       read as chosen/featured, not just raised — a hovered primary CTA, a
+       selected tier card. Built on color-mix() against var(--ino-color-
+       accent) rather than a literal rgb triple, so it re-themes for free
+       under the accent-swap contract this file's header already promises
+       ("Nothing else in this file should need to change for a mark swap")
+       — unlike a hardcoded rgba(124,92,252,…), this shadow genuinely
+       follows an accent change.
+
+       INSET (-inset-1..2): the sunken counterpart, for surfaces one step
+       BELOW their container (input fields, code blocks, a pressed toggle
+       track) — pairs with --ino-color-surface-sunken above. Two steps
+       only: sunken UI in this system needs "a little" and "more," not six
+       depths.
+
+     HIGH-CONTRAST DECISION (recorded per the issue brief): all 11 of these,
+     like -0/-1/-2 before them, flatten to `none` in
+     [data-theme="high-contrast"] (§2c) — a soft shadow/glow is a
+     luminance-gradient effect that reduces edge clarity for exactly the
+     low-vision users who opt into that theme, so elevation and grouping
+     are communicated by the (opaque) border only. Deliberate accessibility
+     call, not a placeholder — same reasoning §2c already records for -1/-2.
+
+     Web-only, same as -0/-1/-2: no RN or Flutter shadow/elevation port
+     exists yet (mobile/react-native/src/theme/tokens.ts already flags this
+     gap for the original two-step scale), so there is nothing to extend on
+     the mobile side for this issue either. */
+  --ino-elevation-neutral-1: 0 4px 8px -6px rgba(0, 0, 0, 0.35);     /* hover on a flat row/chip */
+  --ino-elevation-neutral-2: 0 10px 20px -12px rgba(0, 0, 0, 0.45);  /* menu item, tooltip */
+  --ino-elevation-neutral-3: 0 20px 40px -20px rgba(0, 0, 0, 0.52);  /* dropdown, popover */
+  --ino-elevation-neutral-4: 0 40px 80px -40px rgba(0, 0, 0, 0.6);   /* resting card — == --ino-elevation-1 */
+  --ino-elevation-neutral-5: 0 60px 120px -32px rgba(0, 0, 0, 0.72); /* modal/sheet/popover — == --ino-elevation-2 */
+  --ino-elevation-neutral-6: 0 80px 160px -24px rgba(0, 0, 0, 0.8);  /* max depth — full-screen drawer, command palette */
+
+  --ino-elevation-brand-1: 0 8px 24px -8px color-mix(in srgb, var(--ino-color-accent) 25%, transparent);   /* hovered primary CTA */
+  --ino-elevation-brand-2: 0 24px 56px -20px color-mix(in srgb, var(--ino-color-accent) 35%, transparent); /* selected/active tier card */
+  --ino-elevation-brand-3: 0 48px 96px -32px color-mix(in srgb, var(--ino-color-accent) 45%, transparent); /* spotlighted hero surface */
+
+  --ino-elevation-inset-1: inset 0 1px 2px rgba(0, 0, 0, 0.4);  /* input field, code block */
+  --ino-elevation-inset-2: inset 0 2px 6px rgba(0, 0, 0, 0.55); /* pressed toggle track, active tab well */
+
   /* ---------------------------------------------------------------------
    * 3. RAG SEMANTIC ALERT TOKENS — for the KYB risk-flag matrix named in
    *    the brief. Two forms per level on purpose:
@@ -273,16 +331,21 @@
   --ino-font-display: "Geist", system-ui, -apple-system, Arial, Helvetica, sans-serif;
   --ino-font-mono: "Geist Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
 
-  /* size / line-height / weight / tracking, one token group per role */
-  --ino-type-display-size: 56px;   --ino-type-display-line: 1.05; --ino-type-display-weight: 600; --ino-type-display-tracking: -0.03em;
+  /* size / line-height / weight / tracking, one token group per role.
+     -line and -tracking values are var() references into the §4c leading/
+     tracking rhythm scale (INO-126/W0-4) rather than literals — every
+     number below is unchanged from before that scale existed, just
+     resolved through a named rung now instead of typed twice. See §4c for
+     the scale itself and the full role -> rung table. */
+  --ino-type-display-size: 56px;   --ino-type-display-line: var(--ino-leading-2); --ino-type-display-weight: 600; --ino-type-display-tracking: var(--ino-tracking-1);
   --ino-type-display-size-sm: 38px; /* responsive step, <=640px */
 
-  --ino-type-h2-size: 32px;        --ino-type-h2-line: 1.25;      --ino-type-h2-weight: 600;      --ino-type-h2-tracking: -0.02em;
-  --ino-type-h3-size: 16px;        --ino-type-h3-line: 1.4;       --ino-type-h3-weight: 600;      --ino-type-h3-tracking: -0.01em;
+  --ino-type-h2-size: 32px;        --ino-type-h2-line: var(--ino-leading-3);      --ino-type-h2-weight: 600;      --ino-type-h2-tracking: var(--ino-tracking-2);
+  --ino-type-h3-size: 16px;        --ino-type-h3-line: var(--ino-leading-5);      --ino-type-h3-weight: 600;      --ino-type-h3-tracking: var(--ino-tracking-3);
 
-  --ino-type-body-lg-size: 17px;   --ino-type-body-lg-line: 1.65; --ino-type-body-lg-weight: 400;
-  --ino-type-body-size: 14px;      --ino-type-body-line: 1.55;    --ino-type-body-weight: 400;
-  --ino-type-body-sm-size: 12.5px; --ino-type-body-sm-line: 1.55; --ino-type-body-sm-weight: 400;
+  --ino-type-body-lg-size: 17px;   --ino-type-body-lg-line: var(--ino-leading-9); --ino-type-body-lg-weight: 400;
+  --ino-type-body-size: 14px;      --ino-type-body-line: var(--ino-leading-8);    --ino-type-body-weight: 400;
+  --ino-type-body-sm-size: 12.5px; --ino-type-body-sm-line: var(--ino-leading-8); --ino-type-body-sm-weight: 400;
 
   --ino-type-metric-size: 34px;    --ino-type-metric-weight: 500; /* mono, count-up numerals */
 
@@ -293,7 +356,7 @@
      Values are unchanged; only the name moved, and no alias was left behind
      because an alias would have kept the misuse silent. Always pair with
      --ino-font-mono + text-transform: uppercase. */
-  --ino-type-eyebrow-size: 11px;   --ino-type-eyebrow-line: 1;    --ino-type-eyebrow-weight: 600; --ino-type-eyebrow-tracking: 0.14em;
+  --ino-type-eyebrow-size: 11px;   --ino-type-eyebrow-line: var(--ino-leading-1); --ino-type-eyebrow-weight: 600; --ino-type-eyebrow-tracking: var(--ino-tracking-7);
 
   /* ---------------------------------------------------------------------
    * 4b. FORM-LABEL SET (INO-125 / W0-3, register item N-4) — the roles every
@@ -319,14 +382,101 @@
    *     eyebrow, which is a display size and not safe for sustained reading.
    *
    *     Leading and tracking are declared per role here, matching the shape
-   *     of every type group above. The abstracted --leading-* / --tracking-*
-   *     scales are W0-4's scope, not this issue's.
+   *     of every type group above, now resolved through the §4c --leading-*
+   *     / --tracking-* scale (INO-126/W0-4) instead of a bare literal — see
+   *     §4c for the scale and the full role -> rung table. Numbers below
+   *     are unchanged from before that scale existed.
    * ------------------------------------------------------------------- */
-  --ino-type-label-lg-size: 16px;  --ino-type-label-lg-line: 1.35; --ino-type-label-lg-weight: 500; --ino-type-label-lg-tracking: -0.01em;
-  --ino-type-label-size: 13.5px;   --ino-type-label-line: 1.4;     --ino-type-label-weight: 500;    --ino-type-label-tracking: 0em;
-  --ino-type-label-sm-size: 12px;  --ino-type-label-sm-line: 1.4;  --ino-type-label-sm-weight: 500; --ino-type-label-sm-tracking: 0.005em;
-  --ino-type-hint-size: 12.5px;    --ino-type-hint-line: 1.5;      --ino-type-hint-weight: 400;     --ino-type-hint-tracking: 0em;
-  --ino-type-caption-size: 11.5px; --ino-type-caption-line: 1.45;  --ino-type-caption-weight: 400;  --ino-type-caption-tracking: 0.01em;
+  --ino-type-label-lg-size: 16px;  --ino-type-label-lg-line: var(--ino-leading-4); --ino-type-label-lg-weight: 500; --ino-type-label-lg-tracking: var(--ino-tracking-3);
+  --ino-type-label-size: 13.5px;   --ino-type-label-line: var(--ino-leading-5);    --ino-type-label-weight: 500;    --ino-type-label-tracking: var(--ino-tracking-4);
+  --ino-type-label-sm-size: 12px;  --ino-type-label-sm-line: var(--ino-leading-5); --ino-type-label-sm-weight: 500; --ino-type-label-sm-tracking: var(--ino-tracking-5);
+  --ino-type-hint-size: 12.5px;    --ino-type-hint-line: var(--ino-leading-7);     --ino-type-hint-weight: 400;     --ino-type-hint-tracking: var(--ino-tracking-4);
+  --ino-type-caption-size: 11.5px; --ino-type-caption-line: var(--ino-leading-6);  --ino-type-caption-weight: 400;  --ino-type-caption-tracking: var(--ino-tracking-6);
+
+  /* ---------------------------------------------------------------------
+   * 4c. TYPE RHYTHM SCALE + COMPOSITE TYPE ALIASES (INO-126, Wave 0 item
+   *     W0-4, register items N-5/N-6).
+   *
+   *     PART 1 — --ino-leading-* / --ino-tracking-*: every distinct line-
+   *     height and letter-spacing value already audited into the roles
+   *     above and into §10's density blocks, promoted to a named primitive
+   *     and referenced back in, the same primitive -> semantic-role move
+   *     §1 -> §2 makes for colour. Nothing here is a NEW number — this is
+   *     cataloguing the values this file already picked, so a future role
+   *     reuses a rung instead of typing a fresh decimal. Ordered strictly
+   *     ascending (tightest -> loosest / most negative -> widest) rather
+   *     than named tight/normal/loose: nine and seven steps respectively
+   *     is too fine a set for adjective names to stay meaningful, and a
+   *     numbered rung is exactly what --ino-space-N already does for the
+   *     same reason.
+   *
+   *       leading-1 1    (eyebrow)
+   *       leading-2 1.05 (display)
+   *       leading-3 1.25 (h2)
+   *       leading-4 1.35 (label-lg; dense label)
+   *       leading-5 1.4  (h3; label; label-sm; dense hint)
+   *       leading-6 1.45 (caption; fluid label)
+   *       leading-7 1.5  (hint)
+   *       leading-8 1.55 (body; body-sm; dense body; fluid caption)
+   *       leading-9 1.65 (body-lg; fluid body; fluid hint)
+   *
+   *       tracking-1 -0.03em (display)
+   *       tracking-2 -0.02em (h2)
+   *       tracking-3 -0.01em (h3; label-lg)
+   *       tracking-4 0em     (label; hint)
+   *       tracking-5 0.005em (label-sm)
+   *       tracking-6 0.01em  (caption)
+   *       tracking-7 0.14em  (eyebrow)
+   *
+   *     PART 2 — --ino-type-<role>: one `font` shorthand per role (weight,
+   *     size, line-height, family), so a component stops hand-composing
+   *     `font-size` + `line-height` + `font-weight` + `font-family` as four
+   *     separate declarations — the exact pattern already written out by
+   *     hand in docs/brand/06-angular-components/previews/form-label-
+   *     tokens.html. `letter-spacing` is NOT part of the CSS `font`
+   *     shorthand and stays its own declaration:
+   *
+   *       .heading { font: var(--ino-type-h2); letter-spacing: var(--ino-type-h2-tracking); }
+   *
+   *     `--ino-type-metric` omits the /line-height segment (metric has no
+   *     -line token — mono count-up numerals use the font's natural
+   *     leading) because that segment is optional in the shorthand grammar.
+   *     Density-varying roles (body/label/hint/caption) are re-declared
+   *     inside both §10 density blocks, exactly like every other density-
+   *     scoped alias in this file (see §12's CONSUMPTION ALIASES note for
+   *     why re-declaration, not inheritance, is required).
+   * ------------------------------------------------------------------- */
+  --ino-leading-1: 1;
+  --ino-leading-2: 1.05;
+  --ino-leading-3: 1.25;
+  --ino-leading-4: 1.35;
+  --ino-leading-5: 1.4;
+  --ino-leading-6: 1.45;
+  --ino-leading-7: 1.5;
+  --ino-leading-8: 1.55;
+  --ino-leading-9: 1.65;
+
+  --ino-tracking-1: -0.03em;
+  --ino-tracking-2: -0.02em;
+  --ino-tracking-3: -0.01em;
+  --ino-tracking-4: 0em;
+  --ino-tracking-5: 0.005em;
+  --ino-tracking-6: 0.01em;
+  --ino-tracking-7: 0.14em;
+
+  --ino-type-display: var(--ino-type-display-weight) var(--ino-type-display-size)/var(--ino-type-display-line) var(--ino-font-display);
+  --ino-type-h2: var(--ino-type-h2-weight) var(--ino-type-h2-size)/var(--ino-type-h2-line) var(--ino-font-display);
+  --ino-type-h3: var(--ino-type-h3-weight) var(--ino-type-h3-size)/var(--ino-type-h3-line) var(--ino-font-display);
+  --ino-type-body-lg: var(--ino-type-body-lg-weight) var(--ino-type-body-lg-size)/var(--ino-type-body-lg-line) var(--ino-font-display);
+  --ino-type-body: var(--ino-type-body-weight) var(--ino-type-body-size)/var(--ino-type-body-line) var(--ino-font-display);
+  --ino-type-body-sm: var(--ino-type-body-sm-weight) var(--ino-type-body-sm-size)/var(--ino-type-body-sm-line) var(--ino-font-display);
+  --ino-type-metric: var(--ino-type-metric-weight) var(--ino-type-metric-size) var(--ino-font-mono);
+  --ino-type-eyebrow: var(--ino-type-eyebrow-weight) var(--ino-type-eyebrow-size)/var(--ino-type-eyebrow-line) var(--ino-font-mono);
+  --ino-type-label-lg: var(--ino-type-label-lg-weight) var(--ino-type-label-lg-size)/var(--ino-type-label-lg-line) var(--ino-font-display);
+  --ino-type-label: var(--ino-type-label-weight) var(--ino-type-label-size)/var(--ino-type-label-line) var(--ino-font-display);
+  --ino-type-label-sm: var(--ino-type-label-sm-weight) var(--ino-type-label-sm-size)/var(--ino-type-label-sm-line) var(--ino-font-display);
+  --ino-type-hint: var(--ino-type-hint-weight) var(--ino-type-hint-size)/var(--ino-type-hint-line) var(--ino-font-display);
+  --ino-type-caption: var(--ino-type-caption-weight) var(--ino-type-caption-size)/var(--ino-type-caption-line) var(--ino-font-display);
 
   /* ---------------------------------------------------------------------
    * 5. SPACE — one scale, t-shirt tokens. Values are the real paddings
@@ -366,7 +516,8 @@
   --ino-target-spacing: 8px; /* min gap between adjacent small targets, WCAG 2.2 2.5.8 */
 
   /* ---------------------------------------------------------------------
-   * 8. ELEVATION (see section 2 for the actual --ino-elevation-* values;
+   * 8. ELEVATION (see section 2 for the actual --ino-elevation-* values,
+   *    including the neutral/brand/inset scale added by INO-126/W0-4;
    *    numbered here to keep the section order stable across themes)
    * ------------------------------------------------------------------- */
 
@@ -540,6 +691,29 @@
   --ino-elevation-1: 0 20px 48px -24px rgba(20, 20, 26, 0.16); /* dark-mode shadow reads as a black smear on white; lighter + tighter spread */
   --ino-elevation-2: 0 32px 72px -20px rgba(20, 20, 26, 0.24);
 
+  /* Elevation scale (INO-126/W0-4) — same charcoal-family rgba(20,20,26,…)
+     recipe -1/-2 above already use on this surface, extended to the full
+     6/3/2 progression. -neutral-4/-neutral-5 stay numerically identical to
+     -1/-2, same convention as :root. Brand steps reuse the color-mix()
+     formula from :root unchanged (it reads var(--ino-color-accent), which
+     this block does not override — light's accent is the same violet as
+     dark's) but at a lower mix percentage, matching the existing --ino-
+     glow-accent split just above ("lower alpha — dark-mode glow opacity
+     reads muddy on white"). */
+  --ino-elevation-neutral-1: 0 4px 8px -6px rgba(20, 20, 26, 0.08);
+  --ino-elevation-neutral-2: 0 10px 20px -12px rgba(20, 20, 26, 0.1);
+  --ino-elevation-neutral-3: 0 20px 40px -20px rgba(20, 20, 26, 0.13);
+  --ino-elevation-neutral-4: 0 20px 48px -24px rgba(20, 20, 26, 0.16); /* == --ino-elevation-1 */
+  --ino-elevation-neutral-5: 0 32px 72px -20px rgba(20, 20, 26, 0.24); /* == --ino-elevation-2 */
+  --ino-elevation-neutral-6: 0 48px 100px -16px rgba(20, 20, 26, 0.3);
+
+  --ino-elevation-brand-1: 0 8px 24px -8px color-mix(in srgb, var(--ino-color-accent) 10%, transparent);
+  --ino-elevation-brand-2: 0 24px 56px -20px color-mix(in srgb, var(--ino-color-accent) 16%, transparent);
+  --ino-elevation-brand-3: 0 48px 96px -32px color-mix(in srgb, var(--ino-color-accent) 22%, transparent);
+
+  --ino-elevation-inset-1: inset 0 1px 2px rgba(20, 20, 26, 0.1);
+  --ino-elevation-inset-2: inset 0 2px 6px rgba(20, 20, 26, 0.16);
+
   --ino-color-risk-high-dot: var(--ino-primitive-red-500);
   --ino-color-risk-high-fill: var(--ino-primitive-red-600);
   --ino-color-risk-high-on-fill: #FFFFFF;               /* 6.59:1 */
@@ -609,6 +783,22 @@
   --ino-elevation-1: none; /* see note above — no shadow gradients in high-contrast mode */
   --ino-elevation-2: none;
 
+  /* Elevation scale (INO-126/W0-4) — the flatten decision the issue brief
+     asked to be recorded: all 11 neutral/brand/inset steps go to `none`
+     here too, for the exact reason -1/-2 already do (see note above this
+     block). Elevation and grouping stay border-only in this theme. */
+  --ino-elevation-neutral-1: none;
+  --ino-elevation-neutral-2: none;
+  --ino-elevation-neutral-3: none;
+  --ino-elevation-neutral-4: none;
+  --ino-elevation-neutral-5: none;
+  --ino-elevation-neutral-6: none;
+  --ino-elevation-brand-1: none;
+  --ino-elevation-brand-2: none;
+  --ino-elevation-brand-3: none;
+  --ino-elevation-inset-1: none;
+  --ino-elevation-inset-2: none;
+
   --ino-color-risk-high-dot: var(--ino-primitive-hc-coral);
   --ino-color-risk-high-fill: var(--ino-primitive-hc-coral);
   --ino-color-risk-high-on-fill: #000000;                 /* 7.57:1 */
@@ -659,6 +849,17 @@
     --ino-color-danger-text-safe: var(--ino-primitive-red-600);
     --ino-elevation-1: 0 20px 48px -24px rgba(20, 20, 26, 0.16);
     --ino-elevation-2: 0 32px 72px -20px rgba(20, 20, 26, 0.24);
+    --ino-elevation-neutral-1: 0 4px 8px -6px rgba(20, 20, 26, 0.08);
+    --ino-elevation-neutral-2: 0 10px 20px -12px rgba(20, 20, 26, 0.1);
+    --ino-elevation-neutral-3: 0 20px 40px -20px rgba(20, 20, 26, 0.13);
+    --ino-elevation-neutral-4: 0 20px 48px -24px rgba(20, 20, 26, 0.16);
+    --ino-elevation-neutral-5: 0 32px 72px -20px rgba(20, 20, 26, 0.24);
+    --ino-elevation-neutral-6: 0 48px 100px -16px rgba(20, 20, 26, 0.3);
+    --ino-elevation-brand-1: 0 8px 24px -8px color-mix(in srgb, var(--ino-color-accent) 10%, transparent);
+    --ino-elevation-brand-2: 0 24px 56px -20px color-mix(in srgb, var(--ino-color-accent) 16%, transparent);
+    --ino-elevation-brand-3: 0 48px 96px -32px color-mix(in srgb, var(--ino-color-accent) 22%, transparent);
+    --ino-elevation-inset-1: inset 0 1px 2px rgba(20, 20, 26, 0.1);
+    --ino-elevation-inset-2: inset 0 2px 6px rgba(20, 20, 26, 0.16);
     --ino-color-risk-high-fill: var(--ino-primitive-red-600);
     --ino-color-risk-high-on-fill: #FFFFFF;
     --ino-color-risk-medium-fill: var(--ino-primitive-amber-800);
@@ -681,7 +882,7 @@
 [data-density="dense"] {
   --ino-space-row: 8px;
   --ino-type-body-size: 12.5px;
-  --ino-type-body-line: 1.4;
+  --ino-type-body-line: var(--ino-leading-5);
   --ino-row-min-height: 32px; /* WCAG 2.2 2.5.8 floor is 24px; padded above it deliberately */
 
   /* §4b form labels track density the same way body does, and for the same
@@ -693,11 +894,21 @@
      That is the same split --ino-control-font-size-default already makes in
      §12, and the same one --ino-type-body-lg/-sm made before it. */
   --ino-type-label-size: 12.5px;
-  --ino-type-label-line: 1.35;
+  --ino-type-label-line: var(--ino-leading-4);
   --ino-type-hint-size: 11.5px;
-  --ino-type-hint-line: 1.4;
+  --ino-type-hint-line: var(--ino-leading-5);
   --ino-type-caption-size: 11px;
-  --ino-type-caption-line: 1.35;
+  --ino-type-caption-line: var(--ino-leading-4);
+
+  /* §4c composite aliases, re-declared for the same reason every other
+     density-scoped alias in this file is: a bare var() chain resolves
+     through the CASCADE at the point of use, and re-declaring here pins
+     that resolution to this block's own -size/-line rows rather than
+     letting a nested fluid island's values leak in. */
+  --ino-type-body: var(--ino-type-body-weight) var(--ino-type-body-size)/var(--ino-type-body-line) var(--ino-font-display);
+  --ino-type-label: var(--ino-type-label-weight) var(--ino-type-label-size)/var(--ino-type-label-line) var(--ino-font-display);
+  --ino-type-hint: var(--ino-type-hint-weight) var(--ino-type-hint-size)/var(--ino-type-hint-line) var(--ino-font-display);
+  --ino-type-caption: var(--ino-type-caption-weight) var(--ino-type-caption-size)/var(--ino-type-caption-line) var(--ino-font-display);
 
   /* §12 control scale, dense resolution. -default is pinned to
      --ino-row-min-height (32px) so a control dropped into a dense table row
@@ -729,7 +940,7 @@
 [data-density="fluid"] {
   --ino-space-row: 16px;
   --ino-type-body-size: 15px;
-  --ino-type-body-line: 1.65;
+  --ino-type-body-line: var(--ino-leading-9);
   --ino-row-min-height: 44px;
 
   /* §4b form labels, fluid resolution — repeated rather than inherited for
@@ -737,11 +948,18 @@
      nested inside a dense shell would otherwise render dense labels. Mobile
      carries exactly these numbers (mobile is always fluid). */
   --ino-type-label-size: 14.5px;
-  --ino-type-label-line: 1.45;
+  --ino-type-label-line: var(--ino-leading-6);
   --ino-type-hint-size: 13px;
-  --ino-type-hint-line: 1.55;
+  --ino-type-hint-line: var(--ino-leading-8);
   --ino-type-caption-size: 12px;
-  --ino-type-caption-line: 1.5;
+  --ino-type-caption-line: var(--ino-leading-7);
+
+  /* §4c composite aliases, re-declared — see the dense block's identical
+     note above for why. */
+  --ino-type-body: var(--ino-type-body-weight) var(--ino-type-body-size)/var(--ino-type-body-line) var(--ino-font-display);
+  --ino-type-label: var(--ino-type-label-weight) var(--ino-type-label-size)/var(--ino-type-label-line) var(--ino-font-display);
+  --ino-type-hint: var(--ino-type-hint-weight) var(--ino-type-hint-size)/var(--ino-type-hint-line) var(--ino-font-display);
+  --ino-type-caption: var(--ino-type-caption-weight) var(--ino-type-caption-size)/var(--ino-type-caption-line) var(--ino-font-display);
 
   /* §12 control scale, fluid resolution. Numerically identical to the :root
      values, and repeated anyway on purpose: a fluid island nested inside a

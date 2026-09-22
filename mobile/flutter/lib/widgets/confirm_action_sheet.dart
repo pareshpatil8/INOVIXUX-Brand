@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show HapticFeedback;
 import '../theme/app_theme.dart';
 import '../theme/tokens.dart';
 
@@ -46,7 +47,12 @@ Future<bool?> showConfirmActionSheet(
             ],
             const SizedBox(height: InoSpace.s5),
             ElevatedButton(
-              onPressed: () => Navigator.of(sheetContext).pop(true),
+              // Consequential-decision feedback (L-14): perceptible without looking at the screen.
+              // HapticFeedback is a `flutter/services.dart` platform channel, not a pub dependency.
+              onPressed: () {
+                destructive ? HapticFeedback.heavyImpact() : HapticFeedback.mediumImpact();
+                Navigator.of(sheetContext).pop(true);
+              },
               style: destructive
                   ? ElevatedButton.styleFrom(
                       backgroundColor: colors.danger,
