@@ -170,10 +170,10 @@ component to animate — same conclusion `<ino-radio>`/`<ino-tag>` reached for t
   than a single `children`-only API.
 - **Flutter** — `mobile/flutter/lib/widgets/ino_card.dart`, same explicit-slot-as-parameter
   approach (`media`/`header`/`footer`/`child` widgets), matching `ino_radio_group.dart`'s own
-  non-content-projection shape.
+  non-content-projection shape (pending INO-159).
 
-Neither mobile port carries a `loading` spinner animation — `theme/tokens.ts`/`tokens.dart` port no
-elevation/shadow tokens either (see `theme/tokens.ts`'s own comment on that gap), so the mobile
+Neither mobile port carries a `loading` spinner animation — `mobile/react-native/src/theme/tokens.ts`/`tokens.dart`
+port no elevation/shadow tokens either (see `mobile/react-native/src/theme/tokens.ts`'s own comment on that gap), so the mobile
 card is background/border/radius/padding only; the spinner reuses the same static-ring, no-native-
 animation-library choice `InoRadio`'s RN/Flutter ports already made for their own loading state.
 
@@ -181,7 +181,7 @@ animation-library choice `InoRadio`'s RN/Flutter ports already made for their ow
 
 ## 9. `check-theme-parity.mjs` — not modified (DoD row 11 deviation)
 
-Same finding as `tag/SPEC.md` §8 and `radio-group/SPEC.md` §9, re-verified for this issue: DoD row
+Same finding as `tag/SPEC.md` §8 and `radio-group/SPEC.md` §9 (pending INO-159), re-verified for this issue: DoD row
 11 describes "one appended line in the `check-theme-parity.mjs` component registry", but no such
 registry exists in the file (confirmed by reading it in full). Nothing appended;
 `node scripts/check-theme-parity.mjs` passes unchanged. Component-level token adherence is covered
