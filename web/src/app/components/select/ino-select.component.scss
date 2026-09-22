@@ -4,16 +4,6 @@
   gap: var(--ino-space-2);
 }
 
-.ino-field__label {
-  font-size: var(--ino-type-body-sm-size);
-  font-weight: 600;
-  color: var(--ino-color-on-surface);
-}
-
-.ino-field__required {
-  color: var(--ino-color-danger);
-}
-
 .ino-field__select-wrap {
   position: relative;
 }
@@ -82,10 +72,6 @@
   font-size: var(--ino-type-body-sm-size);
   color: var(--ino-color-danger);
   font-weight: 600;
-}
-
-.ino-field--disabled .ino-field__label {
-  color: var(--ino-color-on-surface-muted);
 }
 
 @media (prefers-reduced-motion: reduce) {
