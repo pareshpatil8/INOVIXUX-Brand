@@ -5,7 +5,7 @@ Parity benchmark: PrimeNG 22.1.1 `Popover` (`specs/primeng/llms-22.1.1.txt` line
 this directory imports it. The pinned digest only carries one summary line for this route (no
 per-prop table), same limited-detail situation `confirm-popup/SPEC.md` notes for its pair.
 
-Sibling document: `../confirm-popup/SPEC.md`. Both components share a placement primitive and a
+Sibling document: `confirm-popup/SPEC.md`. Both components share a placement primitive and a
 focus-containment primitive, but solve genuinely different problems: ConfirmPopup is a fixed
 confirm/cancel action pair, Popover is an anchored container for arbitrary projected content (a
 filter form, a menu, a preview) — closer to PrimeNG's own Popover/OverlayPanel than to its
