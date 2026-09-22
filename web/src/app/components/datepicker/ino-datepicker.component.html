@@ -1,0 +1,54 @@
+<div class="ino-datepicker__header">
+  <button
+    type="button"
+    class="ino-datepicker__nav ino-datepicker__nav--prev"
+    aria-label="Previous month"
+    [disabled]="!interactive"
+    (click)="goToPreviousMonth()"
+  >
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  </button>
+
+  <span class="ino-datepicker__month-label" aria-live="polite">{{ monthLabel }}</span>
+
+  <button
+    type="button"
+    class="ino-datepicker__nav ino-datepicker__nav--next"
+    aria-label="Next month"
+    [disabled]="!interactive"
+    (click)="goToNextMonth()"
+  >
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  </button>
+</div>
+
+<table class="ino-datepicker__grid" role="grid" [id]="gridId" [attr.aria-label]="ariaLabel">
+  <thead>
+    <tr role="row">
+      <th *ngFor="let weekday of weekdayLabels" scope="col" abbr="{{ weekday }}">{{ weekday }}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr role="row" *ngFor="let week of weeks">
+      <td *ngFor="let day of week" role="gridcell" [attr.aria-selected]="day.selected">
+        <button
+          type="button"
+          class="ino-datepicker__day"
+          [attr.tabindex]="isFocused(day) ? 0 : -1"
+          [attr.data-today]="day.today || null"
+          [attr.data-selected]="day.selected || null"
+          [attr.data-outside-month]="day.outsideMonth || null"
+          [attr.data-disabled-date]="day.disabled || null"
+          [disabled]="!interactive || day.disabled"
+          [attr.aria-label]="day.date | date: 'fullDate'"
+          (click)="selectDay(day)"
+          (keydown)="onKeydown($event, day)"
+        >{{ day.label }}</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
