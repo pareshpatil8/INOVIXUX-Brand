@@ -502,6 +502,12 @@ const COMPONENT_REGISTRY = [
     ],
   },
   {
+    name: 'popover',
+    web: 'web/src/app/components/popover',
+    mobile: { reactNative: 'web-only', flutter: 'web-only' },
+    reason: 'web-only by explicit decision (INO-31 plan rev 9 §5 desktop-idiom porting rule) — an anchor-positioned floating panel keyed to getBoundingClientRect() and mouse/keyboard dismiss gestures is a desktop pointer-and-keyboard idiom. The mobile counterpart is a different component and gets its own issue in a later wave. See web/src/app/components/popover/SPEC.md §5 and docs/brand/06-angular-components/popover.md#mobile-parity.',
+  },
+  {
     name: 'table',
     web: 'web/src/app/components/table',
     mobile: { reactNative: 'web-only', flutter: 'web-only' },
