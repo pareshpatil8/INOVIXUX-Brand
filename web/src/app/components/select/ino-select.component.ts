@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { InoLabelComponent } from '../label/ino-label.component';
 
 export interface InoSelectOption {
   label: string;
@@ -17,7 +18,7 @@ let idCounter = 0;
 @Component({
   selector: 'ino-select',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, InoLabelComponent],
   templateUrl: './ino-select.component.html',
   styleUrl: './ino-select.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

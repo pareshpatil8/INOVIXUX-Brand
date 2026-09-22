@@ -1,7 +1,5 @@
-<div class="ino-field" [class.ino-field--disabled]="disabled">
-  <label [for]="selectId" class="ino-field__label">
-    {{ label }}<span *ngIf="required" class="ino-field__required" aria-hidden="true"> *</span>
-  </label>
+<div class="ino-field">
+  <ino-label [for]="selectId" [required]="required" [disabled]="disabled" [invalid]="!!error">{{ label }}</ino-label>
 
   <div class="ino-field__select-wrap">
     <select

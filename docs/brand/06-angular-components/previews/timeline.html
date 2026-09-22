@@ -1,0 +1,547 @@
+<!-- @dsCard group="Data" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ino-timeline — audit trail (INO-134)</title>
+<!-- Canonical token file, linked rather than copied: this preview must repaint with the system,
+     and must never become a second place raw hex values live. -->
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-label-size);
+    letter-spacing: var(--ino-type-label-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 64ch; }
+  p.note { color: var(--ino-color-on-surface-muted); margin: var(--ino-space-3) 0 0; max-width: 64ch; }
+
+  .theme-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); }
+  .theme-pane {
+    flex: 1 1 320px;
+    padding: var(--ino-space-5);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-xl);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+  }
+  .theme-pane > h3 {
+    margin: 0 0 var(--ino-space-4);
+    font-size: var(--ino-type-body-sm-size);
+    color: var(--ino-color-on-surface-muted);
+    font-weight: 600;
+  }
+
+  .state-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); }
+  .state-cell { flex: 1 1 220px; }
+  .state-cell > h3 {
+    margin: 0 0 var(--ino-space-2);
+    font-size: var(--ino-type-body-sm-size);
+    color: var(--ino-color-on-surface-muted);
+    font-weight: 600;
+  }
+
+  /*
+   * Mirrors web/src/app/components/timeline/ino-timeline.component.scss — same token bindings,
+   * so a divergence between this preview and the shipped component is visible as a visual diff.
+   */
+  .ino-timeline {
+    display: block;
+    --ino-timeline-dot-size: var(--ino-control-icon-size-default, 20px);
+    --ino-timeline-rail-color: var(--ino-color-border);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-control-font-size);
+    color: var(--ino-color-on-surface);
+  }
+  .ino-timeline[data-size='sm'] {
+    --ino-control-height: var(--ino-control-height-sm);
+    --ino-control-font-size: var(--ino-control-font-size-sm);
+    --ino-control-padding-inline: var(--ino-control-padding-inline-sm);
+    --ino-control-gap: var(--ino-control-gap-sm);
+    --ino-timeline-dot-size: var(--ino-control-icon-size-sm);
+  }
+  .ino-timeline[data-size='lg'] {
+    --ino-control-height: var(--ino-control-height-lg);
+    --ino-control-font-size: var(--ino-control-font-size-lg);
+    --ino-control-padding-inline: var(--ino-control-padding-inline-lg);
+    --ino-control-gap: var(--ino-control-gap-lg);
+    --ino-timeline-dot-size: var(--ino-control-icon-size-lg);
+  }
+
+  .ino-timeline[data-layout='vertical'] .ino-timeline__row {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--ino-control-gap);
+  }
+  .ino-timeline[data-layout='vertical'] .ino-timeline__opposite { order: 1; flex: 1 1 0; text-align: end; }
+  .ino-timeline[data-layout='vertical'] .ino-timeline__rail {
+    order: 2; display: flex; flex-direction: column; align-items: center; align-self: stretch; flex: none;
+  }
+  .ino-timeline[data-layout='vertical'] .ino-timeline__content { order: 3; flex: 2 1 0; text-align: start; }
+  .ino-timeline[data-layout='vertical'] .ino-timeline__row[data-side='end'] .ino-timeline__opposite { order: 3; text-align: start; }
+  .ino-timeline[data-layout='vertical'] .ino-timeline__row[data-side='end'] .ino-timeline__content { order: 1; text-align: end; }
+  .ino-timeline[data-layout='vertical'] .ino-timeline__connector {
+    flex: 1 1 auto; inline-size: 2px; min-block-size: var(--ino-space-4); margin-block: var(--ino-space-1) 0;
+  }
+
+  .ino-timeline[data-layout='horizontal'] {
+    display: flex; align-items: flex-start; overflow-x: auto; overflow-y: hidden;
+  }
+  .ino-timeline[data-layout='horizontal'] .ino-timeline__row {
+    display: flex; flex-direction: column; align-items: center; flex: none;
+    inline-size: max-content; min-inline-size: calc(var(--ino-control-height) * 3);
+    padding-inline: var(--ino-control-padding-inline); gap: var(--ino-control-gap);
+  }
+  .ino-timeline[data-layout='horizontal'] .ino-timeline__opposite { order: 3; text-align: center; }
+  .ino-timeline[data-layout='horizontal'] .ino-timeline__rail {
+    order: 2; display: flex; flex-direction: row; align-items: center; align-self: stretch; flex: none;
+  }
+  .ino-timeline[data-layout='horizontal'] .ino-timeline__content { order: 1; text-align: center; }
+  .ino-timeline[data-layout='horizontal'] .ino-timeline__row[data-side='end'] .ino-timeline__content { order: 3; }
+  .ino-timeline[data-layout='horizontal'] .ino-timeline__row[data-side='end'] .ino-timeline__opposite { order: 1; }
+  .ino-timeline[data-layout='horizontal'] .ino-timeline__connector {
+    flex: 1 1 auto; block-size: 2px; min-inline-size: var(--ino-space-6); margin-inline: var(--ino-space-1) 0;
+  }
+
+  .ino-timeline__marker { display: inline-flex; align-items: center; justify-content: center; flex: none; }
+  .ino-timeline__dot {
+    box-sizing: content-box;
+    inline-size: var(--ino-timeline-dot-size);
+    block-size: var(--ino-timeline-dot-size);
+    border-radius: var(--ino-radius-pill);
+    background: var(--ino-timeline-marker, var(--ino-color-on-surface-muted));
+    border: 2px solid var(--ino-color-surface);
+  }
+  .ino-timeline__connector { background: var(--ino-timeline-rail-color); }
+
+  .ino-timeline__row[data-role='info'] { --ino-timeline-marker: var(--ino-color-info); }
+  .ino-timeline__row[data-role='success'] { --ino-timeline-marker: var(--ino-color-success); }
+  .ino-timeline__row[data-role='warning'] { --ino-timeline-marker: var(--ino-color-warning); }
+  .ino-timeline__row[data-role='danger'] { --ino-timeline-marker: var(--ino-color-danger); }
+  .ino-timeline__row[data-role='neutral'] { --ino-timeline-marker: var(--ino-color-on-surface-muted); }
+
+  .ino-timeline__opposite { color: var(--ino-color-on-surface-muted); font-size: var(--ino-control-font-size); padding-block-start: var(--ino-space-1); }
+  .ino-timeline__content { padding-block-end: var(--ino-space-5); }
+  .ino-timeline__content p { margin: 0 0 var(--ino-space-1); }
+  .ino-timeline__content .meta { color: var(--ino-color-on-surface-muted); font-size: var(--ino-type-body-sm-size); }
+
+  .ino-timeline--interactive .ino-timeline__row {
+    cursor: pointer; border-radius: var(--ino-radius-md);
+    min-block-size: var(--ino-row-min-height, 44px);
+  }
+  .ino-timeline--interactive .ino-timeline__row--force-hover,
+  .ino-timeline--interactive .ino-timeline__row:hover { background: var(--ino-color-surface-sunken); }
+  .ino-timeline--interactive .ino-timeline__row--force-active { background: var(--ino-color-surface-sunken); }
+  .ino-timeline--interactive .ino-timeline__row--force-active .ino-timeline__dot { background: var(--ino-color-accent-active); }
+  .ino-timeline--interactive .ino-timeline__row--force-focus,
+  .ino-timeline--interactive .ino-timeline__row:focus-visible {
+    outline: var(--ino-focus-ring); outline-offset: var(--ino-focus-ring-offset);
+  }
+
+  .ino-timeline[data-disabled] { opacity: 0.5; }
+  .ino-timeline[data-disabled] .ino-timeline__row { cursor: not-allowed; pointer-events: none; }
+  .ino-timeline[data-readonly].ino-timeline--interactive .ino-timeline__row:hover { background: transparent; }
+  .ino-timeline[data-invalid] .ino-timeline__row {
+    border-inline-start: 2px solid var(--ino-color-danger); padding-inline-start: var(--ino-space-2);
+  }
+  .ino-timeline[data-busy] .ino-timeline__row { opacity: 0.75; }
+
+  .ino-timeline__row--skeleton .ino-timeline__dot { background: var(--ino-color-border-soft); border-color: var(--ino-color-surface); }
+  .ino-timeline__skeleton-bar { display: block; border-radius: var(--ino-radius-pill); background: var(--ino-color-border-soft); block-size: var(--ino-space-3); }
+  .ino-timeline__skeleton-bar--opposite { inline-size: 4em; margin-inline-start: auto; }
+  .ino-timeline__skeleton-bar--title { inline-size: 40%; margin-block-end: var(--ino-space-2); }
+  .ino-timeline__skeleton-bar--body { inline-size: 80%; }
+
+  .ino-timeline__empty {
+    display: flex; align-items: center; justify-content: center;
+    min-block-size: var(--ino-control-height, 44px); padding: var(--ino-space-6) var(--ino-control-padding-inline);
+    color: var(--ino-color-on-surface-muted); text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<h1>Timeline — audit trail</h1>
+<p class="lede">
+  A chained series of events — a marker + connector rail down one side, event content down the
+  other. Non-interactive by default (a read-only log, matching the PrimeNG benchmark); each pane
+  below is the same markup under a different <code>data-theme</code> — nothing changes across
+  themes except the variables.
+</p>
+
+<h2>Full form × theme</h2>
+<div class="theme-row">
+
+  <div class="theme-pane">
+    <h3>dark — :root (default)</h3>
+    <div class="ino-timeline" data-layout="vertical" role="list" aria-label="Audit trail">
+      <div class="ino-timeline__row" data-role="success" data-side="start">
+        <div class="ino-timeline__opposite">10:02 AM</div>
+        <div class="ino-timeline__rail">
+          <span class="ino-timeline__marker"><span class="ino-timeline__dot"></span></span>
+          <span class="ino-timeline__connector"></span>
+        </div>
+        <div class="ino-timeline__content">
+          <p>KYB check approved</p>
+          <div class="meta">Reviewed by A. Okoye</div>
+        </div>
+      </div>
+      <div class="ino-timeline__row" data-role="warning" data-side="start">
+        <div class="ino-timeline__opposite">10:14 AM</div>
+        <div class="ino-timeline__rail">
+          <span class="ino-timeline__marker"><span class="ino-timeline__dot"></span></span>
+          <span class="ino-timeline__connector"></span>
+        </div>
+        <div class="ino-timeline__content">
+          <p>Flag raised — sanctions list partial match</p>
+          <div class="meta">System, auto-escalated</div>
+        </div>
+      </div>
+      <div class="ino-timeline__row" data-role="danger" data-side="start" data-last>
+        <div class="ino-timeline__opposite">11:47 AM</div>
+        <div class="ino-timeline__rail">
+          <span class="ino-timeline__marker"><span class="ino-timeline__dot"></span></span>
+        </div>
+        <div class="ino-timeline__content">
+          <p>Application rejected</p>
+          <div class="meta">Reviewed by A. Okoye</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="light">
+    <h3>light — [data-theme="light"]</h3>
+    <div class="ino-timeline" data-layout="vertical" role="list" aria-label="Audit trail">
+      <div class="ino-timeline__row" data-role="success" data-side="start">
+        <div class="ino-timeline__opposite">10:02 AM</div>
+        <div class="ino-timeline__rail">
+          <span class="ino-timeline__marker"><span class="ino-timeline__dot"></span></span>
+          <span class="ino-timeline__connector"></span>
+        </div>
+        <div class="ino-timeline__content">
+          <p>KYB check approved</p>
+          <div class="meta">Reviewed by A. Okoye</div>
+        </div>
+      </div>
+      <div class="ino-timeline__row" data-role="warning" data-side="start">
+        <div class="ino-timeline__opposite">10:14 AM</div>
+        <div class="ino-timeline__rail">
+          <span class="ino-timeline__marker"><span class="ino-timeline__dot"></span></span>
+          <span class="ino-timeline__connector"></span>
+        </div>
+        <div class="ino-timeline__content">
+          <p>Flag raised — sanctions list partial match</p>
+          <div class="meta">System, auto-escalated</div>
+        </div>
+      </div>
+      <div class="ino-timeline__row" data-role="danger" data-side="start" data-last>
+        <div class="ino-timeline__opposite">11:47 AM</div>
+        <div class="ino-timeline__rail">
+          <span class="ino-timeline__marker"><span class="ino-timeline__dot"></span></span>
+        </div>
+        <div class="ino-timeline__content">
+          <p>Application rejected</p>
+          <div class="meta">Reviewed by A. Okoye</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="high-contrast">
+    <h3>high-contrast — [data-theme="high-contrast"]</h3>
+    <div class="ino-timeline" data-layout="vertical" role="list" aria-label="Audit trail">
+      <div class="ino-timeline__row" data-role="success" data-side="start">
+        <div class="ino-timeline__opposite">10:02 AM</div>
+        <div class="ino-timeline__rail">
+          <span class="ino-timeline__marker"><span class="ino-timeline__dot"></span></span>
+          <span class="ino-timeline__connector"></span>
+        </div>
+        <div class="ino-timeline__content">
+          <p>KYB check approved</p>
+          <div class="meta">Reviewed by A. Okoye</div>
+        </div>
+      </div>
+      <div class="ino-timeline__row" data-role="warning" data-side="start">
+        <div class="ino-timeline__opposite">10:14 AM</div>
+        <div class="ino-timeline__rail">
+          <span class="ino-timeline__marker"><span class="ino-timeline__dot"></span></span>
+          <span class="ino-timeline__connector"></span>
+        </div>
+        <div class="ino-timeline__content">
+          <p>Flag raised — sanctions list partial match</p>
+          <div class="meta">System, auto-escalated</div>
+        </div>
+      </div>
+      <div class="ino-timeline__row" data-role="danger" data-side="start" data-last>
+        <div class="ino-timeline__opposite">11:47 AM</div>
+        <div class="ino-timeline__rail">
+          <span class="ino-timeline__marker"><span class="ino-timeline__dot"></span></span>
+        </div>
+        <div class="ino-timeline__content">
+          <p>Application rejected</p>
+          <div class="meta">Reviewed by A. Okoye</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<h2>Layout — vertical (alternate) vs. horizontal</h2>
+<p class="lede">
+  <code>align="alternate"</code> zig-zags <code>data-side</code> per row; the CSS <code>order</code>
+  property (not a second DOM arrangement) reorders the opposite/rail/content triplet, so it mirrors
+  for free under <code>dir="rtl"</code>. See <code>SPEC.md</code> §6.
+</p>
+<div class="state-row">
+  <div class="state-cell" style="flex-basis: 420px;">
+    <h3>vertical, align="alternate"</h3>
+    <div class="ino-timeline" data-layout="vertical" role="list" aria-label="Audit trail">
+      <div class="ino-timeline__row" data-role="info" data-side="start">
+        <div class="ino-timeline__opposite">Mon</div>
+        <div class="ino-timeline__rail">
+          <span class="ino-timeline__marker"><span class="ino-timeline__dot"></span></span>
+          <span class="ino-timeline__connector"></span>
+        </div>
+        <div class="ino-timeline__content"><p>Filing received</p></div>
+      </div>
+      <div class="ino-timeline__row" data-role="success" data-side="end">
+        <div class="ino-timeline__opposite">Tue</div>
+        <div class="ino-timeline__rail">
+          <span class="ino-timeline__marker"><span class="ino-timeline__dot"></span></span>
+          <span class="ino-timeline__connector"></span>
+        </div>
+        <div class="ino-timeline__content"><p>Document verified</p></div>
+      </div>
+      <div class="ino-timeline__row" data-role="neutral" data-side="start" data-last>
+        <div class="ino-timeline__opposite">Wed</div>
+        <div class="ino-timeline__rail">
+          <span class="ino-timeline__marker"><span class="ino-timeline__dot"></span></span>
+        </div>
+        <div class="ino-timeline__content"><p>Awaiting final sign-off</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="state-cell" style="flex-basis: 520px;">
+    <h3>horizontal, align="alternate"</h3>
+    <div class="ino-timeline" data-layout="horizontal" role="list" aria-label="Audit trail" style="min-block-size: 160px;">
+      <div class="ino-timeline__row" data-role="info" data-side="start">
+        <div class="ino-timeline__opposite">Mon</div>
+        <div class="ino-timeline__rail">
+          <span class="ino-timeline__marker"><span class="ino-timeline__dot"></span></span>
+          <span class="ino-timeline__connector"></span>
+        </div>
+        <div class="ino-timeline__content"><p>Filing received</p></div>
+      </div>
+      <div class="ino-timeline__row" data-role="success" data-side="end">
+        <div class="ino-timeline__opposite">Tue</div>
+        <div class="ino-timeline__rail">
+          <span class="ino-timeline__marker"><span class="ino-timeline__dot"></span></span>
+          <span class="ino-timeline__connector"></span>
+        </div>
+        <div class="ino-timeline__content"><p>Document verified</p></div>
+      </div>
+      <div class="ino-timeline__row" data-role="neutral" data-side="start" data-last>
+        <div class="ino-timeline__opposite">Wed</div>
+        <div class="ino-timeline__rail">
+          <span class="ino-timeline__marker"><span class="ino-timeline__dot"></span></span>
+        </div>
+        <div class="ino-timeline__content"><p>Awaiting final sign-off</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>Size</h2>
+<div class="state-row">
+  <div class="state-cell">
+    <h3>sm</h3>
+    <div class="ino-timeline" data-layout="vertical" data-size="sm" role="list" aria-label="Audit trail">
+      <div class="ino-timeline__row" data-role="info" data-side="start">
+        <div class="ino-timeline__opposite">1</div>
+        <div class="ino-timeline__rail"><span class="ino-timeline__marker"><span class="ino-timeline__dot"></span></span><span class="ino-timeline__connector"></span></div>
+        <div class="ino-timeline__content"><p>Event one</p></div>
+      </div>
+      <div class="ino-timeline__row" data-role="success" data-side="start" data-last>
+        <div class="ino-timeline__opposite">2</div>
+        <div class="ino-timeline__rail"><span class="ino-timeline__marker"><span class="ino-timeline__dot"></span></span></div>
+        <div class="ino-timeline__content"><p>Event two</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="state-cell">
+    <h3>default</h3>
+    <div class="ino-timeline" data-layout="vertical" role="list" aria-label="Audit trail">
+      <div class="ino-timeline__row" data-role="info" data-side="start">
+        <div class="ino-timeline__opposite">1</div>
+        <div class="ino-timeline__rail"><span class="ino-timeline__marker"><span class="ino-timeline__dot"></span></span><span class="ino-timeline__connector"></span></div>
+        <div class="ino-timeline__content"><p>Event one</p></div>
+      </div>
+      <div class="ino-timeline__row" data-role="success" data-side="start" data-last>
+        <div class="ino-timeline__opposite">2</div>
+        <div class="ino-timeline__rail"><span class="ino-timeline__marker"><span class="ino-timeline__dot"></span></span></div>
+        <div class="ino-timeline__content"><p>Event two</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="state-cell">
+    <h3>lg</h3>
+    <div class="ino-timeline" data-layout="vertical" data-size="lg" role="list" aria-label="Audit trail">
+      <div class="ino-timeline__row" data-role="info" data-side="start">
+        <div class="ino-timeline__opposite">1</div>
+        <div class="ino-timeline__rail"><span class="ino-timeline__marker"><span class="ino-timeline__dot"></span></span><span class="ino-timeline__connector"></span></div>
+        <div class="ino-timeline__content"><p>Event one</p></div>
+      </div>
+      <div class="ino-timeline__row" data-role="success" data-side="start" data-last>
+        <div class="ino-timeline__opposite">2</div>
+        <div class="ino-timeline__rail"><span class="ino-timeline__marker"><span class="ino-timeline__dot"></span></span></div>
+        <div class="ino-timeline__content"><p>Event two</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>Marker roles</h2>
+<div class="ino-timeline" data-layout="vertical" role="list" aria-label="Marker roles">
+  <div class="ino-timeline__row" data-role="neutral" data-side="start"><div class="ino-timeline__opposite"></div><div class="ino-timeline__rail"><span class="ino-timeline__marker"><span class="ino-timeline__dot"></span></span><span class="ino-timeline__connector"></span></div><div class="ino-timeline__content"><p>neutral</p></div></div>
+  <div class="ino-timeline__row" data-role="info" data-side="start"><div class="ino-timeline__opposite"></div><div class="ino-timeline__rail"><span class="ino-timeline__marker"><span class="ino-timeline__dot"></span></span><span class="ino-timeline__connector"></span></div><div class="ino-timeline__content"><p>info</p></div></div>
+  <div class="ino-timeline__row" data-role="success" data-side="start"><div class="ino-timeline__opposite"></div><div class="ino-timeline__rail"><span class="ino-timeline__marker"><span class="ino-timeline__dot"></span></span><span class="ino-timeline__connector"></span></div><div class="ino-timeline__content"><p>success</p></div></div>
+  <div class="ino-timeline__row" data-role="warning" data-side="start"><div class="ino-timeline__opposite"></div><div class="ino-timeline__rail"><span class="ino-timeline__marker"><span class="ino-timeline__dot"></span></span><span class="ino-timeline__connector"></span></div><div class="ino-timeline__content"><p>warning</p></div></div>
+  <div class="ino-timeline__row" data-role="danger" data-side="start" data-last><div class="ino-timeline__opposite"></div><div class="ino-timeline__rail"><span class="ino-timeline__marker"><span class="ino-timeline__dot"></span></span></div><div class="ino-timeline__content"><p>danger</p></div></div>
+</div>
+
+<h2>Eight states (interactive)</h2>
+<p class="lede">
+  Hover/active/focus-visible are normally transient; a modifier class stands in for the pseudo-class
+  here so the state is visible in a static screenshot, the same trick <code>paginator.html</code>
+  and <code>virtual-scroller.html</code> use. These three states are gated behind
+  <code>interactive</code> — see <code>SPEC.md</code> §3 for why a read-only row draws none of them.
+</p>
+<div class="state-row">
+  <div class="state-cell">
+    <h3>default</h3>
+    <div class="ino-timeline ino-timeline--interactive" data-layout="vertical" role="listbox" aria-label="Audit trail">
+      <div class="ino-timeline__row" data-role="info" data-side="start" tabindex="0"><div class="ino-timeline__opposite"></div><div class="ino-timeline__rail"><span class="ino-timeline__marker"><span class="ino-timeline__dot"></span></span></div><div class="ino-timeline__content"><p>Event</p></div></div>
+    </div>
+  </div>
+  <div class="state-cell">
+    <h3>hover</h3>
+    <div class="ino-timeline ino-timeline--interactive" data-layout="vertical" role="listbox" aria-label="Audit trail">
+      <div class="ino-timeline__row ino-timeline__row--force-hover" data-role="info" data-side="start" tabindex="0"><div class="ino-timeline__opposite"></div><div class="ino-timeline__rail"><span class="ino-timeline__marker"><span class="ino-timeline__dot"></span></span></div><div class="ino-timeline__content"><p>Event</p></div></div>
+    </div>
+  </div>
+  <div class="state-cell">
+    <h3>active / pressed</h3>
+    <div class="ino-timeline ino-timeline--interactive" data-layout="vertical" role="listbox" aria-label="Audit trail">
+      <div class="ino-timeline__row ino-timeline__row--force-active" data-role="info" data-side="start" tabindex="0"><div class="ino-timeline__opposite"></div><div class="ino-timeline__rail"><span class="ino-timeline__marker"><span class="ino-timeline__dot"></span></span></div><div class="ino-timeline__content"><p>Event</p></div></div>
+    </div>
+  </div>
+  <div class="state-cell">
+    <h3>focus-visible</h3>
+    <div class="ino-timeline ino-timeline--interactive" data-layout="vertical" role="listbox" aria-label="Audit trail">
+      <div class="ino-timeline__row ino-timeline__row--force-focus" data-role="info" data-side="start" tabindex="0"><div class="ino-timeline__opposite"></div><div class="ino-timeline__rail"><span class="ino-timeline__marker"><span class="ino-timeline__dot"></span></span></div><div class="ino-timeline__content"><p>Event</p></div></div>
+    </div>
+  </div>
+  <div class="state-cell">
+    <h3>disabled</h3>
+    <div class="ino-timeline ino-timeline--interactive" data-layout="vertical" data-disabled aria-disabled="true" role="listbox" aria-label="Audit trail">
+      <div class="ino-timeline__row" data-role="info" data-side="start" tabindex="-1"><div class="ino-timeline__opposite"></div><div class="ino-timeline__rail"><span class="ino-timeline__marker"><span class="ino-timeline__dot"></span></span></div><div class="ino-timeline__content"><p>Event</p></div></div>
+    </div>
+  </div>
+  <div class="state-cell">
+    <h3>readonly</h3>
+    <div class="ino-timeline ino-timeline--interactive" data-layout="vertical" data-readonly aria-readonly="true" role="listbox" aria-label="Audit trail">
+      <div class="ino-timeline__row" data-role="info" data-side="start" tabindex="0"><div class="ino-timeline__opposite"></div><div class="ino-timeline__rail"><span class="ino-timeline__marker"><span class="ino-timeline__dot"></span></span></div><div class="ino-timeline__content"><p>Event</p></div></div>
+    </div>
+  </div>
+  <div class="state-cell">
+    <h3>invalid</h3>
+    <div class="ino-timeline" data-layout="vertical" data-invalid role="list" aria-label="Audit trail">
+      <div class="ino-timeline__row" data-role="danger" data-side="start" data-last><div class="ino-timeline__opposite"></div><div class="ino-timeline__rail"><span class="ino-timeline__marker"><span class="ino-timeline__dot"></span></span></div><div class="ino-timeline__content"><p>Verification failed</p></div></div>
+    </div>
+  </div>
+  <div class="state-cell">
+    <h3>loading / busy (refresh)</h3>
+    <div class="ino-timeline" data-layout="vertical" data-busy aria-busy="true" role="list" aria-label="Audit trail">
+      <div class="ino-timeline__row" data-role="info" data-side="start" data-last><div class="ino-timeline__opposite"></div><div class="ino-timeline__rail"><span class="ino-timeline__marker"><span class="ino-timeline__dot"></span></span></div><div class="ino-timeline__content"><p>Event</p></div></div>
+    </div>
+  </div>
+</div>
+
+<h2>Loading — first load (skeleton)</h2>
+<div class="ino-timeline" data-layout="vertical" aria-busy="true" aria-hidden="true">
+  <div class="ino-timeline__row ino-timeline__row--skeleton">
+    <div class="ino-timeline__opposite"><span class="ino-timeline__skeleton-bar ino-timeline__skeleton-bar--opposite"></span></div>
+    <div class="ino-timeline__rail"><span class="ino-timeline__marker"><span class="ino-timeline__dot"></span></span><span class="ino-timeline__connector"></span></div>
+    <div class="ino-timeline__content">
+      <span class="ino-timeline__skeleton-bar ino-timeline__skeleton-bar--title"></span>
+      <span class="ino-timeline__skeleton-bar ino-timeline__skeleton-bar--body"></span>
+    </div>
+  </div>
+  <div class="ino-timeline__row ino-timeline__row--skeleton">
+    <div class="ino-timeline__opposite"><span class="ino-timeline__skeleton-bar ino-timeline__skeleton-bar--opposite"></span></div>
+    <div class="ino-timeline__rail"><span class="ino-timeline__marker"><span class="ino-timeline__dot"></span></span><span class="ino-timeline__connector"></span></div>
+    <div class="ino-timeline__content">
+      <span class="ino-timeline__skeleton-bar ino-timeline__skeleton-bar--title"></span>
+      <span class="ino-timeline__skeleton-bar ino-timeline__skeleton-bar--body"></span>
+    </div>
+  </div>
+  <div class="ino-timeline__row ino-timeline__row--skeleton">
+    <div class="ino-timeline__opposite"><span class="ino-timeline__skeleton-bar ino-timeline__skeleton-bar--opposite"></span></div>
+    <div class="ino-timeline__rail"><span class="ino-timeline__marker"><span class="ino-timeline__dot"></span></span></div>
+    <div class="ino-timeline__content">
+      <span class="ino-timeline__skeleton-bar ino-timeline__skeleton-bar--title"></span>
+      <span class="ino-timeline__skeleton-bar ino-timeline__skeleton-bar--body"></span>
+    </div>
+  </div>
+</div>
+
+<h2>Empty</h2>
+<div class="ino-timeline" data-layout="vertical">
+  <div class="ino-timeline__empty">No audit events yet.</div>
+</div>
+
+<h2>RTL</h2>
+<p class="lede">
+  Row ordering uses the CSS <code>order</code> property inside a flex container, which resolves
+  against the container's own inline axis — it mirrors automatically under <code>dir="rtl"</code>,
+  no separate code path. See <code>SPEC.md</code> §6.
+</p>
+<div class="ino-timeline" data-layout="vertical" dir="rtl" role="list" aria-label="سجل التدقيق">
+  <div class="ino-timeline__row" data-role="success" data-side="start">
+    <div class="ino-timeline__opposite">10:02 ص</div>
+    <div class="ino-timeline__rail"><span class="ino-timeline__marker"><span class="ino-timeline__dot"></span></span><span class="ino-timeline__connector"></span></div>
+    <div class="ino-timeline__content"><p>تمت الموافقة على فحص الشركة</p></div>
+  </div>
+  <div class="ino-timeline__row" data-role="danger" data-side="end" data-last>
+    <div class="ino-timeline__opposite">11:47 ص</div>
+    <div class="ino-timeline__rail"><span class="ino-timeline__marker"><span class="ino-timeline__dot"></span></span></div>
+    <div class="ino-timeline__content"><p>تم رفض الطلب</p></div>
+  </div>
+</div>
+
+<h2>Motion</h2>
+<p class="note">
+  The connector between two markers draws in on first render (a scale transform from the marker
+  outward) using <code>--ino-motion-duration-slow</code> + <code>--ino-motion-easing-decelerate</code>.
+  The loading skeleton uses the same shimmer idiom as <code>virtual-scroller.html</code>. Both
+  collapse under <code>prefers-reduced-motion: reduce</code> — toggle your OS setting to see both
+  branches; this static preview does not replay the animation itself.
+</p>
+
+</body>
+</html>

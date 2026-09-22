@@ -1,0 +1,99 @@
+/* `top`/`left` (not `inset-block-start`/`inset-inline-start`) below are set from JS
+   (`ino-confirm-popup.component.ts`, `computeOverlayPlacement`) using `getBoundingClientRect()`
+   viewport coordinates — see `overlay-position.ts`'s doc comment for why that is the RTL-correct
+   choice here, not an exception to the logical-properties rule. Everything else in this file is
+   static and uses logical properties throughout. */
+.ino-confirm-popup {
+  position: fixed;
+  z-index: 1100;
+  box-sizing: border-box;
+  max-inline-size: min(320px, calc(100vw - var(--ino-space-4) * 2));
+  padding: var(--ino-space-5);
+  background: var(--ino-color-surface-raised);
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-lg);
+  box-shadow: var(--ino-elevation-neutral-3);
+
+  &:focus-visible {
+    outline: none;
+  }
+}
+
+.ino-confirm-popup__arrow {
+  position: absolute;
+  inline-size: var(--ino-space-3);
+  block-size: var(--ino-space-3);
+  background: var(--ino-color-surface-raised);
+  border-inline-start: 1px solid var(--ino-color-border);
+  border-block-start: 1px solid var(--ino-color-border);
+  transform: rotate(45deg);
+  z-index: -1;
+}
+
+/* Popup renders BELOW the anchor, so its pointer sits at its own block-start edge and points up. */
+.ino-confirm-popup--bottom .ino-confirm-popup__arrow {
+  inset-block-start: calc(var(--ino-space-3) / -2);
+  inset-inline-start: calc(50% - var(--ino-space-3) / 2);
+}
+
+/* Popup renders ABOVE the anchor — pointer sits at the block-end edge and points down; only the
+   opposite pair of sides needs the visible border for the diamond's exposed corner to read as
+   pointing the right way. */
+.ino-confirm-popup--top .ino-confirm-popup__arrow {
+  inset-block-end: calc(var(--ino-space-3) / -2);
+  inset-inline-start: calc(50% - var(--ino-space-3) / 2);
+  border-inline-start: none;
+  border-block-start: none;
+  border-inline-end: 1px solid var(--ino-color-border);
+  border-block-end: 1px solid var(--ino-color-border);
+}
+
+.ino-confirm-popup--right .ino-confirm-popup__arrow {
+  inset-inline-start: calc(var(--ino-space-3) / -2);
+  inset-block-start: calc(50% - var(--ino-space-3) / 2);
+}
+
+.ino-confirm-popup--left .ino-confirm-popup__arrow {
+  inset-inline-end: calc(var(--ino-space-3) / -2);
+  inset-block-start: calc(50% - var(--ino-space-3) / 2);
+  border-inline-start: none;
+  border-block-start: none;
+  border-inline-end: 1px solid var(--ino-color-border);
+  border-block-end: 1px solid var(--ino-color-border);
+}
+
+.ino-confirm-popup__heading {
+  margin: 0;
+  font-size: var(--ino-type-h3-size);
+  line-height: var(--ino-type-h3-line);
+  font-weight: var(--ino-type-h3-weight);
+  letter-spacing: var(--ino-type-h3-tracking);
+  color: var(--ino-color-on-surface);
+}
+
+.ino-confirm-popup__message {
+  margin: var(--ino-space-2) 0 0;
+  font-size: var(--ino-type-body-size);
+  line-height: var(--ino-type-body-line);
+  color: var(--ino-color-on-surface-muted);
+}
+
+.ino-confirm-popup__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--ino-space-3);
+  margin-block-start: var(--ino-space-4);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ino-confirm-popup {
+    animation: ino-confirm-popup-in var(--ino-motion-duration-fast) var(--ino-motion-easing-decelerate);
+  }
+}
+
+@keyframes ino-confirm-popup-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}

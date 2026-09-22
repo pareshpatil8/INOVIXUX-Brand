@@ -202,7 +202,7 @@ Legend: ✅ Covered · ⚠️ Partial · ❌ Missing · **[38]** = was in the or
 | OrgChart | **[38]** | — | ❌ |
 | **Paginator** | [new] | — | ❌ — a table prerequisite the 38-plan missed |
 | PickList | **[38]** | — | ❌ |
-| Timeline | [new] | — | ❌ — **strong fit for a KYB audit trail** |
+| **Timeline** | [new] | `<ino-timeline>` | ✅ — marker/connector rail, vertical + horizontal layout, alternate zig-zag, interactive roving-tabindex mode; web-only by design (INO-134) |
 | Tree | **[38]** | — | ❌ |
 | TreeTable | **[38]** | — | ❌ |
 | **VirtualScroller** | [new] | `<ino-virtual-scroller>` | ✅ — fixed + variable item size, lazy loading, scroll-position restoration; web-only by design (INO-129) |
@@ -757,7 +757,7 @@ keyboard support per component — the format §6.1 item 7 adopts.
 | 4.1.2 | Name, Role, Value | ⚠️ | Strong on form controls; missing on nav and card |
 | 4.1.3 | Status Messages | ⚠️ | `aria-live` on toast container only; one politeness level |
 | 2.5.8 (2.2) | Target Size | ✅ | `tokens.css` §7 |
-| — | `prefers-reduced-motion` | ⚠️ | Honoured in 5 of 16 components; ds_context makes it mandatory for all motion |
+| — | `prefers-reduced-motion` | ✅ | Closed by **INO-127** (W0-5) — see N-7 below |
 
 **No automated accessibility gate exists.** No axe, no pa11y, no CI a11y check.
 `scripts/check-theme-parity.mjs` checks token parity, not accessibility. **Every ✅ above is a
@@ -802,7 +802,7 @@ source-reading assertion, not a test result** — which is what H-5 exists to fi
 | 1 | All values reference CSS variables, nothing hardcoded | 🔲 **no lint enforces this** (H-5) |
 | 2 | Do not change the colour palette | ✅ |
 | 3 | Consistent focus ring via a single token | ❌ hand-repeated, already drifted |
-| 4 | All motion respects `prefers-reduced-motion` | ⚠️ 5 of 16 |
+| 4 | All motion respects `prefers-reduced-motion` | ✅ closed by **INO-127** |
 | 5 | Dark mode via CSS variables, no class overrides | ✅ ahead — 3 themes via `[data-theme]` |
 | 6 | Responsive / mobile-viewport functional | ✅ |
 | 7 | No external icon library assumed; icon slots | ⚠️ `14-icon-system.md` exists; **components have no icon slots** → `IconField` (§3.2) |
@@ -877,7 +877,7 @@ the current component count and get monotonically more expensive. §4.4 makes th
 
 | # | Item | Status | Blocked by |
 |---|---|---|---|
-| **M-6** | Email design system — transactional templates (verification, approval-requested, report-ready) + HTML signature block | ❌ Missing | — |
+| **M-6** | Email design system — transactional templates (verification, approval-requested, report-ready) + HTML signature block | ✅ **Closed** by **INO-121** — `docs/brand/07-collateral/email/`, 4 transactional templates + signature block, values generated from `tokens.css` (`scripts/gen-email-templates.mjs`), drift-checked in CI (`scripts/check-email-tokens.mjs`). Also covers password-reset (not separately listed here). Final logo swap pending **INO-82** | — |
 | **M-7** | Brand guidelines PDF — the single distributable file a vendor/printer/partner gets | ❌ Missing | **INO-82** |
 | **M-8** | Print colour specification — CMYK + Pantone for the violet/indigo accent | ❌ Missing | **INO-82** |
 | **M-9** | Social profile kit — LinkedIn/X banner, avatar crops, post templates | ❌ Missing | partly **INO-82** |
@@ -886,11 +886,11 @@ the current component count and get monotonically more expensive. §4.4 makes th
 | **M-12** | App store listing assets — screenshots, feature graphic, store copy × 3 tracks | ❌ Missing | partly **INO-82** |
 | **M-13** | **PrimeNG AI tooling adoption** *(NEW)* — install the Plugin; pin `llms.txt` to `specs/primeng/llms-22.1.1.txt` | ❌ Not started | §2 | 
 | **M-14** | **Decompose `ino-metric-panel`** *(NEW)* into `Tag` + `MeterGroup` inside a `Card` | 🔲 Decision | §7 |
-| **N-5** | Composite type aliases + `--leading-*` / `--tracking-*` scales | ❌ Missing | — |
-| **N-6** | Shadow/elevation scale — 2 steps today vs 6 + 3 brand + 2 inset | ⚠️ Partial | — |
-| **N-7** | `prefers-reduced-motion` coverage — 5 of 16 components | ⚠️ Partial | — |
+| **N-5** | Composite type aliases + `--leading-*` / `--tracking-*` scales | ✅ **Closed** by **INO-126** (W0-4) — `tokens.css` §4c: 9-step `--ino-leading-*` + 7-step `--ino-tracking-*` scale, every existing role re-pointed at it, plus one `font`-shorthand composite alias per role, asserted by `check-theme-parity.mjs` | — |
+| **N-6** | Shadow/elevation scale — 2 steps today vs 6 + 3 brand + 2 inset | ✅ **Closed** by **INO-126** (W0-4) — `tokens.css` §2: `--ino-elevation-neutral-1..6` / `-brand-1..3` / `-inset-1..2`, brand parametric on `var(--ino-color-accent)`, all 11 flatten to `none` in high-contrast (recorded decision), old `-0/-1/-2` left in place for existing consumers | — |
+| **N-7** | `prefers-reduced-motion` coverage — 5 of 16 components | ✅ **Closed** by **INO-127** (W0-5) — every component directory with `transition`/`animation`/`@keyframes` CSS (`alert`, `button`, `card`, `input`, `modal`, `nav`, `select`, `tag`, `toast-container`, `toggle`, `virtual-scroller`) now gates it under `prefers-reduced-motion`, plus JS-driven motion (`CountUpDirective`, `virtual-scroller`'s programmatic scroll) already checked `matchMedia`. `alert`, `input`, `nav`, `select` were the actual gap and got the branch this pass; the rest already had it. `checkbox`, `radio-group`, `feature-grid`, `footer`, `tier-card`, `focus-trap` have no motion to gate. Pattern documented in `docs/brand/06-angular-components/motion-contract.md` so Wave 2 inherits it. | — |
 | **N-8** | **Info severity tier** — `info` on both Toast and Message | ✅ **Closed** by **INO-128** (W0-6) — `InoAlertStatus` is `info\|success\|warning\|danger`; `--ino-color-info` / `--ino-color-on-info` in all 3 themes + both mobile ports, asserted by `check-theme-parity.mjs` | — |
-| **N-9** | Icon slots + `danger` button variant | ❌ Missing | rebaselined to `IconField` + `InputGroup` (§3.2) |
+| **N-9** | Icon slots + `danger` button variant | ✅ **Closed** (icon slots) by **INO-157** (U-2) — `ino-input` deliberately ships no `@Input() icon`; leading/trailing icons compose via `<ino-icon-field>` (T-16), prefix/suffix addons via `<ino-input-group>` (T-17). `danger` button variant still outstanding | rebaselined to `IconField` + `InputGroup` (§3.2) |
 | **N-11** | **Escape-hatch / override contract** *(NEW)* — PrimeNG's `pt` equivalent | 🔲 **Decision required** | §4.3 Layer 4. **You** — recommend option (a) |
 
 ### LOW — real, but safely deferrable

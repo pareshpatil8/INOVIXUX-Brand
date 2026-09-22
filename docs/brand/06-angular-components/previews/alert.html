@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ino-alert — severity tiers (INO-128)</title>
+<title>ino-alert / ino-toast-container — severity tiers (INO-128) + position &amp; sticky (INO-163)</title>
 <!-- Canonical token file, linked rather than copied: this preview must repaint with the system,
      and must never become a second place raw hex values live. -->
 <link rel="stylesheet" href="../../02-design-tokens/tokens.css">
@@ -112,6 +112,66 @@
   .motion-demo__btn:focus-visible {
     outline: var(--ino-focus-ring);
     outline-offset: var(--ino-focus-ring-offset);
+  }
+
+  /* Position demo (INO-163) — a bounded "viewport" standing in for the real fixed-position
+     container, so all 6 anchors can be shown at once without scrolling the actual page. Insets are
+     logical-only (inset-inline-*/inset-block-*), mirroring ino-toast-container.component.scss
+     exactly — the *-center columns use inset-inline + margin-inline: auto rather than
+     left: 50%; transform: translateX(-50%), for the same RTL reason the component avoids it. */
+  .position-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--ino-space-5);
+  }
+  .position-demo {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ino-space-2);
+  }
+  .position-demo__label {
+    font-size: var(--ino-type-body-sm-size);
+    color: var(--ino-color-on-surface-muted);
+  }
+  .position-demo__frame {
+    position: relative;
+    block-size: 160px;
+    border: 1px dashed var(--ino-color-border);
+    border-radius: var(--ino-radius-lg);
+    background: var(--ino-color-surface-sunken);
+    overflow: hidden;
+  }
+  .position-demo__toast {
+    position: absolute;
+    max-width: 170px;
+    padding: var(--ino-space-2) var(--ino-space-3);
+    margin: var(--ino-space-2);
+    font-size: var(--ino-type-body-sm-size);
+  }
+  .position-demo__frame--top-start .position-demo__toast    { inset-block-start: 0; inset-inline-start: 0; }
+  .position-demo__frame--top-center .position-demo__toast   { inset-block-start: 0; inset-inline: 0; margin-inline: auto; }
+  .position-demo__frame--top-end .position-demo__toast      { inset-block-start: 0; inset-inline-end: 0; }
+  .position-demo__frame--bottom-start .position-demo__toast { inset-block-end: 0; inset-inline-start: 0; }
+  .position-demo__frame--bottom-center .position-demo__toast{ inset-block-end: 0; inset-inline: 0; margin-inline: auto; }
+  .position-demo__frame--bottom-end .position-demo__toast   { inset-block-end: 0; inset-inline-end: 0; }
+
+  /* Sticky demo (INO-163) — visually identical to a normal toast except it never renders
+     .ino-alert__dismiss, matching [dismissible]="!toast.sticky" in the real component. */
+  .sticky-demo {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--ino-space-5);
+    align-items: flex-start;
+  }
+  .sticky-demo__col {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ino-space-2);
+    flex: 1 1 260px;
+  }
+  .sticky-demo__col > strong {
+    font-size: var(--ino-type-body-sm-size);
+    color: var(--ino-color-on-surface-muted);
   }
 </style>
 </head>
@@ -269,6 +329,102 @@
       <div class="ino-alert__message">Logical properties only — the icon, body, and dismiss button mirror without a second stylesheet.</div>
     </div>
     <button type="button" class="ino-alert__dismiss" aria-label="Dismiss">&#10005;</button>
+  </div>
+</div>
+
+<h2>Toast <code>position</code> (INO-163)</h2>
+<p class="lede">
+  Six standard corners/edges, set once on <code>&lt;ino-toast-container position="…"&gt;</code> for
+  the whole shared stack (default <code>bottom-end</code>, the pre-INO-163 placement). Each frame
+  below is a bounded stand-in for the real fixed-position container. No <code>center</code> — a
+  toast sits mid-viewport only in PrimeNG; here that would occlude whatever the reviewer was
+  looking at, exactly what a toast (unlike a modal) exists to avoid.
+</p>
+<div class="position-grid">
+  <div class="position-demo">
+    <span class="position-demo__label"><code>top-start</code></span>
+    <div class="position-demo__frame position-demo__frame--top-start">
+      <div class="position-demo__toast ino-alert ino-alert--info" role="status">
+        <span class="ino-alert__icon" aria-hidden="true">i</span>
+        <div class="ino-alert__body"><div class="ino-alert__message">top-start</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="position-demo">
+    <span class="position-demo__label"><code>top-center</code></span>
+    <div class="position-demo__frame position-demo__frame--top-center">
+      <div class="position-demo__toast ino-alert ino-alert--info" role="status">
+        <span class="ino-alert__icon" aria-hidden="true">i</span>
+        <div class="ino-alert__body"><div class="ino-alert__message">top-center</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="position-demo">
+    <span class="position-demo__label"><code>top-end</code></span>
+    <div class="position-demo__frame position-demo__frame--top-end">
+      <div class="position-demo__toast ino-alert ino-alert--info" role="status">
+        <span class="ino-alert__icon" aria-hidden="true">i</span>
+        <div class="ino-alert__body"><div class="ino-alert__message">top-end</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="position-demo">
+    <span class="position-demo__label"><code>bottom-start</code></span>
+    <div class="position-demo__frame position-demo__frame--bottom-start">
+      <div class="position-demo__toast ino-alert ino-alert--info" role="status">
+        <span class="ino-alert__icon" aria-hidden="true">i</span>
+        <div class="ino-alert__body"><div class="ino-alert__message">bottom-start</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="position-demo">
+    <span class="position-demo__label"><code>bottom-center</code></span>
+    <div class="position-demo__frame position-demo__frame--bottom-center">
+      <div class="position-demo__toast ino-alert ino-alert--info" role="status">
+        <span class="ino-alert__icon" aria-hidden="true">i</span>
+        <div class="ino-alert__body"><div class="ino-alert__message">bottom-center</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="position-demo">
+    <span class="position-demo__label"><code>bottom-end</code> (default)</span>
+    <div class="position-demo__frame position-demo__frame--bottom-end">
+      <div class="position-demo__toast ino-alert ino-alert--info" role="status">
+        <span class="ino-alert__icon" aria-hidden="true">i</span>
+        <div class="ino-alert__body"><div class="ino-alert__message">bottom-end</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>Sticky / persistent mode (INO-163 / P-3)</h2>
+<p class="lede">
+  <code>toastService.show({ …, sticky: true })</code> disables the auto-dismiss timer <em>and</em>
+  renders without a dismiss button — compare the two toasts below. A sticky toast can only be
+  cleared by the code path that resolves whatever it's blocking (e.g. an approval decision made
+  elsewhere in the app) calling <code>dismiss(id)</code>; a reviewer cannot click it away.
+</p>
+<div class="sticky-demo">
+  <div class="sticky-demo__col">
+    <strong>Normal — dismissible, auto-dismisses</strong>
+    <div class="ino-alert ino-alert--success ino-alert--toast" role="status">
+      <span class="ino-alert__icon" aria-hidden="true">&#10003;</span>
+      <div class="ino-alert__body">
+        <p class="ino-alert__heading">Saved</p>
+        <div class="ino-alert__message">Reconciliation results saved.</div>
+      </div>
+      <button type="button" class="ino-alert__dismiss" aria-label="Dismiss">&#10005;</button>
+    </div>
+  </div>
+  <div class="sticky-demo__col">
+    <strong>Sticky — no dismiss button, no timer</strong>
+    <div class="ino-alert ino-alert--warning ino-alert--toast" role="status">
+      <span class="ino-alert__icon" aria-hidden="true">!</span>
+      <div class="ino-alert__body">
+        <p class="ino-alert__heading">Approval needed</p>
+        <div class="ino-alert__message">Confirm the wire before it releases.</div>
+      </div>
+    </div>
   </div>
 </div>
 

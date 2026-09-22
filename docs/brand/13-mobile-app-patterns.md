@@ -263,3 +263,35 @@ are product/backend work and none of them is a design-system decision:
    dependency the sign-in screens already carry.
 
 Implementation across the three tracks is tracked separately and is blocked on items 1–2.
+
+## 7. Decision feedback — sound & haptics (INO-170, L-14)
+
+No dedicated "approve/reject a pending item" screen exists yet in any of the three tracks (see
+`15-mobile-screen-inventory.md`) — the closest built pattern is the confirm/cancel action sheet
+(§2 Modal / bottom sheet row, screen inventory row 11: `ConfirmActionSheet.tsx`,
+`ino-confirm-action-sheet.component.ts`, `confirm_action_sheet.dart`). That component's confirm
+action *is* a binary consequential-decision commit, so haptic feedback is wired there rather than
+on a not-yet-built approval screen — any future approval/rejection flow built on this shared
+component inherits the feedback automatically.
+
+- **Haptics, not sound.** A human-in-the-loop approval product needs the confirmation of a
+  consequential decision to be perceptible without looking (the L-14 rationale) — haptics satisfy
+  that on a device in a pocket or on a desk. Audio does not: most approval decisions happen with
+  the device muted or on silent/DND, so a sound-only cue would silently fail exactly when it
+  matters most, and would need bundled audio assets, a playback dependency, and a mute-state check
+  per platform for no reliability gain over haptics. **Sound is deliberately not implemented.** If
+  a future ticket wants it, treat it as additive (an optional cue layered on top of haptics, gated
+  by an explicit in-app setting), not a replacement.
+- **Non-destructive confirm (approve-shaped)** → a single "success" notification haptic
+  (`Haptics.NotificationFeedbackType.Success` / `NotificationType.Success` /
+  `HapticFeedback.mediumImpact()`).
+- **Destructive confirm (reject-shaped)** → a heavier "warning" haptic
+  (`Haptics.NotificationFeedbackType.Warning` / `NotificationType.Warning` /
+  `HapticFeedback.heavyImpact()`) — distinguishable from the approve cue without looking.
+- **Cancel is silent.** Backing out of the sheet is not a decision being confirmed, so it carries
+  no haptic.
+- **Dependencies added:** `expo-haptics` (react-native, MIT, official Expo module) and
+  `@capacitor/haptics` (capacitor, MIT, official Capacitor plugin). Flutter uses the
+  `HapticFeedback` platform channel already built into `flutter/services.dart` — no new pub
+  dependency. All three calls are fire-and-forget and swallow rejection (simulators and
+  haptics-less devices/browsers must not crash the confirm action).
