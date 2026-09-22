@@ -502,6 +502,12 @@ const COMPONENT_REGISTRY = [
     ],
   },
   {
+    name: 'table',
+    web: 'web/src/app/components/table',
+    mobile: { reactNative: 'web-only', flutter: 'web-only' },
+    reason: 'web-only by explicit decision (INO-155, plan rev 9 §5 desktop-idiom porting rule) — a dense grid with column resize/reorder/frozen columns and roving-tabindex keyboard nav is a desktop pointer-and-keyboard idiom. The mobile counterpart is a different component and gets its own issue in a later wave. See web/src/app/components/table/SPEC.md §1 and docs/brand/06-angular-components/table.md#mobile-parity.',
+  },
+  {
     name: 'tag',
     web: 'web/src/app/components/tag',
     mobile: {
