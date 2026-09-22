@@ -202,7 +202,7 @@ Legend: ✅ Covered · ⚠️ Partial · ❌ Missing · **[38]** = was in the or
 | OrgChart | **[38]** | — | ❌ |
 | **Paginator** | [new] | — | ❌ — a table prerequisite the 38-plan missed |
 | PickList | **[38]** | — | ❌ |
-| Timeline | [new] | — | ❌ — **strong fit for a KYB audit trail** |
+| **Timeline** | [new] | `<ino-timeline>` | ✅ — marker/connector rail, vertical + horizontal layout, alternate zig-zag, interactive roving-tabindex mode; web-only by design (INO-134) |
 | Tree | **[38]** | — | ❌ |
 | TreeTable | **[38]** | — | ❌ |
 | **VirtualScroller** | [new] | `<ino-virtual-scroller>` | ✅ — fixed + variable item size, lazy loading, scroll-position restoration; web-only by design (INO-129) |
