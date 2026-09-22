@@ -1,6 +1,7 @@
 # `<ino-select>` — component spec
 
 **Issue:** INO-152 (INO-31 T-9, Tier 1 / Form group)
+**Follow-up:** INO-258 — React Native + Flutter single-selection ports (§9)
 **Parity benchmark:** PrimeNG 22.1.1 `Select` — `specs/primeng/llms-22.1.1.txt`, route
 `https://primeng.dev/select`. PrimeNG is a benchmark, **not a runtime dependency**; nothing here
 installs it.
@@ -130,25 +131,76 @@ future pass could extract the `.ino-field__option`/`.ino-field__control` shared 
 `ino-datepicker`'s SPEC.md §8 documents for its own button-like parts, if the budget is ever made
 build-blocking.
 
-## 9. Mobile parity (per plan rev 9 §5) — web-only for this issue, scoped native ports filed separately
+## 9. Mobile parity (per plan rev 9 §5) — scoped single-selection native ports (INO-258)
 
 - **Capacitor** — not a separate port. The same Angular component/CSS renders in the Capacitor
   WebView; satisfied automatically once DoD rows 1–8 pass plus the 44px touch-target check
   (`--ino-control-height-default` / `--ino-target-comfortable`).
-- **React Native and Flutter** — **not shipped in this issue.** This issue used its scope on the
-  web core (§1) that three future variants extend; building lower-fidelity native ports in the
-  same pass would mean re-touching this component a third time once MultiSelect/AutoComplete
-  patterns exist to port consistently with. A follow-up child issue is filed for scoped
-  single-selection ports (trigger, filter, clearable, loading, disabled — no groups, no custom
-  templates, no virtual scroll, mirroring `ino-datepicker`'s single-selection-only precedent in
-  its own SPEC.md §9) once created; see the parent issue thread for the link. Declared `web-only`
-  in `scripts/check-theme-parity.mjs`'s component registry with this reasoning, per DoD row 9's
-  explicit "record a web-only decision with a reason" path.
+- **React Native and Flutter** — **not shipped in INO-152; shipped in the INO-258 follow-up** as
+  scoped single-selection ports (`mobile/react-native/src/components/InoSelect.tsx`,
+  `mobile/flutter/lib/widgets/ino_select.dart`). INO-152 used its scope on the web core (§1) that
+  three future variants extend; splitting the ports out kept this component from being re-touched
+  a third time mid-issue. The ports mirror `ino-datepicker`'s single-selection-only precedent
+  (its own SPEC.md §9) at the same ~40% porting-rule cost.
+
+### 9a. What the ports carry
+
+Trigger + modal bottom-sheet option list, `size` (`ControlSize`/`InoControlSize`),
+`disabled`/`loading`, `clearable`, and the in-panel filter — the filter uses the *same* predicate
+as `recomputeFiltered()` (trim, lower-case, substring match on `label`), so a query that narrows
+the list on web narrows it identically on both native tracks.
+
+### 9b. What the ports deliberately do NOT carry
+
+Four surfaces are omitted by decision. They are written down here rather than silently dropped, so
+each reads as a scoping call a reviewer can disagree with:
+
+- **Option groups (the `group` field, §3).** There is no native grouped-picker design precedent in
+  this repo yet — no mobile component ships a sectioned list — so porting §3's run-boundary
+  heading model would mean inventing that precedent inside a port rather than in the component
+  that needs it. `InoSelectOption` on both tracks is therefore a flat `{label, value, disabled}`,
+  not web's type minus a field.
+- **Custom option / selected-value templates.** `optionTemplate`/`selectedTemplate` are an
+  `ng-template` extensibility surface; the native equivalent (a render-prop or `WidgetBuilder`)
+  has no consumer in this repo yet, and adding one speculatively fixes the API before anything
+  exercises it.
+- **Virtual scrolling (§4).** The ports use `FlatList` / `ListView.builder`, which already window
+  rows — the same rationale `ino-virtual-scroller`'s own SPEC.md §1 gives for that component
+  staying web-only. Porting `virtualScrollThreshold` would layer a second windowing decision on
+  top of a platform primitive that is strictly better at it.
+- **The editable free-text trigger (§5).** `editable` turns the trigger into a text field whose
+  typed text can *become* the value. On mobile that is a different control — a text input with
+  suggestions, i.e. the AutoComplete variant §1 defers — not a boolean on a sheet-backed picker.
+  `filter` is ported; `editable` is not, and the two stay separate exactly as §5 argues.
+
+### 9c. One intentional visual divergence — bottom sheet, not anchored panel
+
+Web anchors the panel under the trigger (§7). Both ports present the same list in a modal bottom
+sheet (`ConfirmActionSheet.tsx` / `confirm_action_sheet.dart`,
+`docs/brand/13-mobile-app-patterns.md` §2): an anchored popover under a field is a pointer idiom
+that on a phone collides with the software keyboard and the bottom safe area. This is the reason
+the ports read two roles web's select never touches — `overlay-scrim` (sheet backdrop) and
+`border-soft` (grabber) — and why they drop `accent-active` (no pointer-down-before-focus phase on
+touch, the same divergence `ino-input` and `ino-datepicker` already declare). All three are
+declared in the registry (§10).
+
+### 9d. Accessibility substitution
+
+Neither platform has `combobox`/`listbox`/`option` roles or an `aria-activedescendant` concept, so
+§2's ARIA model has no direct equivalent: the trigger is a button carrying the expanded/busy state
+and each row is a button carrying `selected`, the same substitution `ino-datepicker`'s ports make
+for day cells. Because a sheet row cannot lean on the anchored panel's own selected styling, the
+selected row gets a `✓` glyph in addition to web's `accent-text-safe` tint and bold weight, so
+colour is not the only cue (WCAG SC 1.4.1).
 
 ## 10. Registry
 
 `scripts/check-theme-parity.mjs`'s `COMPONENT_REGISTRY` (added by INO-131/INO-155) has one
-alphabetically-inserted entry for `select`, declared `web-only` on both mobile platforms per §9.
+alphabetically-inserted entry for `select`. INO-258 replaced its `web-only` declaration with real
+`{ path, roles }` entries for both mobile tracks, plus three declared divergences: `accent-active`
+(dropped, per §9c) and `overlay-scrim`/`border-soft` (added, per §9c). The registry's own
+stale-divergence assertion means those three cannot rot into unexamined permissions — a divergence
+that stops reflecting a real difference fails the check as loudly as an undeclared one.
 
 ---
 
@@ -161,3 +213,12 @@ alphabetically-inserted entry for `select`, declared `web-only` on both mobile p
 - `docs/brand/06-angular-components/select.md`
 - `docs/brand/06-angular-components/previews/select.html`
 - `scripts/check-theme-parity.mjs` (one appended registry entry, DoD row 11)
+
+### Added by the INO-258 follow-up (§9)
+
+- `mobile/react-native/src/components/InoSelect.tsx`
+- `mobile/flutter/lib/widgets/ino_select.dart`
+- `scripts/check-theme-parity.mjs` (the `select` entry rewritten from `web-only` to
+  `{ path, roles }` + divergences, §10)
+- `scripts/ds-adherence-waivers.json` (two grabber-radius waivers, matching the existing
+  `ConfirmActionSheet` pair — same 2px value, same pending INO-173 micro-step decision)

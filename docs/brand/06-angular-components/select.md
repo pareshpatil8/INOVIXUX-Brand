@@ -149,7 +149,20 @@ no `left`/`right`/`top`/`bottom` anywhere in the stylesheet.
 - **Capacitor** — not a separate port; the same Angular component/CSS render in the Capacitor
   WebView, satisfied by DoD rows 1–8 plus the 44px touch-target check already covered by
   `--ino-control-height-default`.
-- **React Native / Flutter** — not shipped in this issue. Declared `web-only` in
-  `scripts/check-theme-parity.mjs`'s component registry, with a scoped single-selection native
-  port (no groups, no custom templates, no virtual scroll) filed as a follow-up child issue —
-  see SPEC.md §9 for the full reasoning and the datepicker precedent it follows.
+- **React Native / Flutter** — shipped as **scoped single-selection ports** in INO-258, a follow-up
+  to this issue rather than part of it (`mobile/react-native/src/components/InoSelect.tsx`,
+  `mobile/flutter/lib/widgets/ino_select.dart`), mirroring `ino-datepicker`'s single-mode precedent
+  at the same ~40% porting-rule cost. Both carry the trigger, `size`, `disabled`/`loading`,
+  `clearable`, and the in-panel filter with web's exact case-insensitive substring semantics.
+
+  Four surfaces are **deliberately not ported** — each a written decision in SPEC.md §9, not a
+  silent gap: option groups, custom option/selected-value templates, virtual scrolling (the
+  platform `FlatList`/`ListView.builder` already windows rows — the same rationale
+  `ino-virtual-scroller`'s own SPEC.md gives for staying web-only), and the editable free-text
+  trigger.
+
+  One intentional **visual** divergence: web anchors the option panel under the trigger; both ports
+  present the list in a modal bottom sheet, because an anchored popover under a field collides with
+  the software keyboard and the bottom safe area on a phone. That is why the ports read
+  `overlay-scrim` and `border-soft` — roles web's select never touches — declared alongside the
+  dropped `accent-active` in `scripts/check-theme-parity.mjs`'s `select` registry entry.
