@@ -8,7 +8,7 @@ below was derived from the general PrimeNG confirmation-dialog pattern (severity
 confirm) rather than transcribed from a table.
 
 This file records the decisions the DoD requires to be written down rather than silently made. It
-is shared with `../confirm-popup/SPEC.md`'s sibling document for the anchored variant; read both if
+is shared with `confirm-popup/SPEC.md`'s sibling document for the anchored variant; read both if
 comparing the pair.
 
 ---
@@ -92,7 +92,7 @@ the host pointing at whatever content actually serves as the description.
 
 **Focus.** `[inoFocusTrap]` on the panel supplies capture-on-open (defaults to the first tabbable
 element, i.e. Cancel), containment, and restore-on-close entirely — see the component's own doc
-comment for why no duplicate focus-management code exists in the `.ts` file. `restoreFocus` (the
+comment for why no duplicate focus-management code exists in `ino-confirm-dialog.component.ts`. `restoreFocus` (the
 directive's default `true`) returns focus to whatever triggered the dialog, satisfying SC 2.4.3
 without this component doing anything extra.
 

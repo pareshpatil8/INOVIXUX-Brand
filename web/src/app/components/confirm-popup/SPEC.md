@@ -2,10 +2,10 @@
 
 Parity benchmark: PrimeNG 22.1.1 `ConfirmPopup` (`specs/primeng/llms-22.1.1.txt` line 49, route
 `https://primeng.dev/confirmpopup`). PrimeNG is a benchmark, **not a runtime dependency** — nothing
-in this directory imports it. See `../confirm-dialog/SPEC.md`'s header for the same note about the
+in this directory imports it. See `confirm-dialog/SPEC.md`'s header for the same note about the
 digest's limited detail for this pair of components.
 
-Sibling document: `../confirm-dialog/SPEC.md`. Read both if comparing the pair — this file only
+Sibling document: `confirm-dialog/SPEC.md`. Read both if comparing the pair — this file only
 covers what's genuinely different about the anchored variant; it does not re-derive the
 confirm/cancel action contract, which is identical.
 
@@ -24,8 +24,8 @@ confirm/cancel action contract, which is identical.
 | 7 | Motion | **Satisfied.** A single `--ino-motion-duration-fast` / `-easing-decelerate` scale-in, gated by `@media (prefers-reduced-motion: no-preference)` — deliberately faster than the dialog's `-duration-base` (§2 below explains why) and a plain opacity/scale fade with **no directional slide**, so there is nothing to re-mirror per `position`/`effectivePosition` or under `dir="rtl"`, unlike `<ino-toast-container>`'s per-edge slide direction. |
 | 8 | Accessibility | See §4. |
 | 9 | Mobile parity | **Explicit web-only decision** — identical reasoning to `<ino-confirm-dialog>`'s SPEC §5; not re-derived here. |
-| 10 | Docs artifact | **Satisfied.** `docs/brand/06-angular-components/confirm-popup.md` + `previews/confirm-popup.html` (`<!-- @dsCard group="Overlay" -->`). |
-| 11 | Merge hygiene | **Satisfied** — see `../confirm-dialog/SPEC.md` §6, which covers both components in the pair; not duplicated here. |
+| 10 | Docs artifact | **Satisfied.** `docs/brand/06-angular-components/confirm-popup.md` + `docs/brand/06-angular-components/previews/confirm-popup.html` (`<!-- @dsCard group="Overlay" -->`). |
+| 11 | Merge hygiene | **Satisfied** — see `confirm-dialog/SPEC.md` §6, which covers both components in the pair; not duplicated here. |
 
 ---
 
@@ -93,7 +93,7 @@ exactly the button the user just pressed.
 anchored popup: `Escape` (`closeOnEscape`, default `true`, suppressed while `loading` — same rule as
 the dialog), a `Cancel` button click, and a capture-phase `pointerdown` outside both the panel and
 the anchor element. The outside-pointerdown listener is deliberately registered on the next macrotask
-after opening (`setTimeout`, `runOutsideAngular`), not synchronously — see the `.ts` file's own doc
+after opening (`setTimeout`, `runOutsideAngular`), not synchronously — see `ino-confirm-popup.component.ts`'s own doc
 comment on `activate()`: the same click that opened the popup (e.g. via `toggle($event)`) is still
 bubbling to `document` on the tick it fires, and a synchronously-attached listener would see that
 bubbling click and close the popup it just opened.
@@ -116,7 +116,7 @@ panel to reliably avoid covering its own anchor), reinforcing rather than contra
 
 ## 6. Merge hygiene (DoD row 11)
 
-See `../confirm-dialog/SPEC.md` §6 — covers both components in this issue together, including the
+See `confirm-dialog/SPEC.md` §6 — covers both components in this issue together, including the
 one recorded deviation (no line appended to `scripts/check-theme-parity.mjs`, because it has no
 per-component registry to append to).
 
@@ -126,6 +126,6 @@ per-component registry to append to).
 
 | Gate | Result |
 |---|---|
-| `npx ng build` | passes (see `../confirm-dialog/SPEC.md` §7 note on how template type-checking was exercised) |
+| `npx ng build` | passes (see `confirm-dialog/SPEC.md` §7 note on how template type-checking was exercised) |
 | `node scripts/check-theme-parity.mjs` | PASS |
 | `node scripts/check-ds-adherence.mjs --json` | zero violations |
