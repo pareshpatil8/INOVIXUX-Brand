@@ -31,6 +31,12 @@ let idCounter = 0;
  * existing convention — not a `ControlValueAccessor` (no Reactive/Template-driven Forms module is
  * wired up anywhere in this repo yet). `complete` fires once when every box holds a character.
  *
+ * Internal state is a `string[]` of length `length` (`_chars`), not a round-tripped string — a
+ * dense string can't represent a gap in a middle box, so clearing or pasting mid-row would
+ * otherwise repack every digit to its right one box left. The `value` input setter pads/truncates
+ * an external string write into that array; `value` itself is still emitted/read as the joined
+ * string for compatibility with callers.
+ *
  * WCAG 2.2: the box row is `role="group"` labelled by `<ino-label>` (`aria-labelledby`, since a
  * native `<label for>` can only target one control); each box additionally carries its own
  * `aria-label` ("Digit N of length") so AT can announce position while moving between them. A
@@ -59,7 +65,20 @@ export class InoInputOtpComponent implements AfterViewInit {
   @Input({ transform: numberAttribute }) length = 6;
   @Input({ transform: booleanAttribute }) mask = false;
   @Input({ transform: booleanAttribute }) integerOnly = true;
-  @Input() value = '';
+
+  private _chars: string[] = Array.from({ length: this.length }, () => '');
+  private hasCompleted = false;
+
+  @Input()
+  set value(next: string) {
+    const chars = (next ?? '').split('');
+    this._chars = Array.from({ length: this.length }, (_, i) => chars[i] ?? '');
+    this.hasCompleted = this.length > 0 && this._chars.filter(Boolean).length === this.length;
+  }
+  get value(): string {
+    return this._chars.join('');
+  }
+
   @Input() hint = '';
   @Input() error = '';
   @Input() size: InoControlSize = 'default';
@@ -84,8 +103,10 @@ export class InoInputOtpComponent implements AfterViewInit {
   protected announcement = '';
 
   protected get cells(): string[] {
-    const chars = this.value.split('');
-    return Array.from({ length: this.length }, (_, i) => chars[i] ?? '');
+    if (this._chars.length !== this.length) {
+      this._chars = Array.from({ length: this.length }, (_, i) => this._chars[i] ?? '');
+    }
+    return this._chars;
   }
 
   ngAfterViewInit(): void {
@@ -162,18 +183,20 @@ export class InoInputOtpComponent implements AfterViewInit {
   }
 
   private commit(chars: string[], announceIndex: number): void {
-    this.value = chars.join('').slice(0, this.length);
+    this._chars = Array.from({ length: this.length }, (_, i) => chars[i] ?? '');
     this.valueChange.emit(this.value);
 
-    const filledCount = chars.filter(Boolean).length;
-    if (filledCount === this.length) {
+    const filledCount = this._chars.filter(Boolean).length;
+    const isComplete = this.length > 0 && filledCount === this.length;
+    if (isComplete && !this.hasCompleted) {
       this.announcement = 'Code complete.';
       this.complete.emit(this.value);
-    } else if (chars[announceIndex]) {
+    } else if (this._chars[announceIndex]) {
       this.announcement = `Digit ${announceIndex + 1} of ${this.length} entered.`;
     } else {
       this.announcement = `Digit ${announceIndex + 1} of ${this.length} cleared.`;
     }
+    this.hasCompleted = isComplete;
   }
 
   private focusCell(index: number): void {
