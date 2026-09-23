@@ -1,10 +1,11 @@
 /**
  * Anchored-overlay placement — private fork for `<ino-popover>` (INO-31 T-23 / INO-150).
  *
- * This is a byte-for-byte fork of `../confirm-popup/overlay-position.ts` (INO-31 T-25 / INO-148),
- * not a shared import: that file's own doc comment anticipated this exact situation — "if a second
- * consumer lands, promoting this file (unchanged signature) to a shared location is a mechanical
- * move, not a redesign" — but DoD row 11 (merge hygiene) scopes this issue to
+ * This is a fork of `../confirm-popup/overlay-position.ts` (INO-31 T-25 / INO-148), renamed
+ * `popup`→`panel` throughout to match this component's own vocabulary, not a shared import: that
+ * file's own doc comment anticipated this exact situation — "if a second consumer lands, promoting
+ * this file (unchanged signature) to a shared location is a mechanical move, not a redesign" — but
+ * DoD row 11 (merge hygiene) scopes this issue to
  * `web/src/app/components/popover/**` only; it cannot also touch `components/confirm-popup/**` to
  * do the promotion. Forking now and promoting later in a dedicated refactor issue keeps this
  * change mechanically reviewable against the DoD instead of quietly widening its diff.

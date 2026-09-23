@@ -1,5 +1,6 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -89,6 +90,7 @@ export class InoPopoverComponent implements OnChanges, OnDestroy {
   protected effectivePosition: InoOverlayPosition = this.position;
 
   private readonly zone = inject(NgZone);
+  private readonly cdr = inject(ChangeDetectorRef);
   private anchorEl: HTMLElement | null = null;
   private outsideClickBound = false;
 
@@ -134,7 +136,9 @@ export class InoPopoverComponent implements OnChanges, OnDestroy {
     this.anchorEl = anchor ?? (event?.currentTarget as HTMLElement | null) ?? this.resolveTarget();
     this.open = true;
     this.openChange.emit(true);
+    this.shown.emit();
     this.activate();
+    this.cdr.markForCheck();
   }
 
   hide(): void {
@@ -164,15 +168,17 @@ export class InoPopoverComponent implements OnChanges, OnDestroy {
     this.openChange.emit(false);
     this.hidden.emit();
     this.deactivate();
+    this.cdr.markForCheck();
   }
 
   private activate(): void {
     this.anchorEl ??= this.resolveTarget();
-    // Panel content isn't laid out on this tick yet — same deferral <ino-modal> and
-    // <ino-confirm-popup> use before measuring/focusing their panel.
-    queueMicrotask(() => {
+    // Zone drains microtasks before ApplicationRef.tick(), so a queueMicrotask callback here
+    // would run before the panel's *ngIf view is attached and `panelRef` would still be
+    // undefined. setTimeout runs after the tick, once `#panel` actually exists in the DOM —
+    // consistent with the setTimeout already used below for the pointerdown listener.
+    setTimeout(() => {
       this.reposition();
-      this.shown.emit();
     });
 
     window.addEventListener('resize', this.onWindowChange);
@@ -224,5 +230,6 @@ export class InoPopoverComponent implements OnChanges, OnDestroy {
     this.top = placement.top;
     this.left = placement.left;
     this.effectivePosition = placement.position;
+    this.cdr.markForCheck();
   }
 }
