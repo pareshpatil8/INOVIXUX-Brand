@@ -514,6 +514,26 @@ const COMPONENT_REGISTRY = [
     ],
   },
   {
+    name: 'multiselect',
+    web: 'web/src/app/components/multiselect',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoMultiSelect.tsx',
+        roles: ['accent', 'accentTextSafe', 'border', 'borderSoft', 'danger', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'overlayScrim', 'surfaceRaised', 'surfaceSunken'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_multi_select.dart',
+        roles: ['accent', 'accentTextSafe', 'border', 'borderSoft', 'danger', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'overlayScrim', 'surfaceRaised', 'surfaceSunken'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['accentActive'], reason: 'same rationale as the select entry above (INO-152/INO-258) — web reserves accent-active for the transient mousedown-before-focus-settles flash on the trigger (ino-multiselect.component.scss `.ino-field__control:active`); touch has no pointer-down-before-focus phase, so the Pressable goes straight from unfocused to colors.accent when the sheet opens.' },
+      { platform: 'flutter', roles: ['accentActive'], reason: 'same as the React Native entry above.' },
+      { platform: 'reactNative', roles: ['overlayScrim', 'borderSoft'], reason: 'ADDED roles, not dropped ones — same one intentional visual divergence ino-select\'s port declares (INO-258). Web anchors the option panel absolutely under the trigger with no scrim and no sheet chrome; this port presents the same checkbox list in a modal bottom sheet (ConfirmActionSheet.tsx idiom, docs/brand/13-mobile-app-patterns.md §2) for the same reason — an anchored popover under a field collides with the keyboard and the bottom safe area on a phone. overlay-scrim is that sheet backdrop and border-soft its grabber. See web/src/app/components/multiselect/SPEC.md §9.' },
+      { platform: 'flutter', roles: ['overlayScrim', 'borderSoft'], reason: 'same as the React Native entry above — showModalBottomSheet barrierColor is overlay-scrim and the grabber is border-soft, matching confirm_action_sheet.dart / ino_select.dart.' },
+    ],
+  },
+  {
     name: 'select',
     web: 'web/src/app/components/select',
     mobile: {
