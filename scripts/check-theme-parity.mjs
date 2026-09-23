@@ -630,6 +630,24 @@ const COMPONENT_REGISTRY = [
     ],
   },
   {
+    name: 'textarea',
+    web: 'web/src/app/components/textarea',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoTextarea.tsx',
+        roles: ['accent', 'border', 'danger', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'surfaceRaised', 'surfaceSunken'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_textarea.dart',
+        roles: ['accent', 'border', 'danger', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'surfaceRaised', 'surfaceSunken'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['accentActive'], reason: 'same rationale as the input entry above — web reserves accent-active for the transient mousedown-before-focus-settles flash (ino-textarea.component.scss); touch input has no pointer-down-before-focus phase, so the port goes straight from unfocused to colors.accent on focus.' },
+      { platform: 'flutter', roles: ['accentActive'], reason: 'same as the React Native entry above.' },
+    ],
+  },
+  {
     name: 'tooltip',
     web: 'web/src/app/components/tooltip',
     mobile: { reactNative: 'web-only', flutter: 'web-only' },
