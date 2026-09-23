@@ -71,7 +71,10 @@
     outline-offset: var(--ino-focus-ring-offset);
   }
   .ino-radio__input:active:not(:disabled) { filter: brightness(0.9); }
-  .ino-radio__input--invalid { box-shadow: 0 0 0 2px var(--ino-color-danger); }
+  /* Reads the token, not its dark/light value: the component this mirrors consumes
+     `var(--ino-invalid-ring)`, and the inlined `0 0 0 2px` this used to carry silently failed to
+     widen to 3px in high-contrast the way the real component does (INO-269). */
+  .ino-radio__input--invalid { box-shadow: var(--ino-invalid-ring); }
   .ino-radio__input--sm { width: var(--ino-control-icon-size-sm); height: var(--ino-control-icon-size-sm); }
   .ino-radio__input--lg { width: var(--ino-control-icon-size-lg); height: var(--ino-control-icon-size-lg); }
 

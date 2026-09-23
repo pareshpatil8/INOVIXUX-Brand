@@ -69,12 +69,21 @@
     opacity: 0.5;
   }
 
-  /* State 7 — invalid (new). Same outline-ring idiom `ino-checkbox` uses: paints outside the
-     shape regardless of the track's own background, yields to the focus ring via
-     `:not(:focus-visible)` so the two never fight over one `outline` property. */
-  &[aria-invalid='true']:not(:focus-visible) .ino-toggle__track {
-    outline: 2px solid var(--ino-color-danger);
-    outline-offset: var(--ino-focus-ring-offset);
+  /* State 7 — invalid. Same ring `ino-checkbox`/`ino-radio` paint: `--ino-invalid-ring`
+     (tokens.css §12, INO-257) on the box-shadow channel. It stays on `.ino-toggle__track`, not on
+     the control — the track is the shape the focus ring already rings, and a spread-only shadow
+     there follows the pill radius instead of boxing the whole label row. It still paints outside
+     the shape regardless of the track's own background or gradient fill, which is why the original
+     rule reached for `outline` in the first place.
+
+     The `:not(:focus-visible)` guard is dropped with that `outline` (INO-269). It existed because
+     focus owned the only ring channel the contract offered, so an invalid toggle went un-ringed for
+     exactly as long as it held focus; INO-257 gave the invalid ring its own channel, and the
+     token's spread-only geometry lands inside the gap --ino-focus-ring-offset leaves, so both rings
+     now paint at once. Weight and per-theme behaviour are the token's, not this file's — including
+     the widening to 3px in high-contrast that the old hardcoded 2px never tracked. */
+  &[aria-invalid='true'] .ino-toggle__track {
+    box-shadow: var(--ino-invalid-ring);
   }
 
   /* State 6 — readonly (new). Same trade `ino-checkbox`/`ino-virtual-scroller` document: content
@@ -93,9 +102,13 @@
   border-radius: var(--ino-radius-pill);
   background: var(--ino-color-surface-sunken);
   border: 1px solid var(--ino-color-border);
+  /* `box-shadow` on the fast pair, matching `ino-checkbox`/`ino-radio`: the invalid ring (State 7)
+     now lives on that channel, and a state ring animates in/out with the other state changes rather
+     than snapping. Collapses under reduced motion via the block at the foot of this file. */
   transition: background var(--ino-motion-duration-base) var(--ino-motion-easing-standard),
     border-color var(--ino-motion-duration-base) var(--ino-motion-easing-standard),
-    filter var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+    filter var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+    box-shadow var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
 }
 
 .ino-toggle__thumb {
