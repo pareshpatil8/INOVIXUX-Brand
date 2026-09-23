@@ -1,25 +1,150 @@
 <div class="ino-field" [class.ino-field--disabled]="disabled">
-  <label [for]="selectId" class="ino-field__label">
-    {{ label }}<span *ngIf="required" class="ino-field__required" aria-hidden="true"> *</span>
-  </label>
+  <ino-label [for]="selectId" [size]="size" [required]="required" [disabled]="disabled" [readonly]="readonly" [invalid]="!!error">{{ label }}</ino-label>
 
-  <div class="ino-field__select-wrap">
-    <select
+  <div class="ino-field__control-wrap">
+    <!-- Non-editable trigger: a button so it never accepts text input. -->
+    <button
+      *ngIf="!editable"
+      #trigger
+      type="button"
       [id]="selectId"
-      class="ino-field__control ino-field__control--select"
+      class="ino-field__control ino-field__control--trigger"
       [class.ino-field__control--error]="!!error"
+      [class.ino-field__control--placeholder]="!selectedOption"
       [disabled]="disabled"
-      [required]="required"
+      [attr.aria-disabled]="readonly ? true : null"
+      [attr.aria-busy]="loading || null"
+      role="combobox"
+      aria-haspopup="listbox"
+      [attr.aria-controls]="listboxId"
+      [attr.aria-expanded]="open"
+      [attr.aria-activedescendant]="filter ? null : activeOptionId()"
       [attr.aria-invalid]="error ? true : null"
       [attr.aria-describedby]="error ? errorId : (hint ? hintId : null)"
-      (change)="onChange($event)"
+      (click)="toggle()"
+      (keydown)="onTriggerKeydown($event)"
     >
-      <option *ngIf="placeholder" value="" disabled [selected]="!value">{{ placeholder }}</option>
-      <option *ngFor="let option of options" [value]="option.value" [selected]="option.value === value">
-        {{ option.label }}
-      </option>
-    </select>
+      <span class="ino-field__value">
+        <ng-container *ngIf="selectedOption; else placeholderText">
+          <ng-container *ngIf="selectedTemplate; else plainSelected" [ngTemplateOutlet]="selectedTemplate" [ngTemplateOutletContext]="{ $implicit: selectedOption }"></ng-container>
+          <ng-template #plainSelected>{{ selectedOption.label }}</ng-template>
+        </ng-container>
+        <ng-template #placeholderText>{{ placeholder }}</ng-template>
+      </span>
+    </button>
+
+    <!-- Editable trigger: typed text is a candidate value; falls back to free text on commit. -->
+    <input
+      *ngIf="editable"
+      #trigger
+      type="text"
+      [id]="selectId"
+      class="ino-field__control ino-field__control--trigger ino-field__control--editable"
+      [class.ino-field__control--error]="!!error"
+      [disabled]="disabled"
+      [readonly]="readonly || loading"
+      [placeholder]="placeholder"
+      [value]="editableText"
+      role="combobox"
+      aria-haspopup="listbox"
+      autocomplete="off"
+      [attr.aria-controls]="listboxId"
+      [attr.aria-expanded]="open"
+      [attr.aria-autocomplete]="'list'"
+      [attr.aria-activedescendant]="activeOptionId()"
+      [attr.aria-invalid]="error ? true : null"
+      [attr.aria-describedby]="error ? errorId : (hint ? hintId : null)"
+      (input)="onEditableInput($event)"
+      (click)="openPanel(false)"
+      (keydown)="onTriggerKeydown($event)"
+    />
+
+    <span *ngIf="loading" class="ino-field__spinner" aria-hidden="true"></span>
+    <button
+      *ngIf="clearable && value && !disabled && !readonly && !loading"
+      type="button"
+      class="ino-field__clear"
+      aria-label="Clear selection"
+      (click)="onClear($event)"
+    >×</button>
     <span class="ino-field__chevron" aria-hidden="true">▾</span>
+
+    <div
+      *ngIf="open"
+      class="ino-field__panel"
+      [class.ino-field__panel--reduced-motion]="false"
+    >
+      <input
+        *ngIf="filter"
+        #filterInput
+        type="text"
+        class="ino-field__filter"
+        [placeholder]="filterPlaceholder"
+        [value]="filterText"
+        [attr.aria-controls]="listboxId"
+        [attr.aria-activedescendant]="activeOptionId()"
+        (input)="onFilterInput($event)"
+        (keydown)="onFilterKeydown($event)"
+      />
+
+      <ng-container *ngIf="filteredRows.length; else emptyState">
+        <ng-container *ngIf="!useVirtualScroll">
+          <ul [id]="listboxId" class="ino-field__listbox" role="listbox" [attr.aria-label]="label || placeholder">
+            <ng-container *ngFor="let row of filteredRows">
+              <li *ngIf="row.groupHeading" role="presentation" class="ino-field__group-heading">{{ row.groupHeading }}</li>
+              <li
+                [id]="optionId(row.index)"
+                role="option"
+                class="ino-field__option"
+                [class.ino-field__option--active]="isActive(row.index)"
+                [class.ino-field__option--selected]="isSelected(row.option)"
+                [class.ino-field__option--disabled]="row.option.disabled"
+                [attr.aria-selected]="isSelected(row.option)"
+                [attr.aria-disabled]="row.option.disabled || null"
+                (mouseenter)="activeIndex = row.index"
+                (click)="selectOption(row.option)"
+              >
+                <ng-container *ngIf="optionTemplate; else plainOption" [ngTemplateOutlet]="optionTemplate" [ngTemplateOutletContext]="{ $implicit: row.option }"></ng-container>
+                <ng-template #plainOption>{{ row.option.label }}</ng-template>
+              </li>
+            </ng-container>
+          </ul>
+        </ng-container>
+
+        <ino-virtual-scroller
+          *ngIf="useVirtualScroll"
+          [id]="listboxId"
+          [items]="filteredRows"
+          role="listbox"
+          itemRole="option"
+          [ariaLabel]="label || placeholder"
+          [size]="size"
+          scrollHeight="calc(var(--ino-control-height, var(--ino-target-comfortable)) * 8)"
+        >
+          <ng-template inoVirtualScrollerItem let-row>
+            <div
+              [id]="optionId(row.index)"
+              role="option"
+              class="ino-field__option"
+              [class.ino-field__option--active]="isActive(row.index)"
+              [class.ino-field__option--selected]="isSelected(row.option)"
+              [class.ino-field__option--disabled]="row.option.disabled"
+              [attr.aria-selected]="isSelected(row.option)"
+              [attr.aria-disabled]="row.option.disabled || null"
+              (mouseenter)="activeIndex = row.index"
+              (click)="selectOption(row.option)"
+            >
+              <ng-container *ngIf="optionTemplate; else plainVsOption" [ngTemplateOutlet]="optionTemplate" [ngTemplateOutletContext]="{ $implicit: row.option }"></ng-container>
+              <ng-template #plainVsOption>{{ row.option.label }}</ng-template>
+            </div>
+          </ng-template>
+        </ino-virtual-scroller>
+      </ng-container>
+
+      <ng-template #emptyState>
+        <p class="ino-field__empty">No options found.</p>
+      </ng-template>
+    </div>
   </div>
 
   <p *ngIf="hint && !error" [id]="hintId" class="ino-field__hint">{{ hint }}</p>

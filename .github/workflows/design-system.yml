@@ -1,11 +1,14 @@
 name: Design system
 
-# The design-system gate (INO-118, extended by INO-185). Three checks that ask
+# The design-system gate (INO-118, extended by INO-185, INO-121). Four checks that ask
 # different questions:
 #
-#   parity    — do web, React Native and Flutter agree about what the tokens ARE?
-#   adherence — does the component source actually USE them?
-#   citations — do the files a component's SPEC.md cites actually EXIST here?
+#   parity      — do web, React Native and Flutter agree about what the tokens ARE?
+#   adherence   — does the component source actually USE them?
+#   citations   — do the files a component's SPEC.md cites actually EXIST here?
+#   email-tokens — do the transactional email templates still match a fresh
+#                  regeneration from tokens.css (INO-121), or did someone hand-edit
+#                  the generated HTML and make email a third source of truth?
 #
 # Parity passes with flying colours on a codebase where every component hardcodes
 # #7C5CFC, because the token files still agree with each other. Adherence is the
@@ -72,3 +75,12 @@ jobs:
       # Do not delete the reasoning — a declared forward reference is the point.
       - name: SPEC.md citations resolve
         run: node scripts/check-spec-citations.mjs
+
+      # Regenerates docs/brand/07-collateral/email/templates/*.html from tokens.css in
+      # place and diffs against what's committed. Fails if the generated HTML was
+      # hand-edited, or if tokens.css changed without regenerating the emails.
+      #
+      # If this step fails on your PR: run `node scripts/gen-email-templates.mjs` and
+      # commit the result instead of editing the HTML directly.
+      - name: Email templates match tokens.css
+        run: node scripts/check-email-tokens.mjs

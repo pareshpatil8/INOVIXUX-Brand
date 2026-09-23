@@ -449,6 +449,18 @@ const COMPONENT_REGISTRY = [
     ],
   },
   {
+    name: 'confirm-dialog',
+    web: 'web/src/app/components/confirm-dialog',
+    mobile: { reactNative: 'web-only', flutter: 'web-only' },
+    reason: 'web-only by explicit decision (INO-148, plan rev 9 §5 desktop-idiom porting rule) — the mobile counterpart is a native action-sheet idiom (`ino-confirm-action-sheet`, already shipped on all three mobile tracks), not a port of the centered card-with-scrim dialog. See web/src/app/components/confirm-dialog/SPEC.md §5 and docs/brand/06-angular-components/confirm-dialog.md#mobile.',
+  },
+  {
+    name: 'confirm-popup',
+    web: 'web/src/app/components/confirm-popup',
+    mobile: { reactNative: 'web-only', flutter: 'web-only' },
+    reason: 'web-only by explicit decision (INO-148, plan rev 9 §5 desktop-idiom porting rule) — same rationale as confirm-dialog above; `ino-confirm-action-sheet` already covers mobile confirm. See web/src/app/components/confirm-popup/SPEC.md §5 and docs/brand/06-angular-components/confirm-popup.md#mobile.',
+  },
+  {
     name: 'datepicker',
     web: 'web/src/app/components/datepicker',
     mobile: {
@@ -506,6 +518,12 @@ const COMPONENT_REGISTRY = [
     web: 'web/src/app/components/popover',
     mobile: { reactNative: 'web-only', flutter: 'web-only' },
     reason: 'web-only by explicit decision (INO-31 plan rev 9 §5 desktop-idiom porting rule) — an anchor-positioned floating panel keyed to getBoundingClientRect() and mouse/keyboard dismiss gestures is a desktop pointer-and-keyboard idiom. The mobile counterpart is a different component and gets its own issue in a later wave. See web/src/app/components/popover/SPEC.md §5 and docs/brand/06-angular-components/popover.md#mobile-parity.',
+  },
+  {
+    name: 'select',
+    web: 'web/src/app/components/select',
+    mobile: { reactNative: 'web-only', flutter: 'web-only' },
+    reason: 'web-only for now, by scoping decision, not a permanent exemption — INO-152 (INO-31 T-9) rewrote this component from a native <select> to a custom listbox and used its full budget on the web core (overlay, filter, groups, virtual-scroll integration, ARIA combobox contract) that MultiSelect/AutoComplete/Listbox will each extend. React Native and Flutter ports (scoped to single-selection, no groups/templates/virtual-scroll, mirroring the datepicker single-selection precedent in SPEC.md §9) are filed as a follow-up child issue rather than shipped at lower fidelity here. See web/src/app/components/select/SPEC.md §9 and docs/brand/06-angular-components/select.md#mobile.',
   },
   {
     name: 'table',
