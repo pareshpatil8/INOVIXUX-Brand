@@ -85,7 +85,6 @@ export function InoFloatLabel({
       )}
       {children}
       <Animated.Text
-        pointerEvents="none"
         style={[
           styles.label,
           {
@@ -94,6 +93,7 @@ export function InoFloatLabel({
             color,
             paddingHorizontal: variant === 'on' ? space[1] : 0,
             backgroundColor: variant === 'on' ? colors.surface : 'transparent',
+            pointerEvents: 'none',
           },
         ]}
         numberOfLines={1}

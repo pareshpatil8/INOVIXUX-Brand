@@ -124,6 +124,10 @@
   }
   .ino-float-label.ino-float-label--disabled .ino-float-label__label { opacity: 0.5; }
   .ino-float-label.ino-float-label--disabled .ino-float-label__control { opacity: 0.5; cursor: not-allowed; }
+  .ino-float-label.ino-float-label--readonly .ino-float-label__label { color: var(--ino-color-label-muted); }
+  .ino-float-label.ino-float-label--readonly .ino-float-label__control { background: var(--ino-color-surface); cursor: default; }
+  .ino-float-label.ino-float-label--invalid .ino-float-label__label { color: var(--ino-color-label-invalid); }
+  .ino-float-label.ino-float-label--invalid .ino-float-label__control { border-color: var(--ino-color-danger); }
 </style>
 </head>
 <body>
@@ -180,6 +184,14 @@
       <div class="ino-float-label ino-float-label--disabled" data-variant="over">
         <input class="ino-float-label__control" id="fl-light-disabled" type="text" disabled>
         <label class="ino-float-label__label" for="fl-light-disabled">Disabled</label>
+      </div>
+      <div class="ino-float-label ino-float-label--floated ino-float-label--readonly" data-variant="over">
+        <input class="ino-float-label__control" id="fl-light-readonly" type="text" value="paresh" readonly>
+        <label class="ino-float-label__label" for="fl-light-readonly">Readonly</label>
+      </div>
+      <div class="ino-float-label ino-float-label--floated ino-float-label--invalid" data-variant="over">
+        <input class="ino-float-label__control" id="fl-light-invalid" type="text" value="not-an-email" aria-invalid="true">
+        <label class="ino-float-label__label" for="fl-light-invalid">Invalid</label>
       </div>
     </div>
   </div>

@@ -128,6 +128,25 @@ export class InoFloatLabelComponent implements AfterContentInit, OnDestroy {
       this.renderer.listen(control, 'blur', update),
       this.renderer.listen(control, 'input', update),
     );
+
+    // Reactive Forms' `DefaultValueAccessor.writeValue` (setValue/patchValue/reset, or any async
+    // default applied after init) sets `.value` via `Renderer2.setProperty`, which assigns the DOM
+    // property directly and never dispatches a native `input` event — so the three listeners above
+    // never fire for it. Wrap the inherited `value` accessor so a programmatic write still runs
+    // `update()`, same as a native `input` event would.
+    const proto = Object.getPrototypeOf(control);
+    const descriptor = Object.getOwnPropertyDescriptor(proto, 'value');
+    if (descriptor?.configurable && descriptor.get && descriptor.set) {
+      Object.defineProperty(control, 'value', {
+        configurable: true,
+        get: () => descriptor.get!.call(control),
+        set: (next: string) => {
+          descriptor.set!.call(control, next);
+          update();
+        },
+      });
+      this.unlisten.push(() => Object.defineProperty(control, 'value', descriptor));
+    }
   }
 
   ngOnDestroy(): void {
