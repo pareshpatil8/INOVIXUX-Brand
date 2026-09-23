@@ -1,5 +1,6 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -86,6 +87,7 @@ export class InoConfirmPopupComponent implements OnChanges, OnDestroy {
   protected effectivePosition: InoOverlayPosition = this.position;
 
   private readonly zone = inject(NgZone);
+  private readonly cdr = inject(ChangeDetectorRef);
   private anchorEl: HTMLElement | null = null;
   private outsideClickBound = false;
 
@@ -130,6 +132,7 @@ export class InoConfirmPopupComponent implements OnChanges, OnDestroy {
     this.open = true;
     this.openChange.emit(true);
     this.activate();
+    this.cdr.markForCheck();
   }
 
   onKeydown(event: KeyboardEvent): void {
@@ -154,13 +157,15 @@ export class InoConfirmPopupComponent implements OnChanges, OnDestroy {
     this.openChange.emit(false);
     this.cancelled.emit();
     this.deactivate();
+    this.cdr.markForCheck();
   }
 
   private activate(): void {
     this.anchorEl ??= this.resolveTarget();
     // Popup content isn't laid out on this tick yet — same deferral <ino-modal> uses before
-    // measuring/focusing its panel.
-    queueMicrotask(() => this.reposition());
+    // measuring/focusing its panel. `setTimeout`, not `queueMicrotask`: zone drains microtasks
+    // before `ApplicationRef.tick()` runs, so a microtask fires before `#panel` exists in the DOM.
+    setTimeout(() => this.reposition());
 
     window.addEventListener('resize', this.onWindowChange);
     window.addEventListener('scroll', this.onWindowChange, true);
@@ -210,5 +215,6 @@ export class InoConfirmPopupComponent implements OnChanges, OnDestroy {
     this.top = placement.top;
     this.left = placement.left;
     this.effectivePosition = placement.position;
+    this.cdr.markForCheck();
   }
 }
