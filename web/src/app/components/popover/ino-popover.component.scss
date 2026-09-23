@@ -1,0 +1,122 @@
+/* `top`/`left` (not `inset-block-start`/`inset-inline-start`) below are set from JS
+   (`ino-popover.component.ts`, `computeOverlayPlacement`) using `getBoundingClientRect()` viewport
+   coordinates — see `overlay-position.ts`'s doc comment / SPEC.md §3 for why that's the RTL-correct
+   choice here, not an exception to the logical-properties rule. Everything else in this file is
+   static and uses logical properties throughout. */
+.ino-popover {
+  position: fixed;
+  z-index: 1100;
+  box-sizing: border-box;
+  max-inline-size: min(360px, calc(100vw - var(--ino-space-4) * 2));
+  padding: var(--ino-space-5);
+  background: var(--ino-color-surface-raised);
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-lg);
+  box-shadow: var(--ino-elevation-neutral-3);
+
+  &:focus-visible {
+    outline: none;
+  }
+}
+
+/* Size API (DoD row 3) — drives the panel's own padding scale, and is forwarded to the optional
+   close-icon button via [size]. There is no ambient "row" for a floating panel to fill, so density
+   (DoD row 4) is a deliberate omission here — see SPEC.md §1 row 4, same disposition as
+   <ino-confirm-popup>. */
+:host([data-size='sm']) .ino-popover {
+  padding: var(--ino-space-4);
+}
+
+:host([data-size='lg']) .ino-popover {
+  padding: var(--ino-space-6);
+}
+
+.ino-popover__arrow {
+  position: absolute;
+  inline-size: var(--ino-space-3);
+  block-size: var(--ino-space-3);
+  background: var(--ino-color-surface-raised);
+  border-inline-start: 1px solid var(--ino-color-border);
+  border-block-start: 1px solid var(--ino-color-border);
+  transform: rotate(45deg);
+  z-index: -1;
+}
+
+/* Panel renders BELOW the anchor, so its pointer sits at its own block-start edge and points up. */
+.ino-popover--bottom .ino-popover__arrow {
+  inset-block-start: calc(var(--ino-space-3) / -2);
+  inset-inline-start: calc(50% - var(--ino-space-3) / 2);
+}
+
+/* Panel renders ABOVE the anchor — pointer sits at the block-end edge and points down; only the
+   opposite pair of sides needs the visible border for the diamond's exposed corner to read as
+   pointing the right way. */
+.ino-popover--top .ino-popover__arrow {
+  inset-block-end: calc(var(--ino-space-3) / -2);
+  inset-inline-start: calc(50% - var(--ino-space-3) / 2);
+  border-inline-start: none;
+  border-block-start: none;
+  border-inline-end: 1px solid var(--ino-color-border);
+  border-block-end: 1px solid var(--ino-color-border);
+}
+
+.ino-popover--right .ino-popover__arrow {
+  inset-inline-start: calc(var(--ino-space-3) / -2);
+  inset-block-start: calc(50% - var(--ino-space-3) / 2);
+}
+
+.ino-popover--left .ino-popover__arrow {
+  inset-inline-end: calc(var(--ino-space-3) / -2);
+  inset-block-start: calc(50% - var(--ino-space-3) / 2);
+  border-inline-start: none;
+  border-block-start: none;
+  border-inline-end: 1px solid var(--ino-color-border);
+  border-block-end: 1px solid var(--ino-color-border);
+}
+
+.ino-popover__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--ino-space-3);
+}
+
+.ino-popover__heading {
+  margin: 0;
+  font-size: var(--ino-type-h3-size);
+  line-height: var(--ino-type-h3-line);
+  font-weight: var(--ino-type-h3-weight);
+  letter-spacing: var(--ino-type-h3-tracking);
+  color: var(--ino-color-on-surface);
+}
+
+.ino-popover__close {
+  /* icon variant is already a comfortable square target — no local sizing here, see ino-button. */
+  flex: none;
+  margin-inline-start: auto;
+  margin-block-start: calc(var(--ino-space-2) * -1);
+  margin-inline-end: calc(var(--ino-space-2) * -1);
+}
+
+.ino-popover__content {
+  color: var(--ino-color-on-surface);
+  font-size: var(--ino-type-body-size);
+  line-height: var(--ino-type-body-line);
+}
+
+.ino-popover__header + .ino-popover__content {
+  margin-block-start: var(--ino-space-3);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ino-popover {
+    animation: ino-popover-in var(--ino-motion-duration-fast) var(--ino-motion-easing-decelerate);
+  }
+}
+
+@keyframes ino-popover-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}

@@ -1,0 +1,110 @@
+/*
+ * <ino-float-label> — INO-141 / INO-31 T-18.
+ *
+ * "Floated" is a host class (`.ino-float-label--floated`) driven from TypeScript (see the
+ * component's `ngAfterContentInit`), not CSS `:focus`/`:not(:placeholder-shown)` on the projected
+ * control. That is a deliberate departure from the PrimeNG benchmark's CSS-only approach: reacting
+ * to the caller's projected `<input>` from THIS component's own stylesheet needs `::ng-deep`
+ * (Angular's emulated view encapsulation never lets a plain descendant selector reach `<ng-content>`
+ * elements), and `::ng-deep` is not a sanctioned escape hatch in this design system — doc 16 §4.3
+ * "Layer 4" logs the override contract as an open, undecided governance item (N-11). Every selector
+ * below targets `:host`/`<ino-label>`, both elements this component's OWN template renders, so
+ * normal emulated-encapsulation scoping already reaches them with no escape hatch needed.
+ *
+ * Every colour/space/radius/duration/font-size below still resolves through a semantic token.
+ */
+:host {
+  position: relative;
+  display: block;
+  inline-size: 100%;
+
+  --ino-float-label-height: var(--ino-control-height-default);
+  --ino-float-label-padding-inline: var(--ino-control-padding-inline-default);
+}
+
+:host([data-size='sm']) {
+  --ino-float-label-height: var(--ino-control-height-sm);
+  --ino-float-label-padding-inline: var(--ino-control-padding-inline-sm);
+}
+
+:host([data-size='lg']) {
+  --ino-float-label-height: var(--ino-control-height-lg);
+  --ino-float-label-padding-inline: var(--ino-control-padding-inline-lg);
+}
+
+/* The floating label. Position/size travel via CSS custom-property overrides that `<ino-label>`'s
+   own stylesheet already reads (`--ino-type-label-*`) — this component re-points that recipe, it
+   never duplicates it. Rest state mimics placeholder text: body-sized, vertically centred. */
+:host > ino-label {
+  position: absolute;
+  inset-inline-start: var(--ino-float-label-padding-inline);
+  top: 50%;
+  transform: translateY(-50%);
+  max-inline-size: calc(100% - (var(--ino-float-label-padding-inline) * 2));
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  pointer-events: none; /* absolutely positioned above the control; clicking it would otherwise
+                            steal the click instead of reaching the control beneath */
+  transition: top var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  --ino-type-label-size: var(--ino-type-body-size);
+  --ino-type-label-line: var(--ino-type-body-line);
+  --ino-type-label-weight: var(--ino-type-body-weight);
+  --ino-type-label-tracking: normal;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+/* Floated state — label reads at the smaller `label-sm` tier (tokens.css §4b), the same tier
+   `<ino-label size="sm">` already uses elsewhere, so no new size value is introduced. */
+:host(.ino-float-label--floated) > ino-label {
+  --ino-type-label-size: var(--ino-type-label-sm-size);
+  --ino-type-label-line: var(--ino-type-label-sm-line);
+  --ino-type-label-weight: var(--ino-type-label-sm-weight);
+  --ino-type-label-tracking: var(--ino-type-label-sm-tracking);
+}
+
+/* --- Variant: over (default) — floated label sits fully above the control. --- */
+:host([data-variant='over'].ino-float-label--floated) > ino-label {
+  top: calc(-1 * var(--ino-space-2));
+  transform: translateY(-100%);
+}
+
+/* --- Variants: in / on — floated label docks INSIDE the control's top edge. The rest label sits
+   lower than centre so it reads inside the same box the docked label will float up into. --- */
+:host([data-variant='in']) > ino-label,
+:host([data-variant='on']) > ino-label {
+  top: calc(50% + var(--ino-space-2));
+}
+
+:host([data-variant='in'].ino-float-label--floated) > ino-label,
+:host([data-variant='on'].ino-float-label--floated) > ino-label {
+  top: var(--ino-space-2);
+  transform: translateY(0);
+}
+
+/* `on` only: once floated, cut a background patch behind the label so it reads as sitting ON the
+   control's border line rather than inside its fill. Assumes the wrapper sits directly on the
+   app's base surface — a field on a raised card should override `--ino-float-label-on-bg` locally
+   (a component-scoped alias, not a new token: it still resolves to an existing `--ino-color-*`
+   role either way). */
+:host([data-variant='on']) {
+  --ino-float-label-on-bg: var(--ino-color-surface);
+}
+
+:host([data-variant='on'].ino-float-label--floated) > ino-label {
+  background: var(--ino-float-label-on-bg);
+  padding-inline: var(--ino-space-1);
+  border-radius: var(--ino-radius-md);
+}
+
+/* Disabled (DoD row 5) — dims the whole unit; the projected control renders its own `:disabled`
+   chrome, this only keeps the label visually in step with it. Readonly/invalid stay the projected
+   `<ino-label>`'s own `[readonly]`/`[invalid]` inputs (SPEC.md §2), already forwarded from this
+   component's own `disabled`/`invalid`/`readonly` @Inputs in the template — no extra CSS needed. */
+:host(.ino-float-label--disabled) > ino-label {
+  opacity: 0.5;
+}

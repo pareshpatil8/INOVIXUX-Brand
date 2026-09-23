@@ -1,0 +1,270 @@
+<!-- @dsCard group="Navigation" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ino-nav — role=menubar, submenus, mobile hamburger (INO-164)</title>
+<!-- Canonical token file, linked rather than copied: this preview must repaint with the system. -->
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-eyebrow-size);
+    letter-spacing: var(--ino-type-eyebrow-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 60ch; }
+
+  .frame {
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-xl);
+    overflow: hidden;
+    margin-bottom: var(--ino-space-6);
+  }
+
+  /* Mirrors web/src/app/components/nav/ino-nav.component.scss — same token bindings, so a
+     divergence between this preview and the shipped component is visible as a visual diff. */
+  .ino-nav {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--ino-space-6);
+    padding: var(--ino-space-4) var(--ino-space-7);
+    border-bottom: 1px solid var(--ino-color-border);
+    background: var(--ino-color-surface);
+  }
+  .ino-nav__logo { font-weight: 700; }
+  .ino-nav__menubar { display: flex; align-items: center; gap: var(--ino-space-6); list-style: none; margin: 0; padding: 0; }
+  .ino-nav__item { position: relative; }
+  .ino-nav__item-control {
+    display: inline-flex; align-items: center; gap: var(--ino-space-1);
+    border: none; background: transparent; padding-block: var(--ino-space-2); padding-inline: 0;
+    color: var(--ino-color-on-surface-muted); text-decoration: none; font: inherit;
+    font-size: var(--ino-type-body-size); cursor: pointer;
+    transition: color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+  }
+  .ino-nav__item-control:hover, .ino-nav__item-control:focus-visible { color: var(--ino-color-on-surface); }
+  .ino-nav__item-control:focus-visible { outline: var(--ino-focus-ring); outline-offset: var(--ino-focus-ring-offset); }
+  .ino-nav__item-control.is-active { color: var(--ino-color-on-surface); }
+  .ino-nav__item-control:active { color: var(--ino-color-accent-active); }
+  .ino-nav__item-control.is-disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+  .ino-nav__chevron { flex-shrink: 0; transition: transform var(--ino-motion-duration-fast) var(--ino-motion-easing-standard); }
+  .ino-nav__item-trigger[aria-expanded='true'] .ino-nav__chevron { transform: rotate(180deg); }
+
+  .ino-nav__submenu {
+    position: absolute; inset-inline-start: 0; inset-block-start: calc(100% + var(--ino-space-2)); z-index: 10;
+    min-width: 200px; margin: 0; padding: var(--ino-space-2); list-style: none;
+    border: 1px solid var(--ino-color-border); border-radius: var(--ino-radius-lg);
+    background: var(--ino-color-surface-raised); box-shadow: var(--ino-elevation-2);
+  }
+  .ino-nav__submenu-link {
+    display: block; border-radius: var(--ino-radius-md); padding-block: var(--ino-space-2); padding-inline: var(--ino-space-3);
+    color: var(--ino-color-on-surface); text-decoration: none; font-size: var(--ino-type-body-size);
+    min-block-size: var(--ino-target-min);
+    transition: background var(--ino-motion-duration-fast) var(--ino-motion-easing-standard), color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+  }
+  .ino-nav__submenu-link:hover, .ino-nav__submenu-link:focus-visible { background: var(--ino-color-surface-sunken); }
+  .ino-nav__submenu-link:focus-visible { outline: var(--ino-focus-ring); outline-offset: -2px; }
+  .ino-nav__submenu-link.is-active { color: var(--ino-color-accent); }
+  .ino-nav__submenu-link:active { color: var(--ino-color-accent-active); background: var(--ino-color-surface-sunken); }
+  .ino-nav__submenu-link.is-disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+
+  .ino-nav__actions { display: flex; align-items: center; gap: var(--ino-space-3); }
+  .ino-nav__theme-toggle, .ino-nav__hamburger {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: var(--ino-target-comfortable); height: var(--ino-target-comfortable);
+    margin: calc((var(--ino-target-comfortable) - 32px) / -2);
+    border: 1px solid var(--ino-color-border); border-radius: var(--ino-radius-md);
+    background: transparent; color: var(--ino-color-on-surface-muted); cursor: pointer;
+  }
+  .btn.primary {
+    background: var(--ino-gradient-accent); color: var(--ino-color-on-accent); border: none;
+    border-radius: var(--ino-radius-md); padding: var(--ino-space-2) var(--ino-space-4);
+    font-size: var(--ino-type-body-size); font-weight: 600; cursor: pointer;
+  }
+
+  .state-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-5); align-items: center; }
+  .state-demo { display: flex; flex-direction: column; gap: var(--ino-space-2); align-items: flex-start; }
+  .state-demo__label { font-size: var(--ino-type-body-sm-size); color: var(--ino-color-on-surface-muted); }
+
+  /* Mobile panel demo — bounded stand-in for the fixed-position real thing. */
+  .mobile-demo {
+    position: relative; block-size: 340px; max-width: 320px;
+    border: 1px solid var(--ino-color-border); border-radius: var(--ino-radius-lg); overflow: hidden;
+    background: var(--ino-color-surface);
+  }
+  .ino-nav__mobile-panel {
+    position: absolute; inset-inline: 0; inset-block-start: 0; padding: var(--ino-space-5);
+    background: var(--ino-color-surface-raised); box-shadow: var(--ino-elevation-2);
+  }
+  .ino-nav__mobile-header { display: flex; justify-content: flex-end; margin-block-end: var(--ino-space-4); }
+  .ino-nav__mobile-close {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 32px; height: 32px; border: none; border-radius: var(--ino-radius-md);
+    background: transparent; color: var(--ino-color-on-surface-muted); cursor: pointer;
+  }
+  .ino-nav__mobile-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--ino-space-1); }
+  .ino-nav__mobile-link, .ino-nav__mobile-group-trigger {
+    display: flex; align-items: center; justify-content: space-between; gap: var(--ino-space-2);
+    min-block-size: var(--ino-target-comfortable); width: 100%; border: none; border-radius: var(--ino-radius-md);
+    padding-inline: var(--ino-space-4); background: transparent; color: var(--ino-color-on-surface);
+    text-decoration: none; font: inherit; font-size: var(--ino-type-body-size); text-align: start; cursor: pointer;
+  }
+  .ino-nav__mobile-link:hover, .ino-nav__mobile-group-trigger:hover { background: var(--ino-color-surface-sunken); }
+  .ino-nav__mobile-sublist { list-style: none; margin: 0; padding-inline-start: var(--ino-space-5); padding-block: var(--ino-space-1) var(--ino-space-2); display: flex; flex-direction: column; gap: var(--ino-space-1); }
+
+  code { font-family: var(--ino-font-mono); font-size: 0.92em; }
+</style>
+</head>
+<body>
+
+<h1>ino-nav — role="menubar" uplift (INO-164)</h1>
+<p class="lede">
+  Flat link bar → <code>role="menubar"</code> with submenus, roving-tabindex keyboard navigation,
+  and a mobile hamburger panel — parity with PrimeNG's <code>Menubar</code>. Web + Capacitor
+  scope only this issue; see <code>../../../web/src/app/components/nav/SPEC.md</code> §1.
+</p>
+
+<h2>Desktop menubar — one item with an open submenu</h2>
+<div class="frame">
+  <header class="ino-nav">
+    <div class="ino-nav__logo">INOVIXUX</div>
+    <nav class="ino-nav__menubar" role="menubar" aria-label="Primary">
+      <div class="ino-nav__item">
+        <a class="ino-nav__item-control is-active" role="menuitem" tabindex="0" href="#">Platform</a>
+      </div>
+      <div class="ino-nav__item">
+        <button type="button" class="ino-nav__item-control ino-nav__item-trigger" role="menuitem" aria-haspopup="true" aria-expanded="true" tabindex="-1">
+          Company
+          <svg class="ino-nav__chevron" width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        </button>
+        <ul class="ino-nav__submenu" role="menu" aria-label="Company">
+          <li role="none"><a class="ino-nav__submenu-link" role="menuitem" tabindex="0" href="#">About</a></li>
+          <li role="none"><a class="ino-nav__submenu-link" role="menuitem" tabindex="-1" href="#">Careers</a></li>
+          <li role="none"><a class="ino-nav__submenu-link is-disabled" role="menuitem" tabindex="-1" aria-disabled="true" href="#">Press (disabled)</a></li>
+        </ul>
+      </div>
+      <div class="ino-nav__item">
+        <a class="ino-nav__item-control" role="menuitem" tabindex="-1" href="#">Docs</a>
+      </div>
+    </nav>
+    <div class="ino-nav__actions">
+      <button type="button" class="ino-nav__theme-toggle" aria-label="Switch to light mode">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.6" /></svg>
+      </button>
+      <button type="button" class="btn primary">Request demo</button>
+    </div>
+  </header>
+</div>
+
+<h2>Keyboard map</h2>
+<p class="lede">Full detail: <code>../../../web/src/app/components/nav/SPEC.md</code> §2.</p>
+<table style="border-collapse: collapse; width: 100%; max-width: 640px;">
+  <thead>
+    <tr style="text-align: left; color: var(--ino-color-on-surface-muted); font-size: var(--ino-type-body-sm-size);">
+      <th style="padding-block: var(--ino-space-2);">Key</th><th>Effect</th>
+    </tr>
+  </thead>
+  <tbody style="font-size: var(--ino-type-body-sm-size);">
+    <tr><td style="padding-block: var(--ino-space-1);"><code>ArrowRight</code> / <code>ArrowLeft</code></td><td>Move between top-level items, wraps</td></tr>
+    <tr><td style="padding-block: var(--ino-space-1);"><code>ArrowDown</code></td><td>Open submenu, focus first entry</td></tr>
+    <tr><td style="padding-block: var(--ino-space-1);"><code>ArrowUp</code> / <code>ArrowDown</code> (in submenu)</td><td>Move within submenu, wraps</td></tr>
+    <tr><td style="padding-block: var(--ino-space-1);"><code>Escape</code></td><td>Close submenu, return focus to its parent</td></tr>
+    <tr><td style="padding-block: var(--ino-space-1);"><code>Home</code> / <code>End</code></td><td>First/last item in the current list</td></tr>
+    <tr><td style="padding-block: var(--ino-space-1);"><code>Enter</code> / <code>Space</code></td><td>Toggle a submenu</td></tr>
+  </tbody>
+</table>
+
+<h2>States</h2>
+<div class="state-row">
+  <div class="state-demo">
+    <span class="state-demo__label">default</span>
+    <a class="ino-nav__item-control" href="#" tabindex="-1">Platform</a>
+  </div>
+  <div class="state-demo">
+    <span class="state-demo__label">hover</span>
+    <a class="ino-nav__item-control" href="#" tabindex="-1" style="color: var(--ino-color-on-surface);">Platform</a>
+  </div>
+  <div class="state-demo">
+    <span class="state-demo__label">focus-visible</span>
+    <a class="ino-nav__item-control" href="#" tabindex="-1" style="color: var(--ino-color-on-surface); outline: var(--ino-focus-ring); outline-offset: var(--ino-focus-ring-offset);">Platform</a>
+  </div>
+  <div class="state-demo">
+    <span class="state-demo__label">active/pressed</span>
+    <a class="ino-nav__item-control" href="#" tabindex="-1" style="color: var(--ino-color-accent-active);">Platform</a>
+  </div>
+  <div class="state-demo">
+    <span class="state-demo__label">disabled</span>
+    <a class="ino-nav__item-control is-disabled" href="#" tabindex="-1" aria-disabled="true">Platform</a>
+  </div>
+</div>
+
+<h2>Mobile hamburger panel (below 960px)</h2>
+<p class="lede">Focus-trapped via <code>[inoFocusTrap]</code> (INO-130) — reused, not reimplemented. <code>Escape</code> closes; focus returns to the hamburger button.</p>
+<div class="mobile-demo">
+  <div class="ino-nav__mobile-panel" role="dialog" aria-modal="true" aria-label="Menu">
+    <div class="ino-nav__mobile-header">
+      <button type="button" class="ino-nav__mobile-close" aria-label="Close menu">
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" /></svg>
+      </button>
+    </div>
+    <ul class="ino-nav__mobile-list" role="list">
+      <li><a class="ino-nav__mobile-link" href="#">Platform</a></li>
+      <li>
+        <button type="button" class="ino-nav__mobile-group-trigger" aria-expanded="true" aria-controls="mobile-demo-group">
+          Company
+          <svg class="ino-nav__chevron" width="10" height="10" viewBox="0 0 10 10" aria-hidden="true" style="transform: rotate(180deg);"><path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        </button>
+        <ul id="mobile-demo-group" class="ino-nav__mobile-sublist" role="list">
+          <li><a class="ino-nav__mobile-link" href="#">About</a></li>
+          <li><a class="ino-nav__mobile-link" href="#">Careers</a></li>
+        </ul>
+      </li>
+      <li><a class="ino-nav__mobile-link" href="#">Docs</a></li>
+    </ul>
+  </div>
+</div>
+
+<h2>RTL</h2>
+<div class="frame" dir="rtl">
+  <header class="ino-nav">
+    <div class="ino-nav__logo">إينوفيكسوكس</div>
+    <nav class="ino-nav__menubar" role="menubar" aria-label="Primary">
+      <div class="ino-nav__item"><a class="ino-nav__item-control is-active" role="menuitem" tabindex="0" href="#">المنصة</a></div>
+      <div class="ino-nav__item">
+        <button type="button" class="ino-nav__item-control ino-nav__item-trigger" role="menuitem" aria-haspopup="true" aria-expanded="true" tabindex="-1">
+          الشركة
+          <svg class="ino-nav__chevron" width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        </button>
+        <ul class="ino-nav__submenu" role="menu" aria-label="الشركة">
+          <li role="none"><a class="ino-nav__submenu-link" role="menuitem" tabindex="0" href="#">نبذة عنا</a></li>
+          <li role="none"><a class="ino-nav__submenu-link" role="menuitem" tabindex="-1" href="#">وظائف</a></li>
+        </ul>
+      </div>
+    </nav>
+    <div class="ino-nav__actions">
+      <button type="button" class="btn primary">طلب عرض توضيحي</button>
+    </div>
+  </header>
+</div>
+<p class="lede">
+  Every offset (<code>inset-inline-start/end</code>, <code>padding-inline</code>) is logical, so
+  the submenu anchors to the same physical edge it would in LTR, mirrored. Motion is block-axis
+  only (<code>translateY</code>), so there is nothing to flip.
+</p>
+
+</body>
+</html>
