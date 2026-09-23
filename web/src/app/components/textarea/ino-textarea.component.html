@@ -1,0 +1,42 @@
+<div class="ino-field">
+  <ino-label
+    [for]="textareaId"
+    [size]="size"
+    [required]="required"
+    [disabled]="disabled"
+    [invalid]="!!error"
+    [readonly]="readonly"
+  >{{ label }}</ino-label>
+
+  <span class="ino-field__control-wrap">
+    <textarea
+      #control
+      [id]="textareaId"
+      class="ino-field__control"
+      [class.ino-field__control--error]="!!error"
+      [placeholder]="placeholder"
+      [value]="value"
+      [rows]="rows"
+      [disabled]="disabled"
+      [readOnly]="readonly || loading"
+      [required]="required"
+      [attr.maxlength]="maxLength"
+      [attr.aria-invalid]="error ? true : null"
+      [attr.aria-describedby]="describedBy"
+      (input)="onInput($event)"
+    ></textarea>
+    <span class="ino-field__spinner" *ngIf="loading" aria-hidden="true"></span>
+  </span>
+
+  <div class="ino-field__meta" *ngIf="(hint && !error) || error || (showCount && maxLength)">
+    <p *ngIf="hint && !error" [id]="hintId" class="ino-field__hint">{{ hint }}</p>
+    <p *ngIf="error" [id]="errorId" class="ino-field__error" role="alert">{{ error }}</p>
+    <p
+      *ngIf="showCount && maxLength"
+      [id]="counterId"
+      class="ino-field__counter"
+      [class.ino-field__counter--limit]="value.length >= maxLength"
+      aria-live="polite"
+    >{{ value.length }}/{{ maxLength }}</p>
+  </div>
+</div>
