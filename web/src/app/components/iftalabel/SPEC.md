@@ -105,12 +105,12 @@ Per the plan (rev 9 §2 table, T-20) and the issue text ("Mobile: All three trac
   WebView (plan rev 9 §5, "Capacitor is not a port").
 - **React Native** — `mobile/react-native/src/components/InoIftaLabel.tsx`. A **static** re-authoring
   (no `Animated` — §4): the label renders permanently docked, matching web's permanently-docked
-  layout instead of `InoFloatLabel.tsx`'s focus/value-driven `Animated.Value`.
+  layout instead of `InoFloatLabel.tsx`'s focus/value-driven `Animated.Value` (pending INO-141).
   Colour roles: `onSurfaceMuted`, `onSurfaceSubtle`, `dangerTextSafe` (no `surface`/cutout role —
   there is no `on`-variant equivalent, §3).
 - **Flutter** — `mobile/flutter/lib/widgets/ino_ifta_label.dart`. Same static shape: a stateless
   `Positioned.directional` label, no `AnimatedPositioned`/`AnimatedDefaultTextStyle` (contrast
-  `ino_float_label.dart`). Same three colour roles as RN.
+  `ino_float_label.dart`, pending INO-141). Same three colour roles as RN.
 
 Both mobile ports also accept a `readOnly`/`readonly` prop, matching web's forward to the internal
 `<ino-label readonly>` (§2). It carries no distinct colour on either platform: the docked label is
