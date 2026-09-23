@@ -75,9 +75,13 @@
   }
 
   /* State 7 — invalid. A box-shadow ring, not a border — a native radio's own chrome isn't a
-     paintable border, matching `ino-checkbox`'s own invalid treatment. */
+     paintable border, matching `ino-checkbox`'s own invalid treatment. Weight and per-theme
+     behaviour live in the token (tokens.css §12, INO-257), not here: this is the one box-shadow
+     high-contrast KEEPS and widens rather than flattening to `none` the way it does every
+     elevation step. Composes with State 4 above — the token's spread-only geometry sits inside
+     the gap --ino-focus-ring-offset leaves, so a focused invalid radio shows both rings. */
   &[aria-invalid='true'] {
-    box-shadow: 0 0 0 2px var(--ino-color-danger);
+    box-shadow: var(--ino-invalid-ring);
   }
 }
 

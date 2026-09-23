@@ -130,6 +130,28 @@ for (const [theme, vars] of Object.entries(themes)) {
   assert.match(ring, /^\d+px solid var\(--ino-color-accent\)$/, `${theme}: --ino-focus-ring must stay "<n>px solid var(--ino-color-accent)", got "${ring}"`);
   assert.match(vars['--ino-focus-ring-offset'] ?? '', /^\d+px$/, `${theme}: --ino-focus-ring-offset must be a px length`);
 }
+// ── Wave 0 / INO-257 (W0-7) — the invalid-state ring (tokens.css §12) ──────────────────────────
+// The focus ring's opposite-channel twin: box-shadow rather than outline, because a control that
+// is focused AND invalid has to paint both at once. Three things can break it, and none of the
+// three shows up in a diff:
+//   1. A theme inlines a literal colour, so a severity re-theme stops carrying the ring — the same
+//      drift --ino-focus-ring was created to end, one channel over.
+//   2. A theme flattens it to `none` alongside the elevation tokens it sits next to. That is
+//      correct for elevation and catastrophic here: high-contrast is precisely the theme where an
+//      invalid affordance must survive. A theme may WIDEN a state ring; it may never thin it.
+//   3. --ino-color-danger drifts to a value that no longer reads against a surface. The ring is a
+//      non-text state indicator (WCAG 2.2 SC 1.4.11, 3:1), which is why it reads `danger` and not
+//      the heavier `danger-text-safe` the invalid LABEL uses — so 3:1 has to be measured, not
+//      assumed, on every surface a ringed control can sit on.
+const invalidRingWeight = v => Number(/^0 0 0 (\d+)px var\(--ino-color-danger\)$/.exec(v ?? '')?.[1]);
+const baseInvalidRing = invalidRingWeight(base['--ino-invalid-ring']);
+assert.ok(baseInvalidRing > 0, `:root: --ino-invalid-ring must be "0 0 0 <n>px var(--ino-color-danger)", got "${base['--ino-invalid-ring']}"`);
+for (const [theme, vars] of Object.entries(themes)) {
+  const weight = invalidRingWeight(vars['--ino-invalid-ring']);
+  assert.ok(weight > 0, `${theme}: --ino-invalid-ring must stay "0 0 0 <n>px var(--ino-color-danger)" — it must never inline a colour and must never flatten to none the way elevation does in this theme, got "${vars['--ino-invalid-ring']}"`);
+  assert.ok(weight >= baseInvalidRing, `${theme}: --ino-invalid-ring is ${weight}px against the base ring's ${baseInvalidRing}px — a theme may widen a state ring, never thin it`);
+  for (const bg of ['surface', 'surfaceRaised', 'surfaceSunken']) pair('danger', bg, 3, resolved[theme], `${theme} invalid-ring `);
+}
 // ── Wave 0 / INO-124 — the control-size scale (tokens.css §12) ─────────────────────────────────
 // Every component's size="sm"|"default"|"lg" API resolves entirely through these tokens, so the
 // scale is load-bearing for ~35 components that do not exist yet. Three things break it quietly,
@@ -635,5 +657,5 @@ for (const entry of COMPONENT_REGISTRY) {
   }
 }
 
-console.log(`PASS: CSS mirrors; Capacitor import; ${colorChecks} color roles across 3 themes × 2 mobile ports; space/radius/targets/durations; focus-ring shape; pressed-accent contrast in 3 themes; control-size scale across 3 densities + ${controlChecks} mobile port values; form-label tokens across 3 themes × 2 densities; elevation scale (6 neutral + 3 brand + 2 inset) across 3 themes; leading/tracking rhythm scale + composite type aliases across 3 densities; component registry (${COMPONENT_REGISTRY.length} components, ${componentChecks} platform checks).`);
+console.log(`PASS: CSS mirrors; Capacitor import; ${colorChecks} color roles across 3 themes × 2 mobile ports; space/radius/targets/durations; focus-ring shape; invalid-ring shape, never-flatten rule and SC 1.4.11 budget in 3 themes; pressed-accent contrast in 3 themes; control-size scale across 3 densities + ${controlChecks} mobile port values; form-label tokens across 3 themes × 2 densities; elevation scale (6 neutral + 3 brand + 2 inset) across 3 themes; leading/tracking rhythm scale + composite type aliases across 3 densities; component registry (${COMPONENT_REGISTRY.length} components, ${componentChecks} platform checks).`);
 console.log('High-contrast token pairs (AAA text >=7; non-text borders >=3; excludes disabled/decorative subtle role);\nplus per-theme pressed-accent pairs (INO-123):\n'+measurements.join('\n'));
