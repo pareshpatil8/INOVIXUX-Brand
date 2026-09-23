@@ -1,14 +1,26 @@
-<button
-  type="button"
-  class="ino-toggle"
-  role="switch"
-  [attr.aria-checked]="checked"
-  [attr.aria-label]="!label && ariaLabel ? ariaLabel : null"
-  [disabled]="disabled"
-  (click)="onToggle()"
->
-  <span class="ino-toggle__track">
-    <span class="ino-toggle__thumb"></span>
-  </span>
-  <span class="ino-toggle__label" *ngIf="label">{{ label }}</span>
-</button>
+<div class="ino-toggle" [attr.data-size]="size">
+  <button
+    type="button"
+    class="ino-toggle__control"
+    [class.ino-toggle__control--readonly]="readonly && !disabled"
+    role="switch"
+    [attr.aria-checked]="checked"
+    [attr.aria-label]="!label && ariaLabel ? ariaLabel : null"
+    [attr.aria-invalid]="error ? true : null"
+    [attr.aria-describedby]="error ? errorId : null"
+    [attr.aria-readonly]="readonly ? true : null"
+    [attr.aria-busy]="loading ? true : null"
+    [disabled]="disabled || loading"
+    (click)="onToggle()"
+  >
+    <span class="ino-toggle__track">
+      <span class="ino-toggle__thumb">
+        <span class="ino-toggle__icon" aria-hidden="true">{{ checked ? '✓' : '✕' }}</span>
+      </span>
+    </span>
+    <span class="ino-toggle__spinner" *ngIf="loading" aria-hidden="true"></span>
+    <span class="ino-toggle__label" *ngIf="label">{{ label }}</span>
+  </button>
+
+  <p *ngIf="error" [id]="errorId" class="ino-toggle__error" role="alert">{{ error }}</p>
+</div>

@@ -1,0 +1,196 @@
+<!-- @dsCard group="Forms" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ino-radio — standalone radio, size API (INO-159)</title>
+<!-- Canonical token file, linked rather than copied: this preview must repaint with the system,
+     and must never become a second place raw hex values live. -->
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-eyebrow-size);
+    letter-spacing: var(--ino-type-eyebrow-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 60ch; }
+
+  .theme-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); }
+  .theme-pane {
+    flex: 1 1 280px;
+    padding: var(--ino-space-5);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-xl);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+  }
+  .theme-pane > h3 {
+    margin: 0 0 var(--ino-space-4);
+    font-size: var(--ino-type-body-sm-size);
+    color: var(--ino-color-on-surface-muted);
+    font-weight: 600;
+  }
+
+  .col { display: flex; flex-direction: column; gap: var(--ino-space-3); }
+  .row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--ino-space-6); }
+
+  /* Mirrors web/src/app/components/radio-group/ino-radio.component.scss — same token bindings, so
+     a divergence between this preview and the shipped component is visible as a visual diff. */
+  .ino-radio__row {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--ino-control-gap-default);
+    min-height: var(--ino-target-comfortable);
+    cursor: pointer;
+  }
+  .ino-radio__input {
+    width: var(--ino-control-icon-size-default);
+    height: var(--ino-control-icon-size-default);
+    flex-shrink: 0;
+    accent-color: var(--ino-color-accent);
+    cursor: pointer;
+    transition: filter var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+      box-shadow var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+  }
+  .ino-radio__input:hover:not(:disabled) { filter: brightness(1.15); }
+  .ino-radio__input:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+  .ino-radio__input:active:not(:disabled) { filter: brightness(0.9); }
+  .ino-radio__input--invalid { box-shadow: 0 0 0 2px var(--ino-color-danger); }
+  .ino-radio__input--sm { width: var(--ino-control-icon-size-sm); height: var(--ino-control-icon-size-sm); }
+  .ino-radio__input--lg { width: var(--ino-control-icon-size-lg); height: var(--ino-control-icon-size-lg); }
+
+  .ino-radio__label { font-size: var(--ino-type-body-size); color: var(--ino-color-on-surface); }
+  .ino-radio--disabled .ino-radio__label { color: var(--ino-color-on-surface-muted); }
+  .ino-radio--disabled .ino-radio__row { cursor: not-allowed; }
+
+  .ino-radio__spinner {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    border: 2px solid var(--ino-color-on-surface-muted);
+    border-inline-start-color: transparent;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .ino-radio__spinner { animation: ino-radio-spin var(--ino-motion-duration-slow) linear infinite; }
+  }
+  @keyframes ino-radio-spin { to { transform: rotate(360deg); } }
+
+  .ino-radio-group { display: flex; flex-direction: column; gap: var(--ino-space-2); margin: 0; padding: 0; border: none; }
+  .ino-radio-group__legend {
+    padding: 0; margin-bottom: var(--ino-space-1);
+    font-size: var(--ino-type-body-sm-size); font-weight: 600; color: var(--ino-color-on-surface);
+  }
+  .ino-radio-group__error, .ino-radio__error {
+    margin: 0; font-size: var(--ino-type-body-sm-size); color: var(--ino-color-danger); font-weight: 600;
+  }
+</style>
+</head>
+<body>
+
+<h1>Radio — standalone radio, size API</h1>
+<p class="lede">
+  A native <code>&lt;input type="radio"&gt;</code> restyled via <code>accent-color</code> (never a
+  custom dot + SVG), now available standalone — PrimeNG's <code>RadioButton</code> shape — as well
+  as composed by <code>&lt;ino-radio-group&gt;</code>, both carrying the same eight-state contract
+  and <code>size</code> API.
+</p>
+
+<h2>States × theme</h2>
+<div class="theme-row">
+
+  <div class="theme-pane">
+    <h3>dark — :root (default)</h3>
+    <div class="col">
+      <label class="ino-radio__row"><input class="ino-radio__input" type="radio" name="dark-demo"><span class="ino-radio__label">Default</span></label>
+      <label class="ino-radio__row"><input class="ino-radio__input" type="radio" name="dark-demo" checked><span class="ino-radio__label">Checked</span></label>
+      <label class="ino-radio__row"><input class="ino-radio__input" type="radio" name="dark-demo" disabled><span class="ino-radio__label">Disabled</span></label>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="light">
+    <h3>light — [data-theme="light"]</h3>
+    <div class="col">
+      <label class="ino-radio__row"><input class="ino-radio__input" type="radio" name="light-demo"><span class="ino-radio__label">Default</span></label>
+      <label class="ino-radio__row"><input class="ino-radio__input" type="radio" name="light-demo" checked><span class="ino-radio__label">Checked</span></label>
+      <label class="ino-radio__row"><input class="ino-radio__input" type="radio" name="light-demo" disabled><span class="ino-radio__label">Disabled</span></label>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="high-contrast">
+    <h3>high-contrast — [data-theme="high-contrast"]</h3>
+    <div class="col">
+      <label class="ino-radio__row"><input class="ino-radio__input" type="radio" name="hc-demo"><span class="ino-radio__label">Default</span></label>
+      <label class="ino-radio__row"><input class="ino-radio__input" type="radio" name="hc-demo" checked><span class="ino-radio__label">Checked</span></label>
+      <label class="ino-radio__row"><input class="ino-radio__input" type="radio" name="hc-demo" disabled><span class="ino-radio__label">Disabled</span></label>
+    </div>
+  </div>
+
+</div>
+
+<h2>Standalone (PrimeNG <code>RadioButton</code> shape)</h2>
+<p class="lede">A lone radio, usable outside any group — each gets its own auto-generated <code>name</code> so it never joins another radio's native group.</p>
+<div class="row">
+  <label class="ino-radio__row"><input class="ino-radio__input" type="radio" name="standalone-1"><span class="ino-radio__label">Email me updates</span></label>
+</div>
+
+<h2>Size (control-size scale)</h2>
+<div class="row">
+  <label class="ino-radio__row"><input class="ino-radio__input ino-radio__input--sm" type="radio" name="size-demo" checked><span class="ino-radio__label">sm</span></label>
+  <label class="ino-radio__row"><input class="ino-radio__input" type="radio" name="size-demo-2" checked><span class="ino-radio__label">default</span></label>
+  <label class="ino-radio__row"><input class="ino-radio__input ino-radio__input--lg" type="radio" name="size-demo-3" checked><span class="ino-radio__label">lg</span></label>
+</div>
+
+<h2>Readonly &amp; loading</h2>
+<div class="row">
+  <label class="ino-radio__row" style="cursor: default;">
+    <input class="ino-radio__input" style="cursor: default;" type="radio" name="readonly-demo" checked onclick="return false;">
+    <span class="ino-radio__label">Readonly (checked, locked)</span>
+  </label>
+  <label class="ino-radio__row">
+    <input class="ino-radio__input" type="radio" name="loading-demo" checked disabled aria-busy="true">
+    <span class="ino-radio__spinner" aria-hidden="true"></span>
+    <span class="ino-radio__label">Saving&hellip;</span>
+  </label>
+</div>
+
+<h2>Invalid</h2>
+<div class="col" style="align-items: flex-start;">
+  <fieldset class="ino-radio-group">
+    <legend class="ino-radio-group__legend">Choose a plan</legend>
+    <label class="ino-radio__row"><input class="ino-radio__input ino-radio__input--invalid" type="radio" name="plan" aria-invalid="true"><span class="ino-radio__label">Starter</span></label>
+    <label class="ino-radio__row"><input class="ino-radio__input ino-radio__input--invalid" type="radio" name="plan" aria-invalid="true"><span class="ino-radio__label">Growth</span></label>
+  </fieldset>
+  <p class="ino-radio__error" role="alert">Please choose a plan</p>
+</div>
+
+<h2>Radio group</h2>
+<p class="lede">Shared <code>name</code>, one validation message, <code>value</code> as a single string — composes N standalone radios (above), mirroring <code>&lt;ino-checkbox-group&gt;</code>'s own composition of <code>&lt;ino-checkbox&gt;</code>.</p>
+<fieldset class="ino-radio-group">
+  <legend class="ino-radio-group__legend">Notification frequency</legend>
+  <label class="ino-radio__row"><input class="ino-radio__input" type="radio" name="frequency" checked><span class="ino-radio__label">Immediately</span></label>
+  <label class="ino-radio__row"><input class="ino-radio__input" type="radio" name="frequency"><span class="ino-radio__label">Daily digest</span></label>
+  <label class="ino-radio__row"><input class="ino-radio__input" type="radio" name="frequency" disabled><span class="ino-radio__label">Never (disabled)</span></label>
+</fieldset>
+
+<h2>RTL</h2>
+<div class="row" dir="rtl">
+  <label class="ino-radio__row"><input class="ino-radio__input" type="radio" name="rtl-demo" checked><span class="ino-radio__label">أفضّل هذا الخيار</span></label>
+</div>
+
+</body>
+</html>
