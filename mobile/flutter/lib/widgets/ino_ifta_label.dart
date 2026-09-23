@@ -22,6 +22,7 @@ class InoIftaLabel extends StatelessWidget {
   final InoControlSize size;
   final bool disabled;
   final bool invalid;
+  final bool readOnly;
   final Widget child;
 
   const InoIftaLabel({
@@ -31,12 +32,17 @@ class InoIftaLabel extends StatelessWidget {
     this.size = InoControlSize.standard,
     this.disabled = false,
     this.invalid = false,
+    this.readOnly = false,
   });
 
   @override
   Widget build(BuildContext context) {
     final colors = context.inoColors;
 
+    // readOnly has no distinct colour here (unlike `InoLabel`'s onSurface -> onSurfaceMuted
+    // step): the docked label is already onSurfaceMuted at rest (ino-label.component.scss
+    // `--ino-color-label-muted`), so readOnly is a no-op visually — accepted purely to keep the
+    // prop surface 1:1 with the web component's `readonly` -> internal `<ino-label>` forward.
     final color = disabled
         ? colors.onSurfaceSubtle
         : invalid
@@ -54,8 +60,13 @@ class InoIftaLabel extends StatelessWidget {
           padding: const EdgeInsets.only(top: InoSpace.s3),
           child: child,
         ),
-        Positioned(
-          left: InoSpace.s4,
+        // `Positioned.directional(start:, textDirection:)`, not `Positioned(left:)` — Flutter
+        // resolves this against the ambient `Directionality` automatically (same fix
+        // `ino_toggle.dart`'s thumb alignment uses), so the docked label mirrors to the trailing
+        // edge under RTL.
+        Positioned.directional(
+          textDirection: Directionality.of(context),
+          start: InoSpace.s4,
           top: InoSpace.s2,
           child: IgnorePointer(
             child: Text(

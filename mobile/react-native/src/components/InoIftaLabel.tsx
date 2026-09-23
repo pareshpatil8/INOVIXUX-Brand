@@ -24,6 +24,7 @@ export function InoIftaLabel({
   size = 'default',
   disabled = false,
   invalid = false,
+  readOnly = false,
   children,
   style,
 }: {
@@ -31,11 +32,17 @@ export function InoIftaLabel({
   size?: ControlSize;
   disabled?: boolean;
   invalid?: boolean;
+  readOnly?: boolean;
   children: React.ReactNode;
   style?: ViewStyle;
 }) {
   const { colors } = useTheme();
 
+  // readOnly has no distinct colour here (unlike <InoLabel>'s onSurface -> onSurfaceMuted
+  // step): the docked label is already onSurfaceMuted at rest (ino-label.component.scss
+  // `--ino-color-label-muted`), so readOnly is a no-op visually — accepted purely to keep the
+  // prop surface 1:1 with the web component's `readonly` -> internal `<ino-label>` forward.
+  void readOnly;
   const color = disabled ? colors.onSurfaceSubtle : invalid ? colors.dangerTextSafe : colors.onSurfaceMuted;
 
   return (
@@ -53,5 +60,7 @@ export function InoIftaLabel({
 
 const styles = StyleSheet.create({
   wrap: { position: 'relative', justifyContent: 'center' },
-  label: { position: 'absolute', left: space[4] },
+  // `start`, not `left` — RN resolves this against the ambient writing direction (same fix
+  // `InoToggle`'s thumb inset uses), so the docked label mirrors to the trailing edge under RTL.
+  label: { position: 'absolute', start: space[4] },
 });

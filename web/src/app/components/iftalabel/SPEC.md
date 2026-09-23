@@ -82,6 +82,11 @@ Logical properties only: `inset-inline-start` for the label's horizontal positio
 logical-property distinction — RTL never mirrors the block axis, only inline. Verified with
 `dir="rtl"` in the preview.
 
+Mobile ports (§7) mirror this with their own platform-native logical primitives — RN's `start` style
+key and Flutter's `Positioned.directional(start:, textDirection:)` — not the web preview's `dir="rtl"`
+check, which only exercises the Angular render path. (An earlier revision of this port hardcoded a
+physical `left` offset on both mobile tracks — [INO-279](/INO/issues/INO-279) caught it; fixed.)
+
 ---
 
 ## 6. Touch targets (DoD row 8)
@@ -104,8 +109,14 @@ Per the plan (rev 9 §2 table, T-20) and the issue text ("Mobile: All three trac
   Colour roles: `onSurfaceMuted`, `onSurfaceSubtle`, `dangerTextSafe` (no `surface`/cutout role —
   there is no `on`-variant equivalent, §3).
 - **Flutter** — `mobile/flutter/lib/widgets/ino_ifta_label.dart`. Same static shape: a stateless
-  `Positioned` label, no `AnimatedPositioned`/`AnimatedDefaultTextStyle` (contrast
+  `Positioned.directional` label, no `AnimatedPositioned`/`AnimatedDefaultTextStyle` (contrast
   `ino_float_label.dart`). Same three colour roles as RN.
+
+Both mobile ports also accept a `readOnly`/`readonly` prop, matching web's forward to the internal
+`<ino-label readonly>` (§2). It carries no distinct colour on either platform: the docked label is
+already `onSurfaceMuted` at rest here (unlike `<InoLabel>`'s onSurface -> onSurfaceMuted readonly
+step), so the prop exists purely to keep the mobile API surface 1:1 with web's `readonly` input
+rather than silently dropping it.
 
 Both mobile ports render their own label `Text` rather than delegating to `InoLabel`/`ino_label.dart`
 — the same declared divergence `<ino-float-label>`'s SPEC.md §6 documents for the same reason (no
