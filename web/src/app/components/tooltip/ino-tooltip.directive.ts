@@ -170,8 +170,9 @@ export class InoTooltipDirective implements OnChanges, OnDestroy {
     this.renderer.setAttribute(this.host, 'aria-describedby', this.tooltipId);
 
     // The panel isn't laid out yet on this tick — same deferral <ino-confirm-popup> uses before
-    // measuring its own panel.
-    queueMicrotask(() => this.reposition());
+    // measuring its own panel. `setTimeout`, not `queueMicrotask`: zone drains microtasks before
+    // `ApplicationRef.tick()` runs, so a microtask fires before the panel exists in the DOM.
+    setTimeout(() => this.reposition());
   }
 
   private hide(): void {
