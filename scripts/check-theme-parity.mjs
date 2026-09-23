@@ -516,8 +516,22 @@ const COMPONENT_REGISTRY = [
   {
     name: 'select',
     web: 'web/src/app/components/select',
-    mobile: { reactNative: 'web-only', flutter: 'web-only' },
-    reason: 'web-only for now, by scoping decision, not a permanent exemption — INO-152 (INO-31 T-9) rewrote this component from a native <select> to a custom listbox and used its full budget on the web core (overlay, filter, groups, virtual-scroll integration, ARIA combobox contract) that MultiSelect/AutoComplete/Listbox will each extend. React Native and Flutter ports (scoped to single-selection, no groups/templates/virtual-scroll, mirroring the datepicker single-selection precedent in SPEC.md §9) are filed as a follow-up child issue rather than shipped at lower fidelity here. See web/src/app/components/select/SPEC.md §9 and docs/brand/06-angular-components/select.md#mobile.',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoSelect.tsx',
+        roles: ['accent', 'accentTextSafe', 'border', 'borderSoft', 'danger', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'overlayScrim', 'surfaceRaised', 'surfaceSunken'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_select.dart',
+        roles: ['accent', 'accentTextSafe', 'border', 'borderSoft', 'danger', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'overlayScrim', 'surfaceRaised', 'surfaceSunken'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['accentActive'], reason: 'same rationale as the input and datepicker entries above — web reserves accent-active for the transient mousedown-before-focus-settles flash on the trigger (ino-select.component.scss `.ino-field__control:active`); touch has no pointer-down-before-focus phase, so the Pressable goes straight from unfocused to colors.accent when the sheet opens.' },
+      { platform: 'flutter', roles: ['accentActive'], reason: 'same as the React Native entry above.' },
+      { platform: 'reactNative', roles: ['overlayScrim', 'borderSoft'], reason: 'ADDED roles, not dropped ones — the two consequences of the one intentional visual divergence in this port (INO-258). Web anchors the option panel absolutely under the trigger with no scrim and no sheet chrome; an anchored popover under a field is a pointer idiom that on a phone collides with the software keyboard and the bottom safe area, so the port presents the same list in a modal bottom sheet (ConfirmActionSheet.tsx, docs/brand/13-mobile-app-patterns.md §2). overlay-scrim is that sheet backdrop and border-soft its grabber — both read from the same shared palette the existing sheet template already uses, not new values. See web/src/app/components/select/SPEC.md §9.' },
+      { platform: 'flutter', roles: ['overlayScrim', 'borderSoft'], reason: 'same as the React Native entry above — showModalBottomSheet barrierColor is overlay-scrim and the grabber is border-soft, matching confirm_action_sheet.dart.' },
+    ],
   },
   {
     name: 'table',

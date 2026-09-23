@@ -114,6 +114,20 @@
       "issue": "INO-173"
     },
     {
+      "rule": "non-token-radius",
+      "file": "mobile/flutter/lib/widgets/ino_select.dart",
+      "match": "BorderRadius.circular(2",
+      "reason": "2px knob radius on the option sheet's grabber — same value and same pending decision as the confirm_action_sheet.dart waiver above; this port reuses that sheet template verbatim rather than inventing a second grabber treatment",
+      "issue": "INO-173"
+    },
+    {
+      "rule": "non-token-radius",
+      "file": "mobile/react-native/src/components/InoSelect.tsx",
+      "match": "borderRadius: 2",
+      "reason": "2px knob radius on the option sheet's grabber — same value and same pending decision as the ConfirmActionSheet.tsx waiver above; this port reuses that sheet template verbatim rather than inventing a second grabber treatment",
+      "issue": "INO-173"
+    },
+    {
       "rule": "off-scale-spacing",
       "file": "docs/brand/06-angular-components/src/components/alert/ino-alert.component.scss",
       "match": "margin: -1px",
