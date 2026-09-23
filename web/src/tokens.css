@@ -65,6 +65,17 @@
  * themes, so it cannot regress. Rationale, the size-pairing table and the
  * a11y contract: docs/brand/06-angular-components/form-label-tokens.md.
  *
+ * 2026-09-23 (INO-257, Wave 0 item W0-7): added --ino-invalid-ring (§12), the
+ * danger-coloured state ring, as the box-shadow-channel twin of the existing
+ * --ino-focus-ring. Filed as an amendment rather than a component fix because
+ * `ino-radio` (INO-159) needed a ring that the contract simply did not have:
+ * --ino-focus-ring is accent-only, and the adherence lint's suggested
+ * --ino-elevation-* is the wrong answer here, since elevation flattens to
+ * `none` in high-contrast — precisely the theme where an invalid affordance
+ * must survive. Nothing existing changed. See §12 for the channel argument and
+ * the ring-stacking arithmetic; check-theme-parity.mjs asserts the shape, the
+ * never-flatten rule and the SC 1.4.11 contrast budget in all three themes.
+ *
  * This file is the single source of truth for color, type, space, radius,
  * elevation, and motion. Angular consumes it as-is: drop it into
  * src/styles/tokens.css and import once in angular.json's global styles
@@ -619,7 +630,9 @@
   --ino-control-gap: var(--ino-control-gap-default);
 
   /* ---------------------------------------------------------------------
-   * 12. FOCUS RING (INO-123, Wave 0). One token pair, consumed as:
+   * 12. STATE RINGS — focus (INO-123) and invalid (INO-257), Wave 0.
+   *
+   *    FOCUS RING. One token pair, consumed as:
    *
    *      &:focus-visible {
    *        outline: var(--ino-focus-ring);
@@ -644,11 +657,53 @@
    *    `outline` is used rather than `box-shadow` on purpose: it follows
    *    border-radius in every current browser, is not clipped by
    *    `overflow: hidden` ancestors, and survives forced-colors mode.
+   *
+   *    INVALID RING (INO-257, W0-7). Same idea — one themeable token instead
+   *    of a ring copy-pasted per component — but deliberately on the OTHER
+   *    channel. Consumed as:
+   *
+   *      &[aria-invalid='true'] {
+   *        box-shadow: var(--ino-invalid-ring);
+   *      }
+   *
+   *    and, on a component that already carries elevation, composed:
+   *    `box-shadow: var(--ino-invalid-ring), var(--ino-elevation-1);`.
+   *
+   *    Why box-shadow and not `outline`: the focus ring above already owns
+   *    `outline`, and a control that is simultaneously focused and invalid has
+   *    to show BOTH affordances — an invalid field is the single most likely
+   *    thing in a form to also hold focus. Two state rings cannot share one
+   *    channel, so the invalid ring takes the only other one that still
+   *    follows border-radius.
+   *
+   *    Why NOT an elevation token, which is what the adherence lint suggests
+   *    for a hardcoded box-shadow: elevation resolves to `none` in
+   *    high-contrast (§2c, and all 11 scale steps with it), which is exactly
+   *    the theme where an invalid affordance must stay visible. This token is
+   *    therefore the one box-shadow in the system that high-contrast KEEPS and
+   *    widens rather than flattens, and check-theme-parity.mjs asserts that.
+   *
+   *    The geometry is spread-only (`0 0 0 Npx`) so the ring hugs the border
+   *    box and lands INSIDE the gap the focus ring's 2px outline-offset leaves:
+   *    border box -> 2px danger ring -> focus outline starting at offset 2px,
+   *    adjacent, neither hiding the other. In high-contrast both go to 3px, so
+   *    the outline overpaints the ring's outer 1px and 2px of danger survives —
+   *    still the dark/light baseline weight.
+   *
+   *    The colour reads --ino-color-danger, not --ino-color-danger-text-safe:
+   *    a ring is a non-text state indicator under WCAG 2.2 SC 1.4.11 (3:1),
+   *    not text under 1.4.3 (4.5:1). The text-safe split exists for the
+   *    invalid LABEL (§4b) and is the wrong, heavier pick for chrome.
+   *    check-theme-parity.mjs measures danger against all three surface roles
+   *    in all three themes at 3:1 so this stays true rather than assumed.
    * ------------------------------------------------------------------- */
   --ino-focus-ring: 2px solid var(--ino-color-accent);
   --ino-focus-ring-offset: 2px; /* the drift-winner: 2px was already the majority spelling, and it
                                    keeps the ring clear of a 1px component border instead of
                                    sitting on top of it */
+  --ino-invalid-ring: 0 0 0 2px var(--ino-color-danger); /* light mode inherits this unchanged: the
+                                                            weight is right on both surfaces and the
+                                                            colour re-themes through the role */
 }
 
 /* ---------------------------------------------------------------------
@@ -817,6 +872,16 @@
      likely to be tracking focus at low acuity or high magnification, and a 2px ring
      is the first thing to disappear at 200% zoom on a small viewport. */
   --ino-focus-ring: 3px solid var(--ino-color-accent);
+
+  /* Invalid ring (§12) — KEPT, and widened for the same reason the focus ring is.
+     Note what this block does NOT do: every elevation token above flattens to
+     `none` here, and this one deliberately does not follow them. Elevation is
+     decoration and can go; a state ring that vanished in the highest-contrast
+     theme would delete the invalid affordance for exactly the users who depend
+     on it most. The colour re-points at hc-coral for free through
+     --ino-color-danger. At 3px the 3px focus outline (offset 2px) overpaints the
+     ring's outer 1px, leaving 2px of coral — the dark/light baseline. */
+  --ino-invalid-ring: 0 0 0 3px var(--ino-color-danger);
 }
 
 /* Respect the OS preference the FIRST time a visitor arrives, before

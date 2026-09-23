@@ -311,9 +311,15 @@ function scanDeclarations(file, src, offset = 0, whole = src) {
     // black smear in light mode and is `none` in high-contrast. A hardcoded one cannot
     // follow that.
     // Token references are already blanked, so any digit left is a real hardcoded offset.
+    // Two remedies, and picking the wrong one is an accessibility bug rather than a style
+    // nit: elevation is decoration and flattens to `none` in high-contrast, so a STATE ring
+    // sent to --ino-elevation-* disappears in the one theme that needs it most. That is why
+    // --ino-invalid-ring exists (INO-257 / W0-7, tokens.css §12) and why it is named here —
+    // this message is the only place most authors will ever meet the distinction.
     if (SHADOW_PROPS.test(prop) && !COLOR_KEYWORDS.test(value.trim()) && /\d/.test(value)) {
       add('non-token-shadow', file, whole, at, where,
-        'hardcoded shadow — use var(--ino-elevation-1|-2); elevation is themed (none in high-contrast)');
+        'hardcoded shadow — for depth use var(--ino-elevation-*), which is themed (none in high-contrast); ' +
+        'for an invalid-state ring use var(--ino-invalid-ring), which high-contrast keeps and widens (tokens.css §12)');
     }
 
     // non-token-duration — motion durations are a 4-step scale tied to the easing set.
