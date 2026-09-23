@@ -1,0 +1,234 @@
+<!-- @dsCard group="Form" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ino-float-label — wrapper component (INO-141)</title>
+<!-- Canonical token file, linked rather than copied: this preview must repaint with the system,
+     and must never become a second place raw hex values live. -->
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-eyebrow-size);
+    letter-spacing: var(--ino-type-eyebrow-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 60ch; }
+
+  .theme-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); }
+  .theme-pane {
+    flex: 1 1 260px;
+    padding: var(--ino-space-5);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-xl);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+  }
+  .theme-pane > h3 {
+    margin: 0 0 var(--ino-space-4);
+    font-size: var(--ino-type-body-sm-size);
+    color: var(--ino-color-on-surface-muted);
+    font-weight: 600;
+  }
+
+  .row { display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--ino-space-5); }
+
+  /* Mirrors web/src/app/components/floatlabel/ino-floatlabel.component.scss — same token
+     bindings, so a divergence between this preview and the shipped component is a visible diff.
+     The shipped component composes <ino-label> + a Renderer2-driven host class; this static
+     preview reproduces the same host-class contract with plain JS since there is no Angular
+     runtime here. */
+  .ino-float-label {
+    position: relative;
+    display: block;
+    inline-size: 11rem;
+    --ino-float-label-height: var(--ino-control-height-default);
+    --ino-float-label-padding-inline: var(--ino-control-padding-inline-default);
+    --ino-float-label-on-bg: var(--ino-color-surface);
+  }
+  .ino-float-label__control {
+    inline-size: 100%;
+    min-block-size: var(--ino-float-label-height);
+    padding-inline: var(--ino-float-label-padding-inline);
+    background: var(--ino-color-surface-sunken);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-md);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-control-font-size, var(--ino-type-body-size));
+    transition: border-color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+  }
+  .ino-float-label__control:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+    border-color: var(--ino-color-accent);
+  }
+  .ino-float-label[data-variant="in"] .ino-float-label__control,
+  .ino-float-label[data-variant="on"] .ino-float-label__control {
+    padding-block-start: var(--ino-space-5);
+    min-block-size: calc(var(--ino-float-label-height) + var(--ino-space-3));
+  }
+  .ino-float-label__label {
+    position: absolute;
+    inset-inline-start: var(--ino-float-label-padding-inline);
+    top: 50%;
+    transform: translateY(-50%);
+    max-inline-size: calc(100% - (var(--ino-float-label-padding-inline) * 2));
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    pointer-events: none;
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+    font-weight: var(--ino-type-body-weight);
+    color: var(--ino-color-label);
+    transition: top var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+      font-size var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+  }
+  .ino-float-label.ino-float-label--floated .ino-float-label__label {
+    font-size: var(--ino-type-label-sm-size);
+    line-height: var(--ino-type-label-sm-line);
+    font-weight: var(--ino-type-label-sm-weight);
+    letter-spacing: var(--ino-type-label-sm-tracking);
+  }
+  .ino-float-label[data-variant="over"].ino-float-label--floated .ino-float-label__label {
+    top: calc(-1 * var(--ino-space-2));
+    transform: translateY(-100%);
+  }
+  .ino-float-label[data-variant="in"] .ino-float-label__label,
+  .ino-float-label[data-variant="on"] .ino-float-label__label {
+    top: calc(50% + var(--ino-space-2));
+  }
+  .ino-float-label[data-variant="in"].ino-float-label--floated .ino-float-label__label,
+  .ino-float-label[data-variant="on"].ino-float-label--floated .ino-float-label__label {
+    top: var(--ino-space-2);
+    transform: translateY(0);
+  }
+  .ino-float-label[data-variant="on"].ino-float-label--floated .ino-float-label__label {
+    background: var(--ino-float-label-on-bg);
+    padding-inline: var(--ino-space-1);
+    border-radius: var(--ino-radius-md);
+  }
+  .ino-float-label.ino-float-label--disabled .ino-float-label__label { opacity: 0.5; }
+  .ino-float-label.ino-float-label--disabled .ino-float-label__control { opacity: 0.5; cursor: not-allowed; }
+</style>
+</head>
+<body>
+
+<h1>FloatLabel — label-placement wrapper</h1>
+<p class="lede">
+  Makes label placement a wrapper concern instead of a per-control prop (INO-141). Three variants
+  ported from the PrimeNG benchmark: <code>over</code>, <code>in</code>, <code>on</code>.
+  "Floated" is derived from focus/value, the same as the shipped component (see
+  <code>SPEC.md</code> §1 for why this is JS-driven rather than a CSS-only
+  <code>:focus</code>/<code>:not(:placeholder-shown)</code> trick).
+</p>
+
+<h2>Variants × theme</h2>
+<div class="theme-row">
+
+  <div class="theme-pane">
+    <h3>dark — :root (default)</h3>
+    <div class="row">
+      <div class="ino-float-label" data-variant="over">
+        <input class="ino-float-label__control" id="fl-dark-over" type="text">
+        <label class="ino-float-label__label" for="fl-dark-over">Username</label>
+      </div>
+      <div class="ino-float-label" data-variant="in">
+        <input class="ino-float-label__control" id="fl-dark-in" type="text">
+        <label class="ino-float-label__label" for="fl-dark-in">Username</label>
+      </div>
+      <div class="ino-float-label" data-variant="on">
+        <input class="ino-float-label__control" id="fl-dark-on" type="text">
+        <label class="ino-float-label__label" for="fl-dark-on">Username</label>
+      </div>
+      <div class="ino-float-label ino-float-label--floated" data-variant="over">
+        <input class="ino-float-label__control" id="fl-dark-filled" type="text" value="paresh">
+        <label class="ino-float-label__label" for="fl-dark-filled">Pre-filled</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="light">
+    <h3>light — [data-theme="light"]</h3>
+    <div class="row">
+      <div class="ino-float-label" data-variant="over">
+        <input class="ino-float-label__control" id="fl-light-over" type="text">
+        <label class="ino-float-label__label" for="fl-light-over">Username</label>
+      </div>
+      <div class="ino-float-label" data-variant="in">
+        <input class="ino-float-label__control" id="fl-light-in" type="text">
+        <label class="ino-float-label__label" for="fl-light-in">Username</label>
+      </div>
+      <div class="ino-float-label" data-variant="on">
+        <input class="ino-float-label__control" id="fl-light-on" type="text">
+        <label class="ino-float-label__label" for="fl-light-on">Username</label>
+      </div>
+      <div class="ino-float-label ino-float-label--disabled" data-variant="over">
+        <input class="ino-float-label__control" id="fl-light-disabled" type="text" disabled>
+        <label class="ino-float-label__label" for="fl-light-disabled">Disabled</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="high-contrast">
+    <h3>high-contrast — [data-theme="high-contrast"]</h3>
+    <div class="row">
+      <div class="ino-float-label" data-variant="over">
+        <input class="ino-float-label__control" id="fl-hc-over" type="text">
+        <label class="ino-float-label__label" for="fl-hc-over">Username</label>
+      </div>
+      <div class="ino-float-label" data-variant="in">
+        <input class="ino-float-label__control" id="fl-hc-in" type="text">
+        <label class="ino-float-label__label" for="fl-hc-in">Username</label>
+      </div>
+      <div class="ino-float-label" data-variant="on">
+        <input class="ino-float-label__control" id="fl-hc-on" type="text">
+        <label class="ino-float-label__label" for="fl-hc-on">Username</label>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<h2>RTL check</h2>
+<div class="theme-pane" dir="rtl" style="max-width: 32rem;">
+  <h3>dark — dir="rtl"</h3>
+  <div class="row">
+    <div class="ino-float-label" data-variant="over">
+      <input class="ino-float-label__control" id="fl-rtl-over" type="text">
+      <label class="ino-float-label__label" for="fl-rtl-over">اسم المستخدم</label>
+    </div>
+    <div class="ino-float-label" data-variant="on">
+      <input class="ino-float-label__control" id="fl-rtl-on" type="text">
+      <label class="ino-float-label__label" for="fl-rtl-on">اسم المستخدم</label>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Mirrors ino-floatlabel.component.ts's ngAfterContentInit logic: floated = focused || has value.
+  document.querySelectorAll('.ino-float-label__control').forEach((control) => {
+    const wrap = control.closest('.ino-float-label');
+    const update = () => wrap.classList.toggle('ino-float-label--floated', document.activeElement === control || control.value.length > 0);
+    control.addEventListener('focus', update);
+    control.addEventListener('blur', update);
+    control.addEventListener('input', update);
+  });
+</script>
+
+</body>
+</html>
