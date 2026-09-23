@@ -19,7 +19,7 @@ import { CommonModule } from '@angular/common';
 import { InoControlSize } from '../control-size';
 import { InoButtonComponent } from '../button/ino-button.component';
 import { InoFocusTrapDirective } from '../focus-trap/ino-focus-trap.directive';
-import { InoOverlayPosition, computeOverlayPlacement } from './overlay-position';
+import { InoOverlayPosition, computeOverlayPlacement } from '../overlay/overlay-position';
 
 let popoverIdCounter = 0;
 
@@ -29,8 +29,8 @@ let popoverIdCounter = 0;
  * INO-150. Parity benchmark: PrimeNG 22.1.1 `Popover` (`specs/primeng/llms-22.1.1.txt` line 96,
  * route `https://primeng.dev/popover`) — a benchmark only, nothing here imports it.
  *
- * Shares its placement primitive with `<ino-confirm-popup>` (forked, not imported — see
- * `./overlay-position.ts`'s doc comment for why) and its focus-containment primitive with
+ * Shares its placement primitive (`../overlay/overlay-position.ts`, INO-271) with
+ * `<ino-confirm-popup>` and `[inoTooltip]`, and its focus-containment primitive with
  * `<ino-modal>` / Drawer / ConfirmDialog (`[inoFocusTrap]`, whose own doc comment names Popover as
  * one of its four intended consumers).
  *
@@ -93,6 +93,13 @@ export class InoPopoverComponent implements OnChanges, OnDestroy {
   private readonly cdr = inject(ChangeDetectorRef);
   private anchorEl: HTMLElement | null = null;
   private outsideClickBound = false;
+  /**
+   * Tracks the actual open/closed state, independent of the `open` @Input — Angular writes the
+   * new input value before `ngOnChanges` runs, so comparing against `this.open` there would always
+   * look like a no-op. See `../overlay/SPEC.md` §2 for the full event-contract rule this exists to
+   * implement (fire `shown`/`hidden` exactly once per real transition, regardless of the path).
+   */
+  private isOpenState = false;
 
   private readonly onWindowChange = (): void => this.reposition();
   private readonly onDocumentPointerDown = (event: PointerEvent): void => {
@@ -111,11 +118,7 @@ export class InoPopoverComponent implements OnChanges, OnDestroy {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['open']) {
-      if (this.open) {
-        this.activate();
-      } else {
-        this.deactivate();
-      }
+      this.setOpen(this.open);
     }
   }
 
@@ -130,15 +133,11 @@ export class InoPopoverComponent implements OnChanges, OnDestroy {
    * that received the click (e.g. a row action inside a table cell).
    */
   show(event?: Event, anchor?: HTMLElement): void {
-    if (this.open) {
+    if (this.isOpenState) {
       return;
     }
     this.anchorEl = anchor ?? (event?.currentTarget as HTMLElement | null) ?? this.resolveTarget();
-    this.open = true;
-    this.openChange.emit(true);
-    this.shown.emit();
-    this.activate();
-    this.cdr.markForCheck();
+    this.setOpen(true);
   }
 
   hide(): void {
@@ -146,7 +145,7 @@ export class InoPopoverComponent implements OnChanges, OnDestroy {
   }
 
   toggle(event?: Event, anchor?: HTMLElement): void {
-    if (this.open) {
+    if (this.isOpenState) {
       this.close();
       return;
     }
@@ -161,13 +160,28 @@ export class InoPopoverComponent implements OnChanges, OnDestroy {
   }
 
   private close(): void {
-    if (!this.open) {
+    this.setOpen(false);
+  }
+
+  /**
+   * The single choke point every path that can change `open` funnels through — imperative
+   * `show()`/`close()`, and the `[(open)]`-bound input path via `ngOnChanges`. See
+   * `../overlay/SPEC.md` §2.
+   */
+  private setOpen(next: boolean): void {
+    this.open = next;
+    if (this.isOpenState === next) {
       return;
     }
-    this.open = false;
-    this.openChange.emit(false);
-    this.hidden.emit();
-    this.deactivate();
+    this.isOpenState = next;
+    this.openChange.emit(next);
+    if (next) {
+      this.shown.emit();
+      this.activate();
+    } else {
+      this.hidden.emit();
+      this.deactivate();
+    }
     this.cdr.markForCheck();
   }
 

@@ -7,9 +7,10 @@ dependency** — nothing in this directory imports it.
 
 Two files, one contract: `[inoTooltip]` (`ino-tooltip.directive.ts`) is the public API a caller
 attaches to any element; `<ino-tooltip>` (`ino-tooltip.component.ts`) is the floating panel it
-creates and drives, never placed directly by a caller. `overlay-position.ts`'s
-`computeOverlayPlacement` is imported as-is from `<ino-confirm-popup>` — the exact second consumer
-that file's own doc comment anticipated, needing no change to the signature.
+creates and drives, never placed directly by a caller. `computeOverlayPlacement` is imported as-is
+from the shared `overlay/overlay-position.ts` (INO-271; see `overlay/SPEC.md`) — this component's
+placement contract, event-emission rule, and `InoOverlayPosition` type are one and the same across
+`<ino-tooltip>`, `<ino-popover>`, and `<ino-confirm-popup>`.
 
 ---
 

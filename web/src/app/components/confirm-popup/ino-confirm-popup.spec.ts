@@ -82,3 +82,46 @@ describe('InoConfirmPopupComponent', () => {
     expect(panel(fixture)).toBeNull();
   });
 });
+
+/**
+ * INO-271 event-contract regression: `shown`/`hidden` (new outputs added by that issue) must fire
+ * on every real open/closed transition, including the input-driven path that never went through
+ * `toggle()`/`requestCancel()` — see `../overlay/SPEC.md` §2.
+ *
+ * Drives `open` via `fixture.componentRef.setInput()` directly, not a host template `[open]="flag"`
+ * binding — see the same note in `popover/ino-popover.spec.ts` for why a plain host-field mutation
+ * doesn't reliably propagate to an OnPush child in this zoneless app.
+ */
+describe('InoConfirmPopupComponent ([open] input-driven, no toggle() call)', () => {
+  let fixture: ComponentFixture<InoConfirmPopupComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({ imports: [InoConfirmPopupComponent] }).compileComponents();
+    fixture = TestBed.createComponent(InoConfirmPopupComponent);
+    fixture.componentRef.setInput('heading', 'H');
+    fixture.componentRef.setInput('message', 'M');
+    document.body.appendChild(fixture.nativeElement);
+    fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    fixture.destroy();
+  });
+
+  it('emits shown when [open] flips true and hidden when it flips back false', () => {
+    let shownCount = 0;
+    let hiddenCount = 0;
+    fixture.componentInstance.shown.subscribe(() => shownCount++);
+    fixture.componentInstance.hidden.subscribe(() => hiddenCount++);
+
+    fixture.componentRef.setInput('open', true);
+    fixture.detectChanges();
+    expect(shownCount).toBe(1);
+    expect(hiddenCount).toBe(0);
+
+    fixture.componentRef.setInput('open', false);
+    fixture.detectChanges();
+    expect(shownCount).toBe(1);
+    expect(hiddenCount).toBe(1);
+  });
+});

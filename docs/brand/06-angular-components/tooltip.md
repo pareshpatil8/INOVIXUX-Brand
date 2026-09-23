@@ -9,8 +9,8 @@
 Advisory hint anchored to a trigger element on hover or focus (INO-31 T-22 / INO-149). Directive
 API, not a placed component — attach `[inoTooltip]` to whatever element needs the hint, and it
 creates and manages the floating panel (`<ino-tooltip>`, never placed directly by a caller) for
-you. Reuses `computeOverlayPlacement` from `<ino-confirm-popup>`'s `overlay-position.ts` — the
-reusable core that component's SPEC anticipated a second consumer for.
+you. Reuses `computeOverlayPlacement` from the shared `overlay-position.ts` (`../overlay/`,
+INO-271), the same placement core `<ino-confirm-popup>` and `<ino-popover>` use.
 
 ```html
 <button inoTooltip="Delete this item" inoTooltipPosition="top">Delete</button>
