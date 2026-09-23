@@ -1,3 +1,25 @@
+## Component docs site (H-6 / INO-116)
+
+`index.html` in this directory is the hosted component docs site: it fetches `_ds_manifest.json`
+and renders every `previews/*.html` card, grouped by its `<!-- @dsCard group="…" -->` marker
+(plan revision 9, doc 17 §2 row 10 / §8), with a link to the matching `<name>.md` contract doc.
+Regenerate the manifest after adding or renaming a preview:
+
+```sh
+npm run docs:manifest
+```
+
+Serve this directory (or its `docs/brand/` parent) over HTTP to view it — `index.html` fetches
+`_ds_manifest.json` as a sibling file, which browsers block under `file://`. From `docs/brand/`:
+
+```sh
+python3 -m http.server 8000
+# open http://localhost:8000/06-angular-components/index.html
+```
+
+The same preview files this site renders are the exact artifact the Claude Design import (doc 17
+§8) and the motion specimen (INO-117) consume — this is not a separate build.
+
 # INO-31 — Phase 3: Angular Component Implementation (Workstream B)
 
 **Status:** Component source complete for all 6 contracts + the count-up directive. Not built,
