@@ -68,10 +68,10 @@
     outline-offset: var(--ino-focus-ring-offset);
   }
   .ino-toggle__control:disabled { cursor: not-allowed; opacity: 0.5; }
-  .ino-toggle__control--invalid .ino-toggle__track {
-    outline: 2px solid var(--ino-color-danger);
-    outline-offset: var(--ino-focus-ring-offset);
-  }
+  /* State 7 — the shared invalid ring (tokens.css §12), the same one ino-checkbox/ino-radio paint.
+     On the box-shadow channel, so it stacks with the focus outline above rather than yielding to
+     it: tab onto an invalid toggle and both rings show (INO-269). */
+  .ino-toggle__control--invalid .ino-toggle__track { box-shadow: var(--ino-invalid-ring); }
   .ino-toggle__control--readonly { cursor: default; }
   .ino-toggle__control--readonly .ino-toggle__track:hover { filter: none; }
 
@@ -84,7 +84,8 @@
     background: var(--ino-color-surface-sunken);
     border: 1px solid var(--ino-color-border);
     transition: background var(--ino-motion-duration-base) var(--ino-motion-easing-standard),
-      filter var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+      filter var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+      box-shadow var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
   }
   .ino-toggle__track--sm { width: calc(var(--ino-control-icon-size-sm) * 2 + 4px); height: calc(var(--ino-control-icon-size-sm) + 4px); }
   .ino-toggle__track--lg { width: calc(var(--ino-control-icon-size-lg) * 2 + 4px); height: calc(var(--ino-control-icon-size-lg) + 4px); }
