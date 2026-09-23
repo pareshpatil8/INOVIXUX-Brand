@@ -1,0 +1,56 @@
+{
+  "$comment": [
+    "Decided by INO-173: the sub-scale values below (1px/2px/6px/10px/48px spacing, 2px",
+    "radius) are optical/local geometry — hairline border pulls, icon-button outdents,",
+    "micro gaps between an icon and its label, grid-hairline tricks, badge/pill padding,",
+    "and one-off component chrome — not steps on the shared spacing/radius rhythm.",
+    "",
+    "Same call the lint already makes for `top`/`left` (see check-ds-adherence.mjs's",
+    "SPACE_PROPS comment) and the same call tokens.css itself makes at --ino-control-gap-default",
+    "('6px would be a new primitive for a 2px win'): a value used by exactly one component's",
+    "local geometry — even if a sibling screen happens to reuse the same number — does not",
+    "clear the bar for a new scale step the way a role consumed system-wide does (doc 16 §4.3).",
+    "No new --ino-space-*/--ino-radius-* primitive was added; tokens.css stays frozen post-Wave 0.",
+    "",
+    "This is NOT a ratchet like ds-adherence-waivers.json: it is not pending cleanup and has",
+    "no 'the issue that will delete it'. An entry here is a standing design decision. Removing",
+    "one means the value has genuinely become a rhythm value (reused as a role elsewhere) and",
+    "should move to tokens.css via a Wave 0 amendment instead.",
+    "",
+    "Unused entries still fail the build, same as waivers — if a component is later restyled",
+    "onto the scale, delete its entry rather than leaving a dead allowance."
+  ],
+  "exemptions": [
+    { "rule": "off-scale-spacing", "file": "docs/brand/06-angular-components/src/components/alert/ino-alert.component.scss", "match": "margin: -1px", "reason": "negative offset pulling the alert border under its container edge, optical hairline like top/left", "issue": "INO-173" },
+    { "rule": "off-scale-spacing", "file": "web/src/app/components/alert/ino-alert.component.scss", "match": "margin: -1px", "reason": "negative offset pulling the alert border under its container edge, optical hairline like top/left", "issue": "INO-173" },
+    { "rule": "off-scale-spacing", "file": "web/src/app/components/tag/ino-tag.component.scss", "match": "margin: -1px", "reason": "negative offset pulling the tag border under its container edge, optical hairline like top/left", "issue": "INO-173" },
+    { "rule": "off-scale-spacing", "file": "web/src/app/components/progress-spinner/ino-progress-spinner.component.scss", "match": "margin: -1px", "reason": "negative offset pulling the spinner ring under its container edge, optical hairline like top/left", "issue": "INO-173" },
+    { "rule": "off-scale-spacing", "file": "web/src/styles/page-sections.scss", "match": "gap: 1px", "reason": "CSS grid hairline-rule trick: 1px gap + background-color paints a 1px divider between cells, geometry not rhythm", "issue": "INO-173" },
+    { "rule": "off-scale-spacing", "file": "web/src/app/pages/not-found/not-found.component.scss", "match": "padding: 1px 6px", "reason": "inline code/badge pill padding sized to the glyph, not page-layout rhythm", "issue": "INO-173" },
+    { "rule": "off-scale-spacing", "file": "web/src/styles/page-sections.scss", "match": "padding: 1px 6px", "reason": "inline code/badge pill padding sized to the glyph, not page-layout rhythm", "issue": "INO-173" },
+    { "rule": "off-scale-spacing", "file": "mobile/flutter/lib/notifications/notification_widgets.dart", "match": "EdgeInsets.symmetric(horizontal: 4, vertical: 1)", "reason": "1px vertical inset on a compact notification chip; horizontal 4 is already --ino-space-1", "issue": "INO-173" },
+
+    { "rule": "off-scale-spacing", "file": "mobile/capacitor/app/src/app/shell/tab-bar/ino-tab-bar.component.scss", "match": "gap: 2px", "reason": "micro gap between a tab's icon and label, optical not rhythm", "issue": "INO-173" },
+    { "rule": "off-scale-spacing", "file": "mobile/react-native/src/screens/DetailScreen.tsx", "match": "gap: 2", "reason": "micro gap between an icon and its label, optical not rhythm", "issue": "INO-173" },
+    { "rule": "off-scale-spacing", "file": "mobile/react-native/src/screens/HomeScreen.tsx", "match": "gap: 2", "reason": "micro gap between an icon and its label, optical not rhythm", "issue": "INO-173" },
+    { "rule": "off-scale-spacing", "file": "mobile/react-native/src/screens/SearchScreen.tsx", "match": "gap: 2", "reason": "micro gap between an icon and its label, optical not rhythm", "issue": "INO-173" },
+    { "rule": "off-scale-spacing", "file": "web/src/styles/page-sections.scss", "match": "gap: 2px", "reason": "micro gap between an icon and its label, optical not rhythm", "issue": "INO-173" },
+    { "rule": "off-scale-spacing", "file": "web/src/styles/page-sections.scss", "match": "padding: 2px 8px", "reason": "eyebrow/badge pill padding sized to the glyph, not page-layout rhythm", "issue": "INO-173" },
+    { "rule": "non-token-radius", "file": "mobile/flutter/lib/widgets/confirm_action_sheet.dart", "match": "BorderRadius.circular(2", "reason": "2px toggle-knob radius sized to the knob glyph, optical not a token-scale rhythm choice", "issue": "INO-173" },
+    { "rule": "non-token-radius", "file": "mobile/react-native/src/components/ConfirmActionSheet.tsx", "match": "borderRadius: 2", "reason": "2px toggle-knob radius sized to the knob glyph, optical not a token-scale rhythm choice", "issue": "INO-173" },
+
+    { "rule": "off-scale-spacing", "file": "mobile/capacitor/app/src/app/shell/tab-bar/ino-tab-bar.component.scss", "match": "padding-top: 6px", "reason": "tab-bar chrome padding tuned for the bar's own touch geometry, same 'not worth a new primitive' call already made at tokens.css --ino-control-gap-default", "issue": "INO-173" },
+    { "rule": "off-scale-spacing", "file": "mobile/capacitor/app/src/app/shell/tab-bar/ino-tab-bar.component.scss", "match": "padding-bottom: calc(6px + var(--ino-safe-area-bottom, 0px))", "reason": "tab-bar chrome padding tuned for the bar's own touch geometry, same 'not worth a new primitive' call already made at tokens.css --ino-control-gap-default", "issue": "INO-173" },
+    { "rule": "off-scale-spacing", "file": "mobile/capacitor/app/src/app/shell/tab-bar/ino-tab-bar.component.scss", "match": "padding: 4px 10px", "reason": "per-tab hit-target padding tuned for the bar's own touch geometry, not page rhythm", "issue": "INO-173" },
+
+    { "rule": "off-scale-spacing", "file": "mobile/capacitor/app/src/app/pages/detail/detail.component.scss", "match": "margin-left: -10px", "reason": "icon-button optical outdent so the icon's visual (not box) edge aligns with surrounding text", "issue": "INO-173" },
+    { "rule": "off-scale-spacing", "file": "mobile/capacitor/app/src/app/pages/detail/detail.component.scss", "match": "gap: 10px 16px", "reason": "definition-list row gap tuned for this screen's own field density, local not a shared rhythm value", "issue": "INO-173" },
+    { "rule": "off-scale-spacing", "file": "mobile/capacitor/app/src/app/pages/home/home.component.scss", "match": "margin-right: -10px", "reason": "icon-button optical outdent so the icon's visual (not box) edge aligns with surrounding text", "issue": "INO-173" },
+    { "rule": "off-scale-spacing", "file": "mobile/capacitor/app/src/app/pages/home/home.component.scss", "match": "gap: 10px", "reason": "list-row gap tuned for this screen's own field density, local not a shared rhythm value", "issue": "INO-173" },
+    { "rule": "off-scale-spacing", "file": "mobile/capacitor/app/src/app/pages/search/search.component.scss", "match": "margin-left: -10px", "reason": "icon-button optical outdent so the icon's visual (not box) edge aligns with surrounding text", "issue": "INO-173" },
+    { "rule": "off-scale-spacing", "file": "mobile/capacitor/app/src/app/pages/search/search.component.scss", "match": "gap: 10px", "reason": "list-row gap tuned for this screen's own field density, local not a shared rhythm value", "issue": "INO-173" },
+    { "rule": "off-scale-spacing", "file": "mobile/capacitor/app/src/app/pages/forgot-password/forgot-password.component.scss", "match": "margin: -10px 0 8px -10px", "reason": "form-field optical outdent so its visual edge aligns with the label above it; the 8px in the middle is already on-scale", "issue": "INO-173" },
+
+    { "rule": "off-scale-spacing", "file": "mobile/capacitor/app/src/app/components/empty-state/ino-empty-state.component.scss", "match": "padding: 48px 24px", "reason": "empty-state breathing room tuned for this one illustration+copy layout, local not a shared rhythm value; 24px is already on-scale", "issue": "INO-173" }
+  ]
+}

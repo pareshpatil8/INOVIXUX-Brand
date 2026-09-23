@@ -108,10 +108,14 @@ const SPACE_SCALE = scaleOf(['--ino-space-', '--ino-target-', '--ino-row-min-hei
 const RADIUS_SCALE = scaleOf(['--ino-radius-']);
 const TYPE_SCALE = scaleOf(['--ino-type-']);
 
-// Durations, in milliseconds, keyed the same way.
+// Durations, in milliseconds, keyed the same way. Two families share this legal-values map:
+// --ino-motion-duration-* (the 4-step, easing-tied animation scale) and --ino-dwell-duration-*
+// (read-time for transient self-dismissing surfaces, an order of magnitude above motion's
+// 900ms ceiling — deliberately not a 5th motion step, see tokens.css §9b / INO-174).
+const DURATION_PREFIXES = ['--ino-motion-duration', '--ino-dwell-duration'];
 const DURATION_SCALE = new Map();
 for (const [name, value] of tokenDecls) {
-  if (!name.startsWith('--ino-motion-duration')) continue;
+  if (!DURATION_PREFIXES.some(p => name.startsWith(p))) continue;
   const t = value.match(/^(\d*\.?\d+)(ms|s)$/);
   if (!t) continue;
   const ms = parseFloat(t[1]) * (t[2] === 's' ? 1000 : 1);
@@ -471,20 +475,40 @@ for (const w of waivers) {
   else waiverIndex.set(key(w), { ...w, used: 0 });
 }
 
+// Optical exemptions — INO-173's standing decision that sub-scale spacing/radius values
+// used for hairlines, outdents and glyph-sized chrome are geometry, not a gap in the
+// rhythm scale (see the file's own $comment for the reasoning). Same (rule, file, match)
+// keying and same "unused entry fails the build" discipline as waivers, but this is not a
+// ratchet: there is no cleanup issue that empties it, because these are not pending fixes.
+const exemptionPath = join(root, 'scripts/ds-adherence-optical-exemptions.json');
+const exemptions = existsSync(exemptionPath) ? JSON.parse(readFileSync(exemptionPath, 'utf8')).exemptions ?? [] : [];
+const exemptionIndex = new Map();
+const malformedExemptions = [];
+for (const e of exemptions) {
+  if (!e.rule || !e.file || !e.match || !e.reason || !e.issue) malformedExemptions.push(e);
+  else exemptionIndex.set(key(e), { ...e, used: 0 });
+}
+
 const unwaived = [];
 for (const v of violations) {
-  const hit = waiverIndex.get(key(v));
-  if (hit) hit.used++;
-  else unwaived.push(v);
+  const waived = waiverIndex.get(key(v));
+  if (waived) { waived.used++; continue; }
+  const exempt = exemptionIndex.get(key(v));
+  if (exempt) { exempt.used++; continue; }
+  unwaived.push(v);
 }
 const stale = [...waiverIndex.values()].filter(w => !w.used);
+const staleExemptions = [...exemptionIndex.values()].filter(e => !e.used);
 
 /* ------------------------------------------------------------------ *
  * 7. Report.
  * ------------------------------------------------------------------ */
 
+const allMalformed = [...malformed, ...malformedExemptions];
+const allStale = [...stale, ...staleExemptions];
+
 if (asJson) {
-  console.log(JSON.stringify({ filesLinted, violations: unwaived, waived: violations.length - unwaived.length, stale, malformed }, null, 2));
+  console.log(JSON.stringify({ filesLinted, violations: unwaived, waived: violations.length - unwaived.length, stale, staleExemptions, malformed: allMalformed }, null, 2));
 } else {
   const byRule = new Map();
   for (const v of unwaived) (byRule.get(v.rule) ?? byRule.set(v.rule, []).get(v.rule)).push(v);
@@ -495,12 +519,13 @@ if (asJson) {
       console.log(`    → ${v.message}`);
     }
   }
-  for (const w of malformed) console.log(`\nmalformed waiver (needs rule/file/match/reason/issue): ${JSON.stringify(w)}`);
+  for (const w of allMalformed) console.log(`\nmalformed waiver/exemption (needs rule/file/match/reason/issue): ${JSON.stringify(w)}`);
   for (const w of stale) console.log(`\nstale waiver — the violation is gone, delete the entry: ${w.rule} ${w.file} "${w.match}" (${w.issue})`);
+  for (const e of staleExemptions) console.log(`\nstale exemption — the violation is gone, delete the entry: ${e.rule} ${e.file} "${e.match}" (${e.issue})`);
 
   const waived = violations.length - unwaived.length;
-  const summary = `${filesLinted} files linted · ${unwaived.length} violation${unwaived.length === 1 ? '' : 's'} · ${waived} waived · ${stale.length} stale waiver${stale.length === 1 ? '' : 's'}`;
-  console.log(unwaived.length || stale.length || malformed.length ? `\nFAIL: ${summary}` : `\nPASS: ${summary}`);
+  const summary = `${filesLinted} files linted · ${unwaived.length} violation${unwaived.length === 1 ? '' : 's'} · ${waived} waived/exempt · ${allStale.length} stale entr${allStale.length === 1 ? 'y' : 'ies'}`;
+  console.log(unwaived.length || allStale.length || allMalformed.length ? `\nFAIL: ${summary}` : `\nPASS: ${summary}`);
 }
 
-process.exit(unwaived.length || stale.length || malformed.length ? 1 : 0);
+process.exit(unwaived.length || allStale.length || allMalformed.length ? 1 : 0);
