@@ -505,6 +505,24 @@ const COMPONENT_REGISTRY = [
     ],
   },
   {
+    name: 'floatlabel',
+    web: 'web/src/app/components/floatlabel',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoFloatLabel.tsx',
+        roles: ['onSurfaceMuted', 'onSurfaceSubtle', 'dangerTextSafe', 'surface'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_float_label.dart',
+        roles: ['onSurfaceMuted', 'onSurfaceSubtle', 'dangerTextSafe', 'surface'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['onSurfaceMuted', 'onSurfaceSubtle', 'dangerTextSafe'], reason: 'web composes <ino-label> internally and re-points its --ino-type-label-* size/weight custom properties only — colour itself stays whichever role <ino-label>\'s OWN stylesheet already resolves (label/ino-label.component.scss: onSurface/onSurfaceMuted/onSurfaceSubtle/dangerTextSafe), so floatlabel/ino-floatlabel.component.scss never references those colour roles directly. The RN port has no separate label component to delegate to (it renders the label Text itself), so it reads the three non-default label colour roles inline. See SPEC.md §2.' },
+      { platform: 'flutter', roles: ['onSurfaceMuted', 'onSurfaceSubtle', 'dangerTextSafe'], reason: 'same as the React Native entry above — ino_float_label.dart renders its own label Text instead of delegating to InoLabel.' },
+    ],
+  },
+  {
     name: 'focus-trap',
     web: 'web/src/app/components/focus-trap',
     mobile: { reactNative: 'web-only', flutter: 'web-only' },
