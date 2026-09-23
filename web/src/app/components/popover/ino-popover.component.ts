@@ -19,69 +19,72 @@ import { CommonModule } from '@angular/common';
 import { InoControlSize } from '../control-size';
 import { InoButtonComponent } from '../button/ino-button.component';
 import { InoFocusTrapDirective } from '../focus-trap/ino-focus-trap.directive';
-import { InoConfirmSeverity } from '../confirm-dialog/ino-confirm-dialog.component';
 import { InoOverlayPosition, computeOverlayPlacement } from './overlay-position';
 
-let popupIdCounter = 0;
+let popoverIdCounter = 0;
 
 /**
- * `<ino-confirm-popup>` — inline confirm/cancel prompt anchored next to a trigger element, instead
- * of `<ino-confirm-dialog>`'s centered backdrop panel. Contract: INO-31 T-25 / INO-148. Parity
- * benchmark: PrimeNG 22.1.1 `ConfirmPopup` (`specs/primeng/llms-22.1.1.txt`) — a benchmark only,
- * nothing here imports it.
+ * `<ino-popover>` — anchored overlay for arbitrary projected content (menus, forms, previews),
+ * as opposed to `<ino-confirm-popup>`'s fixed confirm/cancel action pair. Contract: INO-31 T-23 /
+ * INO-150. Parity benchmark: PrimeNG 22.1.1 `Popover` (`specs/primeng/llms-22.1.1.txt` line 96,
+ * route `https://primeng.dev/popover`) — a benchmark only, nothing here imports it.
  *
- * Shares the confirm/cancel action contract and `InoConfirmSeverity` type with
- * `<ino-confirm-dialog>` (same buttons, same severity axis) but is a genuinely different surface,
- * not a themed variant of it: no scrim, no viewport-centered panel, and it positions itself
- * relative to an anchor element via `computeOverlayPlacement` (`./overlay-position.ts`) — the
- * reusable core this issue exists partly to establish for Tooltip (T-22) and Popover (T-23).
+ * Shares its placement primitive with `<ino-confirm-popup>` (forked, not imported — see
+ * `./overlay-position.ts`'s doc comment for why) and its focus-containment primitive with
+ * `<ino-modal>` / Drawer / ConfirmDialog (`[inoFocusTrap]`, whose own doc comment names Popover as
+ * one of its four intended consumers).
  *
- * Usage — either call `toggle()` from the trigger's own handler (PrimeNG-style, anchor inferred
+ * Usage — call `toggle()`/`show()` from the trigger's own handler (PrimeNG-style, anchor inferred
  * from the event) or drive `[(open)]` directly and pass `[target]` yourself:
  * ```html
- * <button #anchor type="button" (click)="popup.toggle($event)">Delete</button>
- * <ino-confirm-popup #popup message="Delete this item?" (confirmed)="onDelete()" />
+ * <button #anchor type="button" (click)="pop.toggle($event)">Filters</button>
+ * <ino-popover #pop heading="Filters">
+ *   <p>Arbitrary projected content goes here.</p>
+ * </ino-popover>
  * ```
  *
- * `role="alertdialog"` without `aria-modal` (DoD row 8 — see SPEC.md for the full justification):
- * the page behind the popup stays visible and mouse-operable, unlike `<ino-confirm-dialog>`'s
- * backdrop-blocked page, so `aria-modal="true"` would misdescribe it. `[inoFocusTrap]` still
- * confines *keyboard* focus while it is open — a non-modal surface can still choose to keep Tab
- * from wandering into now-partially-obscured content, and `restoreFocus` (the directive's default)
- * hands focus back to the anchor on close for free.
+ * `role="dialog"` without `aria-modal`: the page behind the panel stays visible and
+ * mouse-operable, so `aria-modal="true"` would misdescribe it, same reasoning as
+ * `<ino-confirm-popup>`'s `role="alertdialog"` choice (see that component's SPEC.md §4). `dialog`
+ * rather than `alertdialog` here because arbitrary projected content is not inherently an
+ * interruption demanding a response, unlike a confirm/cancel prompt. `[inoFocusTrap]` still
+ * confines *keyboard* focus while open, and hands focus back to the anchor on close for free via
+ * `restoreFocus` (the directive's default).
+ *
+ * An accessible name is required (DoD row 8): pass `heading` (renders a visible header and drives
+ * `aria-labelledby`) or `ariaLabel` (invisible name only, for content that already reads as
+ * self-describing without a header). Neither is enforced at compile time — see SPEC.md §4.
  */
 @Component({
-  selector: 'ino-confirm-popup',
+  selector: 'ino-popover',
   standalone: true,
   imports: [CommonModule, InoButtonComponent, InoFocusTrapDirective],
-  templateUrl: './ino-confirm-popup.component.html',
-  styleUrl: './ino-confirm-popup.component.scss',
+  templateUrl: './ino-popover.component.html',
+  styleUrl: './ino-popover.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[attr.data-size]': 'size',
   },
 })
-export class InoConfirmPopupComponent implements OnChanges, OnDestroy {
+export class InoPopoverComponent implements OnChanges, OnDestroy {
   @Input() open = false;
   @Input() target: HTMLElement | ElementRef<HTMLElement> | null = null;
   @Input() position: InoOverlayPosition = 'bottom';
-  @Input() heading = '';
-  @Input() message = '';
-  @Input() confirmLabel = 'Confirm';
-  @Input() cancelLabel = 'Cancel';
-  @Input() severity: InoConfirmSeverity = 'default';
   @Input() size: InoControlSize = 'default';
-  @Input({ transform: booleanAttribute }) loading = false;
+  @Input() heading = '';
+  @Input() ariaLabel = '';
+  @Input({ transform: booleanAttribute }) dismissable = true;
   @Input({ transform: booleanAttribute }) closeOnEscape = true;
+  @Input({ transform: booleanAttribute }) showCloseIcon = false;
+  @Input() closeLabel = 'Close';
 
-  @Output() confirmed = new EventEmitter<void>();
-  @Output() cancelled = new EventEmitter<void>();
   @Output() openChange = new EventEmitter<boolean>();
+  @Output() shown = new EventEmitter<void>();
+  @Output() hidden = new EventEmitter<void>();
 
   @ViewChild('panel') private panelRef?: ElementRef<HTMLElement>;
 
-  protected readonly headingId = `ino-confirm-popup-heading-${++popupIdCounter}`;
-  protected readonly messageId = `ino-confirm-popup-message-${popupIdCounter}`;
+  protected readonly headingId = `ino-popover-heading-${++popoverIdCounter}`;
   protected top = 0;
   protected left = 0;
   protected effectivePosition: InoOverlayPosition = this.position;
@@ -93,6 +96,9 @@ export class InoConfirmPopupComponent implements OnChanges, OnDestroy {
 
   private readonly onWindowChange = (): void => this.reposition();
   private readonly onDocumentPointerDown = (event: PointerEvent): void => {
+    if (!this.dismissable) {
+      return;
+    }
     const target = event.target as Node | null;
     if (!target) {
       return;
@@ -100,7 +106,7 @@ export class InoConfirmPopupComponent implements OnChanges, OnDestroy {
     if (this.panelRef?.nativeElement.contains(target) || this.anchorEl?.contains(target)) {
       return;
     }
-    this.requestCancel();
+    this.close();
   };
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -119,61 +125,70 @@ export class InoConfirmPopupComponent implements OnChanges, OnDestroy {
 
   /**
    * PrimeNG-style convenience entry point: pass the triggering event and the anchor is inferred
-   * from `event.currentTarget`, so a caller doesn't have to also wire up `[target]` and `[(open)]`
-   * separately for the common case. `anchor` is available for the rare case the visual anchor
-   * isn't the element that received the click (e.g. a row action inside a table cell).
+   * from `event.currentTarget`, so a caller doesn't have to also wire up `[target]` separately for
+   * the common case. `anchor` is available for the rare case the visual anchor isn't the element
+   * that received the click (e.g. a row action inside a table cell).
    */
-  toggle(event?: Event, anchor?: HTMLElement): void {
+  show(event?: Event, anchor?: HTMLElement): void {
     if (this.open) {
-      this.requestCancel();
       return;
     }
     this.anchorEl = anchor ?? (event?.currentTarget as HTMLElement | null) ?? this.resolveTarget();
     this.open = true;
     this.openChange.emit(true);
+    this.shown.emit();
     this.activate();
     this.cdr.markForCheck();
   }
 
-  onKeydown(event: KeyboardEvent): void {
-    if (event.key === 'Escape' && this.closeOnEscape && !this.loading) {
-      event.stopPropagation();
-      this.requestCancel();
-    }
+  hide(): void {
+    this.close();
   }
 
-  onConfirm(): void {
-    if (this.loading) {
+  toggle(event?: Event, anchor?: HTMLElement): void {
+    if (this.open) {
+      this.close();
       return;
     }
-    this.confirmed.emit();
+    this.show(event, anchor);
   }
 
-  requestCancel(): void {
-    if (!this.open || this.loading) {
+  onKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Escape' && this.closeOnEscape) {
+      event.stopPropagation();
+      this.close();
+    }
+  }
+
+  private close(): void {
+    if (!this.open) {
       return;
     }
     this.open = false;
     this.openChange.emit(false);
-    this.cancelled.emit();
+    this.hidden.emit();
     this.deactivate();
     this.cdr.markForCheck();
   }
 
   private activate(): void {
     this.anchorEl ??= this.resolveTarget();
-    // Popup content isn't laid out on this tick yet — same deferral <ino-modal> uses before
-    // measuring/focusing its panel. `setTimeout`, not `queueMicrotask`: zone drains microtasks
-    // before `ApplicationRef.tick()` runs, so a microtask fires before `#panel` exists in the DOM.
-    setTimeout(() => this.reposition());
+    // Zone drains microtasks before ApplicationRef.tick(), so a queueMicrotask callback here
+    // would run before the panel's *ngIf view is attached and `panelRef` would still be
+    // undefined. setTimeout runs after the tick, once `#panel` actually exists in the DOM —
+    // consistent with the setTimeout already used below for the pointerdown listener.
+    setTimeout(() => {
+      this.reposition();
+    });
 
     window.addEventListener('resize', this.onWindowChange);
     window.addEventListener('scroll', this.onWindowChange, true);
 
     if (!this.outsideClickBound && typeof document !== 'undefined') {
       // Registered outside Angular and on the next macrotask, not this one: the click that just
-      // opened the popup (e.g. from `toggle()`) is still bubbling to `document` on this same tick,
-      // and a listener added synchronously would see that click and close the popup immediately.
+      // opened the popover (e.g. from `toggle()`) is still bubbling to `document` on this same
+      // tick, and a listener added synchronously would see that click and close the popover
+      // immediately. Same guard as <ino-confirm-popup>.
       this.zone.runOutsideAngular(() => {
         setTimeout(() => {
           document.addEventListener('pointerdown', this.onDocumentPointerDown, true);

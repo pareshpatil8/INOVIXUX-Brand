@@ -276,6 +276,13 @@
     },
     {
       "rule": "off-scale-spacing",
+      "file": "web/src/app/components/input-otp/ino-input-otp.component.scss",
+      "match": "margin: -1px",
+      "reason": "sub-4px / 10px / 48px step the space scale does not define; pending the micro-step decision",
+      "issue": "INO-173"
+    },
+    {
+      "rule": "off-scale-spacing",
       "file": "web/src/app/pages/not-found/not-found.component.scss",
       "match": "padding: 1px 6px",
       "reason": "sub-4px / 10px / 48px step the space scale does not define; pending the micro-step decision",
@@ -357,13 +364,6 @@
       "match": "box-shadow: 0 30px 70px -35px rgba(124, 92, 252, 0.35), var(--ino-elevation-1)",
       "reason": "hand-rolled accent glow; needs a token so high-contrast can drop it",
       "issue": "INO-174"
-    },
-    {
-      "rule": "non-token-shadow",
-      "file": "web/src/app/components/radio-group/ino-radio.component.scss",
-      "match": "box-shadow: 0 0 0 2px var(--ino-color-danger)",
-      "reason": "State-7 invalid ring, not elevation — the rule's suggested --ino-elevation-* is wrong here because elevation drops to none in high-contrast, exactly where an invalid ring must stay visible. outline is unavailable: State 4 already uses var(--ino-focus-ring), and focused+invalid must show both. Needs a --ino-invalid-ring token; tokens.css is frozen after Wave 0, so INO-257 carries it.",
-      "issue": "INO-257"
     },
     {
       "rule": "non-token-duration",
