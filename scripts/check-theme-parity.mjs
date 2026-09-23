@@ -511,6 +511,24 @@ const COMPONENT_REGISTRY = [
     reason: 'web-only for now, by scoping decision, not a permanent exemption — same kind of scoping decision `<ino-select>` makes (pending INO-152 — not yet landed on this merge base as a registry entry to point to). INO-151 (INO-31 T-24) spent its full budget on the web core (4 edge positions, 3 sizes, modal/non-modal mode, full-screen-on-mobile breakpoint, [inoFocusTrap] integration) across all 3 web themes; React Native and Flutter ports (re-authored against the same semantic roles, per plan rev 9 §5\'s "real ports" rule) are filed as a follow-up child issue rather than shipped at lower fidelity here. mobile/react-native/src/components/ConfirmActionSheet.tsx and mobile/flutter/lib/widgets/confirm_action_sheet.dart are the nearest existing bottom-sheet-style precedent for that follow-up to extend. See web/src/app/components/drawer/SPEC.md §9 and docs/brand/06-angular-components/drawer.md#mobile.',
   },
   {
+    name: 'file-upload',
+    web: 'web/src/app/components/file-upload',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoFileUpload.tsx',
+        roles: ['accent', 'accentActive', 'border', 'danger', 'dangerTextSafe', 'onSurface', 'onSurfaceMuted', 'surfaceRaised', 'surfaceSunken'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_file_upload.dart',
+        roles: ['accent', 'accentActive', 'border', 'danger', 'dangerTextSafe', 'onSurface', 'onSurfaceMuted', 'surfaceRaised', 'surfaceSunken'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['onSurfaceSubtle'], reason: 'web reads on-surface-subtle only for the basic-mode "No file chosen" empty-state placeholder text (.ino-fu__basic-filename--empty); the mobile ports render that same string with onSurfaceMuted instead of adding a third muted tier, since neither native palette needs the finer distinction for one line of copy.' },
+      { platform: 'flutter', roles: ['onSurfaceSubtle'], reason: 'same as the React Native entry above.' },
+    ],
+  },
+  {
     name: 'floatlabel',
     web: 'web/src/app/components/floatlabel',
     mobile: {
