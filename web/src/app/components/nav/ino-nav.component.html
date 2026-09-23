@@ -1,10 +1,73 @@
-<header class="ino-nav">
+<header class="ino-nav" [class.ino-nav--sm]="size === 'sm'" [class.ino-nav--lg]="size === 'lg'">
   <div class="ino-nav__logo">
     <ng-content select="[logo]"></ng-content>
   </div>
 
-  <nav class="ino-nav__links" aria-label="Primary">
-    <a *ngFor="let link of links" [routerLink]="link.href" routerLinkActive="is-active">{{ link.label }}</a>
+  <nav
+    class="ino-nav__menubar"
+    role="menubar"
+    aria-label="Primary"
+    (keydown)="onMenubarKeydown($event)"
+    (focusout)="onNavFocusOut($event)">
+    <div
+      *ngFor="let link of links; let i = index; trackBy: trackByIndex"
+      class="ino-nav__item"
+      (mouseenter)="onItemMouseEnter(i)"
+      (mouseleave)="onItemMouseLeave(i)">
+      <a
+        *ngIf="!link.children?.length"
+        class="ino-nav__item-control"
+        role="menuitem"
+        [routerLink]="link.disabled ? null : link.href"
+        routerLinkActive="is-active"
+        [tabindex]="i === activeIndex ? 0 : -1"
+        [attr.aria-disabled]="link.disabled ? 'true' : null"
+        [class.is-disabled]="link.disabled"
+        (click)="onItemClick($event, link, i)"
+        (focus)="onItemFocus(i)">
+        {{ link.label }}
+      </a>
+
+      <button
+        *ngIf="link.children?.length"
+        type="button"
+        class="ino-nav__item-control ino-nav__item-trigger"
+        role="menuitem"
+        aria-haspopup="true"
+        [attr.aria-expanded]="openIndex === i"
+        [tabindex]="i === activeIndex ? 0 : -1"
+        [attr.aria-disabled]="link.disabled ? 'true' : null"
+        [class.is-disabled]="link.disabled"
+        (click)="onTriggerClick(i)"
+        (focus)="onItemFocus(i)">
+        {{ link.label }}
+        <svg class="ino-nav__chevron" width="10" height="10" viewBox="0 0 10 10" aria-hidden="true">
+          <path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </button>
+
+      <ul
+        *ngIf="link.children?.length && openIndex === i"
+        class="ino-nav__submenu"
+        role="menu"
+        [attr.aria-label]="link.label"
+        animate.enter="ino-nav-submenu-enter"
+        animate.leave="ino-nav-submenu-leave">
+        <li *ngFor="let child of link.children; let ci = index; trackBy: trackByIndex" role="none">
+          <a
+            class="ino-nav__submenu-link ino-nav__menu-link"
+            role="menuitem"
+            [routerLink]="child.disabled ? null : child.href"
+            routerLinkActive="is-active"
+            [tabindex]="ci === activeSubmenuIndex ? 0 : -1"
+            [attr.aria-disabled]="child.disabled ? 'true' : null"
+            [class.is-disabled]="child.disabled"
+            (click)="onChildClick($event, child, i)">
+            {{ child.label }}
+          </a>
+        </li>
+      </ul>
+    </div>
   </nav>
 
   <div class="ino-nav__actions">
@@ -30,5 +93,88 @@
     <button type="button" class="btn primary ino-nav__cta" (click)="onCtaClick()">
       {{ ctaLabel }}
     </button>
+
+    <button
+      type="button"
+      class="ino-nav__hamburger"
+      aria-controls="ino-nav-mobile-panel"
+      [attr.aria-expanded]="mobileOpen"
+      [attr.aria-label]="mobileOpen ? 'Close menu' : 'Open menu'"
+      (click)="toggleMobile()">
+      <svg *ngIf="!mobileOpen" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
+        <path d="M3 5.5h14M3 10h14M3 14.5h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+      </svg>
+      <svg *ngIf="mobileOpen" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
+        <path d="M4.5 4.5l11 11M15.5 4.5l-11 11" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+      </svg>
+    </button>
+  </div>
+
+  <div
+    *ngIf="mobileOpen"
+    id="ino-nav-mobile-panel"
+    class="ino-nav__mobile"
+    animate.enter="ino-nav-mobile-enter"
+    animate.leave="ino-nav-mobile-leave">
+    <div class="ino-nav__mobile-scrim" (click)="closeMobile()"></div>
+
+    <div
+      class="ino-nav__mobile-panel"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Menu"
+      inoFocusTrap
+      inoFocusTrapInitialFocus=".ino-nav__mobile-close"
+      (keydown.escape)="closeMobile()">
+      <div class="ino-nav__mobile-header">
+        <button type="button" class="ino-nav__mobile-close" aria-label="Close menu" (click)="closeMobile()">
+          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+            <path d="M3.5 3.5l9 9M12.5 3.5l-9 9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+          </svg>
+        </button>
+      </div>
+
+      <ul class="ino-nav__mobile-list" role="list">
+        <li *ngFor="let link of links; let i = index; trackBy: trackByIndex" class="ino-nav__mobile-item">
+          <ng-container *ngIf="!link.children?.length; else groupTpl">
+            <a
+              class="ino-nav__mobile-link ino-nav__menu-link"
+              [routerLink]="link.disabled ? null : link.href"
+              routerLinkActive="is-active"
+              [attr.aria-disabled]="link.disabled ? 'true' : null"
+              [class.is-disabled]="link.disabled"
+              (click)="onChildClick($event, link, i); closeMobile()">
+              {{ link.label }}
+            </a>
+          </ng-container>
+          <ng-template #groupTpl>
+            <button
+              type="button"
+              class="ino-nav__mobile-group-trigger ino-nav__menu-link"
+              [attr.aria-expanded]="isMobileGroupExpanded(i)"
+              [attr.aria-controls]="'ino-nav-mobile-group-' + i"
+              (click)="toggleMobileGroup(i)">
+              {{ link.label }}
+              <svg class="ino-nav__chevron" [class.is-open]="isMobileGroupExpanded(i)" width="10" height="10" viewBox="0 0 10 10" aria-hidden="true">
+                <path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+            <ul *ngIf="isMobileGroupExpanded(i)" [id]="'ino-nav-mobile-group-' + i" class="ino-nav__mobile-sublist" role="list">
+              <li *ngFor="let child of link.children; trackBy: trackByIndex">
+                <a
+                  class="ino-nav__mobile-link ino-nav__menu-link"
+                  [routerLink]="child.disabled ? null : child.href"
+                  routerLinkActive="is-active"
+                  [attr.aria-disabled]="child.disabled ? 'true' : null"
+                  [class.is-disabled]="child.disabled"
+                  (click)="onChildClick($event, child, i); closeMobile()">
+                  {{ child.label }}
+                </a>
+              </li>
+            </ul>
+          </ng-template>
+        </li>
+      </ul>
+    </div>
   </div>
 </header>
