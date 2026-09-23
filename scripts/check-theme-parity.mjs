@@ -298,6 +298,22 @@ for (const [density, decls] of [['dense', rawDense], ['fluid', rawFluid]]) {
     assert.ok(decls[`--ino-type-${role}-line`], `[data-density="${density}"] must re-declare --ino-type-${role}-line`);
   }
 }
+// INO-253 follow-up — tokens.dart previously had no form-label type scale at all, so
+// ino_label.dart hand-composed the fluid-tier literals RN's `type.label`/`labelSm`/`labelLg`
+// already exported, ungated against drift. Assert Flutter's new `InoTypeLabel` tiers match RN's
+// numerically — the same RN-vs-Flutter parity idiom the colour-role check above already uses.
+for (const [rnKey, dartKey] of [['label', 'label'], ['labelSm', 'labelSm'], ['labelLg', 'labelLg']]) {
+  const rnMatch = rn.match(new RegExp(`\\b${rnKey}:\\s*\\{\\s*fontSize:\\s*([\\d.]+),\\s*lineHeight:\\s*([\\d.]+)\\s*\\*\\s*([\\d.]+),\\s*fontWeight:\\s*'500' as const,\\s*letterSpacing:\\s*(-?[\\d.]+)\\s*\\}`));
+  assert.ok(rnMatch, `RN type.${rnKey} not found or shape changed`);
+  const [, rnSize, rnLineBase, rnLineMult, rnTracking] = rnMatch;
+  assert.equal(rnLineBase, rnSize, `RN type.${rnKey}: lineHeight base must equal fontSize`);
+  const dartMatch = dart.match(new RegExp(`static const ${dartKey} = InoTypeLabel\\(fontSize:\\s*([\\d.]+),\\s*height:\\s*([\\d.]+),\\s*letterSpacing:\\s*(-?[\\d.]+)\\);`));
+  assert.ok(dartMatch, `Flutter InoTypeLabel.${dartKey} not found or shape changed`);
+  const [, dartSize, dartHeight, dartTracking] = dartMatch;
+  assert.equal(dartSize, rnSize, `InoTypeLabel.${dartKey}: Flutter fontSize must match RN type.${rnKey}`);
+  assert.equal(dartHeight, rnLineMult, `InoTypeLabel.${dartKey}: Flutter height multiplier must match RN type.${rnKey}'s lineHeight multiplier`);
+  assert.equal(dartTracking, rnTracking, `InoTypeLabel.${dartKey}: Flutter letterSpacing must match RN type.${rnKey}`);
+}
 
 // ── Wave 0 / INO-126 (W0-4) — elevation scale expansion (tokens.css §2) ─────────────────────────
 // 6 neutral + 3 brand + 2 inset, on top of the untouched --ino-elevation-0/-1/-2. Three shapes,
@@ -629,5 +645,5 @@ for (const entry of COMPONENT_REGISTRY) {
   }
 }
 
-console.log(`PASS: CSS mirrors; Capacitor import; ${colorChecks} color roles across 3 themes × 2 mobile ports; space/radius/targets/durations; focus-ring shape; pressed-accent contrast in 3 themes; control-size scale across 3 densities + ${controlChecks} mobile port values; form-label tokens across 3 themes × 2 densities; elevation scale (6 neutral + 3 brand + 2 inset) across 3 themes; leading/tracking rhythm scale + composite type aliases across 3 densities; component registry (${COMPONENT_REGISTRY.length} components, ${componentChecks} platform checks).`);
+console.log(`PASS: CSS mirrors; Capacitor import; ${colorChecks} color roles across 3 themes × 2 mobile ports; space/radius/targets/durations; focus-ring shape; pressed-accent contrast in 3 themes; control-size scale across 3 densities + ${controlChecks} mobile port values; form-label tokens across 3 themes × 2 densities + RN/Flutter label type-scale parity; elevation scale (6 neutral + 3 brand + 2 inset) across 3 themes; leading/tracking rhythm scale + composite type aliases across 3 densities; component registry (${COMPONENT_REGISTRY.length} components, ${componentChecks} platform checks).`);
 console.log('High-contrast token pairs (AAA text >=7; non-text borders >=3; excludes disabled/decorative subtle role);\nplus per-theme pressed-accent pairs (INO-123):\n'+measurements.join('\n'));
