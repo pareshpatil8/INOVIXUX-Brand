@@ -507,8 +507,22 @@ const COMPONENT_REGISTRY = [
   {
     name: 'drawer',
     web: 'web/src/app/components/drawer',
-    mobile: { reactNative: 'web-only', flutter: 'web-only' },
-    reason: 'web-only for now, by scoping decision, not a permanent exemption — same kind of scoping decision `<ino-select>` makes (pending INO-152 — not yet landed on this merge base as a registry entry to point to). INO-151 (INO-31 T-24) spent its full budget on the web core (4 edge positions, 3 sizes, modal/non-modal mode, full-screen-on-mobile breakpoint, [inoFocusTrap] integration) across all 3 web themes; React Native and Flutter ports (re-authored against the same semantic roles, per plan rev 9 §5\'s "real ports" rule) are filed as a follow-up child issue rather than shipped at lower fidelity here. mobile/react-native/src/components/ConfirmActionSheet.tsx and mobile/flutter/lib/widgets/confirm_action_sheet.dart are the nearest existing bottom-sheet-style precedent for that follow-up to extend. See web/src/app/components/drawer/SPEC.md §9 and docs/brand/06-angular-components/drawer.md#mobile.',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoDrawer.tsx',
+        roles: ['borderSoft', 'onSurface', 'onSurfaceMuted', 'overlayScrim', 'surfaceRaised'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_drawer.dart',
+        roles: ['borderSoft', 'onSurface', 'onSurfaceMuted', 'overlayScrim', 'surfaceRaised'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['accentActive'], reason: 'web reads accent-active for the close button\'s :active (mousedown) state; touch has no separate pointer-down-before-release phase for a plain Pressable with no custom pressed style here, so the port has no press-state color to read. Same rationale the input/datepicker entries above record for their own accent-active omission.' },
+      { platform: 'flutter', roles: ['accentActive'], reason: 'same as the React Native entry above — IconButton\'s built-in press ripple is used instead of a dedicated accent-active read.' },
+      { platform: 'reactNative', roles: ['surfaceSunken'], reason: 'web reads surface-sunken for the close button\'s :hover/:active background; touch has no hover and the port\'s Pressable has no custom pressed background, so the role is never reached (same gap as accent-active above, same button, same missing pressed-state affordance).' },
+      { platform: 'flutter', roles: ['surfaceSunken'], reason: 'same as the React Native entry above.' },
+    ],
   },
   {
     name: 'file-upload',
