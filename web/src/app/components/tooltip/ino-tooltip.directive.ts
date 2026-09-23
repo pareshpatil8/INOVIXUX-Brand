@@ -2,11 +2,13 @@ import {
   ComponentRef,
   Directive,
   ElementRef,
+  EventEmitter,
   HostListener,
   Input,
   NgZone,
   OnChanges,
   OnDestroy,
+  Output,
   Renderer2,
   SimpleChanges,
   ViewContainerRef,
@@ -15,7 +17,7 @@ import {
 } from '@angular/core';
 
 import { InoControlSize } from '../control-size';
-import { InoOverlayPosition, computeOverlayPlacement } from '../confirm-popup/overlay-position';
+import { InoOverlayPosition, computeOverlayPlacement } from '../overlay/overlay-position';
 import { InoTooltipComponent } from './ino-tooltip.component';
 
 let tooltipIdCounter = 0;
@@ -29,9 +31,8 @@ let tooltipIdCounter = 0;
  * <button inoTooltip="Delete this item" inoTooltipPosition="top">Delete</button>
  * ```
  *
- * Reuses `computeOverlayPlacement` from `<ino-confirm-popup>`'s `overlay-position.ts` — exactly
- * the second consumer that file's own doc comment anticipated, imported as-is rather than forked,
- * since the signature needed no changes.
+ * Reuses `computeOverlayPlacement` from the shared `overlay/overlay-position.ts` (INO-271) —
+ * imported as-is, since the signature needed no changes for this third consumer.
  *
  * ## Triggers: hover AND focus, never click
  *
@@ -64,6 +65,15 @@ export class InoTooltipDirective implements OnChanges, OnDestroy {
   /** Grace period before hiding — long enough for the pointer to reach the panel itself (hoverable). */
   @Input() inoTooltipHideDelay = 100;
   @Input({ transform: booleanAttribute }) inoTooltipDisabled = false;
+
+  /**
+   * Lifecycle outputs conforming to the same rule as `<ino-popover>`/`<ino-confirm-popup>`/
+   * `<ino-modal>` (`../overlay/SPEC.md` §2): fire once per real show/hide transition. Unlike those
+   * components, the tooltip has no `[(open)]`-equivalent bindable input — `show()`/`hide()` are the
+   * only paths that ever run, so there is no double-emission risk to guard against here.
+   */
+  @Output() shown = new EventEmitter<void>();
+  @Output() hidden = new EventEmitter<void>();
 
   private readonly vcr = inject(ViewContainerRef);
   private readonly renderer = inject(Renderer2);
@@ -149,6 +159,8 @@ export class InoTooltipDirective implements OnChanges, OnDestroy {
   }
 
   private show(): void {
+    const wasOpen = this.ref?.instance.open ?? false;
+
     if (!this.ref) {
       this.ref = this.vcr.createComponent(InoTooltipComponent);
       this.ref.instance.tooltipId = this.tooltipId;
@@ -173,6 +185,10 @@ export class InoTooltipDirective implements OnChanges, OnDestroy {
     // measuring its own panel. `setTimeout`, not `queueMicrotask`: zone drains microtasks before
     // `ApplicationRef.tick()` runs, so a microtask fires before the panel exists in the DOM.
     setTimeout(() => this.reposition());
+
+    if (!wasOpen) {
+      this.shown.emit();
+    }
   }
 
   private hide(): void {
@@ -181,6 +197,7 @@ export class InoTooltipDirective implements OnChanges, OnDestroy {
     }
     this.ref.setInput('open', false);
     this.renderer.removeAttribute(this.host, 'aria-describedby');
+    this.hidden.emit();
   }
 
   private forceHide(): void {

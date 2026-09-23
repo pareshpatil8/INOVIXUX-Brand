@@ -27,7 +27,7 @@ ConfirmPopup.
 | 8 | Accessibility | See §4. |
 | 9 | Mobile parity | **Explicit web-only decision.** See §5. |
 | 10 | Docs artifact | **Satisfied.** `docs/brand/06-angular-components/popover.md` + `docs/brand/06-angular-components/previews/popover.html` (`<!-- @dsCard group="Overlay" -->`). |
-| 11 | Merge hygiene | **Satisfied.** Touches only `web/src/app/components/popover/**`, this SPEC, the two docs files above, and one alphabetically-inserted line in `scripts/check-theme-parity.mjs`'s `COMPONENT_REGISTRY` (between `input` and `table`). `web/src/tokens.css` untouched — no new token was needed. `overlay-position.ts` is a **fork**, not a shared-file edit — see that file's own doc comment for why touching `confirm-popup/**` to promote a shared module is explicitly out of scope for this issue. |
+| 11 | Merge hygiene | **Satisfied at the time this component landed** (PR #38), scoped to `web/src/app/components/popover/**` only — `overlay-position.ts` was a temporary **fork** of `confirm-popup`'s copy rather than a shared-file edit, deliberately, because promoting it was out of scope for that issue. INO-271 has since promoted the module to `overlay/overlay-position.ts` (see `overlay/SPEC.md` §1); this component now imports the shared copy and no fork remains. |
 
 ---
 

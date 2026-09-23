@@ -74,12 +74,21 @@ export class InoModalComponent implements OnChanges, OnDestroy {
    * `maximized` — a maximized panel has nowhere to go. */
   @Input({ transform: booleanAttribute }) draggable = false;
 
+  @Output() opened = new EventEmitter<void>();
   @Output() closed = new EventEmitter<void>();
   @Output() openChange = new EventEmitter<boolean>();
 
   @ViewChild('panel') private panelRef?: ElementRef<HTMLElement>;
 
   protected readonly headingId = `ino-modal-heading-${++modalIdCounter}`;
+
+  /**
+   * Tracks the actual open/closed state, independent of the `open` @Input — see
+   * `../overlay/SPEC.md` §2 for why this (not comparing against `this.open`) is what makes
+   * `opened`/`closed` fire exactly once per real transition regardless of the path (imperative
+   * `requestClose()`, or the `[(open)]`-bound input path via `ngOnChanges`).
+   */
+  private isOpenState = false;
 
   /** Drag offset, in px, applied as `translate3d`. A signal because pointer move/up are raw
    * `document` listeners (needed so a fast drag that leaves the header keeps tracking) rather
@@ -99,7 +108,7 @@ export class InoModalComponent implements OnChanges, OnDestroy {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['open']) {
-      this.syncOpenState();
+      this.setOpen(this.open);
     }
   }
 
@@ -124,12 +133,26 @@ export class InoModalComponent implements OnChanges, OnDestroy {
   }
 
   requestClose(): void {
-    if (!this.open) {
+    this.setOpen(false);
+  }
+
+  /**
+   * The single choke point every path that can change `open` funnels through — imperative
+   * `requestClose()`, and the `[(open)]`-bound input path via `ngOnChanges`. See
+   * `../overlay/SPEC.md` §2.
+   */
+  private setOpen(next: boolean): void {
+    this.open = next;
+    if (this.isOpenState === next) {
       return;
     }
-    this.open = false;
-    this.openChange.emit(false);
-    this.closed.emit();
+    this.isOpenState = next;
+    this.openChange.emit(next);
+    if (next) {
+      this.opened.emit();
+    } else {
+      this.closed.emit();
+    }
     this.syncOpenState();
   }
 

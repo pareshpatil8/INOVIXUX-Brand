@@ -53,10 +53,10 @@ There is no barrel file; import by path: `./components/popover/ino-popover.compo
 
 ## Positioning
 
-`overlay-position.ts` exports `computeOverlayPlacement(anchorRect, panelSize, preferred, viewport,
-gap)` — a fork of `<ino-confirm-popup>`'s helper of the same name (see SPEC.md §3 for why it's a
-fork rather than a shared import). One flip to the opposite side when the preferred side doesn't
-fit, then a viewport-edge clamp — the "flip/shift" the issue asks for, matched to the same
+`overlay-position.ts` (shared with `<ino-confirm-popup>` and `[inoTooltip]` — see
+`../overlay/SPEC.md` §1) exports `computeOverlayPlacement(anchorRect, panelSize, preferred,
+viewport, gap)`. One flip to the opposite side when the preferred side doesn't fit, then a
+viewport-edge clamp — the "flip/shift" the issue asks for, matched to the same
 four-cardinal-direction model the PrimeNG benchmark itself ships, not a full auto-placement engine.
 
 ---

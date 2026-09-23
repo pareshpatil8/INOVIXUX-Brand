@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, HostListener, Input, 
 import { CommonModule } from '@angular/common';
 
 import { InoControlSize } from '../control-size';
-import { InoOverlayPosition } from '../confirm-popup/overlay-position';
+import { InoOverlayPosition } from '../overlay/overlay-position';
 
 /**
  * `<ino-tooltip>` — the floating panel half of Tooltip (INO-31 T-22 / INO-149). Never placed

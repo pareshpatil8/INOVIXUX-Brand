@@ -74,3 +74,62 @@ describe('InoPopoverComponent (bare usage, no [(open)] binding)', () => {
     expect(shownCount).toBe(1);
   });
 });
+
+/**
+ * INO-271 event-contract regression: `shown`/`hidden` must fire on every real open/closed
+ * transition, not only on the imperative `show()`/`toggle()` entry point — see
+ * `../overlay/SPEC.md` §2 for the rule and why `isOpenState` (not `open`) is what guards it.
+ *
+ * Drives `open` via `fixture.componentRef.setInput()` directly on the component, not through a
+ * host template `[open]="flag"` binding: this app boots without zone.js (`../overlay/SPEC.md` §3),
+ * and a plain host-field mutation followed by `fixture.detectChanges()` does not reliably
+ * re-evaluate an already-clean OnPush child's input bindings in that configuration.
+ * `componentRef.setInput()` is the Angular-blessed way to drive an OnPush component's `@Input` in
+ * a test regardless.
+ */
+describe('InoPopoverComponent ([open] input-driven, no toggle()/show() call)', () => {
+  let fixture: ComponentFixture<InoPopoverComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({ imports: [InoPopoverComponent] }).compileComponents();
+    fixture = TestBed.createComponent(InoPopoverComponent);
+    fixture.componentRef.setInput('heading', 'Filters');
+    document.body.appendChild(fixture.nativeElement);
+    fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    fixture.destroy();
+  });
+
+  it('emits shown when [open] flips true and hidden when it flips back false', () => {
+    let shownCount = 0;
+    let hiddenCount = 0;
+    fixture.componentInstance.shown.subscribe(() => shownCount++);
+    fixture.componentInstance.hidden.subscribe(() => hiddenCount++);
+
+    fixture.componentRef.setInput('open', true);
+    fixture.detectChanges();
+    expect(shownCount).toBe(1);
+    expect(hiddenCount).toBe(0);
+
+    fixture.componentRef.setInput('open', false);
+    fixture.detectChanges();
+    expect(shownCount).toBe(1);
+    expect(hiddenCount).toBe(1);
+  });
+
+  it('does not double-emit shown when a redundant ngOnChanges pass re-feeds the same value', () => {
+    let shownCount = 0;
+    fixture.componentInstance.shown.subscribe(() => shownCount++);
+
+    fixture.componentRef.setInput('open', true);
+    fixture.detectChanges();
+    // Simulate the echo pass a two-way binding's own openChange handler would trigger.
+    fixture.componentInstance.ngOnChanges({
+      open: { currentValue: true, previousValue: true, firstChange: false, isFirstChange: () => false },
+    });
+
+    expect(shownCount).toBe(1);
+  });
+});
