@@ -566,6 +566,12 @@ const COMPONENT_REGISTRY = [
     ],
   },
   {
+    name: 'tooltip',
+    web: 'web/src/app/components/tooltip',
+    mobile: { reactNative: 'web-only', flutter: 'web-only' },
+    reason: 'web-only by explicit decision (INO-149, plan rev 9 §5 desktop-idiom porting rule) — hover and keyboard focus have no touch equivalent; a long-press hint is a materially different interaction, not a port. See web/src/app/components/tooltip/SPEC.md §5 and docs/brand/06-angular-components/tooltip.md#mobile.',
+  },
+  {
     name: 'virtual-scroller',
     web: 'web/src/app/components/virtual-scroller',
     mobile: { reactNative: 'web-only', flutter: 'web-only' },

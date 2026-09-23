@@ -1,0 +1,97 @@
+/* Removes the `<ino-tooltip>` host itself from layout — `vcr.createComponent()` inserts it as a
+   plain sibling of the trigger it annotates, and it must never affect that trigger's flow. Only
+   the panel below (`position: fixed`) paints. */
+:host {
+  display: contents;
+}
+
+/* `top`/`left` below are set from JS (`ino-tooltip.directive.ts`, `computeOverlayPlacement`) using
+   `getBoundingClientRect()` viewport coordinates — same RTL-correct rationale as
+   `<ino-confirm-popup>`'s stylesheet; see that component's SPEC.md §2 for the full explanation.
+   Everything else here uses logical properties. */
+.ino-tooltip {
+  position: fixed;
+  z-index: 1200;
+  box-sizing: border-box;
+  max-inline-size: min(280px, calc(100vw - var(--ino-space-4) * 2));
+  padding-inline: var(--ino-control-padding-inline);
+  padding-block: var(--ino-space-2);
+  background: var(--ino-color-surface-raised);
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-md);
+  box-shadow: var(--ino-elevation-neutral-2);
+  color: var(--ino-color-on-surface);
+  font-size: var(--ino-control-font-size);
+  line-height: var(--ino-type-body-sm-line);
+  pointer-events: auto;
+}
+
+.ino-tooltip[data-size='sm'] {
+  --ino-control-font-size: var(--ino-control-font-size-sm);
+  --ino-control-padding-inline: var(--ino-control-padding-inline-sm);
+}
+
+.ino-tooltip[data-size='default'] {
+  --ino-control-font-size: var(--ino-control-font-size-default);
+  --ino-control-padding-inline: var(--ino-control-padding-inline-default);
+}
+
+.ino-tooltip[data-size='lg'] {
+  --ino-control-font-size: var(--ino-control-font-size-lg);
+  --ino-control-padding-inline: var(--ino-control-padding-inline-lg);
+}
+
+.ino-tooltip__arrow {
+  position: absolute;
+  inline-size: var(--ino-space-2);
+  block-size: var(--ino-space-2);
+  background: var(--ino-color-surface-raised);
+  border-inline-start: 1px solid var(--ino-color-border);
+  border-block-start: 1px solid var(--ino-color-border);
+  transform: rotate(45deg);
+  z-index: -1;
+}
+
+/* Panel renders BELOW the anchor — its pointer sits at its own block-start edge, pointing up. */
+.ino-tooltip--bottom .ino-tooltip__arrow {
+  inset-block-start: calc(var(--ino-space-2) / -2);
+  inset-inline-start: calc(50% - var(--ino-space-2) / 2);
+}
+
+/* Panel renders ABOVE the anchor — pointer sits at the block-end edge, pointing down; only the
+   opposite pair of sides needs the visible border for the diamond's exposed corner to read right. */
+.ino-tooltip--top .ino-tooltip__arrow {
+  inset-block-end: calc(var(--ino-space-2) / -2);
+  inset-inline-start: calc(50% - var(--ino-space-2) / 2);
+  border-inline-start: none;
+  border-block-start: none;
+  border-inline-end: 1px solid var(--ino-color-border);
+  border-block-end: 1px solid var(--ino-color-border);
+}
+
+.ino-tooltip--right .ino-tooltip__arrow {
+  inset-inline-start: calc(var(--ino-space-2) / -2);
+  inset-block-start: calc(50% - var(--ino-space-2) / 2);
+}
+
+.ino-tooltip--left .ino-tooltip__arrow {
+  inset-inline-end: calc(var(--ino-space-2) / -2);
+  inset-block-start: calc(50% - var(--ino-space-2) / 2);
+  border-inline-start: none;
+  border-block-start: none;
+  border-inline-end: 1px solid var(--ino-color-border);
+  border-block-end: 1px solid var(--ino-color-border);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ino-tooltip {
+    animation: ino-tooltip-in var(--ino-motion-duration-fast) var(--ino-motion-easing-decelerate);
+  }
+}
+
+@keyframes ino-tooltip-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
