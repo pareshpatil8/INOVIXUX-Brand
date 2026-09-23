@@ -143,7 +143,7 @@ Angular's 8kB budget without it.
 ## 10. Registry entry
 
 `scripts/check-theme-parity.mjs`'s `COMPONENT_REGISTRY` gets one new alphabetically-inserted entry
-(between `datepicker` and `focus-trap`) declaring the web color roles this component's `.scss`
+(between `drawer` and `floatlabel`) declaring the web color roles this component's stylesheet
 reads and the roles the RN/Flutter ports read, with divergences recorded for the roles the ports
 don't reach (e.g. `accentActive`, dropped on both native ports for the same "no pointer-down-
 before-focus phase on touch" reason `input`/`datepicker` already document).
