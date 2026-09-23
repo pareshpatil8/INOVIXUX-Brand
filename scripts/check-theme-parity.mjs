@@ -511,6 +511,24 @@ const COMPONENT_REGISTRY = [
     reason: 'web-only by explicit decision — neither platform has the DOM tab-order construct this component exists for (RN: accessibilityViewIsModal; Flutter: FocusScope on the modal route). See docs/brand/06-angular-components/focus-trap.md#mobile and web/src/app/components/focus-trap/SPEC.md §5.',
   },
   {
+    name: 'iftalabel',
+    web: 'web/src/app/components/iftalabel',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoIftaLabel.tsx',
+        roles: ['onSurfaceMuted', 'onSurfaceSubtle', 'dangerTextSafe'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_ifta_label.dart',
+        roles: ['onSurfaceMuted', 'onSurfaceSubtle', 'dangerTextSafe'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['onSurfaceMuted', 'onSurfaceSubtle', 'dangerTextSafe'], reason: 'web composes <ino-label> internally and never references a --ino-color-* role directly in iftalabel/ino-iftalabel.component.scss (colour is entirely delegated to <ino-label>\'s own stylesheet: onSurface/onSurfaceMuted/onSurfaceSubtle/dangerTextSafe). The RN port has no separate label component to delegate to (it renders the label Text itself), so it reads the three non-default label colour roles inline. Same divergence shape the sibling floatlabel/ino-float-label wrapper (INO-141) declares for the same reason (minus the "surface" role — this component has no on-variant background cutout, SPEC.md §3). See SPEC.md §7.' },
+      { platform: 'flutter', roles: ['onSurfaceMuted', 'onSurfaceSubtle', 'dangerTextSafe'], reason: 'same as the React Native entry above — ino_ifta_label.dart renders its own label Text instead of delegating to InoLabel.' },
+    ],
+  },
+  {
     name: 'input',
     web: 'web/src/app/components/input',
     mobile: {
