@@ -471,6 +471,24 @@ const COMPONENT_REGISTRY = [
     ],
   },
   {
+    name: 'file-upload',
+    web: 'web/src/app/components/file-upload',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoFileUpload.tsx',
+        roles: ['accent', 'accentActive', 'border', 'danger', 'dangerTextSafe', 'onSurface', 'onSurfaceMuted', 'surfaceRaised', 'surfaceSunken'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_file_upload.dart',
+        roles: ['accent', 'accentActive', 'border', 'danger', 'dangerTextSafe', 'onSurface', 'onSurfaceMuted', 'surfaceRaised', 'surfaceSunken'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['onSurfaceSubtle'], reason: 'web reads on-surface-subtle only for the basic-mode "No file chosen" empty-state placeholder text (.ino-fu__basic-filename--empty); the mobile ports render that same string with onSurfaceMuted instead of adding a third muted tier, since neither native palette needs the finer distinction for one line of copy.' },
+      { platform: 'flutter', roles: ['onSurfaceSubtle'], reason: 'same as the React Native entry above.' },
+    ],
+  },
+  {
     name: 'focus-trap',
     web: 'web/src/app/components/focus-trap',
     mobile: { reactNative: 'web-only', flutter: 'web-only' },
