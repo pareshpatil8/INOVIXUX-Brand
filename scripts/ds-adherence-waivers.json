@@ -345,13 +345,6 @@
       "issue": "INO-174"
     },
     {
-      "rule": "non-token-shadow",
-      "file": "web/src/app/components/radio-group/ino-radio.component.scss",
-      "match": "box-shadow: 0 0 0 2px var(--ino-color-danger)",
-      "reason": "State-7 invalid ring, not elevation — the rule's suggested --ino-elevation-* is wrong here because elevation drops to none in high-contrast, exactly where an invalid ring must stay visible. outline is unavailable: State 4 already uses var(--ino-focus-ring), and focused+invalid must show both. Needs a --ino-invalid-ring token; tokens.css is frozen after Wave 0, so INO-257 carries it.",
-      "issue": "INO-257"
-    },
-    {
       "rule": "non-token-duration",
       "file": "mobile/flutter/lib/notifications/notification_center.dart",
       "match": "Duration(milliseconds: 5000",
