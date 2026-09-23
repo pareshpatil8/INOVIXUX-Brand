@@ -514,6 +514,12 @@ const COMPONENT_REGISTRY = [
     ],
   },
   {
+    name: 'select',
+    web: 'web/src/app/components/select',
+    mobile: { reactNative: 'web-only', flutter: 'web-only' },
+    reason: 'web-only for now, by scoping decision, not a permanent exemption — INO-152 (INO-31 T-9) rewrote this component from a native <select> to a custom listbox and used its full budget on the web core (overlay, filter, groups, virtual-scroll integration, ARIA combobox contract) that MultiSelect/AutoComplete/Listbox will each extend. React Native and Flutter ports (scoped to single-selection, no groups/templates/virtual-scroll, mirroring the datepicker single-selection precedent in SPEC.md §9) are filed as a follow-up child issue rather than shipped at lower fidelity here. See web/src/app/components/select/SPEC.md §9 and docs/brand/06-angular-components/select.md#mobile.',
+  },
+  {
     name: 'table',
     web: 'web/src/app/components/table',
     mobile: { reactNative: 'web-only', flutter: 'web-only' },
