@@ -338,8 +338,20 @@
    * 4. TYPOGRAPHY — Geist / Geist Mono (OFL), self-hosted; see README
    *    §Font onboarding. System fallback stack is mandatory per the brief
    *    (locked-down bank/regulator machines must not break layout).
+   *
+   *    2026-09-15 (INO-119): Geist has no Devanagari coverage, and we are an
+   *    India/APAC company aligned to India Stack — Hindi is a floor
+   *    requirement, not a stretch goal. "Noto Sans Devanagari" (OFL-1.1,
+   *    self-hostable, same licensing posture as Geist) is inserted into the
+   *    MANDATORY fallback chain, second position, on both font tokens: the
+   *    browser keeps every Latin glyph on Geist and only pulls Devanagari
+   *    glyphs from the next family in the list — this is standard multi-
+   *    script @font-face fallback behavior, not a font swap. See README
+   *    §Indic/Devanagari typography pairing for the licensing, self-hosting
+   *    plan, vertical-rhythm decision, and the explicit scope-beyond-Hindi
+   *    position (Tamil/Bengali/etc. are a stated deferral, not an omission).
    * ------------------------------------------------------------------- */
-  --ino-font-display: "Geist", system-ui, -apple-system, Arial, Helvetica, sans-serif;
+  --ino-font-display: "Geist", "Noto Sans Devanagari", system-ui, -apple-system, Arial, Helvetica, sans-serif;
   --ino-font-mono: "Geist Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
 
   /* size / line-height / weight / tracking, one token group per role.
@@ -488,6 +500,11 @@
   --ino-type-label-sm: var(--ino-type-label-sm-weight) var(--ino-type-label-sm-size)/var(--ino-type-label-sm-line) var(--ino-font-display);
   --ino-type-hint: var(--ino-type-hint-weight) var(--ino-type-hint-size)/var(--ino-type-hint-line) var(--ino-font-display);
   --ino-type-caption: var(--ino-type-caption-weight) var(--ino-type-caption-size)/var(--ino-type-caption-line) var(--ino-font-display);
+
+  /* Devanagari-safe line-height baseline for the mono eyebrow/metric roles is not defined —
+     both are Latin-numeral/all-caps-tracking styles by design (see README §Indic/Devanagari
+     typography pairing, "roles intentionally not overridden"); a Hindi label uses the h3/body
+     roles below instead. */
 
   /* ---------------------------------------------------------------------
    * 5. SPACE — one scale, t-shirt tokens. Values are the real paddings
@@ -704,6 +721,38 @@
   --ino-invalid-ring: 0 0 0 2px var(--ino-color-danger); /* light mode inherits this unchanged: the
                                                             weight is right on both surfaces and the
                                                             colour re-themes through the role */
+}
+
+/* ---------------------------------------------------------------------
+ * 4b. INDIC/DEVANAGARI VERTICAL RHYTHM (INO-119) — display/h2/h3 are
+ *     intentionally tight (1.05/1.25/1.4) for Geist's Latin cap-height
+ *     rhythm. Noto Sans Devanagari's vertical metrics (the shirorekha
+ *     headline stroke + matras sitting above/below the baseline) clip at
+ *     those ratios, so any subtree whose language resolves to Hindi gets
+ *     safe ratios instead — :lang(hi) matches an element's OWN or
+ *     INHERITED `lang` attribute per the HTML language-inheritance
+ *     algorithm (e.g. <html lang="hi">, or a single <span lang="hi">
+ *     mid-page), so this needs no JS and no new attribute contract beyond
+ *     the `lang` attribute this repo already sets on <html> (see
+ *     web/src/index.html).
+ *
+ *     body / body-lg / body-sm are deliberately NOT overridden here:
+ *     1.55/1.65 already clears Noto Sans Devanagari's ~1.4 safe minimum,
+ *     and body copy is exactly where a single line legitimately mixes
+ *     Latin and Devanagari (e.g. a KYB field label plus a Hindi customer
+ *     name) — a single line-height has to serve both scripts there, so
+ *     the existing body ratios were already generous enough for both.
+ *     Headline roles are effectively single-script per instance (a Hindi
+ *     headline is not composed mid-line with an English one), which is
+ *     what makes a lang-scoped override safe instead of a global bump
+ *     that would also loosen every existing Latin-only headline.
+ *     See README §Indic/Devanagari typography pairing for the full
+ *     rationale and the ratios' derivation from Noto's font metrics.
+ * ------------------------------------------------------------------- */
+:lang(hi) {
+  --ino-type-display-line: 1.35;
+  --ino-type-h2-line: 1.5;
+  --ino-type-h3-line: 1.6;
 }
 
 /* ---------------------------------------------------------------------

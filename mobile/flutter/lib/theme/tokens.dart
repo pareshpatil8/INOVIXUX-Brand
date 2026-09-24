@@ -162,6 +162,18 @@ class InoTarget {
 /// tokens.css §10 [data-density="fluid"] row height — mobile never uses dense.
 const double inoRowMinHeight = 44;
 
+/// Font pairing (INO-119) — tokens.css §4's mandatory fallback chain, ported as data. Unlike
+/// React Native, Flutter's `TextStyle.fontFamilyFallback` genuinely supports an ordered list
+/// like CSS does, so [displayFallback] can be passed there directly once the `.ttf` assets are
+/// declared in pubspec.yaml (not done in this pass — same "flagged, not fetched" status as Geist
+/// itself on this platform). No Devanagari-safe line-height variants are ported here: tokens.dart
+/// has no font-size/line-height scale at all yet (a pre-existing gap, not introduced by this
+/// ticket) — see tokens.css README §Indic/Devanagari typography pairing.
+class InoFont {
+  static const String display = 'Geist';
+  static const List<String> displayFallback = ['Noto Sans Devanagari'];
+}
+
 /// tokens.css §12 — control-size scale behind the `size` prop, FLUID resolution only
 /// (mobile is always fluid, same rule as [inoRowMinHeight]). `standard` is the port of
 /// size="default": `default` is a reserved word in Dart and cannot name a member, so the
