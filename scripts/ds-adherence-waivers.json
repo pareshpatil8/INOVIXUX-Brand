@@ -11,7 +11,8 @@
     "decision, say so on the owning issue below.",
     "",
     "  INO-172 — adopt the type scale on pages that hardcode font-size",
-    "  INO-174 — brand gradient, accent glow and toast dwell do not re-theme"
+    "  INO-174 — brand gradient, accent glow and toast dwell do not re-theme",
+    "  INO-82  — Master C logo mark: brand-fixed territory fills and stitch-thread values"
   ],
   "waivers": [
     {
@@ -99,20 +100,6 @@
       "issue": "INO-172"
     },
     {
-      "rule": "no-hardcoded-icon-color",
-      "file": "web/src/app/app.html",
-      "match": "stop-color=\"#4F46E5\"",
-      "reason": "logo mark SVG gradient stop; an SVG stop cannot read a CSS linear-gradient()",
-      "issue": "INO-174"
-    },
-    {
-      "rule": "no-hardcoded-icon-color",
-      "file": "web/src/app/app.html",
-      "match": "stop-color=\"#7C5CFC\"",
-      "reason": "logo mark SVG gradient stop; an SVG stop cannot read a CSS linear-gradient()",
-      "issue": "INO-174"
-    },
-    {
       "rule": "no-raw-color",
       "file": "web/src/app/app.html",
       "match": "#4F46E5",
@@ -146,6 +133,41 @@
       "match": "Duration(milliseconds: 5000",
       "reason": "banner dwell timer, matching web ToastService's 5000ms default — a UX read-time, not a CSS motion duration; pending INO-174's toast-dwell re-theme decision",
       "issue": "INO-174"
+    },
+    {
+      "rule": "no-hardcoded-icon-color",
+      "file": "web/src/app/app.html",
+      "match": "fill=\"#4F46E5\"",
+      "reason": "Master C logo mark territory fill — the mark's two territories are brand-fixed geometry, not theme roles; only the stitch thread re-themes (via --ino-logo-thread)",
+      "issue": "INO-82"
+    },
+    {
+      "rule": "no-hardcoded-icon-color",
+      "file": "web/src/app/app.html",
+      "match": "fill=\"#7C5CFC\"",
+      "reason": "Master C logo mark territory fill — same rationale as the #4F46E5 territory above",
+      "issue": "INO-82"
+    },
+    {
+      "rule": "no-raw-color",
+      "file": "web/src/app/app.html",
+      "match": "#D8CEFF",
+      "reason": "var(--ino-logo-thread, #D8CEFF) fallback — the thread colour themes via the variable; the literal is only the no-cascade fallback matching the dark default",
+      "issue": "INO-82"
+    },
+    {
+      "rule": "no-raw-color",
+      "file": "web/src/styles/page-sections.scss",
+      "match": "#D8CEFF",
+      "reason": "--ino-logo-thread definition (dark) — would live in tokens.css but tokens.css is frozen post-Wave 0; a brand-mark-only colour, not a reusable role",
+      "issue": "INO-82"
+    },
+    {
+      "rule": "no-raw-color",
+      "file": "web/src/styles/page-sections.scss",
+      "match": "#2A1F6E",
+      "reason": "--ino-logo-thread definition (light) — same rationale as the dark value above",
+      "issue": "INO-82"
     }
   ]
 }
