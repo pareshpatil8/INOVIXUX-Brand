@@ -96,7 +96,8 @@ inert-gate detector is retained as a regression guard even though (b) did not oc
 
 **Gate 4 rollout is unblocked for engineer-implemented issues**, which is every in-flight INO-31
 component issue. The child-issue fallback is still required for CTO-implemented issues until the
-platform defect is fixed upstream — the engineer files a CTO review issue alongside the QA one, as
+platform defect is fixed upstream (filed as **INO-306** against `@paperclipai/server` 2026.831.1,
+with the suggested fix and the repro) — the engineer files a CTO review issue alongside the QA one, as
 on PR #38 (INO-267/268/276) and PR #48 (INO-277/280).
 
 ## Trap: the issue-list endpoint hides every policy
@@ -119,6 +120,21 @@ other hides every working gate behind an empty one.
 
 Attach Gate 4 + Gate 1 at **creation**, not at pickup — pickup-time convention is what produced
 Finding 7 over ~40 issues, and step 2 above is the mechanical reason it fails: a policy attached
-after the `in_review` transition never arms. Apply to the in-flight G-2 (INO-188) and Overlay/Data
-(INO-187) component issues as they are created, honouring the 20-cross-issue-writes-per-heartbeat
-cap rather than bulk-writing dormant backlog.
+after the `in_review` transition never arms.
+
+The two issues INO-301 named as rollout targets, G-2 (INO-188) and Data/Overlay (INO-187), both
+reached `done` before step 3 was resolved, so there is nothing to arm on them; retro-fitting a gate
+to closed work is exactly the dormant-backlog bulk write INO-301 warned against. The convention
+therefore applies to the **next** INO-31 component issues at creation, honouring the
+20-cross-issue-writes-per-heartbeat cap.
+
+Checklist when attaching Gate 4 at creation:
+
+1. Attach the policy **before** the issue can move to `in_review` (step 2).
+2. Make sure the issue is assigned to the **implementing engineer**, not the CTO, at the moment
+   stage 0 arms — that assignee becomes `returnAssignee` and a CTO value is what trips the
+   return-assignee collision above. If the CTO is the implementer, use the child-issue fallback
+   instead; there is no policy shape that gives a genuine CTO review in that case.
+3. Run `node scripts/verify-gate-participants.mjs <IDENTIFIER>` after attaching. It fails on the
+   collision statically, so a misconfigured gate is caught immediately rather than when the
+   reviewer's approval mysteriously 422s.
