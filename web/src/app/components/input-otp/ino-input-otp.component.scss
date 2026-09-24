@@ -1,0 +1,139 @@
+/* Shared `.ino-otp-field` shell, same self-contained-per-component convention `ino-input`'s SCSS
+   documents (no shared SCSS-include infra yet) — values trace 1:1 to tokens.css. */
+.ino-otp-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ino-space-2);
+}
+
+/* Size API (DoD row 3) — same re-pointing pattern as `ino-input`/`ino-tag`: `:host([data-size])`
+   selects which rung of the three Wave 0 control-size aliases this control reads; `default` is the
+   ambient tokens.css value, so no override block is needed for it. */
+:host([data-size='sm']) {
+  --ino-control-height: var(--ino-control-height-sm);
+  --ino-control-font-size: var(--ino-control-font-size-sm);
+}
+
+:host([data-size='lg']) {
+  --ino-control-height: var(--ino-control-height-lg);
+  --ino-control-font-size: var(--ino-control-font-size-lg);
+}
+
+.ino-otp-field__cells-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.ino-otp-field__cells {
+  display: flex;
+  gap: var(--ino-space-3);
+}
+
+.ino-otp-field__cell {
+  /* Square box: width and height both read --ino-control-height (no separate width token exists,
+     and inventing one would violate the tokens.css freeze — reusing the height alias for both
+     axes is the same "re-point an existing alias" move the size overrides above already make). */
+  inline-size: var(--ino-control-height, var(--ino-target-comfortable));
+  /* Density (DoD row 4): a dense-scoped ancestor re-declares --ino-row-min-height (tokens.css
+     §10); same fallback idiom ino-input's SCSS documents so a box never shrinks below its row. */
+  min-block-size: var(--ino-row-min-height, var(--ino-control-height, var(--ino-target-comfortable)));
+  padding: 0;
+  background: var(--ino-color-surface-sunken);
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-md);
+  color: var(--ino-color-on-surface);
+  font-family: var(--ino-font-display);
+  font-size: var(--ino-control-font-size, var(--ino-type-body-size));
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  transition: border-color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+    background var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+
+  &:hover:not(:disabled):not(:read-only) {
+    border-color: var(--ino-color-on-surface-muted);
+  }
+
+  /* Pressed — same ordering rationale as ino-input.component.scss: :not(:disabled) gives this
+     rule the specificity edge over :focus-visible while the pointer is held. */
+  &:active:not(:disabled):not(:read-only) {
+    border-color: var(--ino-color-accent-active);
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+    border-color: var(--ino-color-accent);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Readonly (DoD row 5) — scoped off :disabled per the same CSS-spec quirk ino-input's SCSS
+     documents (:disabled also matches :read-only). */
+  &:read-only:not(:disabled) {
+    background: var(--ino-color-surface-raised);
+    cursor: default;
+  }
+}
+
+.ino-otp-field__cell--error {
+  border-color: var(--ino-color-danger);
+}
+
+/* Loading/busy (DoD row 5) — mirrors ino-input's contract: boxes go native-readonly (set in the
+   template) and a single inert spinner renders after the last box, trailing-edge / RTL-safe via
+   inset-inline-end. */
+.ino-otp-field__spinner {
+  position: absolute;
+  inset-inline-end: calc(-1 * var(--ino-space-6));
+  top: 50%;
+  transform: translateY(-50%);
+  inline-size: 14px;
+  block-size: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--ino-color-on-surface-muted);
+  border-top-color: transparent;
+  pointer-events: none;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: ino-input-otp-spin var(--ino-motion-duration-slow) linear infinite;
+  }
+}
+
+@keyframes ino-input-otp-spin {
+  to {
+    transform: translateY(-50%) rotate(360deg);
+  }
+}
+
+.ino-otp-field__hint {
+  margin: 0;
+  font-size: var(--ino-type-body-sm-size);
+  color: var(--ino-color-on-surface-muted);
+}
+
+.ino-otp-field__error {
+  margin: 0;
+  font-size: var(--ino-type-body-sm-size);
+  color: var(--ino-color-danger);
+  font-weight: 600;
+}
+
+/* Live-region announcement text (DoD row 8) — visually hidden, still announced. Standard sr-only
+   clip, same pattern as ino-progress-spinner__sr-only / ino-alert__sr-status. */
+.ino-otp-field__sr-only {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
