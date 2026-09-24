@@ -218,6 +218,13 @@
       "issue": "INO-173"
     },
     {
+      "rule": "off-scale-spacing",
+      "file": "web/src/app/components/meter-group/ino-meter-group.component.scss",
+      "match": "margin: -1px",
+      "reason": "standard sr-only visually-hidden clip (1px box, -1px margin, overflow hidden) — same accessibility technique already exempted for ino-alert__sr-status / ino-tag__label--sr-only / ino-progress-spinner__sr-only / ino-input-otp",
+      "issue": "INO-173"
+    },
+    {
       "rule": "non-token-radius",
       "file": "mobile/flutter/lib/widgets/ino_select.dart",
       "match": "BorderRadius.circular(2",

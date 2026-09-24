@@ -628,6 +628,24 @@ const COMPONENT_REGISTRY = [
     ],
   },
   {
+    name: 'meter-group',
+    web: 'web/src/app/components/meter-group',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoMeterGroup.tsx',
+        roles: ['accent', 'accentSecondary', 'success', 'warning', 'danger', 'info', 'surfaceSunken', 'onSurface', 'onSurfaceMuted'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_meter_group.dart',
+        roles: ['accent', 'accentSecondary', 'success', 'warning', 'danger', 'info', 'surfaceSunken', 'onSurface', 'onSurfaceMuted'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['borderSoft'], reason: 'web reads border-soft for the loading-state shimmer gradient sweeping across the track; neither mobile port renders a shimmer texture (both simply show an empty track while busy, avoiding a new animation-gradient dependency for a single state), so the role is never reached. Full reasoning: web/src/app/components/meter-group/SPEC.md §7.' },
+      { platform: 'flutter', roles: ['borderSoft'], reason: 'same as the React Native entry above.' },
+    ],
+  },
+  {
     name: 'multiselect',
     web: 'web/src/app/components/multiselect',
     mobile: {
