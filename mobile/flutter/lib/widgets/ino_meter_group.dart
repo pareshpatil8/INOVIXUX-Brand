@@ -158,7 +158,9 @@ class InoMeterGroup extends StatelessWidget {
       child: Semantics(
         label: invalid ? '$accessibleLabel (data may be inaccurate)' : accessibleLabel,
         enabled: !disabled,
-        busy: loading,
+        // No `busy` flag on Flutter's Semantics widget (unlike aria-busy on web) —
+        // `liveRegion` is the same substitution InoButton/InoCard's loading state uses.
+        liveRegion: loading,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
