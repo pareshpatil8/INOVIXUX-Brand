@@ -144,6 +144,13 @@ a colour, an off-scale numeric, a primitive token or a style-piercing selector.
 - Hover and `:focus-visible` are dropped on both native ports (no pointer/keyboard-focus
   distinction on touch hardware) — the same rule `InoButton`'s RN/Flutter doc comments already
   state; pressed/selected/disabled carry over.
+- **Flutter month-navigation announcement (INO-302).** `_navigate` migrated from the deprecated
+  `SemanticsService.announce` to `SemanticsService.sendAnnouncement(View.of(context), ...)` —
+  required because `announce` assumes a single implicit view and is incompatible with multiple
+  windows. Checked against the Flutter SDK source (`semantics_service.dart`): both methods build
+  the identical `AnnounceSemanticsEvent` and default to `Assertiveness.polite`; `sendAnnouncement`
+  only adds the explicit `FlutterView` parameter. No change to announcement politeness/liveness —
+  the screen reader still hears "‹Month› ‹Year›" the same way on month change.
 
 ## 10. Registry finding
 

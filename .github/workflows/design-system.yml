@@ -196,15 +196,6 @@ jobs:
         working-directory: mobile/flutter
         run: flutter pub get
 
-      # `flutter analyze` with no flags is fatal on INFOS, which is a style gate, not
-      # a compile gate — the branch carries 21 of them today (prefer_const_constructors
-      # and deprecated_member_use on Flutter's `announce`). Fatal on errors AND
-      # warnings, not on infos, is the honest setting for a job named "compile":
-      # `unused_import` and friends are real defects, `prefer_const` is a preference.
-      #
-      # Ratchet, deliberately not done here: clear the 21 infos, then drop
-      # --no-fatal-infos. That is a Flutter-track cleanup, tracked separately, and it
-      # should not hold up turning the gate on.
       - name: flutter analyze
         working-directory: mobile/flutter
-        run: flutter analyze --no-pub --no-fatal-infos
+        run: flutter analyze --no-pub

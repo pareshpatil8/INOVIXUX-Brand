@@ -112,7 +112,8 @@ class _InoDatepickerState extends State<InoDatepicker> {
   void _navigate(int delta) {
     final next = _addMonths(_viewDate, delta);
     setState(() => _viewDate = next);
-    SemanticsService.announce('${_monthLong[next.month - 1]} ${next.year}', TextDirection.ltr);
+    SemanticsService.sendAnnouncement(
+        View.of(context), '${_monthLong[next.month - 1]} ${next.year}', TextDirection.ltr);
   }
 
   @override

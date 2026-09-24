@@ -201,7 +201,7 @@ class InoFileUpload extends StatelessWidget {
       children: [
         if (label != null) ...[
           Text(label!, style: TextStyle(fontSize: 14.5, fontWeight: FontWeight.w600, color: colors.onSurface)),
-          SizedBox(height: InoSpace.s2),
+          const SizedBox(height: InoSpace.s2),
         ],
         _ChooseButton(
           label: chooseLabel,
@@ -212,7 +212,7 @@ class InoFileUpload extends StatelessWidget {
           onPressed: _nonInteractive || readonly ? null : onChoose,
         ),
         if (items.isNotEmpty) ...[
-          SizedBox(height: InoSpace.s2),
+          const SizedBox(height: InoSpace.s2),
           Column(
             children: [
               for (final item in items) ...[
@@ -225,17 +225,17 @@ class InoFileUpload extends StatelessWidget {
                   onRetry: onRetry,
                   onRemove: onRemove,
                 ),
-                if (item != items.last) SizedBox(height: InoSpace.s2),
+                if (item != items.last) const SizedBox(height: InoSpace.s2),
               ],
             ],
           ),
         ],
         if (rejections.isNotEmpty) ...[
-          SizedBox(height: InoSpace.s2),
+          const SizedBox(height: InoSpace.s2),
           Semantics(
             liveRegion: true,
             child: Container(
-              padding: EdgeInsets.all(InoSpace.s4),
+              padding: const EdgeInsets.all(InoSpace.s4),
               decoration: BoxDecoration(
                 border: Border.all(color: colors.danger),
                 borderRadius: BorderRadius.circular(InoRadius.md),
@@ -246,11 +246,11 @@ class InoFileUpload extends StatelessWidget {
                 children: [
                   Text('Some files were not accepted',
                       style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600, color: colors.dangerTextSafe)),
-                  SizedBox(height: InoSpace.s1),
+                  const SizedBox(height: InoSpace.s1),
                   for (final r in rejections)
                     Text(r.message, style: TextStyle(fontSize: 12.5, color: colors.onSurface)),
                   if (onDismissRejections != null) ...[
-                    SizedBox(height: InoSpace.s1),
+                    const SizedBox(height: InoSpace.s1),
                     GestureDetector(
                       onTap: onDismissRejections,
                       child: Text('Dismiss',
@@ -263,13 +263,13 @@ class InoFileUpload extends StatelessWidget {
           ),
         ],
         if (error != null) ...[
-          SizedBox(height: InoSpace.s2),
+          const SizedBox(height: InoSpace.s2),
           Semantics(
             liveRegion: true,
             child: Text(error!, style: TextStyle(fontSize: 12.5, color: colors.danger, fontWeight: FontWeight.w600)),
           ),
         ] else if (hint != null) ...[
-          SizedBox(height: InoSpace.s2),
+          const SizedBox(height: InoSpace.s2),
           Text(hint!, style: TextStyle(fontSize: 12.5, color: colors.onSurfaceMuted)),
         ],
       ],
@@ -391,7 +391,7 @@ class _FileRow extends StatelessWidget {
 
     return Container(
       constraints: const BoxConstraints(minHeight: 44),
-      padding: EdgeInsets.symmetric(horizontal: InoSpace.s4, vertical: InoSpace.s2),
+      padding: const EdgeInsets.symmetric(horizontal: InoSpace.s4, vertical: InoSpace.s2),
       decoration: BoxDecoration(
         border: Border.all(color: isError ? colors.danger : colors.border),
         borderRadius: BorderRadius.circular(InoRadius.md),
@@ -409,7 +409,7 @@ class _FileRow extends StatelessWidget {
                 ? Image.network(item.previewUri!, fit: BoxFit.cover, width: 36, height: 36)
                 : Text('FILE', style: TextStyle(color: colors.onSurfaceMuted, fontSize: 12)),
           ),
-          SizedBox(width: InoSpace.s3),
+          const SizedBox(width: InoSpace.s3),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -426,7 +426,7 @@ class _FileRow extends StatelessWidget {
                       style: TextStyle(fontSize: 11, color: isError ? colors.dangerTextSafe : colors.onSurfaceMuted)),
                 ),
                 if (item.status == InoFileUploadItemStatus.uploading) ...[
-                  SizedBox(height: InoSpace.s1),
+                  const SizedBox(height: InoSpace.s1),
                   ClipRRect(
                     borderRadius: BorderRadius.circular(InoRadius.pill),
                     child: SizedBox(
@@ -442,18 +442,18 @@ class _FileRow extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(width: InoSpace.s3),
+          const SizedBox(width: InoSpace.s3),
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               if (item.status == InoFileUploadItemStatus.uploading && onCancel != null)
                 _ItemActionButton(label: 'Cancel', colors: colors, disabled: disabled, onPressed: () => onCancel!(item)),
               if (isError && onRetry != null) ...[
-                SizedBox(width: InoSpace.s2),
+                const SizedBox(width: InoSpace.s2),
                 _ItemActionButton(label: 'Retry', colors: colors, disabled: disabled, onPressed: () => onRetry!(item)),
               ],
               if (onRemove != null) ...[
-                SizedBox(width: InoSpace.s2),
+                const SizedBox(width: InoSpace.s2),
                 _ItemActionButton(
                   label: 'Remove',
                   semanticLabel: 'Remove ${item.name}',
@@ -498,7 +498,7 @@ class _ItemActionButton extends StatelessWidget {
         onTap: disabled ? null : onPressed,
         child: Container(
           constraints: const BoxConstraints(minWidth: 44, minHeight: 24),
-          padding: EdgeInsets.symmetric(horizontal: InoSpace.s3),
+          padding: const EdgeInsets.symmetric(horizontal: InoSpace.s3),
           alignment: Alignment.center,
           decoration: BoxDecoration(
             border: Border.all(color: danger ? colors.danger : colors.border),

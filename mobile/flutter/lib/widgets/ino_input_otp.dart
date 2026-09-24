@@ -11,7 +11,7 @@ import '../theme/tokens.dart';
 /// SMS autofill service uses to target these fields (see web SPEC.md §1 for the same contract on
 /// web/iOS).
 ///
-/// Per-cell progress is announced via [SemanticsService.announce] — Flutter has no `aria-live`
+/// Per-cell progress is announced via [SemanticsService.sendAnnouncement] — Flutter has no `aria-live`
 /// primitive — carrying the same "Digit N of length entered" / "Code complete." contract as the
 /// web component's live region.
 class InoInputOtp extends StatefulWidget {
@@ -93,13 +93,13 @@ class _InoInputOtpState extends State<InoInputOtp> {
     widget.onChanged?.call(next);
     final filledCount = chars.where((c) => c.isNotEmpty).length;
     if (filledCount == widget.length) {
-      SemanticsService.announce('Code complete.', TextDirection.ltr);
+      SemanticsService.sendAnnouncement(View.of(context), 'Code complete.', TextDirection.ltr);
       widget.onComplete?.call(next);
     } else if (chars[announceIndex].isNotEmpty) {
-      SemanticsService.announce(
+      SemanticsService.sendAnnouncement(View.of(context),
           'Digit ${announceIndex + 1} of ${widget.length} entered.', TextDirection.ltr);
     } else {
-      SemanticsService.announce(
+      SemanticsService.sendAnnouncement(View.of(context),
           'Digit ${announceIndex + 1} of ${widget.length} cleared.', TextDirection.ltr);
     }
   }

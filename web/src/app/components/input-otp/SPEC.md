@@ -149,12 +149,21 @@ required by the issue for KYB verification flows:
   primitive).
 - **Flutter** — `mobile/flutter/lib/widgets/ino_input_otp.dart`. One `TextField` per box with its
   own `FocusNode`, `autofillHints: [AutofillHints.oneTimeCode]` (Android SMS Retriever/autofill),
-  `SemanticsService.announce` for the per-cell announcement (same deprecated-but-still-standard API
-  `ino_datepicker.dart` already uses in this repo).
+  `SemanticsService.sendAnnouncement` for the per-cell announcement.
 
 Both native ports carry `length`, `mask`, `integerOnly`, `size`, and `disabled`/`readOnly`/`loading`
 states using their own token files. Neither carries the (web-deferred, §8) custom-template or
 filled-variant surfaces.
+
+**Flutter announcement API migration (INO-302).** All three per-cell calls (`_commit`, digit
+entered/cleared/code-complete) migrated from the deprecated `SemanticsService.announce` to
+`SemanticsService.sendAnnouncement(View.of(context), ...)`, matching `ino_datepicker.dart`'s
+migration in the same change. Checked against the Flutter SDK source
+(`semantics_service.dart`): both build the identical `AnnounceSemanticsEvent` and default to
+`Assertiveness.polite`; `sendAnnouncement` only adds the explicit `FlutterView` parameter that
+`announce` inferred from `PlatformDispatcher.instance.implicitView` (incompatible with multiple
+windows). No change to announcement politeness/liveness — the screen reader hears the same
+"Digit N of length entered/cleared." / "Code complete." text the same way.
 
 ---
 
