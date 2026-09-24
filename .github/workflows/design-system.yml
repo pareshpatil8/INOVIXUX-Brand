@@ -111,9 +111,15 @@ jobs:
   # check that is skipped by a path filter is reported as *pending*, not passing,
   # and blocks the PR forever. Caching makes the docs-only case cheap enough.
   #
-  # Status as of INO-262 (verified locally against fcdf1ad, the integration branch
-  # tip): all four toolchains compile clean. Nothing was broken — the gate was just
-  # never watching. So these jobs land BLOCKING, not advisory: the issue proposed
+  # Status as of INO-262: all four toolchains compile clean. Deliberately NOT citing
+  # a local hand-run here — "I ran it and it was fine" is the exact class of claim
+  # this issue was opened to retire. The evidence is CI run 35948536470, these jobs
+  # green on the merge of this branch with the integration branch at 2b4f6e7.
+  # Nothing was broken — the gate was just never watching. Verified red as well as
+  # green: run 35875857219 has all three compile jobs failing on a deliberately
+  # broken tree while the token `check` job still passed.
+  #
+  # So these jobs land BLOCKING, not advisory: the issue proposed
   # advisory-first because nobody knew what was broken, and now we do. Making the
   # jobs required *in branch protection* is a separate repo-admin change and stays
   # out of scope here; what this file controls is that a compile failure fails the
