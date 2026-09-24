@@ -79,19 +79,28 @@
     cursor: not-allowed;
   }
 
-  /* State 7 — invalid. An outline ring, not `border` or `box-shadow` — a native checkbox's own
-     chrome isn't a reliably paintable `border` across browsers without `appearance: none` (which
-     this component deliberately avoids, see the class doc comment), and `box-shadow` is reserved
-     for the themed elevation scale (tokens.css §8) everywhere else in this codebase. `outline`
-     paints outside the box in every evergreen browser regardless of native appearance, the same
-     property :focus-visible below already relies on for exactly that reason.
-     `:not(:focus-visible)` so the two rings never have to fight over the one `outline` property —
-     focus wins outright while focused, the invalid ring resumes the moment focus moves on, and
-     the danger-coloured error text below stays the invalid signal that's always present either
+  /* State 7 — invalid. `--ino-invalid-ring` (tokens.css §12, INO-257) — the same ring `ino-radio`
+     paints, on the same channel. Still not a `border`: a native checkbox's own chrome isn't a
+     reliably paintable `border` across browsers without `appearance: none`, which this component
+     deliberately avoids (see the class doc comment).
+
+     This drops the `:not(:focus-visible)` guard the ring originally carried, and the reasoning that
+     guard documented is retired with it (INO-269). That reasoning was correct at the time — the
+     ring was hand-rolled on `outline`, the one channel State 4 above already owns, so `box-shadow`
+     was spoken for by the themed elevation scale (tokens.css §8) and the two states genuinely could
+     not both paint. The cost was that a focused invalid checkbox showed no invalid chrome at all,
+     for exactly as long as the user was interacting with the failing control. INO-257 removed the
+     constraint by giving the invalid ring a channel of its own — the one box-shadow high-contrast
+     keeps and widens rather than flattening — so both affordances now paint together. The token's
+     geometry is spread-only, so the ring sits inside the gap --ino-focus-ring-offset leaves instead
+     of under the focus outline.
+
+     Weight and per-theme behaviour live in the token, not here. That also closes the second defect
+     of the old rule: a hardcoded 2px stayed 2px in high-contrast while the focus ring widened to
+     3px. The danger-coloured error text below remains the invalid signal that is present either
      way. */
-  &[aria-invalid='true']:not(:focus-visible) {
-    outline: 2px solid var(--ino-color-danger);
-    outline-offset: var(--ino-focus-ring-offset);
+  &[aria-invalid='true'] {
+    box-shadow: var(--ino-invalid-ring);
   }
 }
 

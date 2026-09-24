@@ -1,0 +1,41 @@
+<div
+  *ngIf="open"
+  class="ino-drawer"
+  [class.ino-drawer--non-modal]="!modal"
+  (keydown)="onKeydown($event)"
+>
+  <div *ngIf="modal" class="ino-drawer__scrim" (click)="onBackdropClick()"></div>
+
+  <div
+    #panel
+    class="ino-drawer__panel"
+    [class.ino-drawer__panel--start]="position === 'start'"
+    [class.ino-drawer__panel--end]="position === 'end'"
+    [class.ino-drawer__panel--top]="position === 'top'"
+    [class.ino-drawer__panel--bottom]="position === 'bottom'"
+    [class.ino-drawer__panel--sm]="size === 'sm'"
+    [class.ino-drawer__panel--lg]="size === 'lg'"
+    inoFocusTrap
+    [inoFocusTrapDisabled]="!modal"
+    role="dialog"
+    [attr.aria-modal]="modal ? 'true' : null"
+    [attr.aria-labelledby]="heading ? headingId : null"
+    [attr.aria-busy]="loading ? 'true' : null"
+    [attr.data-loading]="loading ? '' : null"
+    tabindex="-1"
+  >
+    <div class="ino-drawer__header">
+      <h2 *ngIf="heading" [id]="headingId" class="ino-drawer__heading">{{ heading }}</h2>
+      <ng-content select="[ino-drawer-header]"></ng-content>
+      <button type="button" class="ino-drawer__close" (click)="requestClose()" aria-label="Close drawer">✕</button>
+    </div>
+
+    <div class="ino-drawer__body">
+      <ng-content></ng-content>
+    </div>
+
+    <div class="ino-drawer__footer">
+      <ng-content select="[ino-drawer-footer]"></ng-content>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,71 @@
+/*
+ * <ino-ifta-label> — INO-142 / INO-31 T-20.
+ *
+ * No `.ino-ifta-label--floated` host class (contrast `<ino-float-label>`'s SCSS): the PrimeNG
+ * benchmark's IftaLabel is a single permanently-docked style, not a rest/floated toggle, so there
+ * is nothing here that reacts to the projected control's own state — every selector below targets
+ * `:host`/`<ino-label>`, both elements this component's OWN template renders, needing no
+ * `::ng-deep` piercing (see the component's own doc comment for why that never became a problem
+ * here the way it did for `<ino-float-label>`).
+ *
+ * Every colour/space/radius/duration/font-size below still resolves through a semantic token.
+ */
+:host {
+  position: relative;
+  display: block;
+  inline-size: 100%;
+
+  /* `--ino-control-height-*`/`--ino-control-padding-inline-*` already re-resolve under
+     `[data-density="dense"|"fluid"]` ancestors (tokens.css §10) — density support here is
+     inherited for free, the same handoff `<ino-float-label>`'s own :host block relies on. */
+  --ino-ifta-label-height: var(--ino-control-height-default);
+  --ino-ifta-label-padding-inline: var(--ino-control-padding-inline-default);
+}
+
+:host([data-size='sm']) {
+  --ino-ifta-label-height: var(--ino-control-height-sm);
+  --ino-ifta-label-padding-inline: var(--ino-control-padding-inline-sm);
+}
+
+:host([data-size='lg']) {
+  --ino-ifta-label-height: var(--ino-control-height-lg);
+  --ino-ifta-label-padding-inline: var(--ino-control-padding-inline-lg);
+}
+
+/* The docked label — always in the "floated" position `<ino-float-label>` only reaches on focus/
+   fill. Sized at the `label-sm` tier (tokens.css §4b), the same tier `<ino-label size="sm">` and
+   `<ino-float-label>`'s floated state already use elsewhere, so no new size value is introduced. */
+:host > ino-label {
+  position: absolute;
+  inset-inline-start: var(--ino-ifta-label-padding-inline);
+  top: var(--ino-space-2);
+  max-inline-size: calc(100% - (var(--ino-ifta-label-padding-inline) * 2));
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  pointer-events: none; /* absolutely positioned over the control; clicking it would otherwise
+                            steal the click instead of reaching the control beneath */
+
+  --ino-type-label-size: var(--ino-type-label-sm-size);
+  --ino-type-label-line: var(--ino-type-label-sm-line);
+  --ino-type-label-weight: var(--ino-type-label-sm-weight);
+  --ino-type-label-tracking: var(--ino-type-label-sm-tracking);
+
+  /* No position/size transition — there is no rest/floated state to move between (SPEC.md §1).
+     The only thing that ever changes post-mount is the label's own colour, on `disabled`/
+     `invalid` toggling (forwarded to the internal `<ino-label>`'s own colour roles) — collapsed
+     under reduced motion the same as every other transition in this design system. */
+  transition: color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+/* Disabled (DoD row 5) — dims the whole unit; the projected control renders its own `:disabled`
+   chrome, this only keeps the label visually in step with it. Readonly/invalid stay the projected
+   `<ino-label>`'s own `[readonly]`/`[invalid]` inputs, already forwarded from this component's own
+   `disabled`/`invalid`/`readonly` @Inputs in the template — no extra CSS needed. */
+:host(.ino-ifta-label--disabled) > ino-label {
+  opacity: 0.5;
+}

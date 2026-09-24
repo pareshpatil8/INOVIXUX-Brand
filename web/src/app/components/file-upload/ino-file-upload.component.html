@@ -1,0 +1,159 @@
+<div class="ino-fu" [class.ino-fu--disabled]="disabled">
+  <ino-label
+    *ngIf="label"
+    [for]="uploadId"
+    [size]="size"
+    [required]="required"
+    [disabled]="disabled"
+    [invalid]="!!error"
+    [readonly]="readonly"
+  >{{ label }}</ino-label>
+
+  <!-- Hidden native input — the real interactive picker element. Removed from the tab order
+       (tabindex="-1") because the visible "Choose" button below is the documented keyboard entry
+       point (SPEC.md §2); the <label for> association above still gives it a proper accessible
+       name, and (click) still runs onInputClick's readonly/loading guard whether the click was
+       fired by the user or proxied via `fileInput.click()`. -->
+  <input
+    #fileInput
+    [id]="uploadId"
+    type="file"
+    class="ino-fu__native-input"
+    tabindex="-1"
+    aria-hidden="true"
+    [multiple]="multiple"
+    [accept]="accept"
+    [attr.capture]="captureMode || null"
+    [disabled]="disabled"
+    [attr.aria-invalid]="error ? true : null"
+    [attr.aria-describedby]="describedBy"
+    (click)="onInputClick($event)"
+    (change)="onFileInputChange($event)"
+  />
+
+  <!-- Advanced mode — dropzone + per-file list (PrimeNG "advanced" benchmark). -->
+  <ng-container *ngIf="mode === 'advanced'">
+    <div
+      class="ino-fu__dropzone"
+      role="group"
+      [attr.aria-labelledby]="label ? uploadId : null"
+      [class.ino-fu__dropzone--dragover]="dragover"
+      [class.ino-fu__dropzone--error]="!!error"
+      [class.ino-fu__dropzone--disabled]="disabled"
+      (dragover)="onDragOver($event)"
+      (dragleave)="onDragLeave()"
+      (drop)="onDrop($event)"
+    >
+      <svg class="ino-fu__dropzone-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+        <path d="M12 16V4M12 4l-4 4M12 4l4 4" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+      <button
+        type="button"
+        class="ino-fu__choose"
+        [disabled]="disabled || loading"
+        [attr.aria-describedby]="describedBy"
+        (click)="fileInput.click()"
+      >
+        {{ chooseLabel }}
+      </button>
+      <!-- Drag-and-drop instructions conveyed as real text, not implied by appearance alone
+           (DoD row 8 — the dropzone must communicate itself to assistive tech). -->
+      <p class="ino-fu__dropzone-hint" *ngIf="dragDrop">{{ dropHint }}</p>
+      <span class="ino-fu__spinner" *ngIf="loading" aria-hidden="true"></span>
+    </div>
+
+    <ul class="ino-fu__list" *ngIf="items.length" aria-label="Selected files">
+      <li
+        class="ino-fu__item"
+        *ngFor="let item of items"
+        [class.ino-fu__item--error]="item.status === 'error'"
+        [class.ino-fu__item--success]="item.status === 'success'"
+      >
+        <span class="ino-fu__item-preview" aria-hidden="true">
+          <img *ngIf="previewUrl(item) as src; else fileIcon" [src]="src" alt="" class="ino-fu__item-thumb" />
+          <ng-template #fileIcon>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+              <path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z" stroke-linejoin="round" />
+              <path d="M14 2v6h6" stroke-linejoin="round" />
+            </svg>
+          </ng-template>
+        </span>
+
+        <span class="ino-fu__item-meta">
+          <span class="ino-fu__item-name">{{ item.file.name }}</span>
+          <span class="ino-fu__item-size">{{ formatBytes(item.file.size) }}</span>
+
+          <!-- Per-item status conveyed as text, not colour alone (WCAG 1.4.1); aria-live so a
+               screen reader hears uploading -> success/error transitions without focus moving. -->
+          <span class="ino-fu__item-status" aria-live="polite">
+            <ng-container [ngSwitch]="item.status">
+              <span *ngSwitchCase="'uploading'">Uploading… {{ item.progress ?? 0 }}%</span>
+              <span *ngSwitchCase="'success'">Uploaded</span>
+              <span *ngSwitchCase="'error'" class="ino-fu__item-status--error">{{ item.error || 'Upload failed' }}</span>
+              <span *ngSwitchDefault>Ready to upload</span>
+            </ng-container>
+          </span>
+
+          <span class="ino-fu__item-progress" *ngIf="item.status === 'uploading'" role="progressbar"
+                [attr.aria-valuenow]="item.progress ?? 0" aria-valuemin="0" aria-valuemax="100">
+            <span class="ino-fu__item-progress-fill" [style.inline-size.%]="item.progress ?? 0"></span>
+          </span>
+        </span>
+
+        <span class="ino-fu__item-actions">
+          <button
+            type="button"
+            class="ino-fu__item-btn"
+            *ngIf="item.status === 'uploading'"
+            [disabled]="disabled"
+            (click)="cancelItem(item)"
+          >Cancel</button>
+          <button
+            type="button"
+            class="ino-fu__item-btn"
+            *ngIf="item.status === 'error'"
+            [disabled]="disabled"
+            (click)="retryItem(item)"
+          >Retry</button>
+          <button
+            type="button"
+            class="ino-fu__item-btn ino-fu__item-btn--remove"
+            [disabled]="disabled || readonly"
+            [attr.aria-label]="'Remove ' + item.file.name"
+            (click)="removeItem(item)"
+          >Remove</button>
+        </span>
+      </li>
+    </ul>
+  </ng-container>
+
+  <!-- Basic mode — single "Choose" affordance (PrimeNG "basic" benchmark). -->
+  <div class="ino-fu__basic" *ngIf="mode === 'basic'">
+    <button
+      type="button"
+      class="ino-fu__choose"
+      [disabled]="disabled || loading"
+      [attr.aria-describedby]="describedBy"
+      (click)="fileInput.click()"
+    >
+      {{ chooseLabel }}
+    </button>
+    <span class="ino-fu__basic-filename" *ngIf="singleFileName as name; else noFile">{{ name }}</span>
+    <ng-template #noFile>
+      <span class="ino-fu__basic-filename ino-fu__basic-filename--empty">No file chosen</span>
+    </ng-template>
+    <span class="ino-fu__spinner" *ngIf="loading" aria-hidden="true"></span>
+  </div>
+
+  <div *ngIf="rejections.length" [id]="rejectionsId" class="ino-fu__rejections" role="alert">
+    <p class="ino-fu__rejections-title">Some files were not accepted</p>
+    <ul class="ino-fu__rejections-list">
+      <li *ngFor="let rejection of rejections">{{ rejection.message }}</li>
+    </ul>
+    <button type="button" class="ino-fu__item-btn ino-fu__rejections-dismiss" (click)="dismissRejections()">Dismiss</button>
+  </div>
+
+  <p *ngIf="hint && !error" [id]="hintId" class="ino-fu__hint">{{ hint }}</p>
+  <p *ngIf="error" [id]="errorId" class="ino-fu__error" role="alert">{{ error }}</p>
+</div>
