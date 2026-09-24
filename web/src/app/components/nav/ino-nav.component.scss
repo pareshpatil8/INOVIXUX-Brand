@@ -1,4 +1,5 @@
 .ino-nav {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -8,27 +9,167 @@
   background: var(--ino-color-surface);
 }
 
-.ino-nav__links {
+/* SIZE (INO-124): base rule reads only unsuffixed --ino-control-* aliases; .ino-nav--sm/--lg
+   re-point them, same shape as ino-button. --ino-control-height is NOT consumed by top-level
+   items/submenu links — a menubar link is inline text, not a button (SPEC.md §4). The mobile
+   panel's rows DO consume it (§6): DoD row 4 treats that surface as row-based. */
+.ino-nav--sm {
+  --ino-control-padding-inline-roomy: var(--ino-control-padding-inline-roomy-sm);
+  --ino-control-font-size: var(--ino-control-font-size-sm);
+  --ino-control-gap: var(--ino-control-gap-sm);
+  --ino-control-height: var(--ino-control-height-sm);
+}
+
+.ino-nav--lg {
+  --ino-control-padding-inline-roomy: var(--ino-control-padding-inline-roomy-lg);
+  --ino-control-font-size: var(--ino-control-font-size-lg);
+  --ino-control-gap: var(--ino-control-gap-lg);
+  --ino-control-height: var(--ino-control-height-lg);
+}
+
+// -- Menubar (role="menubar") ----------------------------------------------------------------
+
+.ino-nav__menubar {
   display: flex;
   align-items: center;
-  gap: var(--ino-space-6);
+  gap: var(--ino-control-gap, var(--ino-space-6));
+}
 
-  a {
-    color: var(--ino-color-on-surface-muted);
-    text-decoration: none;
-    font-size: var(--ino-type-body-size);
-    transition: color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+.ino-nav__item {
+  position: relative;
+}
 
-    &:hover,
-    &:focus-visible {
-      color: var(--ino-color-on-surface);
-    }
+// Base for the top-level `<a role="menuitem">` / `<button role="menuitem">` forms.
+.ino-nav__item-control {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ino-space-1);
+  border: none;
+  background: transparent;
+  padding-block: var(--ino-space-2);
+  padding-inline: 0;
+  color: var(--ino-color-on-surface-muted);
+  text-decoration: none;
+  font: inherit;
+  font-size: var(--ino-control-font-size, var(--ino-type-body-size));
+  cursor: pointer;
+  transition: color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+}
 
-    &.is-active {
-      color: var(--ino-color-on-surface);
-    }
+.ino-nav__chevron {
+  flex-shrink: 0;
+  transition: transform var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+}
+
+.ino-nav__item-trigger[aria-expanded='true'] .ino-nav__chevron,
+.ino-nav__mobile-group-trigger .ino-nav__chevron.is-open {
+  transform: rotate(180deg);
+}
+
+// -- Submenu (role="menu") -------------------------------------------------------------------
+
+.ino-nav__submenu {
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: calc(100% + var(--ino-space-2));
+  z-index: 10;
+  min-width: 200px;
+  margin: 0;
+  padding: var(--ino-space-2);
+  list-style: none;
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-lg);
+  background: var(--ino-color-surface-raised);
+  box-shadow: var(--ino-elevation-2);
+}
+
+.ino-nav__submenu-link {
+  display: block;
+  border-radius: var(--ino-radius-md);
+  padding-block: var(--ino-space-2);
+  padding-inline: var(--ino-space-3);
+  color: var(--ino-color-on-surface);
+  text-decoration: none;
+  font-size: var(--ino-type-body-size);
+  min-block-size: var(--ino-target-min);
+}
+
+// -- Interactive states, shared across menubar / submenu / mobile links -----------------------
+// Colour-only hover/active is not a conforming focus indicator on its own (SC 2.4.11) — every
+// focus-visible rule below always also sets an outline; recolouring is reinforcement only.
+// `.ino-nav__menu-link` is the shared modifier on submenu/mobile links+triggers (declared after
+// their layout classes in the template), so their states live in ONE rule set instead of three.
+
+.ino-nav__item-control,
+.ino-nav__menu-link {
+  transition-property: color, background;
+  transition-duration: var(--ino-motion-duration-fast);
+  transition-timing-function: var(--ino-motion-easing-standard);
+
+  &.is-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
   }
 }
+
+// Declared after `.is-active`: `a:active`/`a.is-active` share specificity, source order decides —
+// pressing the current-route link must still read as a press.
+.ino-nav__item-control {
+  &:hover,
+  &:focus-visible,
+  &.is-active {
+    color: var(--ino-color-on-surface);
+  }
+
+  &:active {
+    color: var(--ino-color-accent-active);
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+}
+
+.ino-nav__menu-link {
+  &:hover,
+  &:focus-visible {
+    background: var(--ino-color-surface-sunken);
+  }
+
+  &.is-active {
+    color: var(--ino-color-accent);
+  }
+
+  &:active {
+    color: var(--ino-color-accent-active);
+    background: var(--ino-color-surface-sunken);
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: -2px;
+  }
+}
+
+// Enter/exit: block-axis only (translateY) — nothing to mirror under dir="rtl".
+@media (prefers-reduced-motion: no-preference) {
+  .ino-nav-submenu-enter {
+    animation: ino-nav-submenu-shift var(--ino-motion-duration-fast) var(--ino-motion-easing-decelerate);
+  }
+
+  .ino-nav-submenu-leave {
+    animation: ino-nav-submenu-shift var(--ino-motion-duration-fast) var(--ino-motion-easing-accelerate)
+      reverse forwards;
+  }
+}
+
+@keyframes ino-nav-submenu-shift {
+  from { opacity: 0; transform: translateY(-4px); }
+}
+
+// -- Actions (theme toggle / CTA / hamburger) --------------------------------------------------
 
 .ino-nav__actions {
   display: flex;
@@ -36,10 +177,12 @@
   gap: var(--ino-space-3);
 }
 
-// Icon-only control — 44px hit area (--ino-target-comfortable) even though the
-// visible glyph is 18px, so the target clears WCAG 2.2 §2.5.8 with real margin
-// on a touch viewport, not just the 24px floor. See tokens.css §7.
-.ino-nav__theme-toggle {
+// Icon-only controls — 44px hit area (--ino-target-comfortable) even though the glyph is
+// 16-18px, clearing WCAG 2.2 §2.5.8 with room on touch (tokens.css §7). Theme toggle, hamburger
+// and mobile-panel close button share this shape.
+.ino-nav__theme-toggle,
+.ino-nav__hamburger,
+.ino-nav__mobile-close {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -52,21 +195,27 @@
   color: var(--ino-color-on-surface-muted);
   cursor: pointer;
   transition: color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
-    border-color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+    border-color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+    background var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
 
   &:hover,
   &:focus-visible {
     color: var(--ino-color-on-surface);
     border-color: var(--ino-color-accent-secondary);
   }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+
+  &:active {
+    background: var(--ino-color-surface-sunken);
+    border-color: var(--ino-color-accent-active);
+    color: var(--ino-color-accent-active);
+  }
 }
 
-// .btn.primary is the shared button pattern from the v5 foundation build —
-// background: on-surface / color: surface (inverted chip), reused as-is here
-// rather than re-declared, per angular-theme-contract.md §1.
-// Primary CTA carries the accent gradient directly (Adaptive Synapse pivot)
-// rather than the inverted on-surface chip — this is the one control on
-// the page that should read as "the accent," matching the Vetra reference.
 .btn.primary {
   background: var(--ino-gradient-accent);
   color: var(--ino-color-on-accent);
@@ -76,9 +225,146 @@
   font-size: var(--ino-type-body-size);
   font-weight: 600;
   cursor: pointer;
-  transition: opacity var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+  transition: opacity var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+    background var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
 
   &:hover {
     opacity: 0.88;
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+
+  // Mirrors ino-button's primary press: flat --ino-color-accent-active, no hover fade.
+  &:active {
+    background: var(--ino-color-accent-active);
+    opacity: 1;
+  }
+}
+
+.ino-nav__hamburger {
+  display: none;
+}
+
+// -- Mobile collapse (960px — same layout-collapse breakpoint ino-footer/ino-feature-grid use) --
+
+@media (max-width: 960px) {
+  .ino-nav__menubar {
+    display: none;
+  }
+
+  .ino-nav__hamburger {
+    display: inline-flex;
+  }
+}
+
+// -- Mobile panel -----------------------------------------------------------------------------
+
+.ino-nav__mobile {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+}
+
+.ino-nav__mobile-scrim {
+  position: absolute;
+  inset: 0;
+  background: var(--ino-color-overlay-scrim);
+}
+
+.ino-nav__mobile-panel {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: 0;
+  max-block-size: 100%;
+  overflow-y: auto;
+  padding: var(--ino-space-6) var(--ino-space-7);
+  padding-block-start: calc(var(--ino-space-5) + var(--ino-safe-area-top));
+  padding-block-end: calc(var(--ino-space-7) + var(--ino-safe-area-bottom));
+  background: var(--ino-color-surface-raised);
+  box-shadow: var(--ino-elevation-2);
+
+  &:focus-visible {
+    outline: none;
+  }
+}
+
+.ino-nav__mobile-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-block-end: var(--ino-space-4);
+}
+
+.ino-nav__mobile-list,
+.ino-nav__mobile-sublist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ino-space-1);
+}
+
+.ino-nav__mobile-sublist {
+  padding-inline-start: var(--ino-space-5);
+  padding-block: var(--ino-space-1) var(--ino-space-2);
+}
+
+// Row-based surface (DoD §6): consumes --ino-control-height directly, which control-size-scale.md
+// §3 pins to --ino-row-min-height under [data-density="dense"] and to --ino-target-comfortable in
+// fluid/base — same as every other row-based component on the scale.
+.ino-nav__mobile-link,
+.ino-nav__mobile-group-trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--ino-space-2);
+  min-block-size: var(--ino-control-height, var(--ino-target-comfortable));
+  width: 100%;
+  border: none;
+  border-radius: var(--ino-radius-md);
+  padding-inline: var(--ino-control-padding-inline-roomy, var(--ino-space-4));
+  background: transparent;
+  color: var(--ino-color-on-surface);
+  text-decoration: none;
+  font: inherit;
+  font-size: var(--ino-control-font-size, var(--ino-type-body-size));
+  text-align: start;
+  cursor: pointer;
+}
+
+.ino-nav__mobile-group-trigger {
+  justify-content: space-between;
+}
+
+// Enter/exit — panel only (fade + block-axis translate); the scrim appears/disappears instantly,
+// same tradeoff `[inoFocusTrap]`-backed surfaces elsewhere in this repo make for their backdrop.
+@media (prefers-reduced-motion: no-preference) {
+  .ino-nav-mobile-enter .ino-nav__mobile-panel {
+    animation: ino-nav-mobile-panel-shift var(--ino-motion-duration-base) var(--ino-motion-easing-decelerate);
+  }
+
+  .ino-nav-mobile-leave .ino-nav__mobile-panel {
+    animation: ino-nav-mobile-panel-shift var(--ino-motion-duration-fast) var(--ino-motion-easing-accelerate)
+      reverse forwards;
+  }
+}
+
+@keyframes ino-nav-mobile-panel-shift {
+  from { opacity: 0; transform: translateY(-12px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ino-nav__item-control,
+  .ino-nav__chevron,
+  .ino-nav__submenu-link,
+  .ino-nav__theme-toggle,
+  .ino-nav__hamburger,
+  .ino-nav__mobile-close,
+  .ino-nav__mobile-link,
+  .ino-nav__mobile-group-trigger,
+  .btn.primary {
+    transition: none;
   }
 }

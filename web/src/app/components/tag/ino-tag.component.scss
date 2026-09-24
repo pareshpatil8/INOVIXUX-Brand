@@ -1,0 +1,157 @@
+/*
+ * <ino-tag> — INO-143 / INO-31 T-12.
+ *
+ * No literal colour/space/radius/duration/font-size — every declaration resolves through a
+ * semantic role in tokens.css, and logical properties only (RTL is one code path, see SPEC.md §4).
+ *
+ * Severity → token pair is resolved once per host via three custom properties, the same shape
+ * ino-metric-panel already used for its inline `.chip`/`.dot` classes:
+ */
+:host([data-severity='high']) {
+  --ino-tag-fill: var(--ino-color-risk-high-fill);
+  --ino-tag-on-fill: var(--ino-color-risk-high-on-fill);
+  --ino-tag-dot: var(--ino-color-risk-high-dot);
+}
+
+:host([data-severity='medium']) {
+  --ino-tag-fill: var(--ino-color-risk-medium-fill);
+  --ino-tag-on-fill: var(--ino-color-risk-medium-on-fill);
+  --ino-tag-dot: var(--ino-color-risk-medium-dot);
+}
+
+:host([data-severity='low']) {
+  --ino-tag-fill: var(--ino-color-risk-low-fill);
+  --ino-tag-on-fill: var(--ino-color-risk-low-on-fill);
+  --ino-tag-dot: var(--ino-color-risk-low-dot);
+}
+
+:host([data-severity='info']) {
+  --ino-tag-fill: var(--ino-color-info);
+  --ino-tag-on-fill: var(--ino-color-on-info);
+  --ino-tag-dot: var(--ino-color-info);
+}
+
+/*
+ * Size API — DoD row 3. As a static inline label (not a control), the Tag deliberately does NOT
+ * read `--ino-control-height` as a `min-block-size` — see SPEC.md §3 for why forcing a 44px-tall
+ * chip onto every risk flag in a dense table would be wrong. It still reads three of the six
+ * Wave 0 control-size aliases (font-size / padding-inline / gap) so `sm`/`default`/`lg` stay
+ * driven by the same scale as every other component, per the tokens.css §12 idiom.
+ */
+:host([data-size='sm']) {
+  --ino-control-font-size: var(--ino-control-font-size-sm);
+  --ino-control-padding-inline: var(--ino-control-padding-inline-sm);
+  --ino-control-gap: var(--ino-control-gap-sm);
+}
+
+:host([data-size='lg']) {
+  --ino-control-font-size: var(--ino-control-font-size-lg);
+  --ino-control-padding-inline: var(--ino-control-padding-inline-lg);
+  --ino-control-gap: var(--ino-control-gap-lg);
+}
+
+:host {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ino-control-gap);
+  vertical-align: middle;
+  min-block-size: var(--ino-row-min-height, 32px); /* DoD row 4 — row-based density floor. The
+    fallback is the dense value (32px), matching the fallback ino-metric-panel's own row `<li>`
+    already uses outside a [data-density] ancestor — not a free-floating `auto` the contract
+    doesn't sanction (tokens.css §10 only ever defines this as 32px | 44px). */
+  padding-inline: var(--ino-control-padding-inline);
+  padding-block: var(--ino-space-1);
+  border-radius: var(--ino-radius-sm);
+  background: var(--ino-tag-fill);
+  color: var(--ino-tag-on-fill);
+  font-family: var(--ino-font-mono);
+  font-size: var(--ino-control-font-size);
+  font-weight: var(--ino-type-eyebrow-weight);
+  letter-spacing: var(--ino-type-eyebrow-tracking);
+  line-height: 1;
+  white-space: nowrap;
+
+  /* State 1 — default (above). State 7 — invalid: N/A, see SPEC.md §1; not carried here. */
+  transition: opacity var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+    background var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+/* rounded — pill shape, PrimeNG Tag's `rounded` input. */
+:host(.ino-tag--rounded) {
+  border-radius: var(--ino-radius-pill);
+}
+
+/* State 5 — disabled. `aria-disabled`, not the native `disabled` attribute: a `<span>` host has no
+   native disabled state to hook, and this keeps the element (and its text) in the accessibility
+   tree rather than removing it, matching ino-button's loading rationale. */
+:host(.ino-tag--disabled) {
+  opacity: 0.5;
+}
+
+/* State 8 — loading/busy. Label stays put (accessible name never disappears mid-fetch); the icon
+   slot swaps for a spinner instead. */
+.ino-tag__spinner {
+  inline-size: 10px;
+  block-size: 10px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  border-inline-start-color: transparent; /* logical, not border-top — RTL-safe (SPEC.md §4) */
+  opacity: 0.85;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: ino-tag-spin var(--ino-motion-duration-slow) linear infinite;
+  }
+}
+
+@keyframes ino-tag-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.ino-tag__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--ino-control-icon-size);
+  block-size: var(--ino-control-icon-size);
+  flex-shrink: 0;
+}
+
+.ino-tag__icon:empty {
+  display: none;
+}
+
+/* dot form — the ino-metric-panel row indicator, promoted to a standalone variant (DoD scope). */
+.ino-tag__dot {
+  inline-size: 6px;
+  block-size: 6px;
+  border-radius: 50%;
+  background: var(--ino-tag-dot);
+  flex-shrink: 0;
+}
+
+:host(.ino-tag--dot) {
+  background: transparent;
+  color: var(--ino-color-on-surface-muted);
+  padding-inline: 0;
+  padding-block: 0;
+}
+
+/* Visually-hidden but still-announced accessible name for the dot form — standard sr-only clip,
+   same pattern as ino-alert__sr-status. */
+.ino-tag__label--sr-only {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

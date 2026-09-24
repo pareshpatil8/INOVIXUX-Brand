@@ -13,7 +13,7 @@
   justify-content: space-around;
   gap: var(--ino-target-spacing, 8px);
   background: var(--ino-color-surface-raised);
-  border-top: 1px solid var(--ino-primitive-line);
+  border-top: 1px solid var(--ino-color-border);
   padding-top: 6px;
   padding-bottom: calc(6px + var(--ino-safe-area-bottom, 0px));
 }

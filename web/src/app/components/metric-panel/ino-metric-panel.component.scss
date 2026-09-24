@@ -1,3 +1,7 @@
+// Read-only data display — no `:active`, no focus ring (INO-123 / DoD §5-6). The rows carry
+// `--ino-row-min-height` for the WCAG 2.2 §2.5.8 target floor, but that is a density/legibility
+// guarantee, not an interaction one: nothing in this panel is clickable or focusable. A press
+// affordance on a row would advertise a drill-down this component does not implement.
 .ino-metric-panel {
   background: var(--ino-color-surface-raised); // raised = live data, per contract
   border: 1px solid var(--ino-color-border);
@@ -13,8 +17,8 @@
 }
 
 .ino-metric-panel__label {
-  font: var(--ino-type-label-weight) var(--ino-type-label-size) / 1 var(--ino-font-mono);
-  letter-spacing: var(--ino-type-label-tracking);
+  font: var(--ino-type-eyebrow-weight) var(--ino-type-eyebrow-size) / 1 var(--ino-font-mono);
+  letter-spacing: var(--ino-type-eyebrow-tracking);
   text-transform: uppercase;
   color: var(--ino-color-on-surface-muted);
   margin: 0;
@@ -68,8 +72,8 @@
 .chip {
   border-radius: var(--ino-radius-pill);
   padding: var(--ino-space-1) var(--ino-space-3);
-  font: var(--ino-type-label-weight) var(--ino-type-label-size) / 1 var(--ino-font-mono);
-  letter-spacing: var(--ino-type-label-tracking);
+  font: var(--ino-type-eyebrow-weight) var(--ino-type-eyebrow-size) / 1 var(--ino-font-mono);
+  letter-spacing: var(--ino-type-eyebrow-tracking);
 
   &--high { background: var(--ino-color-risk-high-fill); color: var(--ino-color-risk-high-on-fill); }
   &--medium { background: var(--ino-color-risk-medium-fill); color: var(--ino-color-risk-medium-on-fill); }

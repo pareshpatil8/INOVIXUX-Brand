@@ -78,7 +78,10 @@ Verified Line/Aperture Mark/Ledger Seal) are closed and archived (§6).
 | Surface depth (sunken/overlay), `<ino-card>` component | [`11-dark-light-mobile-accessibility.md`](11-dark-light-mobile-accessibility.md) §9 | ✅ New 2026-09-08 — live in `/web/` as a bento-card section |
 | Governance / usage standards | [`09-design-system-standards.md`](09-design-system-standards.md) | ✅ New this round — see §8 |
 | Branding completeness checklist (what's built vs. still open, every category) | [`12-branding-completeness-checklist.md`](12-branding-completeness-checklist.md) | ✅ New 2026-09-08 |
-| Mobile app pattern set (nav, screen templates, theming, motion) | [`13-mobile-app-patterns.md`](13-mobile-app-patterns.md) | ✅ New 2026-09-08 — pattern-level, no native codebase exists yet |
+| Mobile app pattern set (nav, screen templates, theming, motion, push/deep-link) | [`13-mobile-app-patterns.md`](13-mobile-app-patterns.md) | ✅ New 2026-09-08 — §6 push-notification & deep-link patterns added 2026-09-14 (INO-97); all three tracks now built, see §5 |
+| Parity analysis vs. the e-Cheque reference folder + the "what's missing under branding" list | [`16-design-system-parity-vs-echeque-reference.md`](16-design-system-parity-vs-echeque-reference.md) | ✅ New 2026-09-14 — reference folder read in full (172 files) and compared artifact by artifact. **Read §2 for the matrix, §5 for what we're missing, §7 for the sequenced backlog.** Corrects the earlier "folder could not be read" note in docs 11 and 12 |
+| Mobile decision feedback (haptics on the confirm/reject action-sheet, sound deliberately omitted) | [`13-mobile-app-patterns.md`](13-mobile-app-patterns.md) §7 | ✅ New 2026-09-22 (INO-170, L-14) — wired into all three mobile tracks |
+| Accessibility statement (public VPAT-style page, publish-ready content) | [`18-accessibility-statement.md`](18-accessibility-statement.md) | ✅ New 2026-09-22 (INO-170, L-15) — content ready; not live, `/trust-and-governance` doesn't exist yet (`08-website-sitemap.md` is still proposal-only) |
 
 **Read as:** the design system now covers dark mode, light mode, a third WCAG 2.2 AAA
 high-contrast mode, and both density modes across web, dashboard, and mobile (React Native,
@@ -112,12 +115,12 @@ Per your 2026-09-07 directive, the following are **on hold**, not silently in pr
 - **KYB MVP integration / rollout** (activity-plan workstream F, and the KYB-specific row of
   workstream C) — anything that would connect this brand/design work to a live external system.
   Nothing here has been touched this round.
-- **Final vector logo artwork via Figma** — you said you'll authorize the Figma connector
-  yourself via claude.ai connector settings. Nothing pushed to a Figma file yet; we'll wait for
-  your confirmation that it's actually authorized before touching it, since Figma tools showing
-  as available in this session isn't the same as your account being connected. (The SVG mark
-  files in `/assets/brand/logo/` are hand-built vector paths, not a Figma export — they're real
-  and usable now, but a designer pass in Figma would still refine curve quality before press.)
+- **Final vector logo artwork via Figma** — ✅ **connector authorized 2026-09-14** and verified live
+  (`whoami` → `Paresh`, plan `INVC`, seat Full, tier starter). This is no longer a hold; it moves into
+  Phase 2 scope alongside the Figma library (doc 16 register item L-17). One caveat to confirm against a
+  real file rather than assume: the starter tier may cap library-publishing features. (The SVG mark files
+  in `/assets/brand/logo/` are hand-built vector paths, not a Figma export — they're real and usable now,
+  but a designer pass in Figma would still refine curve quality before press.)
 - **Angular port of the *live marketing website* into a production repo** — `/web/` (this round)
   is the design-system showcase app, not the production site; still correctly sequenced after
   design-system sign-off, and still no live/external wiring (no KYB, no backend calls).

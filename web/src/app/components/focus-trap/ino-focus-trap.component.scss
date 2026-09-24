@@ -1,0 +1,20 @@
+// A focus trap is behavior, not surface. It contributes no colour, spacing, radius, elevation,
+// duration or type — the host is a pass-through box so that whatever the consumer projects lays
+// out exactly as it would have without the trap. `display: contents` would remove the element
+// from layout entirely, but it also removes it as a containing block and breaks the
+// `tabindex="-1"` empty-container fallback in some engines, so `display: block` is deliberate.
+//
+// There are no theme branches here and nothing for `check-theme-parity.mjs` to resolve: see
+// SPEC.md rows 1-2.
+:host {
+  display: block;
+}
+
+// The container-fallback path focuses the host itself when the trap holds no tabbable content.
+// That focus is programmatic and `tabindex="-1"` keeps it keyboard-unreachable, so it must not
+// paint a focus ring — the user has not navigated here and has nothing to act on. Scoped to
+// `[tabindex="-1"]` so that a consumer who deliberately makes the wrapper tabbable keeps their
+// own ring; real focus rings on projected controls are never touched.
+:host([tabindex='-1']:focus) {
+  outline: none;
+}

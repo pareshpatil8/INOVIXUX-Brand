@@ -1,0 +1,362 @@
+<!-- @dsCard group="Data" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ino-virtual-scroller — windowed rows (INO-129)</title>
+<!-- Canonical token file, linked rather than copied: this preview must repaint with the system,
+     and must never become a second place raw hex values live. -->
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-label-size);
+    letter-spacing: var(--ino-type-label-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 64ch; }
+  p.note { color: var(--ino-color-on-surface-muted); margin: var(--ino-space-3) 0 0; max-width: 64ch; }
+
+  .theme-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); }
+  .theme-pane {
+    flex: 1 1 320px;
+    padding: var(--ino-space-5);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-xl);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+  }
+  .theme-pane > h3 {
+    margin: 0 0 var(--ino-space-4);
+    font-size: var(--ino-type-body-sm-size);
+    color: var(--ino-color-on-surface-muted);
+    font-weight: 600;
+  }
+
+  .state-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); }
+  .state-cell { flex: 1 1 220px; }
+  .state-cell > h3 {
+    margin: 0 0 var(--ino-space-2);
+    font-size: var(--ino-type-body-sm-size);
+    color: var(--ino-color-on-surface-muted);
+    font-weight: 600;
+  }
+
+  /*
+   * Mirrors web/src/app/components/virtual-scroller/ino-virtual-scroller.component.scss —
+   * same token bindings and the same one-custom-property state model, so a divergence between
+   * this preview and the shipped component is visible as a visual diff.
+   */
+  .ino-vs {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-block-size: 0;
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-control-font-size);
+    color: var(--ino-color-on-surface);
+    --ino-vs-border: var(--ino-color-border);
+  }
+  .ino-vs__header,
+  .ino-vs__footer {
+    flex: none;
+    padding: var(--ino-space-2) var(--ino-control-padding-inline);
+    background: var(--ino-color-surface-raised);
+  }
+  .ino-vs__header { border-block-end: 1px solid var(--ino-vs-border); }
+  .ino-vs__footer { border-block-start: 1px solid var(--ino-vs-border); }
+
+  .ino-vs__viewport {
+    position: relative;
+    block-size: 200px;
+    overflow: auto;
+    overscroll-behavior: contain;
+    background: var(--ino-color-surface-sunken);
+    border: 1px solid var(--ino-vs-border);
+    border-radius: var(--ino-radius-md);
+    transition: border-color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+  }
+  .ino-vs__viewport:hover      { --ino-vs-border: var(--ino-color-on-surface-muted); }
+  .ino-vs__viewport:active     { --ino-vs-border: var(--ino-color-accent-active); }
+  .ino-vs__viewport:focus-visible {
+    --ino-vs-border: var(--ino-color-accent);
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+
+  /* State demo cells force a state that is normally transient, the same trick alert.html and
+     focus-trap.html use for :hover/:focus-visible — a modifier class stands in for the
+     pseudo-class so the state is visible in a static screenshot, not just on hover. */
+  .ino-vs--force-hover  { --ino-vs-border: var(--ino-color-on-surface-muted); }
+  .ino-vs--force-active { --ino-vs-border: var(--ino-color-accent-active); }
+  .ino-vs--force-focus  {
+    --ino-vs-border: var(--ino-color-accent);
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+  .ino-vs--disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+  .ino-vs--disabled .ino-vs__viewport {
+    --ino-vs-border: var(--ino-color-border-soft);
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .ino-vs--readonly .ino-vs__viewport { --ino-vs-border: var(--ino-color-border); }
+  .ino-vs--invalid .ino-vs__viewport  { --ino-vs-border: var(--ino-color-danger); }
+  .ino-vs--busy .ino-vs__viewport     { cursor: progress; }
+
+  .ino-vs__content { position: relative; }
+  .ino-vs__window {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    display: flex;
+    flex-direction: column;
+    inline-size: 100%;
+  }
+  .ino-vs__row {
+    display: flex;
+    align-items: center;
+    gap: var(--ino-control-gap);
+    box-sizing: border-box;
+    flex: none;
+    min-block-size: var(--ino-row-min-height);
+    padding-inline: var(--ino-control-padding-inline);
+    border-block-end: 1px solid var(--ino-color-border-soft);
+  }
+  .ino-vs__row .cell-index { color: var(--ino-color-on-surface-muted); inline-size: 3ch; }
+  .ino-vs__empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-block-size: var(--ino-control-height);
+    padding: var(--ino-space-6) var(--ino-control-padding-inline);
+    color: var(--ino-color-on-surface-muted);
+  }
+
+  .ino-vs__skeleton {
+    display: block;
+    inline-size: 100%;
+    block-size: var(--ino-space-2);
+    border-radius: var(--ino-radius-pill);
+    background: var(--ino-color-border-soft);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .ino-vs__skeleton {
+      background: linear-gradient(
+        90deg,
+        var(--ino-color-border-soft) 0%,
+        var(--ino-color-border) 50%,
+        var(--ino-color-border-soft) 100%
+      );
+      background-size: 200% 100%;
+      animation: ino-vs-shimmer var(--ino-motion-duration-slow) var(--ino-motion-easing-standard)
+        infinite;
+    }
+  }
+  @keyframes ino-vs-shimmer {
+    from { background-position: 200% 0; }
+    to   { background-position: -200% 0; }
+  }
+</style>
+</head>
+<body>
+
+<h1>Virtual Scroller — windowed rows</h1>
+<p class="lede">
+  Renders only the slice of a collection that is on screen. Each pane below is the same markup
+  under a different <code>data-theme</code> — the row content, border and hover/active/focus
+  states all come from semantic roles, so nothing here changes across themes except the
+  variables.
+</p>
+
+<h2>Rows × theme</h2>
+<div class="theme-row">
+
+  <div class="theme-pane">
+    <h3>dark — :root (default)</h3>
+    <div class="ino-vs" role="group" aria-label="Screened entities">
+      <div class="ino-vs__header">128 entities</div>
+      <div class="ino-vs__viewport" tabindex="0">
+        <div class="ino-vs__content">
+          <div class="ino-vs__window">
+            <div class="ino-vs__row"><span class="cell-index">1</span><span>Meridian Freight Ltd.</span></div>
+            <div class="ino-vs__row"><span class="cell-index">2</span><span>Kavya Textile Exports</span></div>
+            <div class="ino-vs__row"><span class="cell-index">3</span><span>Orbit Cold Chain Co.</span></div>
+            <div class="ino-vs__row"><span class="cell-index">4</span><span>Sundar Agro Traders</span></div>
+            <div class="ino-vs__row"><span class="cell-index">5</span><span>Bluewave Logistics</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="ino-vs__footer">Showing 1–5 of 128</div>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="light">
+    <h3>light — [data-theme="light"]</h3>
+    <div class="ino-vs" role="group" aria-label="Screened entities">
+      <div class="ino-vs__header">128 entities</div>
+      <div class="ino-vs__viewport" tabindex="0">
+        <div class="ino-vs__content">
+          <div class="ino-vs__window">
+            <div class="ino-vs__row"><span class="cell-index">1</span><span>Meridian Freight Ltd.</span></div>
+            <div class="ino-vs__row"><span class="cell-index">2</span><span>Kavya Textile Exports</span></div>
+            <div class="ino-vs__row"><span class="cell-index">3</span><span>Orbit Cold Chain Co.</span></div>
+            <div class="ino-vs__row"><span class="cell-index">4</span><span>Sundar Agro Traders</span></div>
+            <div class="ino-vs__row"><span class="cell-index">5</span><span>Bluewave Logistics</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="ino-vs__footer">Showing 1–5 of 128</div>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="high-contrast">
+    <h3>high-contrast — [data-theme="high-contrast"]</h3>
+    <div class="ino-vs" role="group" aria-label="Screened entities">
+      <div class="ino-vs__header">128 entities</div>
+      <div class="ino-vs__viewport" tabindex="0">
+        <div class="ino-vs__content">
+          <div class="ino-vs__window">
+            <div class="ino-vs__row"><span class="cell-index">1</span><span>Meridian Freight Ltd.</span></div>
+            <div class="ino-vs__row"><span class="cell-index">2</span><span>Kavya Textile Exports</span></div>
+            <div class="ino-vs__row"><span class="cell-index">3</span><span>Orbit Cold Chain Co.</span></div>
+            <div class="ino-vs__row"><span class="cell-index">4</span><span>Sundar Agro Traders</span></div>
+            <div class="ino-vs__row"><span class="cell-index">5</span><span>Bluewave Logistics</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="ino-vs__footer">Showing 1–5 of 128</div>
+    </div>
+  </div>
+
+</div>
+
+<h2>Eight states</h2>
+<p class="lede">
+  All eight states are carried by one inherited custom property, <code>--ino-vs-border</code>,
+  which each state rebinds — the same mechanism shown here as forced modifier classes, since a
+  static preview cannot hold a real <code>:hover</code> or <code>:active</code>.
+</p>
+<div class="state-row">
+  <div class="state-cell">
+    <h3>default</h3>
+    <div class="ino-vs">
+      <div class="ino-vs__viewport" tabindex="0">
+        <div class="ino-vs__row"><span class="cell-index">1</span><span>Meridian Freight Ltd.</span></div>
+        <div class="ino-vs__row"><span class="cell-index">2</span><span>Kavya Textile Exports</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="state-cell">
+    <h3>hover</h3>
+    <div class="ino-vs ino-vs--force-hover">
+      <div class="ino-vs__viewport">
+        <div class="ino-vs__row"><span class="cell-index">1</span><span>Meridian Freight Ltd.</span></div>
+        <div class="ino-vs__row"><span class="cell-index">2</span><span>Kavya Textile Exports</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="state-cell">
+    <h3>active / pressed</h3>
+    <div class="ino-vs ino-vs--force-active">
+      <div class="ino-vs__viewport">
+        <div class="ino-vs__row"><span class="cell-index">1</span><span>Meridian Freight Ltd.</span></div>
+        <div class="ino-vs__row"><span class="cell-index">2</span><span>Kavya Textile Exports</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="state-cell">
+    <h3>focus-visible</h3>
+    <div class="ino-vs ino-vs--force-focus">
+      <div class="ino-vs__viewport">
+        <div class="ino-vs__row"><span class="cell-index">1</span><span>Meridian Freight Ltd.</span></div>
+        <div class="ino-vs__row"><span class="cell-index">2</span><span>Kavya Textile Exports</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="state-cell">
+    <h3>disabled</h3>
+    <div class="ino-vs ino-vs--disabled">
+      <div class="ino-vs__viewport">
+        <div class="ino-vs__row"><span class="cell-index">1</span><span>Meridian Freight Ltd.</span></div>
+        <div class="ino-vs__row"><span class="cell-index">2</span><span>Kavya Textile Exports</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="state-cell">
+    <h3>readonly</h3>
+    <div class="ino-vs ino-vs--readonly">
+      <div class="ino-vs__viewport" tabindex="0">
+        <div class="ino-vs__row"><span class="cell-index">1</span><span>Meridian Freight Ltd.</span></div>
+        <div class="ino-vs__row"><span class="cell-index">2</span><span>Kavya Textile Exports</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="state-cell">
+    <h3>invalid</h3>
+    <div class="ino-vs ino-vs--invalid">
+      <div class="ino-vs__viewport" tabindex="0">
+        <div class="ino-vs__row"><span class="cell-index">1</span><span>Meridian Freight Ltd.</span></div>
+        <div class="ino-vs__row"><span class="cell-index">2</span><span>Kavya Textile Exports</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="state-cell">
+    <h3>loading / busy</h3>
+    <div class="ino-vs ino-vs--busy">
+      <div class="ino-vs__viewport" aria-busy="true">
+        <div class="ino-vs__row"><span class="ino-vs__skeleton"></span></div>
+        <div class="ino-vs__row"><span class="ino-vs__skeleton"></span></div>
+        <div class="ino-vs__row"><span class="ino-vs__skeleton"></span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>Empty state</h2>
+<div class="ino-vs" style="max-width: 360px;">
+  <div class="ino-vs__viewport">
+    <div class="ino-vs__empty">No entities match these filters.</div>
+  </div>
+</div>
+
+<h2>RTL</h2>
+<p class="lede">
+  Offsets are logical throughout — <code>scrollLeft</code> is normalised on read and
+  de-normalised on write, so an Arabic or Hebrew locale scrolls the right way with no second code
+  path. This markup uses only logical CSS properties (<code>inset-inline-start</code>,
+  <code>border-inline-end</code>, …), never <code>left</code>/<code>right</code>.
+</p>
+<div class="ino-vs" style="max-width: 360px;" dir="rtl">
+  <div class="ino-vs__viewport" tabindex="0">
+    <div class="ino-vs__row"><span class="cell-index">١</span><span>شركة الشحن الدولية</span></div>
+    <div class="ino-vs__row"><span class="cell-index">٢</span><span>مصنع النسيج الوطني</span></div>
+    <div class="ino-vs__row"><span class="cell-index">٣</span><span>الخطوط اللوجستية الزرقاء</span></div>
+  </div>
+</div>
+
+<h2>Motion — loading shimmer</h2>
+<p class="note">
+  The shimmer animation is scoped to <code>prefers-reduced-motion: no-preference</code>; under
+  <strong>reduce</strong> it inherits the flat bar above — the loading state stays fully
+  perceivable, it simply stops moving. Toggle your OS "reduce motion" setting to see both
+  branches of this preview.
+</p>
+
+</body>
+</html>

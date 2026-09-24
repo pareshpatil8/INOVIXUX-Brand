@@ -1,0 +1,80 @@
+<ng-container *ngIf="!isEmpty; else emptyState">
+  <ng-container *ngIf="!showSkeleton; else skeletonState">
+    <div
+      *ngFor="let event of events; trackBy: trackEvent; let last = last"
+      class="ino-timeline__row"
+      [attr.data-index]="event.index"
+      [attr.data-side]="event.side"
+      [attr.data-role]="event.role"
+      [attr.data-last]="last ? '' : null"
+      [attr.role]="interactive ? 'option' : 'listitem'"
+      [attr.aria-selected]="interactive ? focusedIndex === event.index : null"
+      [attr.aria-setsize]="value.length"
+      [attr.aria-posinset]="event.index + 1"
+      [attr.tabindex]="rowTabIndex(event.index)"
+      (click)="onRowClick(event)"
+      (focus)="onRowFocus(event.index)"
+      (keydown)="onRowKeydown($event, event.index)"
+    >
+      <div class="ino-timeline__opposite">
+        <ng-container
+          *ngIf="oppositeDef"
+          [ngTemplateOutlet]="oppositeDef.template"
+          [ngTemplateOutletContext]="contentContext(event)"
+        ></ng-container>
+      </div>
+
+      <div class="ino-timeline__rail">
+        <span class="ino-timeline__marker" aria-hidden="true">
+          <ng-container
+            *ngIf="markerDef; else defaultMarker"
+            [ngTemplateOutlet]="markerDef.template"
+            [ngTemplateOutletContext]="markerContext(event)"
+          ></ng-container>
+          <ng-template #defaultMarker>
+            <span class="ino-timeline__dot"></span>
+          </ng-template>
+        </span>
+        <span class="ino-timeline__connector" aria-hidden="true" *ngIf="!last"></span>
+      </div>
+
+      <div class="ino-timeline__content">
+        <ng-container
+          *ngIf="contentDef"
+          [ngTemplateOutlet]="contentDef.template"
+          [ngTemplateOutletContext]="contentContext(event)"
+        ></ng-container>
+      </div>
+    </div>
+  </ng-container>
+</ng-container>
+
+<ng-template #skeletonState>
+  <div
+    class="ino-timeline__row ino-timeline__row--skeleton"
+    *ngFor="let i of skeletonRows; let last = last"
+    [attr.data-side]="resolveSide(i)"
+    aria-hidden="true"
+  >
+    <div class="ino-timeline__opposite">
+      <span class="ino-timeline__skeleton-bar ino-timeline__skeleton-bar--opposite"></span>
+    </div>
+    <div class="ino-timeline__rail">
+      <span class="ino-timeline__connector ino-timeline__connector--before" *ngIf="i !== 0"></span>
+      <span class="ino-timeline__marker">
+        <span class="ino-timeline__dot"></span>
+      </span>
+      <span class="ino-timeline__connector ino-timeline__connector--after" *ngIf="!last"></span>
+    </div>
+    <div class="ino-timeline__content">
+      <span class="ino-timeline__skeleton-bar ino-timeline__skeleton-bar--title"></span>
+      <span class="ino-timeline__skeleton-bar ino-timeline__skeleton-bar--body"></span>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #emptyState>
+  <div class="ino-timeline__empty">
+    <ng-content select="[empty]"></ng-content>
+  </div>
+</ng-template>

@@ -1,0 +1,115 @@
+<!--
+  Four nested boxes, and the nesting is the whole design:
+
+    .ino-vs           host shell — header/footer live OUTSIDE the scrolling area
+      .ino-vs__viewport   the scroll port, and the focusable/keyboard element
+        .ino-vs__probe    token-sized measuring stick (hidden, never scrolls content)
+        .ino-vs__content  a spacer sized to the FULL collection, so the scrollbar is honest
+          .ino-vs__window the rendered slice, absolutely placed at the current offset
+
+  The spacer is what makes a 100k-row set feel like a 100k-row set: the browser's own
+  scrollbar geometry comes from `.ino-vs__content`, not from how many rows are in the DOM.
+
+  Every offset below is a LOGICAL inset (`inset-block-start` / `inset-inline-start`), never
+  top/left — that is what makes RTL work without a second layout path.
+-->
+<div class="ino-vs">
+  <!--
+    The measuring stick. It carries the same control-scale custom properties a row does, so
+    `size`, density and theme changes arrive in JS as a changed rect rather than as a number
+    someone has to remember to update in two places.
+
+    Deliberately a sibling of the viewport, not a child: an absolutely-positioned element still
+    contributes to its scroll container's scrollable overflow area, so a probe inside the
+    viewport would have added phantom scroll extent in short viewports.
+
+    `visibility: hidden` rather than `display: none` — a display:none element measures 0x0 and
+    the scroll math would divide by it.
+  -->
+  <div #probe class="ino-vs__probe" aria-hidden="true"></div>
+
+  @if (headerDef) {
+    <div class="ino-vs__header">
+      <ng-container *ngTemplateOutlet="headerDef.template"></ng-container>
+    </div>
+  }
+
+  <div
+    #viewport
+    class="ino-vs__viewport"
+    [attr.role]="role"
+    [attr.tabindex]="tabIndex"
+    [attr.aria-label]="ariaLabel"
+    [attr.aria-describedby]="ariaDescribedBy"
+    [attr.aria-busy]="busy || null"
+    [attr.aria-invalid]="invalid || null"
+    [attr.aria-readonly]="readonly || null"
+    [attr.aria-disabled]="disabled || null"
+    [attr.aria-rowcount]="isGrid ? rowCountForAria : null"
+    [style.block-size]="scrollHeight"
+    [style.inline-size]="scrollWidth"
+    (keydown)="onKeydown($event)"
+  >
+    @if (isEmpty) {
+      <div class="ino-vs__empty">
+        @if (emptyDef) {
+          <ng-container *ngTemplateOutlet="emptyDef.template"></ng-container>
+        }
+      </div>
+    } @else {
+      <div
+        class="ino-vs__content"
+        [style.block-size.px]="totalBlock || null"
+        [style.inline-size.px]="totalInline || null"
+      >
+        <div
+          class="ino-vs__window"
+          [style.inset-block-start.px]="offsetBlock"
+          [style.inset-inline-start.px]="offsetInline"
+        >
+          @for (row of rows; track trackRow($index, row)) {
+            <div
+              #row
+              class="ino-vs__row"
+              [class.ino-vs__row--placeholder]="row.placeholder"
+              [attr.role]="itemRole"
+              [attr.aria-rowindex]="isGrid ? row.index + 1 : null"
+              [attr.aria-posinset]="itemRole === 'listitem' ? row.index + 1 : null"
+              [attr.aria-setsize]="itemRole === 'listitem' ? rowCountForAria : null"
+              [style.block-size.px]="rowExtent(row.index)"
+            >
+              @if (row.placeholder) {
+                <!-- Consumer skeleton if there is one; otherwise the built-in shimmer bar, so
+                     `loading` is never an invisible state (DoD row 5). -->
+                @if (loaderDef) {
+                  <ng-container
+                    *ngTemplateOutlet="loaderDef.template; context: loaderContext(row)"
+                  ></ng-container>
+                } @else {
+                  <span class="ino-vs__skeleton" aria-hidden="true"></span>
+                }
+              } @else if (itemDef) {
+                <ng-container
+                  *ngTemplateOutlet="itemDef.template; context: itemContext(row)"
+                ></ng-container>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+
+  @if (footerDef) {
+    <div class="ino-vs__footer">
+      <ng-container *ngTemplateOutlet="footerDef.template"></ng-container>
+    </div>
+  }
+
+  <!--
+    Screen-reader narration of the rendered window. A sighted user perceives virtualization
+    from the scrollbar; a screen-reader user otherwise has no way to know that "row 30 of 30"
+    in the accessibility tree is a window into 100,000 rows. Polite, so it never interrupts.
+  -->
+  <span class="ino-vs__sr" role="status" aria-live="polite">{{ rangeAnnouncement }}</span>
+</div>

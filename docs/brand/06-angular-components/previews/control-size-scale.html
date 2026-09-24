@@ -1,0 +1,303 @@
+<!-- @dsCard group="Foundations" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Control-size scale — sm / default / lg × dense/fluid (INO-124)</title>
+<!-- Canonical token file, linked rather than copied: this preview must repaint with the system,
+     and must never become a second place raw pixel values live. Every number you see rendered
+     below is resolved by the browser from tokens.css §12 — none of them is typed into this file. -->
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-eyebrow-size, var(--ino-type-label-size));
+    letter-spacing: var(--ino-type-eyebrow-tracking, var(--ino-type-label-tracking));
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  h3 { font-size: var(--ino-type-body-size); margin: 0 0 var(--ino-space-3); font-weight: 600; }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 68ch; }
+  p.note { color: var(--ino-color-on-surface-muted); margin: var(--ino-space-3) 0 0; max-width: 68ch; }
+
+  /* ---------------------------------------------------------------------------------------------
+   * The component under test. These rules MIRROR web/src/app/components/button/ino-button.component
+   * .scss — the only translation is `:host(.ino-btn--sm)` -> `.ino-btn--sm`, because a preview page
+   * has no Angular host element. The important property is preserved exactly: the base rule reads
+   * ONLY the six unsuffixed --ino-control-* aliases, and a size class re-points those aliases.
+   * ------------------------------------------------------------------------------------------- */
+  .ino-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--ino-control-gap);
+    min-height: var(--ino-control-height);
+    padding-block: 0;
+    padding-inline: var(--ino-control-padding-inline-roomy);
+    border-radius: var(--ino-radius-md);
+    border: 1px solid transparent;
+    background: transparent;
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-control-font-size);
+    font-weight: 600;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .ino-btn:focus-visible { outline: var(--ino-focus-ring); outline-offset: var(--ino-focus-ring-offset); }
+
+  .ino-btn--sm {
+    --ino-control-height: var(--ino-control-height-sm);
+    --ino-control-padding-inline-roomy: var(--ino-control-padding-inline-roomy-sm);
+    --ino-control-font-size: var(--ino-control-font-size-sm);
+    --ino-control-icon-size: var(--ino-control-icon-size-sm);
+    --ino-control-gap: var(--ino-control-gap-sm);
+  }
+  .ino-btn--lg {
+    --ino-control-height: var(--ino-control-height-lg);
+    --ino-control-padding-inline-roomy: var(--ino-control-padding-inline-roomy-lg);
+    --ino-control-font-size: var(--ino-control-font-size-lg);
+    --ino-control-icon-size: var(--ino-control-icon-size-lg);
+    --ino-control-gap: var(--ino-control-gap-lg);
+  }
+
+  .ino-btn--primary   { background: var(--ino-gradient-accent); color: var(--ino-color-on-accent); }
+  .ino-btn--secondary { background: var(--ino-color-surface-raised); color: var(--ino-color-on-surface); border-color: var(--ino-color-border); }
+  .ino-btn--icon      { min-width: var(--ino-control-height); padding-inline: 0; color: var(--ino-color-on-surface-muted); border-color: var(--ino-color-border); }
+
+  /* The glyph inside a control tracks the icon alias, so it steps with the size. */
+  .ino-btn__icon {
+    display: inline-block; flex-shrink: 0;
+    width: var(--ino-control-icon-size);
+    height: var(--ino-control-icon-size);
+    border-radius: var(--ino-radius-sm);
+    background: currentColor;
+    opacity: 0.85;
+  }
+
+  /* A FIELD, to show the second inline-padding track side by side with the pressable track. */
+  .ino-field {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--ino-control-height);
+    padding-block: 0;
+    padding-inline: var(--ino-control-padding-inline); /* bare track — value aligns under its label */
+    font-size: var(--ino-control-font-size);
+    font-family: inherit;
+    color: var(--ino-color-on-surface);
+    background: var(--ino-color-surface-sunken);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-md);
+  }
+  .ino-field--sm { --ino-control-height: var(--ino-control-height-sm); --ino-control-padding-inline: var(--ino-control-padding-inline-sm); --ino-control-font-size: var(--ino-control-font-size-sm); }
+  .ino-field--lg { --ino-control-height: var(--ino-control-height-lg); --ino-control-padding-inline: var(--ino-control-padding-inline-lg); --ino-control-font-size: var(--ino-control-font-size-lg); }
+
+  /* --------------------------------------------------------------------------------------------- */
+  .row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--ino-space-4); }
+  .panes { display: flex; flex-wrap: wrap; gap: var(--ino-space-5); }
+  .pane {
+    flex: 1 1 260px;
+    padding: var(--ino-space-5);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-xl);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+  }
+  .pane > h3 { color: var(--ino-color-on-surface-muted); }
+
+  /* A dense table row, to show the pin: a dense size="default" control fits --ino-row-min-height
+     exactly, so dropping a button into a row does not grow the row. */
+  .rowdemo { border: 1px dashed var(--ino-color-accent); border-radius: var(--ino-radius-md); }
+  .rowdemo > div {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: var(--ino-space-4);
+    min-height: var(--ino-row-min-height);
+    padding-inline: var(--ino-space-3);
+    border-bottom: 1px solid var(--ino-color-border-soft);
+    font-size: var(--ino-type-body-size);
+  }
+  .rowdemo > div:last-child { border-bottom: 0; }
+
+  table { border-collapse: collapse; width: 100%; font-size: var(--ino-type-body-sm-size); }
+  th, td { text-align: start; padding: var(--ino-space-2) var(--ino-space-3); border-bottom: 1px solid var(--ino-color-border-soft); }
+  th { color: var(--ino-color-on-surface-muted); font-weight: 600; white-space: nowrap; }
+  td.num { font-variant-numeric: tabular-nums; }
+  caption { text-align: start; color: var(--ino-color-on-surface-muted); padding-bottom: var(--ino-space-3); }
+  .ok   { color: var(--ino-color-success); font-weight: 600; }
+  .fail { color: var(--ino-color-danger);  font-weight: 600; }
+</style>
+</head>
+<body>
+
+<h1>Control-size scale — <code>sm</code> / <code>default</code> / <code>lg</code></h1>
+<p class="lede">
+  The values behind every component's <code>size</code> @Input (tokens.css §12, INO-124). Size and
+  density are two axes, not one: <strong>density</strong> is container-scoped and describes a screen,
+  <strong>size</strong> is per-instance and describes one control on that screen. A
+  <code>size="sm"</code> button is small relative to its neighbours in <em>either</em> density — it is
+  not a fixed pixel count. Full contract:
+  <a href="../control-size-scale.md">control-size-scale.md</a>.
+</p>
+
+<h2>1 — The three sizes</h2>
+<div class="row">
+  <button class="ino-btn ino-btn--primary ino-btn--sm">Small</button>
+  <button class="ino-btn ino-btn--primary">Default</button>
+  <button class="ino-btn ino-btn--primary ino-btn--lg">Large</button>
+  <button class="ino-btn ino-btn--secondary ino-btn--sm"><span class="ino-btn__icon"></span>Small</button>
+  <button class="ino-btn ino-btn--secondary"><span class="ino-btn__icon"></span>Default</button>
+  <button class="ino-btn ino-btn--secondary ino-btn--lg"><span class="ino-btn__icon"></span>Large</button>
+  <button class="ino-btn ino-btn--icon ino-btn--sm" aria-label="Small icon action"><span class="ino-btn__icon"></span></button>
+  <button class="ino-btn ino-btn--icon" aria-label="Default icon action"><span class="ino-btn__icon"></span></button>
+  <button class="ino-btn ino-btn--icon ino-btn--lg" aria-label="Large icon action"><span class="ino-btn__icon"></span></button>
+</div>
+<p class="note">
+  Icon-only buttons stay square at every size because <code>min-width</code> reads the same
+  <code>--ino-control-height</code> alias as <code>min-height</code>.
+</p>
+
+<h2>2 — The same three sizes, re-resolved per density</h2>
+<div class="panes">
+  <div class="pane"><h3>base (<code>:root</code>)</h3>
+    <div class="row">
+      <button class="ino-btn ino-btn--secondary ino-btn--sm">sm</button>
+      <button class="ino-btn ino-btn--secondary">default</button>
+      <button class="ino-btn ino-btn--secondary ino-btn--lg">lg</button>
+    </div>
+  </div>
+  <div class="pane" data-density="dense"><h3>dense</h3>
+    <div class="row">
+      <button class="ino-btn ino-btn--secondary ino-btn--sm">sm</button>
+      <button class="ino-btn ino-btn--secondary">default</button>
+      <button class="ino-btn ino-btn--secondary ino-btn--lg">lg</button>
+    </div>
+  </div>
+  <div class="pane" data-density="fluid"><h3>fluid</h3>
+    <div class="row">
+      <button class="ino-btn ino-btn--secondary ino-btn--sm">sm</button>
+      <button class="ino-btn ino-btn--secondary">default</button>
+      <button class="ino-btn ino-btn--secondary ino-btn--lg">lg</button>
+    </div>
+  </div>
+</div>
+
+<h2>3 — Density nesting works in both directions</h2>
+<div class="panes">
+  <div class="pane" data-density="dense"><h3>dense shell…</h3>
+    <div class="row"><button class="ino-btn ino-btn--secondary">dense default</button></div>
+    <div class="pane" data-density="fluid" style="margin-top: var(--ino-space-4)">
+      <h3>…with a fluid island inside</h3>
+      <div class="row"><button class="ino-btn ino-btn--primary">fluid default</button></div>
+    </div>
+  </div>
+  <div class="pane" data-density="fluid"><h3>fluid shell…</h3>
+    <div class="row"><button class="ino-btn ino-btn--secondary">fluid default</button></div>
+    <div class="pane" data-density="dense" style="margin-top: var(--ino-space-4)">
+      <h3>…with a dense island inside</h3>
+      <div class="row"><button class="ino-btn ino-btn--primary">dense default</button></div>
+    </div>
+  </div>
+</div>
+<p class="note">
+  This is why both density blocks re-declare the six consumption aliases rather than inheriting
+  them. <code>var()</code> substitutes at computed-value time, so an alias declared only in
+  <code>:root</code> would freeze at 44px and no nested container could ever move it.
+</p>
+
+<h2>4 — The pin: a dense <code>default</code> control fits a dense row exactly</h2>
+<div class="pane rowdemo" data-density="dense" style="max-width: 520px">
+  <div><span>Acme Holdings Pvt Ltd</span><span>—</span></div>
+  <div><span>Globex Trading LLP</span><button class="ino-btn ino-btn--secondary">Review</button></div>
+  <div><span>Initech Services</span><button class="ino-btn ino-btn--secondary">Review</button></div>
+</div>
+<p class="note">
+  <code>--ino-control-height-default</code> is pinned to <code>--ino-row-min-height</code> in dense
+  (both 32px), so adding a button to a table row does not make the row taller than its neighbours.
+  <code>check-theme-parity.mjs</code> asserts that equality.
+</p>
+
+<h2>5 — Two inline-padding tracks</h2>
+<div class="panes">
+  <div class="pane"><h3>pressable — <code>-roomy</code> track</h3>
+    <div class="row">
+      <button class="ino-btn ino-btn--secondary ino-btn--sm">sm</button>
+      <button class="ino-btn ino-btn--secondary">default</button>
+      <button class="ino-btn ino-btn--secondary ino-btn--lg">lg</button>
+    </div>
+  </div>
+  <div class="pane"><h3>field — bare track</h3>
+    <div class="row" style="flex-direction: column; align-items: stretch">
+      <span class="ino-field ino-field--sm">sm value</span>
+      <span class="ino-field">default value</span>
+      <span class="ino-field ino-field--lg">lg value</span>
+    </div>
+  </div>
+</div>
+<p class="note">
+  One track cannot serve both halves of the library: a field's value must align under its label, so
+  it takes the tighter padding; a label-bearing pressable needs air, so it takes <code>-roomy</code>.
+  Both are logical (<code>padding-inline</code>), so RTL is free.
+</p>
+
+<h2>6 — Measured in this browser</h2>
+<table>
+  <caption>
+    Read off <code>getComputedStyle</code> of the rendered buttons above — not typed into this file.
+    The floor column checks WCAG 2.2 SC 2.5.8 (24&nbsp;CSS&nbsp;px) against every rung of every density.
+  </caption>
+  <thead>
+    <tr><th>Density</th><th>Size</th><th>Height</th><th>Inline padding</th><th>Font</th><th>Gap</th><th>Icon</th><th>&ge; 24px floor</th></tr>
+  </thead>
+  <tbody id="measured"></tbody>
+</table>
+
+<script>
+  // Measure the real scale rather than restating it. Anything that drifts between tokens.css and
+  // this page shows up here as a changed number or a failing floor cell.
+  const SIZES = ['sm', 'default', 'lg'];
+  const rows = [];
+  for (const density of ['base', 'dense', 'fluid']) {
+    const host = document.createElement('div');
+    if (density !== 'base') host.setAttribute('data-density', density);
+    document.body.appendChild(host);
+    for (const size of SIZES) {
+      const btn = document.createElement('button');
+      btn.className = 'ino-btn ino-btn--secondary' + (size === 'default' ? '' : ' ino-btn--' + size);
+      const glyph = document.createElement('span');
+      glyph.className = 'ino-btn__icon';
+      btn.append(glyph, document.createTextNode('x'));
+      host.appendChild(btn);
+      const cs = getComputedStyle(btn);
+      const height = parseFloat(cs.minHeight);
+      rows.push({
+        density, size, height,
+        pad: cs.paddingInlineStart,
+        font: cs.fontSize,
+        gap: cs.columnGap,
+        icon: getComputedStyle(glyph).width,
+        pass: height >= 24,
+      });
+    }
+    host.remove();
+  }
+  document.getElementById('measured').innerHTML = rows.map(r => `
+    <tr>
+      <td>${r.density}</td><td><code>${r.size}</code></td>
+      <td class="num">${r.height}px</td><td class="num">${r.pad}</td><td class="num">${r.font}</td>
+      <td class="num">${r.gap}</td><td class="num">${r.icon}</td>
+      <td class="${r.pass ? 'ok' : 'fail'}">${r.pass ? 'PASS' : 'FAIL'}</td>
+    </tr>`).join('');
+</script>
+
+</body>
+</html>

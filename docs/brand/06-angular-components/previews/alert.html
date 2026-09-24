@@ -1,0 +1,483 @@
+<!-- @dsCard group="Messages" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ino-alert / ino-toast-container — severity tiers (INO-128) + position &amp; sticky (INO-163)</title>
+<!-- Canonical token file, linked rather than copied: this preview must repaint with the system,
+     and must never become a second place raw hex values live. -->
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-eyebrow-size);
+    letter-spacing: var(--ino-type-eyebrow-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 60ch; }
+
+  .theme-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); }
+  .theme-pane {
+    flex: 1 1 320px;
+    padding: var(--ino-space-5);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-xl);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+  }
+  .theme-pane > h3 {
+    margin: 0 0 var(--ino-space-4);
+    font-size: var(--ino-type-body-sm-size);
+    color: var(--ino-color-on-surface-muted);
+    font-weight: 600;
+  }
+
+  .stack { display: flex; flex-direction: column; gap: var(--ino-space-3); }
+
+  /* Mirrors web/src/app/components/alert/ino-alert.component.scss — same token bindings, so a
+     divergence between this preview and the shipped component is visible as a visual diff. */
+  .ino-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--ino-space-3);
+    padding: var(--ino-space-4);
+    border-radius: var(--ino-radius-lg);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  .ino-alert--info    { background: var(--ino-color-info);    color: var(--ino-color-on-info); }
+  .ino-alert--success { background: var(--ino-color-success); color: var(--ino-color-on-success); }
+  .ino-alert--warning { background: var(--ino-color-warning); color: var(--ino-color-on-warning); }
+  .ino-alert--danger  { background: var(--ino-color-danger);  color: var(--ino-color-on-danger); }
+  .ino-alert--banner  { border-radius: 0; padding: var(--ino-space-4) var(--ino-space-7); }
+  .ino-alert--toast   { max-width: 360px; box-shadow: var(--ino-elevation-2); }
+
+  .ino-alert__icon {
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0; width: 20px; height: 20px;
+    font-size: 13px; font-weight: 700; color: currentColor;
+  }
+  .ino-alert__body { flex: 1; min-width: 0; }
+  .ino-alert__heading { margin: 0 0 var(--ino-space-1); font-weight: 600; color: currentColor; }
+  .ino-alert__message { color: currentColor; opacity: 0.92; }
+  .ino-alert__dismiss {
+    display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+    width: var(--ino-target-comfortable); height: var(--ino-target-comfortable);
+    background: transparent; border: 1px solid transparent;
+    border-radius: var(--ino-radius-md); color: currentColor; cursor: pointer;
+    font: inherit;
+    transition: border-color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+  }
+  .ino-alert__dismiss:hover { border-color: currentColor; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ino-alert__dismiss { transition: none; }
+  }
+
+  /* Toast enter/exit (INO-128). Mirrors ino-toast-container.component.scss; in the Angular
+     component these two classes are applied by `animate.enter` / `animate.leave`. */
+  @media (prefers-reduced-motion: no-preference) {
+    .ino-toast-enter {
+      animation: ino-toast-in var(--ino-motion-duration-base) var(--ino-motion-easing-decelerate);
+    }
+    .ino-toast-leave {
+      animation: ino-toast-out var(--ino-motion-duration-fast) var(--ino-motion-easing-accelerate) forwards;
+    }
+  }
+
+  @keyframes ino-toast-in  { from { opacity: 0; transform: translateY(12px); } }
+  @keyframes ino-toast-out { to   { opacity: 0; transform: translateY(8px); } }
+
+  .motion-demo { display: flex; flex-direction: column; gap: var(--ino-space-3); align-items: flex-start; }
+  .motion-demo__btn {
+    padding: var(--ino-space-2) var(--ino-space-4);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-md);
+    background: var(--ino-color-surface-raised);
+    color: var(--ino-color-on-surface);
+    font: inherit; cursor: pointer;
+  }
+  .motion-demo__btn:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+
+  /* Position demo (INO-163) — a bounded "viewport" standing in for the real fixed-position
+     container, so all 6 anchors can be shown at once without scrolling the actual page. Insets are
+     logical-only (inset-inline-*/inset-block-*), mirroring ino-toast-container.component.scss
+     exactly — the *-center columns use inset-inline + margin-inline: auto rather than
+     left: 50%; transform: translateX(-50%), for the same RTL reason the component avoids it. */
+  .position-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--ino-space-5);
+  }
+  .position-demo {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ino-space-2);
+  }
+  .position-demo__label {
+    font-size: var(--ino-type-body-sm-size);
+    color: var(--ino-color-on-surface-muted);
+  }
+  .position-demo__frame {
+    position: relative;
+    block-size: 160px;
+    border: 1px dashed var(--ino-color-border);
+    border-radius: var(--ino-radius-lg);
+    background: var(--ino-color-surface-sunken);
+    overflow: hidden;
+  }
+  .position-demo__toast {
+    position: absolute;
+    max-width: 170px;
+    padding: var(--ino-space-2) var(--ino-space-3);
+    margin: var(--ino-space-2);
+    font-size: var(--ino-type-body-sm-size);
+  }
+  .position-demo__frame--top-start .position-demo__toast    { inset-block-start: 0; inset-inline-start: 0; }
+  .position-demo__frame--top-center .position-demo__toast   { inset-block-start: 0; inset-inline: 0; margin-inline: auto; }
+  .position-demo__frame--top-end .position-demo__toast      { inset-block-start: 0; inset-inline-end: 0; }
+  .position-demo__frame--bottom-start .position-demo__toast { inset-block-end: 0; inset-inline-start: 0; }
+  .position-demo__frame--bottom-center .position-demo__toast{ inset-block-end: 0; inset-inline: 0; margin-inline: auto; }
+  .position-demo__frame--bottom-end .position-demo__toast   { inset-block-end: 0; inset-inline-end: 0; }
+
+  /* Sticky demo (INO-163) — visually identical to a normal toast except it never renders
+     .ino-alert__dismiss, matching [dismissible]="!toast.sticky" in the real component. */
+  .sticky-demo {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--ino-space-5);
+    align-items: flex-start;
+  }
+  .sticky-demo__col {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ino-space-2);
+    flex: 1 1 260px;
+  }
+  .sticky-demo__col > strong {
+    font-size: var(--ino-type-body-sm-size);
+    color: var(--ino-color-on-surface-muted);
+  }
+</style>
+</head>
+<body>
+
+<h1>Message &amp; Toast — severity tiers</h1>
+<p class="lede">
+  Four tiers, one shell. <strong>info</strong> (added INO-128) is the non-alarming register: it
+  states a fact the reviewer should know without implying anything needs fixing, so
+  <strong>warning</strong> keeps meaning "you need to decide something." Each pane below is the same
+  markup under a different <code>data-theme</code>.
+</p>
+
+<h2>Severity × theme</h2>
+<div class="theme-row">
+
+  <div class="theme-pane">
+    <h3>dark — :root (default)</h3>
+    <div class="stack">
+      <div class="ino-alert ino-alert--info" role="status">
+        <span class="ino-alert__icon" aria-hidden="true">i</span>
+        <div class="ino-alert__body">
+          <p class="ino-alert__heading">Scheduled</p>
+          <div class="ino-alert__message">Sanctions screening re-runs nightly at 02:00 IST.</div>
+        </div>
+      </div>
+      <div class="ino-alert ino-alert--success" role="status">
+        <span class="ino-alert__icon" aria-hidden="true">&#10003;</span>
+        <div class="ino-alert__body">
+          <p class="ino-alert__heading">Verified</p>
+          <div class="ino-alert__message">Meridian Freight cleared ABDM + UPI reconciliation.</div>
+        </div>
+      </div>
+      <div class="ino-alert ino-alert--warning" role="status">
+        <span class="ino-alert__icon" aria-hidden="true">!</span>
+        <div class="ino-alert__body">
+          <p class="ino-alert__heading">Needs review</p>
+          <div class="ino-alert__message">Kavya Textile Exports has a GSTIN mismatch.</div>
+        </div>
+      </div>
+      <div class="ino-alert ino-alert--danger" role="alert">
+        <span class="ino-alert__icon" aria-hidden="true">&#10005;</span>
+        <div class="ino-alert__body">
+          <p class="ino-alert__heading">Escalated</p>
+          <div class="ino-alert__message">Orbit Cold Chain Co. — owner identity gap.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="light">
+    <h3>light — [data-theme="light"]</h3>
+    <div class="stack">
+      <div class="ino-alert ino-alert--info" role="status">
+        <span class="ino-alert__icon" aria-hidden="true">i</span>
+        <div class="ino-alert__body">
+          <p class="ino-alert__heading">Scheduled</p>
+          <div class="ino-alert__message">Sanctions screening re-runs nightly at 02:00 IST.</div>
+        </div>
+      </div>
+      <div class="ino-alert ino-alert--success" role="status">
+        <span class="ino-alert__icon" aria-hidden="true">&#10003;</span>
+        <div class="ino-alert__body">
+          <p class="ino-alert__heading">Verified</p>
+          <div class="ino-alert__message">Meridian Freight cleared ABDM + UPI reconciliation.</div>
+        </div>
+      </div>
+      <div class="ino-alert ino-alert--warning" role="status">
+        <span class="ino-alert__icon" aria-hidden="true">!</span>
+        <div class="ino-alert__body">
+          <p class="ino-alert__heading">Needs review</p>
+          <div class="ino-alert__message">Kavya Textile Exports has a GSTIN mismatch.</div>
+        </div>
+      </div>
+      <div class="ino-alert ino-alert--danger" role="alert">
+        <span class="ino-alert__icon" aria-hidden="true">&#10005;</span>
+        <div class="ino-alert__body">
+          <p class="ino-alert__heading">Escalated</p>
+          <div class="ino-alert__message">Orbit Cold Chain Co. — owner identity gap.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="high-contrast">
+    <h3>high-contrast — [data-theme="high-contrast"]</h3>
+    <div class="stack">
+      <div class="ino-alert ino-alert--info" role="status">
+        <span class="ino-alert__icon" aria-hidden="true">i</span>
+        <div class="ino-alert__body">
+          <p class="ino-alert__heading">Scheduled</p>
+          <div class="ino-alert__message">Sanctions screening re-runs nightly at 02:00 IST.</div>
+        </div>
+      </div>
+      <div class="ino-alert ino-alert--success" role="status">
+        <span class="ino-alert__icon" aria-hidden="true">&#10003;</span>
+        <div class="ino-alert__body">
+          <p class="ino-alert__heading">Verified</p>
+          <div class="ino-alert__message">Meridian Freight cleared ABDM + UPI reconciliation.</div>
+        </div>
+      </div>
+      <div class="ino-alert ino-alert--warning" role="status">
+        <span class="ino-alert__icon" aria-hidden="true">!</span>
+        <div class="ino-alert__body">
+          <p class="ino-alert__heading">Needs review</p>
+          <div class="ino-alert__message">Kavya Textile Exports has a GSTIN mismatch.</div>
+        </div>
+      </div>
+      <div class="ino-alert ino-alert--danger" role="alert">
+        <span class="ino-alert__icon" aria-hidden="true">&#10005;</span>
+        <div class="ino-alert__body">
+          <p class="ino-alert__heading">Escalated</p>
+          <div class="ino-alert__message">Orbit Cold Chain Co. — owner identity gap.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<h2>Variants — info tier</h2>
+<div class="stack">
+  <div class="ino-alert ino-alert--info" role="status">
+    <span class="ino-alert__icon" aria-hidden="true">i</span>
+    <div class="ino-alert__body">
+      <p class="ino-alert__heading">inline</p>
+      <div class="ino-alert__message">Default shape — radius-lg, no shadow, flows in content.</div>
+    </div>
+  </div>
+
+  <div class="ino-alert ino-alert--info ino-alert--banner" role="status">
+    <span class="ino-alert__icon" aria-hidden="true">i</span>
+    <div class="ino-alert__body">
+      <p class="ino-alert__heading">banner</p>
+      <div class="ino-alert__message">Square corners, wider inline padding — full-bleed page strip.</div>
+    </div>
+  </div>
+
+  <div class="ino-alert ino-alert--info ino-alert--toast" role="status">
+    <span class="ino-alert__icon" aria-hidden="true">i</span>
+    <div class="ino-alert__body">
+      <p class="ino-alert__heading">toast</p>
+      <div class="ino-alert__message">Capped at 360px, elevation-2, stacked bottom-end.</div>
+    </div>
+    <button type="button" class="ino-alert__dismiss" aria-label="Dismiss">&#10005;</button>
+  </div>
+</div>
+
+<h2>RTL</h2>
+<div class="stack" dir="rtl">
+  <div class="ino-alert ino-alert--info" role="status">
+    <span class="ino-alert__icon" aria-hidden="true">i</span>
+    <div class="ino-alert__body">
+      <p class="ino-alert__heading">اتجاه من اليمين إلى اليسار</p>
+      <div class="ino-alert__message">Logical properties only — the icon, body, and dismiss button mirror without a second stylesheet.</div>
+    </div>
+    <button type="button" class="ino-alert__dismiss" aria-label="Dismiss">&#10005;</button>
+  </div>
+</div>
+
+<h2>Toast <code>position</code> (INO-163)</h2>
+<p class="lede">
+  Six standard corners/edges, set once on <code>&lt;ino-toast-container position="…"&gt;</code> for
+  the whole shared stack (default <code>bottom-end</code>, the pre-INO-163 placement). Each frame
+  below is a bounded stand-in for the real fixed-position container. No <code>center</code> — a
+  toast sits mid-viewport only in PrimeNG; here that would occlude whatever the reviewer was
+  looking at, exactly what a toast (unlike a modal) exists to avoid.
+</p>
+<div class="position-grid">
+  <div class="position-demo">
+    <span class="position-demo__label"><code>top-start</code></span>
+    <div class="position-demo__frame position-demo__frame--top-start">
+      <div class="position-demo__toast ino-alert ino-alert--info" role="status">
+        <span class="ino-alert__icon" aria-hidden="true">i</span>
+        <div class="ino-alert__body"><div class="ino-alert__message">top-start</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="position-demo">
+    <span class="position-demo__label"><code>top-center</code></span>
+    <div class="position-demo__frame position-demo__frame--top-center">
+      <div class="position-demo__toast ino-alert ino-alert--info" role="status">
+        <span class="ino-alert__icon" aria-hidden="true">i</span>
+        <div class="ino-alert__body"><div class="ino-alert__message">top-center</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="position-demo">
+    <span class="position-demo__label"><code>top-end</code></span>
+    <div class="position-demo__frame position-demo__frame--top-end">
+      <div class="position-demo__toast ino-alert ino-alert--info" role="status">
+        <span class="ino-alert__icon" aria-hidden="true">i</span>
+        <div class="ino-alert__body"><div class="ino-alert__message">top-end</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="position-demo">
+    <span class="position-demo__label"><code>bottom-start</code></span>
+    <div class="position-demo__frame position-demo__frame--bottom-start">
+      <div class="position-demo__toast ino-alert ino-alert--info" role="status">
+        <span class="ino-alert__icon" aria-hidden="true">i</span>
+        <div class="ino-alert__body"><div class="ino-alert__message">bottom-start</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="position-demo">
+    <span class="position-demo__label"><code>bottom-center</code></span>
+    <div class="position-demo__frame position-demo__frame--bottom-center">
+      <div class="position-demo__toast ino-alert ino-alert--info" role="status">
+        <span class="ino-alert__icon" aria-hidden="true">i</span>
+        <div class="ino-alert__body"><div class="ino-alert__message">bottom-center</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="position-demo">
+    <span class="position-demo__label"><code>bottom-end</code> (default)</span>
+    <div class="position-demo__frame position-demo__frame--bottom-end">
+      <div class="position-demo__toast ino-alert ino-alert--info" role="status">
+        <span class="ino-alert__icon" aria-hidden="true">i</span>
+        <div class="ino-alert__body"><div class="ino-alert__message">bottom-end</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>Sticky / persistent mode (INO-163 / P-3)</h2>
+<p class="lede">
+  <code>toastService.show({ …, sticky: true })</code> disables the auto-dismiss timer <em>and</em>
+  renders without a dismiss button — compare the two toasts below. A sticky toast can only be
+  cleared by the code path that resolves whatever it's blocking (e.g. an approval decision made
+  elsewhere in the app) calling <code>dismiss(id)</code>; a reviewer cannot click it away.
+</p>
+<div class="sticky-demo">
+  <div class="sticky-demo__col">
+    <strong>Normal — dismissible, auto-dismisses</strong>
+    <div class="ino-alert ino-alert--success ino-alert--toast" role="status">
+      <span class="ino-alert__icon" aria-hidden="true">&#10003;</span>
+      <div class="ino-alert__body">
+        <p class="ino-alert__heading">Saved</p>
+        <div class="ino-alert__message">Reconciliation results saved.</div>
+      </div>
+      <button type="button" class="ino-alert__dismiss" aria-label="Dismiss">&#10005;</button>
+    </div>
+  </div>
+  <div class="sticky-demo__col">
+    <strong>Sticky — no dismiss button, no timer</strong>
+    <div class="ino-alert ino-alert--warning ino-alert--toast" role="status">
+      <span class="ino-alert__icon" aria-hidden="true">!</span>
+      <div class="ino-alert__body">
+        <p class="ino-alert__heading">Approval needed</p>
+        <div class="ino-alert__message">Confirm the wire before it releases.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>Motion — toast enter / exit</h2>
+<p class="lede">
+  Enter is <code>--ino-motion-duration-base</code> + <code>--ino-motion-easing-decelerate</code>;
+  exit is <code>--ino-motion-duration-fast</code> + <code>--ino-motion-easing-accelerate</code> — a
+  toast leaving should get out of the way, a toast arriving has to be noticed. Movement is on the Y
+  axis only, so there is nothing to mirror under <code>dir="rtl"</code>. With
+  <strong>prefers-reduced-motion: reduce</strong> both classes resolve to no animation and the toast
+  appears and disappears instantly; in the Angular component Angular then removes the node on the
+  next frame, so toasts still dismiss with motion off.
+</p>
+<div class="motion-demo">
+  <button type="button" class="motion-demo__btn" id="motion-replay">Replay enter / exit</button>
+  <div id="motion-host"></div>
+</div>
+
+<script>
+  // Preview-only driver. The real component gets these classes from Angular's `animate.enter` /
+  // `animate.leave` bindings; this just reproduces the same two classes on the same markup.
+  (function () {
+    var host = document.getElementById('motion-host');
+    var toast =
+      '<div class="ino-alert ino-alert--info ino-alert--toast" role="status">' +
+        '<span class="ino-alert__icon" aria-hidden="true">i</span>' +
+        '<div class="ino-alert__body">' +
+          '<p class="ino-alert__heading">Screening scheduled</p>' +
+          '<div class="ino-alert__message">Re-runs nightly at 02:00 IST.</div>' +
+        '</div>' +
+      '</div>';
+
+    function play() {
+      host.innerHTML = toast;
+      var el = host.firstElementChild;
+      el.classList.add('ino-toast-enter');
+      // Leave after a dwell, mirroring ToastService's auto-dismiss path.
+      window.setTimeout(function () {
+        el.classList.remove('ino-toast-enter');
+        el.classList.add('ino-toast-leave');
+        // Remove on animationend, with a timer fallback so the reduced-motion case (no animation,
+        // therefore no animationend) still clears — the same hazard the component documents.
+        var done = false;
+        function remove() { if (!done) { done = true; host.innerHTML = ''; } }
+        el.addEventListener('animationend', remove);
+        window.setTimeout(remove, 400);
+      }, 1600);
+    }
+
+    document.getElementById('motion-replay').addEventListener('click', play);
+    play();
+  })();
+</script>
+
+</body>
+</html>

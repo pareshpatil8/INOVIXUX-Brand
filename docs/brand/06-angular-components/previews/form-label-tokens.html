@@ -1,0 +1,251 @@
+<!-- @dsCard group="Foundations" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Form-label token set — label-lg / label / label-sm / hint / caption (INO-125)</title>
+<!-- Canonical token file, linked rather than copied: this preview must repaint with the system,
+     and must never become a second place raw pixel values live. Every number you see rendered
+     below is resolved by the browser from tokens.css §4b — none of them is typed into this file. -->
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-eyebrow-size);
+    letter-spacing: var(--ino-type-eyebrow-tracking);
+    font-family: var(--ino-font-mono);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 68ch; }
+  p.note { color: var(--ino-color-on-surface-muted); margin: var(--ino-space-3) 0 0; max-width: 68ch; }
+
+  /* -------------------------------------------------------------------------------------------
+   * The label roles under test. These rules mirror what a real Label/FloatLabel/field component
+   * will consume: bare `.ino-label` reads only the unsuffixed --ino-type-label-* + --ino-color-
+   * label aliases, and a tier class re-points them — same consumption-alias shape as §12.
+   * ----------------------------------------------------------------------------------------- */
+  .ino-label {
+    display: block;
+    font: var(--ino-type-label-weight) var(--ino-type-label-size) / var(--ino-type-label-line) var(--ino-font-display);
+    letter-spacing: var(--ino-type-label-tracking);
+    color: var(--ino-color-label);
+    margin-block-end: var(--ino-space-1);
+  }
+  .ino-label--lg { font: var(--ino-type-label-lg-weight) var(--ino-type-label-lg-size) / var(--ino-type-label-lg-line) var(--ino-font-display); letter-spacing: var(--ino-type-label-lg-tracking); }
+  .ino-label--sm { font: var(--ino-type-label-sm-weight) var(--ino-type-label-sm-size) / var(--ino-type-label-sm-line) var(--ino-font-display); letter-spacing: var(--ino-type-label-sm-tracking); }
+  .ino-label--muted { color: var(--ino-color-label-muted); }
+  .ino-label--disabled { color: var(--ino-color-label-disabled); }
+  .ino-label--invalid { color: var(--ino-color-label-invalid); }
+  .ino-label__required { color: var(--ino-color-required-marker); margin-inline-start: var(--ino-space-1); }
+
+  .ino-hint {
+    display: block;
+    font: var(--ino-type-hint-weight) var(--ino-type-hint-size) / var(--ino-type-hint-line) var(--ino-font-display);
+    letter-spacing: var(--ino-type-hint-tracking);
+    color: var(--ino-color-hint);
+    margin-block-start: var(--ino-space-1);
+  }
+  .ino-hint--invalid { color: var(--ino-color-label-invalid); }
+  .ino-caption {
+    display: block;
+    font: var(--ino-type-caption-weight) var(--ino-type-caption-size) / var(--ino-type-caption-line) var(--ino-font-display);
+    letter-spacing: var(--ino-type-caption-tracking);
+    color: var(--ino-color-caption);
+  }
+
+  /* A field, so each label tier is shown next to the §12 control size it pairs with. */
+  .ino-field {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    min-height: var(--ino-control-height);
+    padding-inline: var(--ino-control-padding-inline);
+    font-size: var(--ino-control-font-size);
+    font-family: inherit;
+    color: var(--ino-color-on-surface);
+    background: var(--ino-color-surface-sunken);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-md);
+  }
+  .ino-field:focus-visible { outline: var(--ino-focus-ring); outline-offset: var(--ino-focus-ring-offset); }
+  .ino-field--sm { --ino-control-height: var(--ino-control-height-sm); --ino-control-padding-inline: var(--ino-control-padding-inline-sm); --ino-control-font-size: var(--ino-control-font-size-sm); }
+  .ino-field--lg { --ino-control-height: var(--ino-control-height-lg); --ino-control-padding-inline: var(--ino-control-padding-inline-lg); --ino-control-font-size: var(--ino-control-font-size-lg); }
+  .ino-field--invalid { border-color: var(--ino-color-danger-text-safe); }
+
+  .field { max-width: 320px; margin-bottom: var(--ino-space-5); }
+
+  .row { display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--ino-space-5); }
+  .panes { display: flex; flex-wrap: wrap; gap: var(--ino-space-5); }
+  .pane {
+    flex: 1 1 260px;
+    padding: var(--ino-space-5);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-xl);
+    background: var(--ino-color-surface-raised);
+    color: var(--ino-color-on-surface);
+  }
+  .pane > h3 { font-size: var(--ino-type-body-size); font-weight: 600; margin: 0 0 var(--ino-space-3); color: var(--ino-color-on-surface-muted); }
+
+  table { border-collapse: collapse; width: 100%; font-size: var(--ino-type-body-sm-size); }
+  th, td { text-align: start; padding: var(--ino-space-2) var(--ino-space-3); border-bottom: 1px solid var(--ino-color-border-soft); }
+  th { color: var(--ino-color-on-surface-muted); font-weight: 600; white-space: nowrap; }
+  caption { text-align: start; color: var(--ino-color-on-surface-muted); padding-bottom: var(--ino-space-3); }
+  .ok   { color: var(--ino-color-success); font-weight: 600; }
+  .fail { color: var(--ino-color-danger);  font-weight: 600; }
+</style>
+</head>
+<body>
+
+<h1>Form-label token set — <code>label-lg</code> / <code>label</code> / <code>label-sm</code> / <code>hint</code> / <code>caption</code></h1>
+<p class="lede">
+  The five roles behind every future Label / FloatLabel / IftaLabel component and every form
+  control's own label (tokens.css §4b, INO-125). Replaces the single mono-uppercase
+  <code>--ino-type-eyebrow-*</code> token that was previously misused as a form label. Full
+  contract: <a href="../form-label-tokens.md">form-label-tokens.md</a>.
+</p>
+
+<h2>1 — The three sized tiers, paired with their §12 control</h2>
+<div class="panes">
+  <div class="pane">
+    <label class="field ino-field-wrap">
+      <span class="ino-label ino-label--lg">Legal entity name<span class="ino-label__required" aria-hidden="true">*</span></span>
+      <input class="ino-field ino-field--lg" value="Acme Holdings Pvt Ltd">
+      <span class="ino-hint">Matches the certificate of incorporation.</span>
+    </label>
+  </div>
+  <div class="pane">
+    <label class="field ino-field-wrap">
+      <span class="ino-label">Registered address</span>
+      <input class="ino-field" value="221B Baker Street">
+      <span class="ino-hint">As filed with the registrar.</span>
+    </label>
+  </div>
+  <div class="pane">
+    <label class="field ino-field-wrap">
+      <span class="ino-label ino-label--sm">Postal code</span>
+      <input class="ino-field ino-field--sm" value="411001">
+      <span class="ino-caption">6 digits, India only</span>
+    </label>
+  </div>
+</div>
+<p class="note">
+  <code>label-lg</code> pairs with <code>size="lg"</code>, <code>label</code> with
+  <code>size="default"</code>, <code>label-sm</code> with <code>size="sm"</code> — a control's
+  <code>size</code> input selects its label tier for free.
+</p>
+
+<h2>2 — Colour roles across states</h2>
+<div class="row">
+  <div class="field">
+    <span class="ino-label">Resting</span>
+    <input class="ino-field" value="Globex Trading LLP">
+  </div>
+  <div class="field">
+    <span class="ino-label ino-label--muted">Optional field <span style="font-weight:400">(optional)</span></span>
+    <input class="ino-field" placeholder="—">
+  </div>
+  <div class="field">
+    <span class="ino-label ino-label--disabled">Disabled field</span>
+    <input class="ino-field" value="Read-only value" disabled>
+  </div>
+  <div class="field">
+    <span class="ino-label ino-label--invalid">Invalid field<span class="ino-label__required" aria-hidden="true">*</span></span>
+    <input class="ino-field ino-field--invalid" value="not-an-email" aria-invalid="true">
+    <span class="ino-hint ino-hint--invalid">Enter a valid email address.</span>
+  </div>
+</div>
+
+<h2>3 — Density: only the default tier moves</h2>
+<div class="panes">
+  <div class="pane" data-density="dense"><h3>dense</h3>
+    <div class="field" style="margin-bottom:0">
+      <span class="ino-label">Counterparty</span>
+      <input class="ino-field" value="Initech Services">
+      <span class="ino-hint">Dense: tighter label + hint.</span>
+    </div>
+  </div>
+  <div class="pane"><h3>base (<code>:root</code>)</h3>
+    <div class="field" style="margin-bottom:0">
+      <span class="ino-label">Counterparty</span>
+      <input class="ino-field" value="Initech Services">
+      <span class="ino-hint">Base resolution.</span>
+    </div>
+  </div>
+  <div class="pane" data-density="fluid"><h3>fluid</h3>
+    <div class="field" style="margin-bottom:0">
+      <span class="ino-label">Counterparty</span>
+      <input class="ino-field" value="Initech Services">
+      <span class="ino-hint">Fluid: roomier label + hint.</span>
+    </div>
+  </div>
+</div>
+
+<h2>4 — Caption, standalone</h2>
+<div class="row">
+  <span class="ino-caption">Last synced 2 minutes ago</span>
+  <span class="ino-caption">142 / 240 characters</span>
+</div>
+
+<h2>5 — Measured in this browser</h2>
+<table>
+  <caption>
+    Read off <code>getComputedStyle</code> of the rendered labels/hints/captions above — not typed
+    into this file.
+  </caption>
+  <thead>
+    <tr><th>Density</th><th>Role</th><th>Font size</th><th>Line height</th><th>Weight</th><th>Colour resolves</th></tr>
+  </thead>
+  <tbody id="measured"></tbody>
+</table>
+
+<script>
+  // Measure the real tokens rather than restating them. Anything that drifts between tokens.css
+  // and this page shows up here as a changed number or a missing colour.
+  const ROLES = [
+    ['label-lg', 'ino-label ino-label--lg'],
+    ['label', 'ino-label'],
+    ['label-sm', 'ino-label ino-label--sm'],
+    ['hint', 'ino-hint'],
+    ['caption', 'ino-caption'],
+  ];
+  const rows = [];
+  for (const density of ['base', 'dense', 'fluid']) {
+    const host = document.createElement('div');
+    if (density !== 'base') host.setAttribute('data-density', density);
+    document.body.appendChild(host);
+    for (const [role, cls] of ROLES) {
+      const el = document.createElement('span');
+      el.className = cls;
+      el.textContent = 'Label text';
+      host.appendChild(el);
+      const cs = getComputedStyle(el);
+      rows.push({
+        density, role,
+        font: cs.fontSize, line: cs.lineHeight, weight: cs.fontWeight,
+        color: cs.color, pass: cs.color !== '' && cs.color !== 'rgba(0, 0, 0, 0)',
+      });
+    }
+    host.remove();
+  }
+  document.getElementById('measured').innerHTML = rows.map(r => `
+    <tr>
+      <td>${r.density}</td><td><code>${r.role}</code></td>
+      <td>${r.font}</td><td>${r.line}</td><td>${r.weight}</td>
+      <td class="${r.pass ? 'ok' : 'fail'}">${r.pass ? r.color : 'MISSING'}</td>
+    </tr>`).join('');
+</script>
+
+</body>
+</html>

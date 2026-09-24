@@ -1,22 +1,25 @@
+/*
+ * Layout note (INO-161): the outer `.ino-card` carries NO padding of its own — every section
+ * (`__media`, `__header`, `__body`, `__footer`) owns its own padding instead. Pre-uplift, the
+ * outer element held the padding and the header/footer used a negative-margin trick to bleed
+ * back out to the card edge; that trick hardcoded `--ino-space-6` regardless of the `padding`
+ * input, so `padding="sm"`/`"lg"` misaligned the header/footer edges against the (correctly
+ * resized) body — see SPEC.md §4. Per-section padding fixes that as a side effect and is what
+ * makes an edge-to-edge `__media` slot possible without a third negative-margin rule.
+ */
 .ino-card {
   display: flex;
   flex-direction: column;
+  position: relative;
   background: var(--ino-color-surface-raised);
   border: 1px solid var(--ino-color-border);
   border-radius: var(--ino-radius-xl);
   box-shadow: var(--ino-elevation-1);
-  padding: var(--ino-space-6);
+  overflow: hidden; /* clips __media to the card's own corner radius */
   transition: border-color var(--ino-motion-duration-base) var(--ino-motion-easing-standard),
     box-shadow var(--ino-motion-duration-base) var(--ino-motion-easing-standard),
-    transform var(--ino-motion-duration-base) var(--ino-motion-easing-standard);
-}
-
-.ino-card--pad-sm {
-  padding: var(--ino-space-4);
-}
-
-.ino-card--pad-lg {
-  padding: var(--ino-space-8);
+    transform var(--ino-motion-duration-base) var(--ino-motion-easing-standard),
+    opacity var(--ino-motion-duration-base) var(--ino-motion-easing-standard);
 }
 
 .ino-card--sunken {
@@ -39,15 +42,93 @@
     border-color: var(--ino-color-accent);
   }
 
+  &:active {
+    border-color: var(--ino-color-accent-active);
+  }
+
   &:focus-visible {
-    outline: 2px solid var(--ino-color-accent);
-    outline-offset: 2px;
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
   }
 
   @media (prefers-reduced-motion: no-preference) {
     &:hover {
       transform: translateY(-2px);
     }
+
+    /* Press cancels the hover lift rather than adding a second transform — the card returns to
+       the page plane under the pointer, which is the physical metaphor the 2px raise sets up. */
+    &:active {
+      transform: translateY(0);
+    }
+  }
+}
+
+/* Disabled (INO-161, new). Dims regardless of `interactive` — e.g. a superseded dashboard
+   tile stays legible but visually recedes. The hover/press/focus affordances above only exist
+   under `--interactive` to begin with, so suppressing them is scoped to that combination. */
+.ino-card--disabled {
+  opacity: 0.5;
+}
+
+.ino-card--interactive.ino-card--disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Loading (INO-161, new). The body dims and a centered spinner appears; header/footer/media
+   stay fully visible — mirroring <ino-radio>/<ino-tag>'s "keep the last committed content on
+   screen, don't unmount it" loading treatment. */
+.ino-card--loading .ino-card__body {
+  opacity: 0.5;
+}
+
+.ino-card--interactive.ino-card--loading {
+  pointer-events: none;
+}
+
+.ino-card__spinner-wrap {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ino-card__spinner {
+  width: var(--ino-control-icon-size);
+  height: var(--ino-control-icon-size);
+  border-radius: 50%;
+  border: 2px solid var(--ino-color-on-surface-muted);
+  border-inline-start-color: transparent;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: ino-card-spin var(--ino-motion-duration-slow) linear infinite;
+  }
+}
+
+@keyframes ino-card-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Media (INO-161, new) — PrimeNG Card's `header` template shape (an image/visual, full-bleed),
+   named `media` here because `[ino-card-header]` already means a title/eyebrow bar across every
+   existing call site — see ino-card.component.ts doc comment and SPEC.md §1. Flush to the card
+   edges (no padding); `line-height: 0` avoids the few-px inline-image baseline gap under it. */
+.ino-card__media {
+  &:empty {
+    display: none;
+  }
+
+  line-height: 0;
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
   }
 }
 
@@ -56,21 +137,68 @@
   display: none;
 }
 
+/*
+ * Header/footer size (INO-161, DoD row 3): `--ino-control-padding-inline-roomy` sizes BOTH
+ * inline and block padding here (not the inline-only track button/input use) — a header/footer
+ * bar has no `--ino-control-height` of its own to carry the block dimension, and re-using the
+ * one alias in both directions consumes the scale as-is rather than inventing a second block-
+ * padding value the DoD does not provide. `--ino-control-font-size`/`-gap` size the bar's own
+ * type and icon-to-label spacing (unused if a caller's projected content sets its own font, in
+ * which case these are simply an ignored inherited default). Full reasoning: SPEC.md §3.
+ */
 .ino-card__header:not(:empty) {
-  margin: calc(var(--ino-space-6) * -1) calc(var(--ino-space-6) * -1) var(--ino-space-4);
-  padding: var(--ino-space-4) var(--ino-space-6);
-  border-bottom: 1px solid var(--ino-color-border-soft);
+  padding-block: var(--ino-control-padding-inline-roomy);
+  padding-inline: var(--ino-control-padding-inline-roomy);
+  border-block-end: 1px solid var(--ino-color-border-soft);
+  font-size: var(--ino-control-font-size);
+  font-weight: 600;
+  color: var(--ino-color-on-surface);
 }
 
+.ino-card__footer:not(:empty) {
+  padding-block: var(--ino-control-padding-inline-roomy);
+  padding-inline: var(--ino-control-padding-inline-roomy);
+  border-block-start: 1px solid var(--ino-color-border-soft);
+}
+
+/* Off-default size classes re-point the bare aliases only — same adoption recipe as every other
+   sized component (control-size-scale.md §3). No geometry is declared here. */
+.ino-card--sm {
+  --ino-control-padding-inline-roomy: var(--ino-control-padding-inline-roomy-sm);
+  --ino-control-font-size: var(--ino-control-font-size-sm);
+  --ino-control-icon-size: var(--ino-control-icon-size-sm);
+  --ino-control-gap: var(--ino-control-gap-sm);
+}
+
+.ino-card--lg {
+  --ino-control-padding-inline-roomy: var(--ino-control-padding-inline-roomy-lg);
+  --ino-control-font-size: var(--ino-control-font-size-lg);
+  --ino-control-icon-size: var(--ino-control-icon-size-lg);
+  --ino-control-gap: var(--ino-control-gap-lg);
+}
+
+/*
+ * Body padding (pre-existing `padding` input, unchanged values) — the content area's own
+ * breathing room, independent of the `size`-driven header/footer chrome above. Logical
+ * properties (`padding-block`/`padding-inline`), replacing the old physical `padding` shorthand
+ * — a symmetric shorthand was already RTL-safe numerically, but this makes it structurally so.
+ */
 .ino-card__body {
   flex: 1;
+  position: relative;
+  padding-block: var(--ino-space-6);
+  padding-inline: var(--ino-space-6);
   font-size: var(--ino-type-body-size);
   line-height: var(--ino-type-body-line);
   color: var(--ino-color-on-surface);
 }
 
-.ino-card__footer:not(:empty) {
-  margin: var(--ino-space-4) calc(var(--ino-space-6) * -1) calc(var(--ino-space-6) * -1);
-  padding: var(--ino-space-4) var(--ino-space-6);
-  border-top: 1px solid var(--ino-color-border-soft);
+.ino-card--pad-sm .ino-card__body {
+  padding-block: var(--ino-space-4);
+  padding-inline: var(--ino-space-4);
+}
+
+.ino-card--pad-lg .ino-card__body {
+  padding-block: var(--ino-space-8);
+  padding-inline: var(--ino-space-8);
 }

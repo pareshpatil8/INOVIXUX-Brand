@@ -14,6 +14,7 @@ letterhead, business card, and a pitch deck template.
 | Letterhead | [`letterhead.html`](letterhead.html) | Print-CSS HTML, A4 + US Letter, browser "Print to PDF" |
 | Business card | [`business-card-spec.md`](business-card-spec.md) | Written production spec (design intent, not a print file) |
 | Pitch deck template | [`pitch-deck-template.html`](pitch-deck-template.html) | 16:9 slide-master HTML, browser "Print to PDF" for a deck export |
+| Email design system (transactional templates + signature) | [`email/`](email/) | Table-based, inline-styled HTML, generated from `tokens.css` — see `email/README.md` (INO-121) |
 
 ## Why letterhead is light and everything else in this system is dark
 

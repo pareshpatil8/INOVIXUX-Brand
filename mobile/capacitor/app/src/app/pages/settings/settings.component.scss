@@ -40,7 +40,7 @@
 
 .settings__row--link {
   color: inherit;
-  border-radius: var(--ino-radius-sm, 4px);
+  border-radius: var(--ino-radius-sm, 6px);
 
   &:focus-visible {
     outline: 2px solid var(--ino-color-accent);
@@ -65,7 +65,7 @@
 
   &:focus-visible {
     outline: 2px solid var(--ino-color-accent);
-    border-radius: var(--ino-radius-sm, 4px);
+    border-radius: var(--ino-radius-sm, 6px);
   }
 }
 

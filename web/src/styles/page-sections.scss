@@ -136,9 +136,9 @@ section:last-of-type {
 
   [ino-card-header] {
     font-family: var(--ino-font-mono);
-    font-size: var(--ino-type-label-size);
-    font-weight: var(--ino-type-label-weight);
-    letter-spacing: var(--ino-type-label-tracking);
+    font-size: var(--ino-type-eyebrow-size);
+    font-weight: var(--ino-type-eyebrow-weight);
+    letter-spacing: var(--ino-type-eyebrow-tracking);
     text-transform: uppercase;
     color: var(--ino-color-on-surface-muted);
   }

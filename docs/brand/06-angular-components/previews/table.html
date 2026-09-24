@@ -1,0 +1,429 @@
+<!-- @dsCard group="Data" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ino-table — dense data grid (INO-155)</title>
+<!-- Canonical token file, linked rather than copied: this preview must repaint with the system,
+     and must never become a second place raw hex values live. -->
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-label-size);
+    letter-spacing: var(--ino-type-label-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 64ch; }
+  p.note { color: var(--ino-color-on-surface-muted); margin: var(--ino-space-3) 0 0; max-width: 64ch; }
+
+  .theme-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); }
+  .theme-pane {
+    flex: 1 1 420px;
+    padding: var(--ino-space-5);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-xl);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+  }
+  .theme-pane > h3 {
+    margin: 0 0 var(--ino-space-4);
+    font-size: var(--ino-type-body-sm-size);
+    color: var(--ino-color-on-surface-muted);
+    font-weight: 600;
+  }
+
+  .state-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); }
+  .state-cell { flex: 1 1 320px; }
+  .state-cell > h3 {
+    margin: 0 0 var(--ino-space-2);
+    font-size: var(--ino-type-body-sm-size);
+    color: var(--ino-color-on-surface-muted);
+    font-weight: 600;
+  }
+
+  /*
+   * Mirrors web/src/app/components/table/ino-table.component.scss — same token bindings and the
+   * same --_t alias, so a divergence between this preview and the shipped component shows as a
+   * visual diff.
+   */
+  .ino-table-host {
+    display: block;
+    --_t: var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-control-font-size);
+    color: var(--ino-color-on-surface);
+  }
+  .ino-table-host[data-size='sm'] {
+    --ino-control-height: var(--ino-control-height-sm);
+    --ino-control-padding-inline: var(--ino-control-padding-inline-sm);
+    --ino-control-font-size: var(--ino-control-font-size-sm);
+  }
+  .ino-table-host[data-size='lg'] {
+    --ino-control-height: var(--ino-control-height-lg);
+    --ino-control-padding-inline: var(--ino-control-padding-inline-lg);
+    --ino-control-font-size: var(--ino-control-font-size-lg);
+  }
+  .ino-table-host[data-disabled] { opacity: 0.5; pointer-events: none; }
+  .ino-table-host[data-invalid] .ino-table { border-color: var(--ino-color-danger); }
+  .ino-table-host[data-loading] .ino-table__scroll { cursor: progress; }
+
+  .ino-table {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-lg);
+    overflow: hidden;
+    background: var(--ino-color-surface);
+  }
+  .ino-table__scroll { overflow: auto; }
+  .ino-table__table { width: 100%; border-collapse: separate; border-spacing: 0; }
+
+  .ino-table__th, .ino-table__td {
+    position: relative;
+    box-sizing: border-box;
+    min-block-size: var(--ino-row-min-height, 32px);
+    padding-inline: var(--ino-control-padding-inline);
+    padding-block: var(--ino-space-2);
+    border-inline-start: var(--ino-space-1) solid transparent;
+  }
+  .ino-table__th {
+    background: var(--ino-color-surface-raised);
+    border-block-end: 1px solid var(--ino-color-border);
+    color: var(--ino-color-on-surface-muted);
+    font-size: var(--ino-type-label-sm-size);
+    font-weight: var(--ino-type-label-sm-weight);
+    text-align: start;
+    white-space: nowrap;
+  }
+  .ino-table__th--sortable { cursor: pointer; }
+  .ino-table__th--sortable:hover { background: var(--ino-color-surface-sunken); color: var(--ino-color-on-surface); }
+  .ino-table__th--select, .ino-table__th--expand, .ino-table__td--select, .ino-table__td--expand {
+    inline-size: var(--ino-control-height); min-inline-size: var(--ino-control-height); text-align: center;
+  }
+  .ino-table__th-content { display: inline-flex; align-items: center; gap: var(--ino-space-1); }
+  .ino-table__sort-icon { display: inline-flex; color: var(--ino-color-on-surface-subtle); transform: rotate(180deg); }
+  .ino-table__sort-icon--asc, .ino-table__sort-icon--desc { color: var(--ino-color-accent); }
+  .ino-table__sort-icon--asc { transform: rotate(0deg); }
+
+  .ino-table__filter-row .ino-table__td {
+    background: var(--ino-color-surface-raised);
+    border-block-end: 1px solid var(--ino-color-border);
+  }
+  .ino-table__filter-input, .ino-table__filter-select {
+    inline-size: 100%;
+    min-block-size: calc(var(--ino-control-height) * 0.8);
+    padding-inline: var(--ino-space-2);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-sm);
+    background: var(--ino-color-surface-sunken);
+    color: var(--ino-color-on-surface);
+    font: inherit;
+  }
+
+  .ino-table__row { background: var(--ino-color-surface); }
+  .ino-table__row:hover { background: var(--ino-color-surface-sunken); }
+  .ino-table__row--selected { background: var(--ino-color-surface-sunken); }
+  .ino-table__row--selected .ino-table__td:first-child { border-inline-start-color: var(--ino-color-accent); }
+  .ino-table__td { border-block-end: 1px solid var(--ino-color-border-soft); vertical-align: middle; }
+  .ino-table__checkbox { accent-color: var(--ino-color-accent); inline-size: 18px; block-size: 18px; }
+
+  .ino-table__row--group { background: var(--ino-color-surface-raised); }
+  .ino-table__group-cell { font-weight: 600; cursor: pointer; }
+  .ino-table__chevron {
+    display: inline-block; inline-size: 0; block-size: 0;
+    border-inline-start: 5px solid currentColor; border-block: 4px solid transparent;
+  }
+  .ino-table__chevron--open { transform: rotate(90deg); }
+  .ino-table__expand-toggle { display: inline-flex; color: var(--ino-color-on-surface-muted); }
+
+  .ino-table__row--detail .ino-table__detail-cell {
+    background: var(--ino-color-surface-sunken);
+    padding: var(--ino-space-4) var(--ino-control-padding-inline);
+  }
+
+  .ino-table__skeleton-bar {
+    display: block; inline-size: 70%; block-size: var(--ino-space-3);
+    border-radius: var(--ino-radius-pill); background: var(--ino-color-border-soft);
+  }
+
+  .ino-table__paginator {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-inline: var(--ino-control-padding-inline);
+    padding-block: var(--ino-space-2);
+    border-block-start: 1px solid var(--ino-color-border);
+    background: var(--ino-color-surface-raised);
+    color: var(--ino-color-on-surface-muted);
+    font-size: var(--ino-control-font-size);
+  }
+
+  .force-focus { outline: var(--ino-focus-ring); outline-offset: calc(-1 * var(--ino-focus-ring-offset)); z-index: 1; }
+</style>
+</head>
+<body>
+
+<h1>Table — dense data grid</h1>
+<p class="lede">
+  <code>role="grid"</code> with roving-tabindex keyboard navigation, selection, expansion,
+  resize/reorder/frozen columns, sort, filter, grouping, edit, a loading skeleton and an empty
+  state. Every row reads <code>--ino-row-min-height</code> — the token this component exists to
+  finally consume. Each pane below is the same markup under a different <code>data-theme</code>.
+</p>
+
+<h2>Full grid × theme</h2>
+<div class="theme-row">
+
+  <div class="theme-pane">
+    <h3>dark — :root (default)</h3>
+    <div class="ino-table-host" data-size="default">
+      <div class="ino-table">
+        <div class="ino-table__scroll">
+          <table class="ino-table__table" role="grid" aria-label="Risk flags" aria-rowcount="4" aria-colcount="4">
+            <thead role="rowgroup">
+              <tr role="row">
+                <th role="columnheader" class="ino-table__th ino-table__th--select"><input type="checkbox" class="ino-table__checkbox" aria-label="Select all rows"></th>
+                <th role="columnheader" class="ino-table__th ino-table__th--sortable" aria-sort="ascending">
+                  <span class="ino-table__th-content"><span>Entity</span>
+                    <span class="ino-table__sort-icon ino-table__sort-icon--asc" aria-hidden="true">▲</span>
+                  </span>
+                </th>
+                <th role="columnheader" class="ino-table__th ino-table__th--sortable">
+                  <span class="ino-table__th-content"><span>Risk</span>
+                    <span class="ino-table__sort-icon" aria-hidden="true">▲</span>
+                  </span>
+                </th>
+                <th role="columnheader" class="ino-table__th ino-table__th--expand" aria-hidden="true"></th>
+              </tr>
+              <tr role="row" class="ino-table__filter-row">
+                <td class="ino-table__td ino-table__td--select"></td>
+                <td class="ino-table__td"><input class="ino-table__filter-input" aria-label="Filter Entity" placeholder="Filter…"></td>
+                <td class="ino-table__td">
+                  <select class="ino-table__filter-select" aria-label="Filter Risk">
+                    <option>All</option><option>High</option><option>Low</option>
+                  </select>
+                </td>
+                <td class="ino-table__td ino-table__td--expand"></td>
+              </tr>
+            </thead>
+            <tbody role="rowgroup">
+              <tr role="row" class="ino-table__row ino-table__row--selected" aria-selected="true">
+                <td class="ino-table__td ino-table__td--select"><input type="checkbox" class="ino-table__checkbox" checked aria-label="Select row"></td>
+                <td class="ino-table__td">Acme Holdings Ltd</td>
+                <td class="ino-table__td">High</td>
+                <td class="ino-table__td ino-table__td--expand"><span class="ino-table__expand-toggle" aria-expanded="false" aria-label="Expand row"><span class="ino-table__chevron" aria-hidden="true"></span></span></td>
+              </tr>
+              <tr role="row" class="ino-table__row">
+                <td class="ino-table__td ino-table__td--select"><input type="checkbox" class="ino-table__checkbox" aria-label="Select row"></td>
+                <td class="ino-table__td">Beta Trading Co</td>
+                <td class="ino-table__td">Low</td>
+                <td class="ino-table__td ino-table__td--expand"><span class="ino-table__expand-toggle" aria-expanded="true" aria-label="Collapse row"><span class="ino-table__chevron ino-table__chevron--open" aria-hidden="true"></span></span></td>
+              </tr>
+              <tr role="row" class="ino-table__row--detail">
+                <td class="ino-table__td ino-table__detail-cell" colspan="4">Full detail content for Beta Trading Co projected via <code>[inoTableRowDetail]</code>.</td>
+              </tr>
+              <tr role="row" class="ino-table__row--group">
+                <td class="ino-table__td ino-table__group-cell" colspan="4">
+                  <span class="ino-table__chevron ino-table__chevron--open" aria-hidden="true" style="margin-inline-end: var(--ino-space-2);"></span>
+                  Region: EMEA (2)
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="ino-table__paginator"><span>1–10 of 42</span><span>‹ 1 2 3 ... 5 ›</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="light">
+    <h3>light — [data-theme="light"]</h3>
+    <div class="ino-table-host" data-size="default">
+      <div class="ino-table">
+        <div class="ino-table__scroll">
+          <table class="ino-table__table" role="grid" aria-label="Risk flags" aria-rowcount="3" aria-colcount="4">
+            <thead role="rowgroup">
+              <tr role="row">
+                <th role="columnheader" class="ino-table__th ino-table__th--select"><input type="checkbox" class="ino-table__checkbox" aria-label="Select all rows"></th>
+                <th role="columnheader" class="ino-table__th ino-table__th--sortable" aria-sort="descending">
+                  <span class="ino-table__th-content"><span>Entity</span><span class="ino-table__sort-icon ino-table__sort-icon--desc" aria-hidden="true">▼</span></span>
+                </th>
+                <th role="columnheader" class="ino-table__th">Risk</th>
+                <th role="columnheader" class="ino-table__th ino-table__th--expand" aria-hidden="true"></th>
+              </tr>
+            </thead>
+            <tbody role="rowgroup">
+              <tr role="row" class="ino-table__row">
+                <td class="ino-table__td ino-table__td--select"><input type="checkbox" class="ino-table__checkbox" aria-label="Select row"></td>
+                <td class="ino-table__td">Acme Holdings Ltd</td>
+                <td class="ino-table__td">High</td>
+                <td class="ino-table__td ino-table__td--expand"><span class="ino-table__expand-toggle" aria-expanded="false" aria-label="Expand row"><span class="ino-table__chevron" aria-hidden="true"></span></span></td>
+              </tr>
+              <tr role="row" class="ino-table__row ino-table__row--selected" aria-selected="true">
+                <td class="ino-table__td ino-table__td--select"><input type="checkbox" class="ino-table__checkbox" checked aria-label="Select row"></td>
+                <td class="ino-table__td">Beta Trading Co</td>
+                <td class="ino-table__td">Low</td>
+                <td class="ino-table__td ino-table__td--expand"><span class="ino-table__expand-toggle" aria-expanded="false" aria-label="Expand row"><span class="ino-table__chevron" aria-hidden="true"></span></span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="high-contrast">
+    <h3>high-contrast — [data-theme="high-contrast"]</h3>
+    <div class="ino-table-host" data-size="default">
+      <div class="ino-table">
+        <div class="ino-table__scroll">
+          <table class="ino-table__table" role="grid" aria-label="Risk flags" aria-rowcount="3" aria-colcount="4">
+            <thead role="rowgroup">
+              <tr role="row">
+                <th role="columnheader" class="ino-table__th ino-table__th--select"><input type="checkbox" class="ino-table__checkbox" aria-label="Select all rows"></th>
+                <th role="columnheader" class="ino-table__th ino-table__th--sortable">Entity</th>
+                <th role="columnheader" class="ino-table__th">Risk</th>
+                <th role="columnheader" class="ino-table__th ino-table__th--expand" aria-hidden="true"></th>
+              </tr>
+            </thead>
+            <tbody role="rowgroup">
+              <tr role="row" class="ino-table__row">
+                <td class="ino-table__td ino-table__td--select"><input type="checkbox" class="ino-table__checkbox" aria-label="Select row"></td>
+                <td class="ino-table__td">Acme Holdings Ltd</td>
+                <td class="ino-table__td">High</td>
+                <td class="ino-table__td ino-table__td--expand"><span class="ino-table__expand-toggle" aria-expanded="false" aria-label="Expand row"><span class="ino-table__chevron" aria-hidden="true"></span></span></td>
+              </tr>
+              <tr role="row" class="ino-table__row ino-table__row--selected" aria-selected="true">
+                <td class="ino-table__td ino-table__td--select"><input type="checkbox" class="ino-table__checkbox" checked aria-label="Select row"></td>
+                <td class="ino-table__td">Beta Trading Co</td>
+                <td class="ino-table__td">Low</td>
+                <td class="ino-table__td ino-table__td--expand"><span class="ino-table__expand-toggle" aria-expanded="false" aria-label="Expand row"><span class="ino-table__chevron" aria-hidden="true"></span></span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<h2>Eight states</h2>
+<p class="lede">
+  Hover/active/focus-visible are normally transient; a modifier class or explicit style stands in
+  for the pseudo-class here, the same trick <code>virtual-scroller.html</code>/<code>paginator.html</code> use.
+</p>
+<div class="state-row">
+  <div class="state-cell">
+    <h3>default</h3>
+    <div class="ino-table-host"><div class="ino-table"><table class="ino-table__table" role="grid" aria-label="demo"><tbody role="rowgroup">
+      <tr role="row" class="ino-table__row"><td class="ino-table__td">Acme Holdings Ltd</td><td class="ino-table__td">High</td></tr>
+    </tbody></table></div></div>
+  </div>
+  <div class="state-cell">
+    <h3>hover</h3>
+    <div class="ino-table-host"><div class="ino-table"><table class="ino-table__table" role="grid" aria-label="demo"><tbody role="rowgroup">
+      <tr role="row" class="ino-table__row" style="background: var(--ino-color-surface-sunken);"><td class="ino-table__td">Acme Holdings Ltd</td><td class="ino-table__td">High</td></tr>
+    </tbody></table></div></div>
+  </div>
+  <div class="state-cell">
+    <h3>active / pressed</h3>
+    <div class="ino-table-host"><div class="ino-table"><table class="ino-table__table" role="grid" aria-label="demo"><thead role="rowgroup"><tr role="row">
+      <th role="columnheader" class="ino-table__th ino-table__th--sortable" style="background: var(--ino-color-surface-sunken); color: var(--ino-color-on-surface);">Entity</th>
+    </tr></thead></table></div></div>
+  </div>
+  <div class="state-cell">
+    <h3>focus-visible</h3>
+    <div class="ino-table-host"><div class="ino-table"><table class="ino-table__table" role="grid" aria-label="demo"><tbody role="rowgroup">
+      <tr role="row" class="ino-table__row"><td class="ino-table__td force-focus" tabindex="0">Acme Holdings Ltd</td><td class="ino-table__td" tabindex="-1">High</td></tr>
+    </tbody></table></div></div>
+  </div>
+  <div class="state-cell">
+    <h3>disabled</h3>
+    <div class="ino-table-host" data-disabled><div class="ino-table"><table class="ino-table__table" role="grid" aria-label="demo" aria-disabled="true"><tbody role="rowgroup">
+      <tr role="row" class="ino-table__row"><td class="ino-table__td">Acme Holdings Ltd</td><td class="ino-table__td">High</td></tr>
+    </tbody></table></div></div>
+  </div>
+  <div class="state-cell">
+    <h3>readonly</h3>
+    <div class="ino-table-host" data-readonly><div class="ino-table"><table class="ino-table__table" role="grid" aria-label="demo" aria-readonly="true"><tbody role="rowgroup">
+      <tr role="row" class="ino-table__row"><td class="ino-table__td">Acme Holdings Ltd</td><td class="ino-table__td">High</td></tr>
+    </tbody></table></div></div>
+  </div>
+  <div class="state-cell">
+    <h3>invalid</h3>
+    <div class="ino-table-host" data-invalid><div class="ino-table" style="border-color: var(--ino-color-danger);"><table class="ino-table__table" role="grid" aria-label="demo" aria-invalid="true"><tbody role="rowgroup">
+      <tr role="row" class="ino-table__row"><td class="ino-table__td">Acme Holdings Ltd</td><td class="ino-table__td">High</td></tr>
+    </tbody></table></div></div>
+  </div>
+  <div class="state-cell">
+    <h3>loading / busy</h3>
+    <div class="ino-table-host" data-loading><div class="ino-table"><table class="ino-table__table" role="grid" aria-label="demo" aria-busy="true"><tbody role="rowgroup">
+      <tr role="row" class="ino-table__row"><td class="ino-table__td"><span class="ino-table__skeleton-bar" aria-hidden="true"></span></td><td class="ino-table__td"><span class="ino-table__skeleton-bar" aria-hidden="true"></span></td></tr>
+      <tr role="row" class="ino-table__row"><td class="ino-table__td"><span class="ino-table__skeleton-bar" aria-hidden="true"></span></td><td class="ino-table__td"><span class="ino-table__skeleton-bar" aria-hidden="true"></span></td></tr>
+    </tbody></table></div></div>
+  </div>
+</div>
+
+<h2>Size</h2>
+<div class="state-row">
+  <div class="state-cell">
+    <h3>sm</h3>
+    <div class="ino-table-host" data-size="sm"><div class="ino-table"><table class="ino-table__table" role="grid" aria-label="demo"><thead role="rowgroup"><tr role="row"><th role="columnheader" class="ino-table__th">Entity</th><th role="columnheader" class="ino-table__th">Risk</th></tr></thead><tbody role="rowgroup">
+      <tr role="row" class="ino-table__row"><td class="ino-table__td">Acme Holdings Ltd</td><td class="ino-table__td">High</td></tr>
+    </tbody></table></div></div>
+  </div>
+  <div class="state-cell">
+    <h3>default</h3>
+    <div class="ino-table-host" data-size="default"><div class="ino-table"><table class="ino-table__table" role="grid" aria-label="demo"><thead role="rowgroup"><tr role="row"><th role="columnheader" class="ino-table__th">Entity</th><th role="columnheader" class="ino-table__th">Risk</th></tr></thead><tbody role="rowgroup">
+      <tr role="row" class="ino-table__row"><td class="ino-table__td">Acme Holdings Ltd</td><td class="ino-table__td">High</td></tr>
+    </tbody></table></div></div>
+  </div>
+  <div class="state-cell">
+    <h3>lg</h3>
+    <div class="ino-table-host" data-size="lg"><div class="ino-table"><table class="ino-table__table" role="grid" aria-label="demo"><thead role="rowgroup"><tr role="row"><th role="columnheader" class="ino-table__th">Entity</th><th role="columnheader" class="ino-table__th">Risk</th></tr></thead><tbody role="rowgroup">
+      <tr role="row" class="ino-table__row"><td class="ino-table__td">Acme Holdings Ltd</td><td class="ino-table__td">High</td></tr>
+    </tbody></table></div></div>
+  </div>
+</div>
+
+<h2>Empty state</h2>
+<div class="ino-table-host"><div class="ino-table"><table class="ino-table__table" role="grid" aria-label="demo"><thead role="rowgroup"><tr role="row"><th role="columnheader" class="ino-table__th">Entity</th><th role="columnheader" class="ino-table__th">Risk</th></tr></thead><tbody role="rowgroup">
+  <tr role="row"><td class="ino-table__td" colspan="2" style="text-align:center; padding: var(--ino-space-6); color: var(--ino-color-on-surface-muted);">No records found.</td></tr>
+</tbody></table></div></div>
+
+<h2>RTL</h2>
+<p class="lede">
+  Logical properties only; frozen-column offsets and resize pointer-delta math both flip explicitly
+  for <code>dir="rtl"</code> rather than relying on browser mirroring. See <code>SPEC.md</code> §8.
+</p>
+<div class="ino-table-host" dir="rtl"><div class="ino-table"><table class="ino-table__table" role="grid" aria-label="بيانات المخاطر"><thead role="rowgroup"><tr role="row">
+  <th role="columnheader" class="ino-table__th ino-table__th--sortable" aria-sort="ascending"><span class="ino-table__th-content"><span>الكيان</span><span class="ino-table__sort-icon ino-table__sort-icon--asc" aria-hidden="true">▲</span></span></th>
+  <th role="columnheader" class="ino-table__th">المخاطر</th>
+</tr></thead><tbody role="rowgroup">
+  <tr role="row" class="ino-table__row"><td class="ino-table__td">أكمي القابضة</td><td class="ino-table__td">مرتفع</td></tr>
+</tbody></table></div></div>
+
+<h2>Motion</h2>
+<p class="note">
+  Header hover, sort-icon rotation, reorder-control opacity, row hover, and the expand/group
+  chevron all transition on <code>--ino-motion-duration-fast</code> +
+  <code>--ino-motion-easing-standard</code> (aliased to a local <code>--_t</code> custom property
+  in the component to stay inside the <code>anyComponentStyle</code> budget — see
+  <code>SPEC.md</code> §9). Every transition collapses under
+  <code>prefers-reduced-motion: reduce</code> — toggle your OS setting to see both branches.
+</p>
+
+</body>
+</html>

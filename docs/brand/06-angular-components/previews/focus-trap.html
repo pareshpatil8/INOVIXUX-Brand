@@ -1,0 +1,178 @@
+<!-- @dsCard group="Misc" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FocusTrap — keyboard containment (INO-130)</title>
+<!-- Canonical token file, linked rather than copied: this preview must repaint with the system,
+     and must never become a second place raw hex values live. -->
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-label-size);
+    letter-spacing: var(--ino-type-label-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 64ch; }
+  p.note { color: var(--ino-color-on-surface-muted); margin: var(--ino-space-3) 0 0; max-width: 64ch; }
+
+  /* The trap itself contributes no surface. Everything below is the *demo scaffolding* — a stand-in
+     for the Modal / Drawer / Popover that would own these styles in real use. */
+  .panel {
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-lg);
+    background: var(--ino-color-surface-raised);
+    padding: var(--ino-space-6);
+    max-width: 44ch;
+  }
+  .panel h3 { margin: 0 0 var(--ino-space-2); font-size: var(--ino-type-body-size); }
+  .row { display: flex; gap: var(--ino-space-3); flex-wrap: wrap; margin-top: var(--ino-space-4); }
+
+  button, a.btn {
+    min-height: var(--ino-control-height-default);
+    padding-inline: var(--ino-space-4);
+    border-radius: var(--ino-radius-md);
+    border: 1px solid var(--ino-color-border);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font: inherit;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+  }
+  button:focus-visible, a.btn:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+  button[disabled] { opacity: .5; cursor: not-allowed; }
+
+  /* Live read-out of document.activeElement, so the wrap is visible without a screen reader. */
+  .readout {
+    margin-top: var(--ino-space-5);
+    padding: var(--ino-space-3) var(--ino-space-4);
+    border-radius: var(--ino-radius-md);
+    background: var(--ino-color-surface-sunken);
+    color: var(--ino-color-on-surface-muted);
+    font-size: var(--ino-type-label-size);
+  }
+  .readout b { color: var(--ino-color-accent-text-safe); }
+</style>
+</head>
+<body>
+
+<h1>FocusTrap</h1>
+<p class="lede">
+  A behaviour-only primitive: it paints nothing. It confines <kbd>Tab</kbd> / <kbd>Shift+Tab</kbd> to
+  a container and releases focus when suspended — WCAG 2.2 SC 2.1.2, which is about
+  <em>release</em> as much as containment. Consumed by Modal, Drawer, Popover and ConfirmDialog.
+</p>
+
+<h2>Containment</h2>
+<p class="lede">
+  Focus the first button below, then hold <kbd>Tab</kbd>. Focus cycles inside the panel and never
+  reaches the “outside” control — until you suspend the trap.
+</p>
+
+<div class="panel" id="trap">
+  <h3>Verify entity</h3>
+  <p class="note">Tab past the last control and focus wraps to the first.</p>
+  <div class="row">
+    <button type="button" id="first">First</button>
+    <button type="button" id="disabled-btn" disabled>Skipped (disabled)</button>
+    <a class="btn" href="#x">Link</a>
+    <button type="button" id="last">Last</button>
+  </div>
+</div>
+
+<div class="row">
+  <button type="button" id="toggle" aria-pressed="false">Suspend trap</button>
+  <button type="button" id="outside">Outside the trap</button>
+</div>
+
+<div class="readout" aria-live="polite">Focus: <b id="active">—</b> · trap <b id="state">active</b></div>
+
+<p class="note">
+  The two tab stops that do the wrapping are <code>aria-hidden</code>, zero-opacity sentinel spans
+  seated as the container’s first and last child — a screen-reader virtual cursor never meets them.
+  The trap adds no role or ARIA of its own; <code>role="dialog"</code> belongs to the consuming
+  surface, as does <kbd>Esc</kbd>.
+</p>
+
+<!--
+  Preview-only mirror of `web/src/app/components/focus-trap/ino-focus-trap.directive.ts`.
+
+  This file is a standalone HTML card with no Angular runtime, so the sentinel technique is
+  re-stated here in ~25 lines of vanilla JS purely so the card is demonstrable. It is NOT a second
+  implementation to keep in sync: the shipped directive additionally handles the trap stack for
+  nested surfaces, positive-tabindex ordering, MutationObserver re-seating, focus restore, and the
+  document-level focusin guard. See SPEC.md §3 for the full contract.
+-->
+<script>
+  const panel = document.getElementById('trap');
+  const SENTINEL = 'data-ino-focus-trap-sentinel';
+  const FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]';
+
+  const tabbables = () => [...panel.querySelectorAll(FOCUSABLE)]
+    .filter(el => !el.hasAttribute(SENTINEL) && el.tabIndex >= 0);
+
+  function makeSentinel(onFocus) {
+    const el = document.createElement('span');
+    el.setAttribute(SENTINEL, '');
+    el.setAttribute('tabindex', '0');
+    el.setAttribute('aria-hidden', 'true');
+    // Structural, not stylistic — no design value here to route through a token.
+    // Logical inset properties keep it RTL-safe.
+    el.setAttribute('style', 'position:fixed;inset-block-start:0;inset-inline-start:0;width:1px;height:1px;opacity:0;pointer-events:none');
+    el.addEventListener('focus', onFocus);
+    return el;
+  }
+
+  const leading = makeSentinel(() => { const t = tabbables(); t[t.length - 1]?.focus(); });
+  const trailing = makeSentinel(() => tabbables()[0]?.focus());
+
+  function activate() {
+    panel.insertBefore(leading, panel.firstChild);
+    panel.appendChild(trailing);
+  }
+  function deactivate() {
+    leading.remove();
+    trailing.remove();
+  }
+  activate();
+
+  const toggle = document.getElementById('toggle');
+  const state = document.getElementById('state');
+  let active = true;
+  toggle.addEventListener('click', () => {
+    active = !active;
+    active ? activate() : deactivate();
+    toggle.textContent = active ? 'Suspend trap' : 'Resume trap';
+    toggle.setAttribute('aria-pressed', String(!active));
+    state.textContent = active ? 'active' : 'suspended';
+  });
+
+  const active$ = document.getElementById('active');
+  document.addEventListener('focusin', e => {
+    const el = e.target;
+    active$.textContent = el.hasAttribute?.(SENTINEL)
+      ? 'sentinel (wrapping…)'
+      : (el.id || el.textContent?.trim() || el.tagName.toLowerCase());
+  });
+</script>
+
+</body>
+</html>
