@@ -34,9 +34,9 @@ adherence lint), it was run rather than inferred.
 | INO-122 — logo-gated print bundle | `done` | Present on parity; 423 KB guidelines PDF + 6 print vectors + colour spec + TM audit, all non-trivial |
 | INO-172 — type-scale adoption | `done` | **Outcome met, comment inaccurate** — see below |
 | INO-173 — sub-4px spacing | `done` | Present on parity (`ds-adherence-optical-exemptions.json`) |
-| INO-174 — gradient/glow re-theming | `done` | Present on parity (`--ino-gradient-accent-from/-to`) |
+| INO-174 — gradient/glow re-theming | `done` | **UNMERGED** — commit `3c82caa` rides open PR #36 → parity (corrected 2026-09-25, see below) |
 
-**9 genuinely delivered · 2 unmerged but preserved · 2 absent.**
+**8 genuinely delivered · 3 unmerged but preserved · 2 absent.**
 
 ### INO-172 — outcome met despite an inaccurate closure comment
 
@@ -53,6 +53,34 @@ INO-175 separately deleted 12 `off-scale-font-size` waivers as *stale*, which is
 consistent with the violations having been genuinely fixed against pre-existing
 tokens. The goal is achieved; only the description of how is wrong. **No rework
 required** — recorded so the token names are not cited as existing.
+
+### INO-174 — correction (2026-09-25, from INO-312)
+
+This row originally read "Present on parity (`--ino-gradient-accent-from/-to`)".
+That is wrong, and it is wrong in the same way as the closures this audit
+flagged.
+
+The tokens are real and the work was done — commit `3c82caa` ("INO-174
+INO-31.6c: brand gradient, accent glow and toast dwell re-theme") adds
+`--ino-gradient-accent-from/-to` and `--ino-dwell-duration-toast` to
+`web/src/tokens.css` and `docs/brand/02-design-tokens/tokens.css`. But that
+commit is reachable only from `origin/ino-131-skeleton-registry-fix` and
+`pr/36`. Neither token appears anywhere in the `ino-31-design-system-parity`
+tree (`git grep` returns nothing for either on that ref), so the content did not
+land by a squash merge either.
+
+Actual status: **unmerged but preserved**, the same category as INO-116. PR #36
+is open with base `ino-31-design-system-parity` — the correct base — so it is
+not stranded and will land through normal integration. **No disposition change
+for INO-192.**
+
+How the error was made, because it is the instructive part: the audit's first
+pass on INO-174 was a path-assumption grep that returned a false negative. The
+correction found the tokens by searching more broadly — and stopped there,
+recording "present" without resolving the commit against the branch. Finding the
+content in *some* ref answers "was the work done?", not "will it ship?".
+Recovering from a false negative is exactly where a reviewer stops one step
+early. This is now written up as playbook §5.2 and §5.4.
 
 ### INO-116 / INO-117 — unmerged, not lost
 
@@ -88,9 +116,17 @@ showing them as complete.
 
 ## Process note for the engineering standards doc
 
-Four of twelve closure comments did not match the repository — two fabricated
-entirely, one describing non-existent tokens, one overstating merge state. A
-`done` transition on an implementation issue should require naming a merged
-commit or an open PR, and the epic-level gate should verify it. This audit is
-cheap (minutes) and caught two undelivered scope items on the last gate before
-ship; it should not depend on someone happening to look.
+Five of twelve closure comments did not match the repository — two fabricated
+entirely, one describing non-existent tokens, two overstating merge state
+(INO-116; INO-174, found on the re-check below). A `done` transition on an
+implementation issue should require naming a merged commit or an open PR, and
+the epic-level gate should verify it. This audit is cheap (minutes) and caught
+two undelivered scope items on the last gate before ship; it should not depend
+on someone happening to look.
+
+**Ratified 2026-09-25 as Engineering Standards Playbook §5, "Work Completion &
+Closure Evidence"** (document key `engineering-standards-playbook`, revision 3,
+v1.1) — INO-312. Mechanising the rule as a CI or control-plane check is assessed
+separately under INO-313. That same write-up prompted the re-check that produced
+the INO-174 correction above: the standard caught an error in the audit that
+produced the standard.
