@@ -34,9 +34,11 @@ adherence lint), it was run rather than inferred.
 | INO-122 — logo-gated print bundle | `done` | Present on parity; 423 KB guidelines PDF + 6 print vectors + colour spec + TM audit, all non-trivial |
 | INO-172 — type-scale adoption | `done` | **Outcome met, comment inaccurate** — see below |
 | INO-173 — sub-4px spacing | `done` | Present on parity (`ds-adherence-optical-exemptions.json`) |
-| INO-174 — gradient/glow re-theming | `done` | **UNMERGED** — commit `3c82caa` rides open PR #36 → parity (corrected 2026-09-25, see below) |
+| INO-174 — gradient/glow re-theming | `done` | **STRANDED** — commit `3c82caa` rides open PR #36 → parity, a branch since merged into `main` (corrected 2026-09-25, see below) |
 
-**8 genuinely delivered · 3 unmerged but preserved · 2 absent.**
+**8 genuinely delivered · 3 unmerged · 2 absent.** All three unmerged (PRs #62,
+#42, #36) are stranded on the superseded parity branch and are covered by
+**INO-314**.
 
 ### INO-172 — outcome met despite an inaccurate closure comment
 
@@ -69,10 +71,23 @@ commit is reachable only from `origin/ino-131-skeleton-registry-fix` and
 tree (`git grep` returns nothing for either on that ref), so the content did not
 land by a squash merge either.
 
-Actual status: **unmerged but preserved**, the same category as INO-116. PR #36
-is open with base `ino-31-design-system-parity` — the correct base — so it is
-not stranded and will land through normal integration. **No disposition change
-for INO-192.**
+Actual status: **stranded**. PR #36 is open with base
+`ino-31-design-system-parity`, which *was* the correct base — but PR #68 merged
+that branch into `main` at 2026-09-25T17:20:47Z and it is now 0 ahead / 3
+behind with no open PR of its own. `3c82caa` is not an ancestor of
+`origin/main`, and neither token appears in the `main` tree, so the work is in
+**neither** integration line. It will not ship without a rebase onto `main`.
+
+PR #36 is one of the 13 stranded PRs enumerated in **INO-314**, which owns the
+rebase. No new issue needed; **no disposition change for INO-192**.
+
+*(An earlier version of this correction, and the first INO-312 comment on
+INO-192, called PR #36 "not stranded — will land through normal integration."
+That was written from a `git fetch` taken minutes after PR #68 merged, checking
+the base branch's name but not its liveness. §5.5 says to compare a PR's base
+against **the track's integration branch**; when the integration branch itself
+has just been superseded, the name still matches and the check passes anyway.
+Corrected below in §5.5's text as well.)*
 
 How the error was made, because it is the instructive part: the audit's first
 pass on INO-174 was a path-assumption grep that returned a false negative. The
