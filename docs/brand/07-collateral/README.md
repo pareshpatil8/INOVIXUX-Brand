@@ -15,6 +15,7 @@ letterhead, business card, and a pitch deck template.
 | Business card | [`business-card-spec.md`](business-card-spec.md) | Written production spec (design intent, not a print file) |
 | Pitch deck template | [`pitch-deck-template.html`](pitch-deck-template.html) | 16:9 slide-master HTML, browser "Print to PDF" for a deck export |
 | Email design system (transactional templates + signature) | [`email/`](email/) | Table-based, inline-styled HTML, generated from `tokens.css` — see `email/README.md` (INO-121) |
+| KYB risk-flag report | [`kyb-risk-flag-report.html`](kyb-risk-flag-report.html) | A4 print-CSS HTML, browser "Print to PDF" (INO-31.8 / INO-120) |
 
 ## Why letterhead is light and everything else in this system is dark
 
@@ -32,6 +33,18 @@ decision for the product; this is a print-substrate decision for a letter).
 
 The pitch deck stays on the dark system as-is — a deck is presented on a screen/projector, not
 printed at scale, so the existing dark tokens apply directly with no exception needed.
+
+The KYB risk-flag report follows the letterhead's light-substrate reasoning, not the deck's: it's
+a document a human reviewer prints, signs, and files, so it uses `tokens.css`'s
+`[data-theme="light"]` risk-fill triad (already re-audited for AA on paper, not assumed from the
+dark on-screen values — see that block's inline ratios) rather than the dark system's risk chips.
+Because office mono printers and offset press both collapse hue, every risk row also encodes
+status by shape (●/▲/■) and text (HIGH/MEDIUM/LOW), not color alone. The INO-14 disclaimer is
+hardcoded in the report body the same way the pitch deck's disclaimer slide is — see
+`09-design-system-standards.md` §3, "reference implementation of this rule." System-fallback fonts
+(Geist → OS default sans/mono) are baked in per the original brief's "report layouts must not
+break" requirement. Like the deck, this is a spec/template only — no PDF has been generated, and
+the INO-14 hold plus the 2026-09-07 KYB pause both still apply to the underlying product.
 
 ## What's intentionally not here
 
