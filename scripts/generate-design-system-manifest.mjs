@@ -51,8 +51,8 @@ function parseInputs(source, aliases) {
 
 const components = [];
 for (const dirName of readdirSync(componentsDir).sort()) {
+  if (!statSync(new URL(dirName, componentsDir)).isDirectory()) continue;
   const dirUrl = new URL(dirName + '/', componentsDir);
-  if (!statSync(dirUrl).isDirectory()) continue;
   const tsPath = new URL(`ino-${dirName}.component.ts`, dirUrl);
   let source;
   try {
