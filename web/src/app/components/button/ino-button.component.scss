@@ -1,15 +1,39 @@
-.ino-btn {
+/*
+ * All classes below (`.ino-btn`, `.ino-btn--*`) are applied via the component's `host: {...}`
+ * bindings in ino-button.component.ts — i.e. they land on the host `<button>`/`<a>` element
+ * itself, not inside this component's own template. Under Angular's default
+ * ViewEncapsulation.Emulated, plain class selectors only match elements the component *renders*
+ * (tagged with its `_ngcontent-*` attribute); the host element instead carries `_nghost-*`, so a
+ * bare `.ino-btn--primary { … }` here silently never matches and the rule is dead CSS. `:host()`
+ * is the correct selector for host-applied classes — found and fixed 2026-09-11 while producing
+ * INO-85 mobile mocks (every `ino-button` primary/secondary/ghost/icon on both mobile and the
+ * marketing site was rendering as an unstyled native button before this fix).
+ */
+/*
+ * SIZE (INO-124). The base rule never reads a per-size token — it reads only the six unsuffixed
+ * `--ino-control-*` aliases from tokens.css §12, and the `--sm` / `--lg` classes below re-point
+ * those aliases on the host. That indirection is what lets one set of declarations serve three
+ * sizes × three densities without a single media query or `[data-density]` branch in here.
+ *
+ * Every value below used to be hardcoded and each one resolves to the identical pixel at
+ * size="default" in base density (44px / 20px / 8px / 14px), so this adoption changed nothing
+ * visually — see control-size-scale.md §3. `padding-inline` also replaces the old
+ * `padding: 0 var(--ino-space-5)` shorthand, which makes the button RTL-safe for free (DoD row 8).
+ */
+:host(.ino-btn) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--ino-space-2);
-  min-height: var(--ino-target-comfortable);
-  padding: 0 var(--ino-space-5);
+  gap: var(--ino-control-gap);
+  min-height: var(--ino-control-height);
+  padding-block: 0;
+  /* -roomy, not the bare track: button is a label-bearing pressable, not a field. §12 */
+  padding-inline: var(--ino-control-padding-inline-roomy);
   border-radius: var(--ino-radius-md);
   border: 1px solid transparent;
   background: transparent;
   font-family: var(--ino-font-display);
-  font-size: var(--ino-type-body-size);
+  font-size: var(--ino-control-font-size);
   font-weight: 600;
   line-height: 1;
   text-decoration: none;
@@ -22,8 +46,8 @@
     transform var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
 
   &:focus-visible {
-    outline: 2px solid var(--ino-color-accent);
-    outline-offset: 2px;
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
   }
 
   &[disabled] {
@@ -33,7 +57,29 @@
   }
 }
 
-.ino-btn--primary {
+/*
+ * The two off-default size classes. Each one re-points aliases only — no geometry is declared
+ * here, so a component can never drift from the scale by editing its own size rules. Both are
+ * density-relative: inside [data-density="dense"] these same two rules yield 28px and 40px,
+ * because the -sm/-lg tokens they point at are themselves re-resolved by the density block.
+ */
+:host(.ino-btn--sm) {
+  --ino-control-height: var(--ino-control-height-sm);
+  --ino-control-padding-inline-roomy: var(--ino-control-padding-inline-roomy-sm);
+  --ino-control-font-size: var(--ino-control-font-size-sm);
+  --ino-control-icon-size: var(--ino-control-icon-size-sm);
+  --ino-control-gap: var(--ino-control-gap-sm);
+}
+
+:host(.ino-btn--lg) {
+  --ino-control-height: var(--ino-control-height-lg);
+  --ino-control-padding-inline-roomy: var(--ino-control-padding-inline-roomy-lg);
+  --ino-control-font-size: var(--ino-control-font-size-lg);
+  --ino-control-icon-size: var(--ino-control-icon-size-lg);
+  --ino-control-gap: var(--ino-control-gap-lg);
+}
+
+:host(.ino-btn--primary) {
   background: var(--ino-gradient-accent);
   color: var(--ino-color-on-accent);
 
@@ -41,14 +87,57 @@
     filter: brightness(1.08);
   }
 
+  /* Pressed: drop the gradient for the flat pressed accent. Flat-vs-gradient is itself half the
+     press signal, and unlike a moving gradient stop a flat fill has ONE contrast ratio against
+     --ino-color-on-accent, which check-theme-parity.mjs can actually assert (it does, per theme). */
+  &:active {
+    background: var(--ino-color-accent-active);
+    filter: none;
+  }
+
   @media (prefers-reduced-motion: no-preference) {
     &:hover {
       transform: translateY(-1px);
     }
+
+    /* Settle back to the resting plane while held — the button "goes down" relative to its own
+       hover lift, which is the whole point of the 1px hover raise. */
+    &:active {
+      transform: translateY(0);
+    }
   }
 }
 
-.ino-btn--secondary {
+/* Danger (INO-156). Deliberately the SAME shape as primary — flat fill, same hover/press
+   mechanics — just re-pointed at the danger role instead of the accent gradient. A destructive
+   action should read as "equally weighted, different consequence," not as a fourth visual
+   language the reviewer has to learn. No gradient: `--ino-color-danger` is a single audited
+   contrast pair per theme (check-theme-parity.mjs asserts on/danger >= 7:1), and a gradient would
+   turn that into a range with no single ratio to assert. */
+:host(.ino-btn--danger) {
+  background: var(--ino-color-danger);
+  color: var(--ino-color-on-danger);
+
+  &:hover {
+    filter: brightness(1.08);
+  }
+
+  &:active {
+    filter: brightness(0.92);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    &:hover {
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+}
+
+:host(.ino-btn--secondary) {
   background: var(--ino-color-surface-raised);
   color: var(--ino-color-on-surface);
   border-color: var(--ino-color-border);
@@ -56,35 +145,60 @@
   &:hover {
     border-color: var(--ino-color-accent);
   }
+
+  &:active {
+    border-color: var(--ino-color-accent-active);
+    background: var(--ino-color-surface-sunken);
+  }
 }
 
-.ino-btn--ghost {
+:host(.ino-btn--ghost) {
   color: var(--ino-color-on-surface-muted);
 
   &:hover {
     background: var(--ino-color-surface-sunken);
     color: var(--ino-color-on-surface);
   }
+
+  /* A ghost button has no fill to darken, so the press is carried by the LABEL going to the
+     pressed accent — the same token, expressed as foreground instead of background. */
+  &:active {
+    background: var(--ino-color-surface-sunken);
+    color: var(--ino-color-accent-active);
+  }
 }
 
-.ino-btn--icon {
-  min-width: var(--ino-target-comfortable);
-  padding: 0;
+/* Square by construction: min-width tracks the SAME alias as min-height, so an icon button stays
+   square at every size and density instead of needing its own three-value ramp. At size="default"
+   that is still 44px (== --ino-target-comfortable), unchanged. Note sm is 36px and dense-sm is
+   28px — both above the SC 2.5.8 24px floor, which check-theme-parity.mjs asserts for every rung. */
+:host(.ino-btn--icon) {
+  min-width: var(--ino-control-height);
+  padding-inline: 0;
   color: var(--ino-color-on-surface-muted);
 
   &:hover {
     background: var(--ino-color-surface-sunken);
     color: var(--ino-color-on-surface);
   }
+
+  &:active {
+    background: var(--ino-color-surface-sunken);
+    color: var(--ino-color-accent-active);
+  }
 }
 
-.ino-btn--loading .ino-btn__label {
+:host(.ino-btn--loading) .ino-btn__label {
   opacity: 0.6;
 }
 
+/* The spinner sits in the icon slot, so it scales with the icon alias rather than holding a fixed
+   px. It is set at 0.7 of the icon box on purpose: an open ring reads optically larger than a
+   filled glyph at the same measure, and 0.7 is also exactly the ratio that reproduces the 14px
+   this rule hardcoded before the scale landed (0.7 x 20px), keeping the adoption a visual no-op. */
 .ino-btn__spinner {
-  width: 14px;
-  height: 14px;
+  width: calc(var(--ino-control-icon-size) * 0.7);
+  height: calc(var(--ino-control-icon-size) * 0.7);
   border-radius: 50%;
   border: 2px solid currentColor;
   border-top-color: transparent;

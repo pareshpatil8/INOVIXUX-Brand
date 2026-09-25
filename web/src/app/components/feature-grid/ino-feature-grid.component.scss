@@ -1,3 +1,6 @@
+// Deliberately stateless (INO-123 / DoD §5-6): the grid and its cards are static content, not
+// controls — no href, no handler, nothing focusable. Same reasoning as ino-tier-card; see the note
+// at the top of that file.
 .ino-feature-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);

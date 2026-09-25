@@ -84,6 +84,90 @@ needed: five concept revisions and no single source of truth.
      surface-depth tokens from the 2026-09-08 round were built token-correct and re-verified
      against this gate (`web/` toggle confirmed working, `ng build` clean) rather than assumed.
 
+## 5a. Branch & workspace isolation — one worktree per issue
+
+The component rule is already *"one component = one directory = one branch = one issue."* That rule
+is about the repo. It is silent about the **checkout**, and that gap caused a real incident on
+2026-09-15 (INO-162): three concurrent agent runs shared a single working directory, each ran
+`git checkout <its-own-branch>` in it, and one run's commit landed on another run's branch. The work
+was recovered, but only because the author noticed and rebuilt it from the commit hash.
+
+Whenever two contributions can be in flight at the same time — which is the normal case for the
+INO-31 waves — the following is a ship gate, not a preference:
+
+1. **A run that will commit must own its checkout.** As of INO-184, this is enforced by the
+   platform: the project's execution-workspace policy defaults every issue to
+   `isolated_workspace` / `git_worktree`, so Paperclip provisions a dedicated worktree per issue
+   run instead of reusing the shared primary checkout. Treat the manual procedure below as the
+   fallback for environments where that policy isn't active: `git worktree add <path> -b <branch>
+   origin/ino-31-design-system-parity`, work there, and never `git checkout` a different branch in
+   a directory you did not create. A shared primary checkout is read-only for concurrent work.
+2. **Verify the branch immediately before every commit**, not once at the start of the run.
+   `git rev-parse --abbrev-ref HEAD` must match your issue's branch. A branch can change under you
+   between two commands if the directory is shared.
+3. **Never push a branch that is not yours,** even to "fix" it. If you find you have committed onto
+   someone else's branch, recover your commit by hash into your own worktree and restore the other
+   branch's local ref to `origin` — do not rewrite its remote history, and say so in the issue
+   thread.
+4. **Remove the worktree when the branch is merged or abandoned** (`git worktree remove <path>`), so
+   stale checkouts do not accumulate and get reused by a later run.
+
+This is a workflow rule, not a design-system rule, and it applies to any concurrent work in this
+repo. It lives here because the component waves are where the concurrency actually happens.
+
+## 5b. SPEC.md citations must resolve on the merge base
+
+§5a is about where you commit. This one is the other half of the same concurrency problem: what you
+are allowed to *claim* while the siblings you are citing are still unmerged.
+
+Every component `SPEC.md` justifies its decisions by citing siblings — "the glyph overlay matches
+`checkbox/SPEC.md` §4", "same registry finding as `tag/SPEC.md` §8". Those siblings are built on
+parallel branches. The CTO review of INO-160 (PR #8, finding 5) found a SPEC citing
+`checkbox/SPEC.md`, `InoCheckbox.tsx` and `ino_checkbox.dart` — none of which existed on
+`ino-31-design-system-parity` — and justifying `readonly`, `loading` and a spinner as "matching
+`ino-checkbox`", when the `ino-checkbox` that *did* exist on the base had none of the three. The
+citation was not wrong about the future; it was wrong about the present, which is the only thing a
+reader can check.
+
+**A decision record whose precedent is unverifiable is worse than no record,** because the next
+implementer copies a pattern that was never actually agreed. So, as a ship gate:
+
+1. **A citation must resolve against the merge base at review time.** Not "will resolve once U-3
+   lands" — resolve, in the tree the reviewer is looking at.
+2. **A precedent that has not landed yet is written as an explicit forward reference naming the
+   issue it waits on** — `(pending INO-158)` — and never as settled precedent. Keep the reasoning;
+   it is often the most useful paragraph in the file. Just stop it from reading as a decision that
+   has already been made and reviewed.
+3. **Cite the thing that is actually on the base, not the thing you meant.** In the INO-160 case the
+   only spinner precedent on the base was `ino-button`; that is what the SPEC should have named.
+4. **Section numbers are not checkable, so always give the path too.** `checkbox/SPEC.md` §4, not
+   "§4 of the checkbox spec". The path is what makes the claim greppable and the gate mechanical.
+
+**Enforced by** `node scripts/check-spec-citations.mjs`, third sibling to the parity and adherence
+scripts and wired into the same `npm run check:ds` and the same `design-system.yml` PR job. It walks
+every `SPEC.md`, extracts repo-relative paths from inline code spans and link targets, and fails on
+any that does not exist. Details worth knowing before you fight it:
+
+- Paths resolve repo-relative, relative to the SPEC's own directory, relative to its parent (so
+  `checkbox/SPEC.md` from `toggle/SPEC.md` works the way the prose intends), or — for a bare
+  filename like `tokens.css` — anywhere in the tree.
+- An elided path (`docs/brand/16-…-parity-vs-echeque-reference.md`) is resolved as a glob and must
+  match exactly one real file, so the established shorthand stays legal and still verifies.
+- The `(pending INO-nnn)` marker exempts unresolved paths in **its own block** — one paragraph, one
+  list item, or one table row. Not the whole file: one marker must not launder every dangling
+  citation in the document.
+- Fenced code blocks are skipped (they hold example commands, not claims), and there is no waiver
+  file by design — the forward-reference marker is the escape hatch, and unlike a waiver it stays
+  readable next to the prose it qualifies.
+- On a pull request the job needs no arguments: `actions/checkout` hands CI the merge commit, so the
+  working tree already *is* the merge base plus your branch. Locally, use
+  `--ref origin/ino-31-design-system-parity` to get the same answer without merging.
+
+Running it for the first time found two already-merged dangling citations in
+`toast-container/SPEC.md` §7 (`radio-group/SPEC.md`, `checkbox/SPEC.md`), which INO-185 converted to
+forward references. Retro-fitting older SPEC files is otherwise not required beyond what the script
+flags.
+
 ## 6. Asset request process (logo, Figma, print files)
 
 1. Final vector artwork (logo `.svg` lockups, favicon crop, monochrome variant) requires either a

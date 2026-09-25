@@ -1,42 +1,61 @@
+/* `.ino-field` shell re-declared per control (input/select), matching this repo's no-shared-partial
+   convention — see ino-input.component.scss's header comment. */
 .ino-field {
   display: flex;
   flex-direction: column;
   gap: var(--ino-space-2);
 }
 
-.ino-field__label {
-  font-size: var(--ino-type-body-sm-size);
-  font-weight: 600;
-  color: var(--ino-color-on-surface);
+/* Size API (DoD row 3) — same three-alias re-point `ino-input`/`ino-tag` already established. */
+:host([data-size='sm']) {
+  --ino-control-height: var(--ino-control-height-sm);
+  --ino-control-padding-inline: var(--ino-control-padding-inline-sm);
+  --ino-control-font-size: var(--ino-control-font-size-sm);
 }
 
-.ino-field__required {
-  color: var(--ino-color-danger);
+:host([data-size='lg']) {
+  --ino-control-height: var(--ino-control-height-lg);
+  --ino-control-padding-inline: var(--ino-control-padding-inline-lg);
+  --ino-control-font-size: var(--ino-control-font-size-lg);
 }
 
-.ino-field__select-wrap {
+.ino-field__control-wrap {
   position: relative;
 }
 
 .ino-field__control {
-  min-height: var(--ino-target-comfortable);
-  width: 100%;
-  padding: 0 var(--ino-space-4);
+  display: flex;
+  align-items: center;
+  inline-size: 100%;
+  /* Density (DoD row 4) — same row-min-height fallback idiom as ino-input. */
+  min-block-size: var(--ino-row-min-height, var(--ino-control-height, var(--ino-target-comfortable)));
+  padding-inline: var(--ino-control-padding-inline, var(--ino-space-4));
+  padding-inline-end: var(--ino-space-8);
   background: var(--ino-color-surface-sunken);
   border: 1px solid var(--ino-color-border);
   border-radius: var(--ino-radius-md);
   color: var(--ino-color-on-surface);
   font-family: var(--ino-font-display);
-  font-size: var(--ino-type-body-size);
+  font-size: var(--ino-control-font-size, var(--ino-type-body-size));
+  text-align: start;
+  cursor: pointer;
   transition: border-color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
 
-  &:hover {
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+
+  &:hover:not(:disabled) {
     border-color: var(--ino-color-on-surface-muted);
   }
 
+  &:active:not(:disabled) {
+    border-color: var(--ino-color-accent-active);
+  }
+
   &:focus-visible {
-    outline: 2px solid var(--ino-color-accent);
-    outline-offset: 1px;
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
     border-color: var(--ino-color-accent);
   }
 
@@ -44,26 +63,202 @@
     opacity: 0.5;
     cursor: not-allowed;
   }
+
+  &[aria-disabled='true'] {
+    background: var(--ino-color-surface-raised);
+    cursor: default;
+  }
 }
 
-.ino-field__control--select {
-  appearance: none;
-  padding-right: var(--ino-space-8);
-  cursor: pointer;
+.ino-field__control--placeholder {
+  color: var(--ino-color-on-surface-subtle);
 }
 
 .ino-field__control--error {
   border-color: var(--ino-color-danger);
 }
 
+.ino-field__control--editable {
+  cursor: text;
+
+  &::placeholder {
+    color: var(--ino-color-on-surface-subtle);
+  }
+}
+
+.ino-field__value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .ino-field__chevron {
   position: absolute;
-  top: 50%;
-  right: var(--ino-space-4);
+  inset-block-start: 50%;
+  inset-inline-end: var(--ino-space-4);
   transform: translateY(-50%);
   color: var(--ino-color-on-surface-muted);
   pointer-events: none;
   font-size: 12px;
+
+  :host(.ino-select--open) & {
+    transform: translateY(-50%) scaleY(-1);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition: transform var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+  }
+}
+
+.ino-field__clear {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-end: var(--ino-space-7);
+  transform: translateY(-50%);
+  inline-size: var(--ino-target-min, 24px);
+  block-size: var(--ino-target-min, 24px);
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: var(--ino-radius-sm);
+  background: transparent;
+  color: var(--ino-color-on-surface-muted);
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+
+  &:hover {
+    color: var(--ino-color-on-surface);
+    background: var(--ino-color-surface-raised);
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+}
+
+.ino-field__spinner {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-end: var(--ino-space-7);
+  transform: translateY(-50%);
+  inline-size: 14px;
+  block-size: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--ino-color-on-surface-muted);
+  border-top-color: transparent;
+  pointer-events: none;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: ino-select-spin var(--ino-motion-duration-slow) linear infinite;
+  }
+}
+
+@keyframes ino-select-spin {
+  to {
+    transform: translateY(-50%) rotate(360deg);
+  }
+}
+
+/* Overlay panel — anchored under the trigger, same elevation role ino-datepicker's popup uses. */
+.ino-field__panel {
+  position: absolute;
+  inset-block-start: calc(100% + var(--ino-space-2));
+  inset-inline-start: 0;
+  inline-size: 100%;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  background: var(--ino-color-surface-raised);
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-md);
+  box-shadow: var(--ino-elevation-neutral-3);
+  overflow: hidden;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: ino-select-panel-in var(--ino-motion-duration-fast) var(--ino-motion-easing-decelerate);
+  }
+}
+
+@keyframes ino-select-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ino-field__filter {
+  inline-size: 100%;
+  min-block-size: var(--ino-control-height, var(--ino-target-comfortable));
+  padding-inline: var(--ino-space-3);
+  border: none;
+  border-block-end: 1px solid var(--ino-color-border);
+  background: transparent;
+  color: var(--ino-color-on-surface);
+  font-family: var(--ino-font-display);
+  font-size: var(--ino-type-body-sm-size);
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: calc(-1 * var(--ino-focus-ring-offset));
+  }
+}
+
+.ino-field__listbox {
+  margin: 0;
+  padding: var(--ino-space-1) 0;
+  list-style: none;
+  max-block-size: calc(var(--ino-control-height, var(--ino-target-comfortable)) * 8);
+  overflow-y: auto;
+}
+
+.ino-field__group-heading {
+  padding: var(--ino-space-2) var(--ino-space-4) var(--ino-space-1);
+  font-size: var(--ino-type-caption-size, var(--ino-type-body-sm-size));
+  font-weight: 600;
+  color: var(--ino-color-on-surface-muted);
+}
+
+.ino-field__option {
+  padding: var(--ino-space-2) var(--ino-space-4);
+  min-block-size: var(--ino-row-min-height, var(--ino-target-comfortable));
+  display: flex;
+  align-items: center;
+  color: var(--ino-color-on-surface);
+  cursor: pointer;
+
+  &:hover:not(.ino-field__option--disabled) {
+    background: var(--ino-color-surface-sunken);
+  }
+
+  &.ino-field__option--active {
+    background: var(--ino-color-surface-sunken);
+    outline: var(--ino-focus-ring);
+    outline-offset: calc(-1 * var(--ino-focus-ring-offset));
+  }
+
+  &.ino-field__option--selected {
+    color: var(--ino-color-accent-text-safe);
+    font-weight: 600;
+  }
+
+  &.ino-field__option--disabled {
+    color: var(--ino-color-on-surface-subtle);
+    cursor: not-allowed;
+  }
+}
+
+.ino-field__empty {
+  margin: 0;
+  padding: var(--ino-space-4);
+  color: var(--ino-color-on-surface-muted);
+  font-size: var(--ino-type-body-sm-size);
+  text-align: center;
 }
 
 .ino-field__hint {
@@ -79,6 +274,6 @@
   font-weight: 600;
 }
 
-.ino-field--disabled .ino-field__label {
-  color: var(--ino-color-on-surface-muted);
+.ino-field--disabled .ino-field__hint {
+  color: var(--ino-color-on-surface-subtle);
 }

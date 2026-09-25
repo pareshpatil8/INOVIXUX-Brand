@@ -25,13 +25,17 @@ export const colorsDark = {
   accent: '#7C5CFC',
   accentSecondary: '#4F46E5',
   accentTextSafe: '#7C5CFC',
+  accentActive: '#6A44E8', // INO-123 — pressed/:active accent fill; 5.83:1 with onAccent
   onAccent: '#FFFFFF',
   success: '#3A9B6B',
   onSuccess: '#000000',
   warning: '#B98A3C',
   onWarning: '#000000',
   danger: '#C24C43',
+  dangerTextSafe: '#DE6A61', // danger as TEXT: danger itself is only 4.16:1 on surface and fails AA 1.4.3
   onDanger: '#FFFFFF',
+  info: '#3D92BD', // INO-128 — fourth, non-alarming severity register; see tokens.css §2
+  onInfo: '#000000',
 } as const;
 
 export const colorsLight = {
@@ -47,13 +51,17 @@ export const colorsLight = {
   accent: '#7C5CFC',
   accentSecondary: '#4F46E5',
   accentTextSafe: '#4F46E5', // 6.29:1 on white — use for text/links/filled buttons on light
+  accentActive: '#3F37C9', // pressed — darkens the indigo, since indigo is light mode's filled-accent role
   onAccent: '#FFFFFF',
   success: '#1F7A4F',
   onSuccess: '#FFFFFF',
   warning: '#8A5D1E',
   onWarning: '#FFFFFF',
   danger: '#A6362D',
+  dangerTextSafe: '#A6362D', // light's fill red is already a legible text red — roles converge
   onDanger: '#FFFFFF',
+  info: '#226587',
+  onInfo: '#FFFFFF',
 } as const;
 
 // Third theme, added INO-92 — WCAG 2.2 AAA target (7:1+), not just the AA floor dark/light hit.
@@ -73,13 +81,17 @@ export const colorsHighContrast = {
   accent: '#FFD60A',
   accentSecondary: '#00E5FF',
   accentTextSafe: '#FFD60A', // 14.88:1 on surface — AAA even as small body text
+  accentActive: '#E6BC00', // pressed — 11.56:1 with black, so the press keeps its AAA budget
   onAccent: '#000000', // white on this yellow is 1.41:1 — must be black, unlike dark/light's white
   success: '#00E676',
   onSuccess: '#000000',
   warning: '#FFC400',
   onWarning: '#000000',
   danger: '#FF6B6B', // brightest red that still clears 7:1 both directions — see README
+  dangerTextSafe: '#FF6B6B', // clears this theme's AAA bar as text — roles converge
   onDanger: '#000000',
+  info: '#6BB6FF', // true blue, not a second cyan — accentSecondary already owns #00E5FF here
+  onInfo: '#000000',
 } as const;
 
 // Gradient stops for accent surfaces (LinearGradient colors prop) — same stops as
@@ -107,6 +119,20 @@ export const targetSpacing = 8;
 // Fluid density row height — tokens.css §10 [data-density="fluid"]. Mobile never uses dense.
 export const rowMinHeight = 44;
 
+// tokens.css §12 — control-size scale behind the `size` prop. These are the FLUID resolution
+// only, because mobile is always fluid (same rule as rowMinHeight above); the dense column of
+// that table has no mobile counterpart by design, so porting it would just be dead values that
+// drift. `default` matches targetComfortable (44) — the platform HIG minimum — which is why
+// mobile has no reason to reach for `lg` on ordinary controls.
+// check-theme-parity.mjs asserts every number below against the CSS, so edit tokens.css first.
+export const control = {
+  sm: { height: 36, paddingInline: 12, paddingInlineRoomy: 16, fontSize: 12.5, iconSize: 16, gap: 8 },
+  default: { height: 44, paddingInline: 16, paddingInlineRoomy: 20, fontSize: 15, iconSize: 20, gap: 8 },
+  lg: { height: 52, paddingInline: 20, paddingInlineRoomy: 24, fontSize: 17, iconSize: 24, gap: 12 },
+} as const;
+
+export type ControlSize = keyof typeof control;
+
 export const type = {
   displaySm: { fontSize: 38, lineHeight: 38 * 1.05, fontWeight: '600' as const },
   h2: { fontSize: 32, lineHeight: 32 * 1.25, fontWeight: '600' as const },
@@ -114,7 +140,10 @@ export const type = {
   bodyLg: { fontSize: 17, lineHeight: 17 * 1.65, fontWeight: '400' as const },
   body: { fontSize: 15, lineHeight: 15 * 1.65, fontWeight: '400' as const }, // fluid-density body size
   bodySm: { fontSize: 12.5, lineHeight: 12.5 * 1.55, fontWeight: '400' as const },
-  label: { fontSize: 11, letterSpacing: 1.54, fontWeight: '600' as const }, // 0.14em @ 11px
+  // Mono UPPERCASE display accent — section kickers, group headers. Renamed from `label` in
+  // INO-125: the name now belongs to the form-label set below. Values unchanged.
+  eyebrow: { fontSize: 11, letterSpacing: 1.54, fontWeight: '600' as const }, // 0.14em @ 11px
+
 
   // Devanagari-safe line-height variants (INO-119), mirroring tokens.css §4b's `:lang(hi)`
   // override 1:1 — same rationale: Noto Sans Devanagari's shirorekha/matra metrics clip at the
@@ -123,6 +152,16 @@ export const type = {
   displaySmHi: { fontSize: 38, lineHeight: 38 * 1.35, fontWeight: '600' as const },
   h2Hi: { fontSize: 32, lineHeight: 32 * 1.5, fontWeight: '600' as const },
   h3Hi: { fontSize: 16, lineHeight: 16 * 1.6, fontWeight: '600' as const },
+
+  // Form-label set — tokens.css §4b. Mobile is always fluid density
+  // (13-mobile-app-patterns.md §3), so these mirror the [data-density="fluid"] column, not the
+  // :root defaults — exactly as `body` above already does. letterSpacing is px (RN has no em),
+  // computed at the listed size. check-theme-parity.mjs asserts all of it against the CSS.
+  labelLg: { fontSize: 16, lineHeight: 16 * 1.35, fontWeight: '500' as const, letterSpacing: -0.16 },
+  label: { fontSize: 14.5, lineHeight: 14.5 * 1.45, fontWeight: '500' as const, letterSpacing: 0 },
+  labelSm: { fontSize: 12, lineHeight: 12 * 1.4, fontWeight: '500' as const, letterSpacing: 0.06 },
+  hint: { fontSize: 13, lineHeight: 13 * 1.55, fontWeight: '400' as const, letterSpacing: 0 },
+  caption: { fontSize: 12, lineHeight: 12 * 1.5, fontWeight: '400' as const, letterSpacing: 0.12 },
 };
 
 // Font pairing (INO-119) — tokens.css §4's mandatory fallback chain, ported as data. RN's

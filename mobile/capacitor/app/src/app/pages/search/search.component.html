@@ -19,7 +19,7 @@
       *ngFor="let item of results"
       variant="default"
       padding="sm"
-      interactive
+      [interactive]="true"
       [routerLink]="['/home', item.id]"
       class="search__row">
       <p class="search__row-title">{{ item.title }}</p>

@@ -20,6 +20,7 @@ class InoPalette {
   final Color accent;
   final Color accentSecondary;
   final Color accentTextSafe;
+  final Color accentActive;
   final Color onAccent;
   final Color success;
   final Color onSuccess;
@@ -27,6 +28,12 @@ class InoPalette {
   final Color onWarning;
   final Color danger;
   final Color onDanger;
+  /// Danger used as TEXT on a surface (invalid form labels, inline errors, required
+  /// markers). Diverges from [danger] in dark mode only — see tokens.css
+  /// --ino-color-danger-text-safe / INO-125.
+  final Color dangerTextSafe;
+  final Color info;
+  final Color onInfo;
 
   const InoPalette({
     required this.surface,
@@ -41,6 +48,7 @@ class InoPalette {
     required this.accent,
     required this.accentSecondary,
     required this.accentTextSafe,
+    required this.accentActive,
     required this.onAccent,
     required this.success,
     required this.onSuccess,
@@ -48,6 +56,9 @@ class InoPalette {
     required this.onWarning,
     required this.danger,
     required this.onDanger,
+    required this.dangerTextSafe,
+    required this.info,
+    required this.onInfo,
   });
 
   static const dark = InoPalette(
@@ -63,6 +74,7 @@ class InoPalette {
     accent: Color(0xFF7C5CFC),
     accentSecondary: Color(0xFF4F46E5),
     accentTextSafe: Color(0xFF7C5CFC),
+    accentActive: Color(0xFF6A44E8), // INO-123 — pressed/:active accent fill
     onAccent: Color(0xFFFFFFFF),
     success: Color(0xFF3A9B6B),
     onSuccess: Color(0xFF000000),
@@ -70,6 +82,9 @@ class InoPalette {
     onWarning: Color(0xFF000000),
     danger: Color(0xFFC24C43),
     onDanger: Color(0xFFFFFFFF),
+    dangerTextSafe: Color(0xFFDE6A61), // danger-500 is only 4.16:1 on dark surface, fails AA 1.4.3 as text
+    info: Color(0xFF3D92BD), // INO-128 — fourth, non-alarming severity register
+    onInfo: Color(0xFF000000),
   );
 
   static const light = InoPalette(
@@ -85,6 +100,7 @@ class InoPalette {
     accent: Color(0xFF7C5CFC),
     accentSecondary: Color(0xFF4F46E5),
     accentTextSafe: Color(0xFF4F46E5), // 6.29:1 on white — text/links/filled buttons on light
+    accentActive: Color(0xFF3F37C9), // pressed — darkens the indigo, light mode's filled-accent role
     onAccent: Color(0xFFFFFFFF),
     success: Color(0xFF1F7A4F),
     onSuccess: Color(0xFFFFFFFF),
@@ -92,6 +108,9 @@ class InoPalette {
     onWarning: Color(0xFFFFFFFF),
     danger: Color(0xFFA6362D),
     onDanger: Color(0xFFFFFFFF),
+    dangerTextSafe: Color(0xFFA6362D), // light's fill red is already a legible text red — roles converge
+    info: Color(0xFF226587),
+    onInfo: Color(0xFFFFFFFF),
   );
 
   static const highContrast = InoPalette(
@@ -107,6 +126,7 @@ class InoPalette {
     accent: Color(0xFFFFD60A),
     accentSecondary: Color(0xFF00E5FF),
     accentTextSafe: Color(0xFFFFD60A),
+    accentActive: Color(0xFFE6BC00), // pressed — 11.56:1 with black, keeps AAA
     onAccent: Color(0xFF000000),
     success: Color(0xFF00E676),
     onSuccess: Color(0xFF000000),
@@ -114,6 +134,9 @@ class InoPalette {
     onWarning: Color(0xFF000000),
     danger: Color(0xFFFF6B6B),
     onDanger: Color(0xFF000000),
+    dangerTextSafe: Color(0xFFFF6B6B), // clears this theme's AAA bar as text — roles converge
+    info: Color(0xFF6BB6FF), // true blue — accentSecondary already owns cyan in this theme
+    onInfo: Color(0xFF000000),
   );
 }
 
@@ -149,6 +172,36 @@ const double inoRowMinHeight = 44;
 class InoFont {
   static const String display = 'Geist';
   static const List<String> displayFallback = ['Noto Sans Devanagari'];
+}
+
+/// tokens.css §12 — control-size scale behind the `size` prop, FLUID resolution only
+/// (mobile is always fluid, same rule as [inoRowMinHeight]). `standard` is the port of
+/// size="default": `default` is a reserved word in Dart and cannot name a member, so the
+/// one place this scale's names diverge from the web API is here, on purpose.
+/// check-theme-parity.mjs asserts every number below against the CSS — edit tokens.css first.
+class InoControlSize {
+  const InoControlSize({
+    required this.height,
+    required this.paddingInline,
+    required this.paddingInlineRoomy,
+    required this.fontSize,
+    required this.iconSize,
+    required this.gap,
+  });
+
+  final double height;
+  final double paddingInline;
+  final double paddingInlineRoomy;
+  final double fontSize;
+  final double iconSize;
+  final double gap;
+
+  static const sm = InoControlSize(
+      height: 36, paddingInline: 12, paddingInlineRoomy: 16, fontSize: 12.5, iconSize: 16, gap: 8);
+  static const standard = InoControlSize(
+      height: 44, paddingInline: 16, paddingInlineRoomy: 20, fontSize: 15, iconSize: 20, gap: 8);
+  static const lg = InoControlSize(
+      height: 52, paddingInline: 20, paddingInlineRoomy: 24, fontSize: 17, iconSize: 24, gap: 12);
 }
 
 /// tokens.css §9 — motion durations (ms) / Flutter Curves equivalents.

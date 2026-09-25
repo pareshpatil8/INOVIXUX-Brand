@@ -18,13 +18,57 @@
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: 480px;
   max-height: calc(100vh - var(--ino-space-9) * 2);
   overflow-y: auto;
+
+  // Bare consumption aliases — a size modifier below only re-points these, per the Wave 0
+  // adoption recipe (control-size-scale.md §3). Nothing in this file reads a `-sm`/`-lg` token
+  // directly.
+  --ino-control-height: var(--ino-control-height-default);
+  --ino-control-icon-size: var(--ino-control-icon-size-default);
 
   &:focus-visible {
     outline: none;
   }
+}
+
+/*
+ * Panel width is not one of the six control-scale fields (control-size-scale.md §2) — those are
+ * shaped for interactive controls (height/padding/font/icon/gap), not a container's overall
+ * footprint. A dialog's width has no `ino-space-*` step close to dialog scale (the largest is
+ * --ino-space-11 at 96px), so, same precedent as ino-alert's own hardcoded 360px max-width, these
+ * three widths are component-owned constants, not a token. What size DOES drive through the
+ * scale: the header icon buttons via --ino-control-height/--ino-control-icon-size above. See
+ * SPEC.md §2 row 3 for the full reasoning.
+ */
+.ino-modal__panel--sm {
+  max-width: 360px;
+  --ino-control-height: var(--ino-control-height-sm);
+  --ino-control-icon-size: var(--ino-control-icon-size-sm);
+}
+
+.ino-modal__panel--default {
+  max-width: 480px;
+}
+
+.ino-modal__panel--lg {
+  max-width: 720px;
+  --ino-control-height: var(--ino-control-height-lg);
+  --ino-control-icon-size: var(--ino-control-icon-size-lg);
+}
+
+.ino-modal__panel--maximized {
+  position: fixed;
+  // A small gutter rather than edge-to-edge: `<ino-card>`'s own `--ino-radius-xl` corners are
+  // out of this file's reach (no override hook, and this issue's merge hygiene keeps card/**
+  // untouched — see SPEC.md §2 row 11), so flush `inset: 0` would clip them against the viewport
+  // edge. The gutter keeps the rounded corners looking intentional instead of cut off.
+  inset: var(--ino-space-4);
+  max-width: none;
+  max-height: none;
+  width: auto;
+  height: auto;
+  transform: none !important;
 }
 
 .ino-modal__header {
@@ -32,6 +76,18 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--ino-space-4);
+}
+
+.ino-modal__header--draggable {
+  cursor: grab;
+  // Logical touch-action, not a physical axis: this is "don't let the browser's own panning
+  // fight the drag gesture," which applies the same regardless of writing direction.
+  touch-action: none;
+  user-select: none;
+}
+
+.ino-modal__header--dragging {
+  cursor: grabbing;
 }
 
 .ino-modal__heading {
@@ -43,31 +99,57 @@
   color: var(--ino-color-on-surface);
 }
 
-.ino-modal__close {
+.ino-modal__header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--ino-space-1);
+  margin-inline-start: auto;
+}
+
+.ino-modal__close,
+.ino-modal__maximize {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: var(--ino-target-comfortable);
-  height: var(--ino-target-comfortable);
-  margin-left: auto;
+  width: var(--ino-control-height);
+  height: var(--ino-control-height);
   background: transparent;
   border: none;
   border-radius: var(--ino-radius-md);
   color: var(--ino-color-on-surface-muted);
-  font-size: 16px;
   cursor: pointer;
   transition: background var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
     color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  svg {
+    width: var(--ino-control-icon-size);
+    height: var(--ino-control-icon-size);
+  }
 
   &:hover {
     background: var(--ino-color-surface-sunken);
     color: var(--ino-color-on-surface);
   }
 
-  &:focus-visible {
-    outline: 2px solid var(--ino-color-accent);
-    outline-offset: 2px;
+  &:active {
+    background: var(--ino-color-surface-sunken);
+    color: var(--ino-color-accent-active);
   }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+
+.ino-modal__close {
+  font-size: 16px;
 }
 
 .ino-modal__footer {
@@ -81,7 +163,7 @@
     animation: ino-modal-fade var(--ino-motion-duration-base) var(--ino-motion-easing-standard);
   }
 
-  .ino-modal__panel {
+  .ino-modal__panel:not(.ino-modal__panel--maximized) {
     animation: ino-modal-rise var(--ino-motion-duration-base) var(--ino-motion-easing-decelerate);
   }
 }

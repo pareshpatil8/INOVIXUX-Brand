@@ -85,16 +85,20 @@
   <p>
     One <code>&lt;ino-alert&gt;</code> shell, three layouts — <code>inline</code>, full-width
     <code>banner</code>, and stacked <code>toast</code> (via <code>ToastService</code>) — sharing
-    the same closed <code>success | warning | danger</code> status union as the RAG tokens.
+    the same closed <code>info | success | warning | danger</code> status union. <code>info</code>
+    is the non-alarming register — it states a fact a reviewer should know without implying
+    anything needs fixing, so real warnings keep their weight.
   </p>
 
   <div class="ds-stack">
+    <ino-alert status="info" heading="Scheduled">Sanctions screening re-runs nightly at 02:00 IST.</ino-alert>
     <ino-alert status="success" heading="Verified">Meridian Freight cleared ABDM + UPI reconciliation.</ino-alert>
     <ino-alert status="warning" heading="Needs review" [dismissible]="true">Kavya Textile Exports has a GSTIN mismatch.</ino-alert>
     <ino-alert status="danger" variant="banner" heading="Escalated">Orbit Cold Chain Co. — owner identity gap, routed to compliance.</ino-alert>
   </div>
 
   <div class="ds-row">
+    <button ino-button variant="secondary" (click)="showToast('info')">Trigger info toast</button>
     <button ino-button variant="secondary" (click)="showToast('success')">Trigger success toast</button>
     <button ino-button variant="secondary" (click)="showToast('warning')">Trigger warning toast</button>
     <button ino-button variant="secondary" (click)="showToast('danger')">Trigger danger toast</button>

@@ -1,10 +1,22 @@
-<div class="ino-toast-container" aria-live="polite" aria-atomic="false">
+<div
+  class="ino-toast-container"
+  [class.ino-toast-container--top-start]="position === 'top-start'"
+  [class.ino-toast-container--top-center]="position === 'top-center'"
+  [class.ino-toast-container--top-end]="position === 'top-end'"
+  [class.ino-toast-container--bottom-start]="position === 'bottom-start'"
+  [class.ino-toast-container--bottom-center]="position === 'bottom-center'"
+  [class.ino-toast-container--bottom-end]="position === 'bottom-end'"
+  aria-live="polite"
+  aria-atomic="false"
+>
   <ino-alert
     *ngFor="let toast of toasts()"
+    animate.enter="ino-toast-enter"
+    animate.leave="ino-toast-leave"
     variant="toast"
     [status]="toast.status"
     [heading]="toast.heading ?? ''"
-    [dismissible]="true"
+    [dismissible]="!toast.sticky"
     (dismissed)="dismiss(toast.id)"
   >{{ toast.message }}</ino-alert>
 </div>

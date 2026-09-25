@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" role="img" aria-label="INOVIXUX Android notification small icon">
+  <title>INOVIXUX — Android status-bar small icon (ic_stat_inovixux)</title>
+  <desc>
+    Flattened, single-opaque-colour derivative of inovixux-icon-b2c.svg, per
+    docs/brand/13-mobile-app-patterns.md §6.1. Android renders the notification small icon as an
+    ALPHA MASK — every colour, gradient and partial fill is discarded and replaced by the tint
+    passed to setColor(). Three consequences drove this redraw rather than a reuse of the app icon:
+
+    1. The gradient is meaningless here, so the mark is drawn in flat #FFFFFF. Only alpha survives.
+    2. The four corner dots of the app icon sit at opacity 0.5. In an alpha mask that is not a
+       lighter purple — it is a half-transparent hole, which at 24dp (r=1.44px) renders as four
+       grey smudges. Dropped, per §6.1's own "drop it rather than shipping a smudge" rule.
+    3. The verified-node dot is concentric with the X crossing. Painted flat, node and strokes
+       merge into one blob and the node stops reading as a node. It is kept legible by knocking a
+       1.1px transparent gap ring out of the X — the arms stop short of the node instead of
+       running under it. That gap is the whole reason this file exists.
+
+    Construction rule preserved from 14-icon-system.md §1 / the master mark: round cap, round
+    join, 2.4 stroke on a 24 viewBox (== the source's 2px on a 20 viewBox, scaled 1.2x).
+    Content is inset to a 22dp box (cap edges land at 2.55 and 21.45), matching Android's
+    status-bar icon content-area guidance.
+  </desc>
+  <g fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3.4 3.4 8.606 8.606" />
+    <path d="M15.394 15.394 20.6 20.6" />
+    <path d="M20.6 3.4 15.394 8.606" />
+    <path d="M8.606 15.394 3.4 20.6" />
+  </g>
+  <circle cx="12" cy="12" r="2.5" fill="#FFFFFF" />
+</svg>

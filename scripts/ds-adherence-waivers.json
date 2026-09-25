@@ -1,0 +1,173 @@
+{
+  "$comment": [
+    "Seeded by INO-118 when the adherence lint was first wired into CI.",
+    "",
+    "Every entry here is a PRE-EXISTING violation that predates the gate, kept green so the",
+    "lint can start blocking NEW drift today instead of waiting on a cleanup. This file is a",
+    "ratchet, not a parking lot: each waiver names the issue that will delete it, an unused",
+    "waiver FAILS the build, and adding one is a visible diff on a reviewed file.",
+    "",
+    "Do not add a waiver to land a component. Fix the violation, or if it needs a token",
+    "decision, say so on the owning issue below.",
+    "",
+    "  INO-172 — adopt the type scale on pages that hardcode font-size",
+    "  INO-174 — brand gradient, accent glow and toast dwell do not re-theme",
+    "  INO-82  — Master C logo mark: brand-fixed territory fills and stitch-thread values"
+  ],
+  "waivers": [
+    {
+      "rule": "off-scale-font-size",
+      "file": "docs/brand/06-angular-components/src/components/feature-grid/ino-feature-grid.component.scss",
+      "match": "font-size: 20px",
+      "reason": "the type scale has no role at this size; needs a token decision, not a find-and-replace",
+      "issue": "INO-172"
+    },
+    {
+      "rule": "off-scale-font-size",
+      "file": "mobile/capacitor/app/src/app/pages/detail/detail.component.scss",
+      "match": "font-size: 19px",
+      "reason": "the type scale has no role at this size; needs a token decision, not a find-and-replace",
+      "issue": "INO-172"
+    },
+    {
+      "rule": "off-scale-font-size",
+      "file": "mobile/capacitor/app/src/app/pages/home/home.component.scss",
+      "match": "font-size: 24px",
+      "reason": "the type scale has no role at this size; needs a token decision, not a find-and-replace",
+      "issue": "INO-172"
+    },
+    {
+      "rule": "off-scale-font-size",
+      "file": "mobile/capacitor/app/src/app/pages/notifications/notifications.component.scss",
+      "match": "font-size: 24px",
+      "reason": "the type scale has no role at this size; needs a token decision, not a find-and-replace",
+      "issue": "INO-172"
+    },
+    {
+      "rule": "off-scale-font-size",
+      "file": "mobile/capacitor/app/src/app/pages/settings/settings.component.scss",
+      "match": "font-size: 18px",
+      "reason": "the type scale has no role at this size; needs a token decision, not a find-and-replace",
+      "issue": "INO-172"
+    },
+    {
+      "rule": "off-scale-font-size",
+      "file": "mobile/capacitor/app/src/app/pages/settings/settings.component.scss",
+      "match": "font-size: 24px",
+      "reason": "the type scale has no role at this size; needs a token decision, not a find-and-replace",
+      "issue": "INO-172"
+    },
+    {
+      "rule": "off-scale-font-size",
+      "file": "web/src/app/components/feature-grid/ino-feature-grid.component.scss",
+      "match": "font-size: 20px",
+      "reason": "the type scale has no role at this size; needs a token decision, not a find-and-replace",
+      "issue": "INO-172"
+    },
+    {
+      "rule": "off-scale-font-size",
+      "file": "web/src/app/pages/not-found/not-found.component.scss",
+      "match": "font-size: 28px",
+      "reason": "the type scale has no role at this size; needs a token decision, not a find-and-replace",
+      "issue": "INO-172"
+    },
+    {
+      "rule": "off-scale-font-size",
+      "file": "web/src/styles/page-sections.scss",
+      "match": "font-size: 10.5px",
+      "reason": "the type scale has no role at this size; needs a token decision, not a find-and-replace",
+      "issue": "INO-172"
+    },
+    {
+      "rule": "off-scale-font-size",
+      "file": "web/src/styles/page-sections.scss",
+      "match": "font-size: 18px",
+      "reason": "the type scale has no role at this size; needs a token decision, not a find-and-replace",
+      "issue": "INO-172"
+    },
+    {
+      "rule": "off-scale-font-size",
+      "file": "web/src/styles/page-sections.scss",
+      "match": "font-size: 19px",
+      "reason": "the type scale has no role at this size; needs a token decision, not a find-and-replace",
+      "issue": "INO-172"
+    },
+    {
+      "rule": "off-scale-font-size",
+      "file": "web/src/styles/page-sections.scss",
+      "match": "font-size: 28px",
+      "reason": "the type scale has no role at this size; needs a token decision, not a find-and-replace",
+      "issue": "INO-172"
+    },
+    {
+      "rule": "no-raw-color",
+      "file": "web/src/app/app.html",
+      "match": "#4F46E5",
+      "reason": "brand gradient stop / accent glow: needs semantic gradient-stop roles so it re-themes",
+      "issue": "INO-174"
+    },
+    {
+      "rule": "no-raw-color",
+      "file": "web/src/app/app.html",
+      "match": "#7C5CFC",
+      "reason": "brand gradient stop / accent glow: needs semantic gradient-stop roles so it re-themes",
+      "issue": "INO-174"
+    },
+    {
+      "rule": "no-raw-color",
+      "file": "web/src/styles/page-sections.scss",
+      "match": "rgba(",
+      "reason": "brand gradient stop / accent glow: needs semantic gradient-stop roles so it re-themes",
+      "issue": "INO-174"
+    },
+    {
+      "rule": "non-token-shadow",
+      "file": "web/src/styles/page-sections.scss",
+      "match": "box-shadow: 0 30px 70px -35px rgba(124, 92, 252, 0.35), var(--ino-elevation-1)",
+      "reason": "hand-rolled accent glow; needs a token so high-contrast can drop it",
+      "issue": "INO-174"
+    },
+    {
+      "rule": "non-token-duration",
+      "file": "mobile/flutter/lib/notifications/notification_center.dart",
+      "match": "Duration(milliseconds: 5000",
+      "reason": "banner dwell timer, matching web ToastService's 5000ms default — a UX read-time, not a CSS motion duration; pending INO-174's toast-dwell re-theme decision",
+      "issue": "INO-174"
+    },
+    {
+      "rule": "no-hardcoded-icon-color",
+      "file": "web/src/app/app.html",
+      "match": "fill=\"#4F46E5\"",
+      "reason": "Master C logo mark territory fill — the mark's two territories are brand-fixed geometry, not theme roles; only the stitch thread re-themes (via --ino-logo-thread)",
+      "issue": "INO-82"
+    },
+    {
+      "rule": "no-hardcoded-icon-color",
+      "file": "web/src/app/app.html",
+      "match": "fill=\"#7C5CFC\"",
+      "reason": "Master C logo mark territory fill — same rationale as the #4F46E5 territory above",
+      "issue": "INO-82"
+    },
+    {
+      "rule": "no-raw-color",
+      "file": "web/src/app/app.html",
+      "match": "#D8CEFF",
+      "reason": "var(--ino-logo-thread, #D8CEFF) fallback — the thread colour themes via the variable; the literal is only the no-cascade fallback matching the dark default",
+      "issue": "INO-82"
+    },
+    {
+      "rule": "no-raw-color",
+      "file": "web/src/styles/page-sections.scss",
+      "match": "#D8CEFF",
+      "reason": "--ino-logo-thread definition (dark) — would live in tokens.css but tokens.css is frozen post-Wave 0; a brand-mark-only colour, not a reusable role",
+      "issue": "INO-82"
+    },
+    {
+      "rule": "no-raw-color",
+      "file": "web/src/styles/page-sections.scss",
+      "match": "#2A1F6E",
+      "reason": "--ino-logo-thread definition (light) — same rationale as the dark value above",
+      "issue": "INO-82"
+    }
+  ]
+}

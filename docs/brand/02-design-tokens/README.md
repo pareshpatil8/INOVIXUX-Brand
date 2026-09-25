@@ -42,6 +42,13 @@ contrast ratio, not eyeballed) before being allowed into the token file:
 | `on-warning` (black) on `warning` fill | 6.76:1 | Pass — chip text |
 | `on-danger` (white) on `danger` fill | 4.76:1 | Pass — chip text |
 | `on-accent` (black) on `accent` fill | 4.75:1 | Pass — chip/button text |
+| `info` (#3D92BD) on `surface`, as text — added INO-128 | 5.70:1 | Pass — body text |
+| `on-info` (black) on `info` fill — added INO-128 | 6.04:1 | Pass — chip text |
+
+**Light-theme `info` (same INO-128 addition):** `info` is `#226587` there, measuring **6.14:1**
+as text on `surface` (#FAFAFA) and **6.40:1** for `on-info` (white) on the fill — both AA for
+body/chip text, and deliberately in the same 5.3–6.6:1 band as light's `success`/`warning`/
+`danger` fills so no one severity reads as heavier than the others.
 
 **Two concrete rules this produces, both encoded in `tokens.css` comments so they can't be
 silently violated later:**
@@ -82,6 +89,13 @@ relative-luminance formula as the table above (script-verified, not eyeballed):
 | `on-warning` (black) on `warning` fill | 13.15:1 | Pass — AAA |
 | `danger` (#FF6B6B) on `surface`, as text | 7.57:1 | Pass — AAA (barely; see below) |
 | `on-danger` (black) on `danger` fill | 7.57:1 | Pass — AAA |
+| `info` (#6BB6FF) on `surface`, as text — added INO-128 | 9.76:1 | Pass — AAA |
+| `on-info` (black) on `info` fill — added INO-128 | 9.76:1 | Pass — AAA |
+
+**Why high-contrast `info` is blue, not a second cyan (INO-128):** `accent-secondary` already
+owns `#00E5FF` in this theme. Two near-identical cyans would be legible by the numbers and still
+fail the users this theme exists for — telling severities apart at a glance is the point. `#6BB6FF`
+is a distinctly bluer hue that clears AAA in both directions with margin.
 
 **One honest limitation, not smoothed over:** saturated red is the hardest hue to push past
 7:1 in either direction — the standard brand red (`#C24C43`/`#A6362D` used in dark/light) only

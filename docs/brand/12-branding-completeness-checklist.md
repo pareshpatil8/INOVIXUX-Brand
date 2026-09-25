@@ -78,6 +78,7 @@ assumed-done or silently dropped. `✅` = built and pushed. `🟡` = partial / s
 | App icon / splash screen | ✅ *(this round)* | Exported per platform from `inovixux-icon-b2c.svg` on all three tracks — `mobile/capacitor/resources/`, `mobile/react-native/assets/`, `mobile/flutter/assets/{icon,splash}/`, each with a `scripts/gen*app*icon*` generator |
 | Screens actually built | ✅ *(this round)* | All 13 inventory rows built on all three tracks — see `15-mobile-screen-inventory.md` §4 for the per-track file map. INO-88/89/90 closed. |
 | Framework decision | ✅ *(this round)* | Resolved on INO-85: build all three — Capacitor, React Native, Flutter — in parallel, each in its own `mobile/<framework>/` folder. See `13-mobile-app-patterns.md` §5. Child issues track each build. |
+| Push notification / deep-link patterns | ✅ *(this round)* | `13-mobile-app-patterns.md` §6 (INO-97) — notification icon/tint, badge rules, in-app-banner-vs-tray decision, category→token map, deep-link grammar, cold-start/back-stack behaviour. Spec only: §6.7 names the five backend/product items implementation still needs. |
 
 ## 6. Collateral (non-digital / print)
 
@@ -86,7 +87,7 @@ assumed-done or silently dropped. `✅` = built and pushed. `🟡` = partial / s
 | Business card spec | ✅ | `07-collateral/business-card-spec.md` |
 | Letterhead | ✅ | `07-collateral/letterhead.html` |
 | Pitch deck template | ✅ | `07-collateral/pitch-deck-template.html` |
-| Print-ready vector exports | ⬜ blocked | Needs final logo mark (INO-82) per `09-design-system-standards.md` §6 |
+| Print-ready vector exports | ✅ | `assets/brand/print/` — 6 vector PDFs of the Master C mark/lockups/monos + CMYK/Pantone spec (`07-collateral/print-color-spec.md`), INO-122 |
 
 ## 7. What this checklist deliberately does NOT add
 
@@ -94,10 +95,13 @@ assumed-done or silently dropped. `✅` = built and pushed. `🟡` = partial / s
   2026-09-07 directive; tokens/density modes are ready for them, no screens built.
 - **Any commercial/pricing content** — INO-14 hold still applies everywhere above.
 - **A duplicate of whatever `~/Downloads/e-Cheque Design System` contains that isn't listed
-  above** — that folder could not be read this round (local OS permission boundary, not a repo
-  issue — see `11-…mobile-accessibility.md` §9). If it has categories not covered here, the
-  fastest fix is copying it into `docs/references/` in this repo, or naming the specific
-  categories directly in a comment.
+  above.** ~~That folder could not be read this round (local OS permission boundary).~~
+  **Corrected 2026-09-14:** the folder *was* read in full (172 files) and compared file by file
+  against this repo — see **`16-design-system-parity-vs-echeque-reference.md`**. It surfaced no
+  component category this checklist had missed; the real gaps it exposed are packaging-layer
+  (manifest, agent skill descriptor, per-component contracts, specimen cards, adherence lint) plus
+  a set of company-brand categories the reference doesn't cover either (data-viz palette, Indic
+  typography, report/PDF theme, email system). All enumerated in doc 16 §5 and §7.
 
 ## 8. Build order — items 1–5 complete
 
@@ -113,5 +117,5 @@ assumed-done or silently dropped. `✅` = built and pushed. `🟡` = partial / s
    components and all three mobile tracks.
 
 **Remaining ⬜ items** are the lower-priority §3 component rows (tabs, table, badge/chip, avatar,
-empty state, skeleton, pagination) and §6's print-ready vector exports (still gated on the final
-logo mark, INO-82). None of them block the website or mobile surfaces that now exist.
+empty state, skeleton, pagination); §6's print-ready vector exports landed with the Master C
+mark (INO-122). None of them block the website or mobile surfaces that now exist.

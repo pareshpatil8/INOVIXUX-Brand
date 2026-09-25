@@ -11,9 +11,18 @@ import '../widgets/screen_template.dart';
 /// only in isolation.
 class DetailScreen extends StatelessWidget {
   final String id;
-  final String title;
 
-  const DetailScreen({super.key, required this.id, required this.title});
+  /// Null when reached by deep link (`/home/:id`) rather than from the Home list: a link carries
+  /// an id, and the title belongs to the record — which there is no data model to read yet
+  /// (13-mobile-app-patterns.md §6.7 item 4). Falling back to an id-derived heading is honest;
+  /// flashing a guessed title and then correcting it is not. Once a record fetch exists this
+  /// becomes its loading state, per §6.6's "paint the destination screen in its loading state,
+  /// not Home".
+  final String? title;
+
+  const DetailScreen({super.key, required this.id, this.title});
+
+  String get _heading => title ?? 'Item $id';
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +34,7 @@ class DetailScreen extends StatelessWidget {
     };
 
     return ScreenTemplate(
-      title: title,
+      title: _heading,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -56,7 +65,7 @@ class DetailScreen extends StatelessWidget {
             onPressed: () async {
               final confirmed = await showConfirmActionSheet(
                 context,
-                title: 'Delete "$title"?',
+                title: 'Delete "$_heading"?',
                 body: 'This can\'t be undone.',
               );
               if (confirmed == true && context.mounted) {

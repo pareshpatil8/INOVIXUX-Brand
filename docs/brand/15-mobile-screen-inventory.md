@@ -86,3 +86,14 @@ confirm-action-sheet respectively.
 Shared per-track scaffolding (nav shell, screen template, theming, token port) is listed in each
 track's `README.md`. Builds are tracked on INO-88 (Capacitor), INO-89 (React Native), INO-90
 (Flutter) — all three closed.
+
+## 5. Deep-link targets
+
+`13-mobile-app-patterns.md` §6.5 maps a single path grammar onto the §1 rows above — `/home`,
+`/home/:id`, `/search`, `/notifications`, `/settings`, `/sign-in`, `/forgot-password`, everything
+else → Home. The grammar is the Capacitor route table
+(`mobile/capacitor/app/src/app/app.routes.ts`); the other two tracks map onto it rather than
+defining their own, so one link string resolves to the same row on all three. Rows 1, 6, 11, 12
+and 13 are intentionally not link targets: a splash, a list-row composition, an overlay, and two
+in-place states aren't navigable destinations. Nothing is wired yet — see §6.7 there for what that
+still needs.

@@ -191,10 +191,9 @@ a page but not enough to express an inset panel or a modal sitting above other c
   finding card, or mobile list card) can be built on. Wired into the live app as a 3-up bento
   section (`web/src/app/app.html` `#cards`) so `ng build` is the proof, not just source sitting
   under `docs/`.
-- **Reference-folder access**: `~/Downloads/e-Cheque Design System` could not be read — same
-  category of boundary as the earlier `claude.ai/design/...` 403, but a local OS one this time
-  (macOS blocks terminal/agent processes from reading `~/Downloads` under Privacy & Security →
-  Files and Folders, independent of file permissions). Two ways to unblock it if there's something
-  in there this addendum doesn't already cover: grant that access in System Settings, or copy the
-  folder into this repo (e.g. `docs/references/e-cheque/`) via Finder so it's readable the normal
-  way. Full gap analysis against what you described from it: `12-branding-completeness-checklist.md`.
+- **Reference-folder access**: ~~`~/Downloads/e-Cheque Design System` could not be read (macOS
+  Privacy & Security boundary).~~ **Corrected 2026-09-14** — the folder is readable and has since
+  been read in full and compared file by file against this repo. This addendum's conclusion still
+  holds (surface depth was the real token gap), but it was reached from your description rather
+  than the source; the evidence-based version is
+  **`16-design-system-parity-vs-echeque-reference.md`**.

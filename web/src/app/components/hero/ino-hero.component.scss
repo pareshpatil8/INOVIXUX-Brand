@@ -1,3 +1,6 @@
+// Layout + typography band, no interaction states (INO-123 / DoD §5-6). The hero's CTAs are
+// projected `ino-button` instances that bring their own pressed and focus-visible states from the
+// Wave 0 tokens; the section itself is not focusable and has no activation behaviour.
 .ino-hero {
   position: relative;
   display: grid;
@@ -30,8 +33,8 @@
 }
 
 .ino-hero__eyebrow {
-  font: var(--ino-type-label-weight) var(--ino-type-label-size) / 1 var(--ino-font-mono);
-  letter-spacing: var(--ino-type-label-tracking);
+  font: var(--ino-type-eyebrow-weight) var(--ino-type-eyebrow-size) / 1 var(--ino-font-mono);
+  letter-spacing: var(--ino-type-eyebrow-tracking);
   text-transform: uppercase;
   color: var(--ino-color-accent);
   margin: 0 0 var(--ino-space-4);

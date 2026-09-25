@@ -8,6 +8,11 @@
   line-height: var(--ino-type-body-line);
 }
 
+.ino-alert--info {
+  background: var(--ino-color-info);
+  color: var(--ino-color-on-info);
+}
+
 .ino-alert--success {
   background: var(--ino-color-success);
   color: var(--ino-color-on-success);
@@ -94,7 +99,44 @@
   }
 
   &:focus-visible {
-    outline: 2px solid currentColor;
-    outline-offset: 2px;
+    outline: var(--ino-focus-ring);
+    /* The one focus ring in the system that overrides the token's COLOUR (keeping its width, so
+       high-contrast still gets 3px). This button sits on a saturated RAG fill, where an
+       accent-violet ring is not guaranteed to clear SC 1.4.11's 3:1 — but `currentColor` here is
+       the alert's own `--ino-color-on-<status>` role, which is contrast-audited against that exact
+       fill in every theme by construction. */
+    outline-color: currentColor;
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+}
+
+/* Pressed. Also deliberately NOT --ino-color-accent-active: an accent-coloured press on a danger
+   banner reads as a call to action, and the accent is not audited against the RAG fills. Instead
+   the button inverts into the alert's own on-<status>/<status> pair, so the pressed state inherits
+   that pair's already-verified contrast in all three themes for free — this is why the rule is
+   repeated per status rather than written once with a generic token. */
+.ino-alert--info .ino-alert__dismiss:active {
+  background: var(--ino-color-on-info);
+  color: var(--ino-color-info);
+}
+
+.ino-alert--success .ino-alert__dismiss:active {
+  background: var(--ino-color-on-success);
+  color: var(--ino-color-success);
+}
+
+.ino-alert--warning .ino-alert__dismiss:active {
+  background: var(--ino-color-on-warning);
+  color: var(--ino-color-warning);
+}
+
+.ino-alert--danger .ino-alert__dismiss:active {
+  background: var(--ino-color-on-danger);
+  color: var(--ino-color-danger);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ino-alert__dismiss {
+    transition: none;
   }
 }

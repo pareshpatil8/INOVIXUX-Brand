@@ -8,6 +8,11 @@
   line-height: var(--ino-type-body-line);
 }
 
+.ino-alert--info {
+  background: var(--ino-color-info);
+  color: var(--ino-color-on-info);
+}
+
 .ino-alert--success {
   background: var(--ino-color-success);
   color: var(--ino-color-on-success);

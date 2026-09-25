@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import '../navigation/deep_link.dart';
 import '../theme/app_theme.dart';
 import '../theme/tokens.dart';
 import '../widgets/screen_template.dart';
-import 'detail_screen.dart';
-import 'search_screen.dart';
 
 /// List template (docs/brand/13-mobile-app-patterns.md §2) — screen inventory row 5
 /// (Home/dashboard) and, with the same widget, row 6 (generic list). Placeholder rows only — no
@@ -29,7 +28,10 @@ class HomeScreen extends StatelessWidget {
         ScreenIconAction(
           icon: LucideIcons.search,
           tooltip: 'Search',
-          onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SearchScreen())),
+          // Named route, not an imperative MaterialPageRoute — so an in-app tap and a
+          // `inovixux:///search` deep link land on the same route with the same stack beneath
+          // it (INO-112, 13-mobile-app-patterns.md §6.6).
+          onPressed: () => Navigator.of(context).pushNamed(InoPaths.search),
         ),
       ],
       child: ListView.separated(
@@ -42,9 +44,13 @@ class HomeScreen extends StatelessWidget {
             borderRadius: BorderRadius.circular(InoRadius.lg),
             child: InkWell(
               borderRadius: BorderRadius.circular(InoRadius.lg),
-              onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                builder: (_) => DetailScreen(id: row['id']!, title: row['title']!),
-              )),
+              // `/home/:id` — the same path a notification payload carries. The title is passed
+              // as a route argument because this call site already has it; a deep link doesn't,
+              // and DetailScreen falls back accordingly.
+              onTap: () => Navigator.of(context).pushNamed(
+                '/home/${Uri.encodeComponent(row['id']!)}',
+                arguments: row['title']!,
+              ),
               child: Container(
                 constraints: const BoxConstraints(minHeight: inoRowMinHeight),
                 padding: const EdgeInsets.symmetric(horizontal: InoSpace.s4, vertical: InoSpace.s3),
