@@ -1,0 +1,285 @@
+<!-- @dsCard group="Overlay" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ino-modal — dialog shell (INO-162)</title>
+<!-- Canonical token file, linked rather than copied: this preview must repaint with the system,
+     and must never become a second place raw hex values live. -->
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-label-size);
+    letter-spacing: var(--ino-type-label-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 64ch; }
+  p.note { color: var(--ino-color-on-surface-muted); margin: var(--ino-space-3) 0 0; max-width: 64ch; font-size: var(--ino-type-body-sm-size); }
+
+  .theme-row, .size-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); }
+  .theme-pane {
+    flex: 1 1 320px;
+    padding: var(--ino-space-6);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-xl);
+    background: var(--ino-color-surface-sunken);
+  }
+  .theme-pane > h3 {
+    margin: 0 0 var(--ino-space-4);
+    font-size: var(--ino-type-body-sm-size);
+    color: var(--ino-color-on-surface-muted);
+    font-weight: 600;
+  }
+
+  /*
+   * Mirrors web/src/app/components/modal/ino-modal.component.scss — same token bindings and
+   * class names, minus the `position: fixed` full-viewport overlay (a static preview stacks
+   * several open instances side by side, so each one is positioned in normal flow inside its own
+   * `.stage` instead). A divergence between this preview and the shipped component is visible as
+   * a visual diff.
+   */
+  .stage {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 260px;
+    padding: var(--ino-space-6);
+    background: var(--ino-color-overlay-scrim);
+    border-radius: var(--ino-radius-lg);
+    overflow: hidden;
+  }
+
+  .ino-modal__panel {
+    position: relative;
+    width: 100%;
+    max-height: 100%;
+    overflow-y: auto;
+    --ino-control-height: var(--ino-control-height-default);
+    --ino-control-icon-size: var(--ino-control-icon-size-default);
+  }
+  .ino-modal__panel--sm { max-width: 360px; --ino-control-height: var(--ino-control-height-sm); --ino-control-icon-size: var(--ino-control-icon-size-sm); }
+  .ino-modal__panel--default { max-width: 480px; }
+  .ino-modal__panel--lg { max-width: 720px; --ino-control-height: var(--ino-control-height-lg); --ino-control-icon-size: var(--ino-control-icon-size-lg); }
+
+  .ino-card {
+    background: var(--ino-color-surface-raised);
+    box-shadow: var(--ino-elevation-2);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-xl);
+    padding: var(--ino-space-8);
+  }
+
+  .ino-modal__header { display: flex; align-items: center; justify-content: space-between; gap: var(--ino-space-4); margin-bottom: var(--ino-space-4); }
+  .ino-modal__header--draggable { cursor: grab; }
+  .ino-modal__heading { margin: 0; font-size: var(--ino-type-h3-size); line-height: var(--ino-type-h3-line); font-weight: var(--ino-type-h3-weight); color: var(--ino-color-on-surface); }
+  .ino-modal__header-actions { display: flex; align-items: center; gap: var(--ino-space-1); margin-inline-start: auto; }
+  .ino-modal__body { color: var(--ino-color-on-surface-muted); font-size: var(--ino-type-body-size); }
+  .ino-modal__footer { display: flex; justify-content: flex-end; gap: var(--ino-space-3); margin-top: var(--ino-space-6); }
+
+  .ino-modal__close, .ino-modal__maximize {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: var(--ino-control-height); height: var(--ino-control-height);
+    background: transparent; border: none; border-radius: var(--ino-radius-md);
+    color: var(--ino-color-on-surface-muted); cursor: pointer;
+    transition: background var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+      color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+  }
+  .ino-modal__close svg, .ino-modal__maximize svg { width: var(--ino-control-icon-size); height: var(--ino-control-icon-size); }
+  .ino-modal__close { font-size: 16px; }
+  .ino-modal__close:hover, .ino-modal__maximize:hover { background: var(--ino-color-surface-sunken); color: var(--ino-color-on-surface); }
+  .ino-modal__close:active, .ino-modal__maximize:active { background: var(--ino-color-surface-sunken); color: var(--ino-color-accent-active); }
+  .ino-modal__close:focus-visible, .ino-modal__maximize:focus-visible { outline: var(--ino-focus-ring); outline-offset: var(--ino-focus-ring-offset); }
+
+  .mock-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-height: var(--ino-target-comfortable); padding-inline: var(--ino-space-5);
+    border-radius: var(--ino-radius-md); font-weight: 600; font-size: var(--ino-type-body-size);
+    cursor: pointer; border: 1px solid transparent;
+  }
+  .mock-btn--primary { background: var(--ino-gradient-accent); color: var(--ino-color-on-accent); }
+  .mock-btn--ghost { background: transparent; color: var(--ino-color-on-surface-muted); border-color: var(--ino-color-border); }
+
+  .legend { display: flex; gap: var(--ino-space-5); flex-wrap: wrap; margin-top: var(--ino-space-3); }
+  .legend li { list-style: none; display: flex; align-items: center; gap: var(--ino-space-2); font-size: var(--ino-type-body-sm-size); color: var(--ino-color-on-surface-muted); }
+  .swatch { width: 14px; height: 14px; border-radius: var(--ino-radius-sm); }
+</style>
+</head>
+<body>
+
+<h1>Modal — dialog / bottom-sheet shell</h1>
+<p class="lede">
+  INO-162 / INO-31 U-7. Adds <code>size</code> (sm/default/lg), <code>maximizable</code> +
+  two-way <code>[(maximized)]</code>, and <code>draggable</code> on top of the existing
+  centred dialog. Focus containment now comes entirely from <code>[inoFocusTrap]</code> (T-11) —
+  closes pending item P-1. Interactive states below (hover/active/focus-visible on the close and
+  maximize buttons) are real CSS, not screenshots — try them with a mouse and keyboard in a
+  browser.
+</p>
+
+<h2>Three themes — <code>size="default"</code></h2>
+<div class="theme-row">
+
+  <div class="theme-pane">
+    <h3>dark — :root (default)</h3>
+    <div class="stage">
+      <div class="ino-modal__panel ino-modal__panel--default">
+        <div class="ino-card">
+          <div class="ino-modal__header">
+            <h2 class="ino-modal__heading" style="text-transform:none;letter-spacing:0;font-size:var(--ino-type-h3-size);color:var(--ino-color-on-surface);margin:0;">Confirm export</h2>
+            <div class="ino-modal__header-actions">
+              <button class="ino-modal__close" aria-label="Close dialog">✕</button>
+            </div>
+          </div>
+          <div class="ino-modal__body">This exports 1,204 KYB records as a signed PDF. The file expires after 7 days.</div>
+          <div class="ino-modal__footer">
+            <button class="mock-btn mock-btn--ghost">Cancel</button>
+            <button class="mock-btn mock-btn--primary">Export</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="light">
+    <h3>light — [data-theme="light"]</h3>
+    <div class="stage">
+      <div class="ino-modal__panel ino-modal__panel--default">
+        <div class="ino-card">
+          <div class="ino-modal__header">
+            <h2 class="ino-modal__heading" style="text-transform:none;letter-spacing:0;font-size:var(--ino-type-h3-size);color:var(--ino-color-on-surface);margin:0;">Confirm export</h2>
+            <div class="ino-modal__header-actions">
+              <button class="ino-modal__close" aria-label="Close dialog">✕</button>
+            </div>
+          </div>
+          <div class="ino-modal__body">This exports 1,204 KYB records as a signed PDF. The file expires after 7 days.</div>
+          <div class="ino-modal__footer">
+            <button class="mock-btn mock-btn--ghost">Cancel</button>
+            <button class="mock-btn mock-btn--primary">Export</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="high-contrast">
+    <h3>high-contrast — [data-theme="high-contrast"]</h3>
+    <div class="stage">
+      <div class="ino-modal__panel ino-modal__panel--default">
+        <div class="ino-card">
+          <div class="ino-modal__header">
+            <h2 class="ino-modal__heading" style="text-transform:none;letter-spacing:0;font-size:var(--ino-type-h3-size);color:var(--ino-color-on-surface);margin:0;">Confirm export</h2>
+            <div class="ino-modal__header-actions">
+              <button class="ino-modal__close" aria-label="Close dialog">✕</button>
+            </div>
+          </div>
+          <div class="ino-modal__body">This exports 1,204 KYB records as a signed PDF. The file expires after 7 days.</div>
+          <div class="ino-modal__footer">
+            <button class="mock-btn mock-btn--ghost">Cancel</button>
+            <button class="mock-btn mock-btn--primary">Export</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<h2>Size — sm / default / lg (control-height alias only; width is a component-owned constant, see SPEC.md §2 row 3)</h2>
+<div class="stage" style="min-height:320px;">
+  <div style="display:flex; gap: var(--ino-space-6); align-items:flex-start; flex-wrap:wrap; justify-content:center;">
+    <div class="ino-modal__panel ino-modal__panel--sm">
+      <div class="ino-card">
+        <div class="ino-modal__header">
+          <h2 class="ino-modal__heading" style="text-transform:none;letter-spacing:0;font-size:var(--ino-type-h3-size);color:var(--ino-color-on-surface);margin:0;">sm · 360px</h2>
+          <div class="ino-modal__header-actions"><button class="ino-modal__close" aria-label="Close dialog">✕</button></div>
+        </div>
+        <div class="ino-modal__body">Compact confirm.</div>
+      </div>
+    </div>
+    <div class="ino-modal__panel ino-modal__panel--default">
+      <div class="ino-card">
+        <div class="ino-modal__header">
+          <h2 class="ino-modal__heading" style="text-transform:none;letter-spacing:0;font-size:var(--ino-type-h3-size);color:var(--ino-color-on-surface);margin:0;">default · 480px</h2>
+          <div class="ino-modal__header-actions"><button class="ino-modal__close" aria-label="Close dialog">✕</button></div>
+        </div>
+        <div class="ino-modal__body">Unchanged from the pre-uplift width.</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="stage" style="min-height:220px; margin-top: var(--ino-space-5);">
+  <div class="ino-modal__panel ino-modal__panel--lg">
+    <div class="ino-card">
+      <div class="ino-modal__header">
+        <h2 class="ino-modal__heading" style="text-transform:none;letter-spacing:0;font-size:var(--ino-type-h3-size);color:var(--ino-color-on-surface);margin:0;">lg · 720px</h2>
+        <div class="ino-modal__header-actions"><button class="ino-modal__close" aria-label="Close dialog">✕</button></div>
+      </div>
+      <div class="ino-modal__body">Wider header/close-button box too — both read the control-height/icon-size aliases this size class re-points.</div>
+    </div>
+  </div>
+</div>
+
+<h2>Maximizable + draggable</h2>
+<p class="lede">The maximize button toggles <code>aria-pressed</code> and swaps the icon (expand ⇄ restore). Dragging is pointer-only on the header, excluding the two buttons; see SPEC.md §3 for the clamp/reset rules.</p>
+<div class="stage">
+  <div class="ino-modal__panel ino-modal__panel--default">
+    <div class="ino-card">
+      <div class="ino-modal__header ino-modal__header--draggable">
+        <h2 class="ino-modal__heading" style="text-transform:none;letter-spacing:0;font-size:var(--ino-type-h3-size);color:var(--ino-color-on-surface);margin:0;">Applicant detail</h2>
+        <div class="ino-modal__header-actions">
+          <button class="ino-modal__maximize" aria-label="Maximize" aria-pressed="false">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><rect x="1.5" y="1.5" width="11" height="11" rx="1.5" stroke="currentColor" stroke-width="1.4" /></svg>
+          </button>
+          <button class="ino-modal__close" aria-label="Close dialog">✕</button>
+        </div>
+      </div>
+      <div class="ino-modal__body">Cursor over the header shows <code>grab</code>; the two buttons keep their own pointer/click behavior even though the header is draggable.</div>
+    </div>
+  </div>
+</div>
+<ul class="legend">
+  <li><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><rect x="1.5" y="1.5" width="11" height="11" rx="1.5" stroke="currentColor" stroke-width="1.4" /></svg> Maximize (not maximized)</li>
+  <li><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><rect x="3.5" y="0.5" width="9.5" height="9.5" rx="1.5" stroke="currentColor" stroke-width="1.4" /><path d="M1 4v8a1 1 0 0 0 1 1h8" stroke="currentColor" stroke-width="1.4" fill="none" /></svg> Restore (maximized)</li>
+</ul>
+
+<h2>Disabled close action</h2>
+<div class="row" style="display:flex; gap: var(--ino-space-4);">
+  <button class="ino-modal__close" aria-label="Close dialog" disabled style="cursor:not-allowed; opacity:.5; pointer-events:none;">✕</button>
+</div>
+<p class="note">Unused by this component today (§2 row 5 in SPEC.md) — shown for completeness of the shared icon-button state set the close/maximize buttons carry.</p>
+
+<h2>RTL</h2>
+<div class="stage" dir="rtl">
+  <div class="ino-modal__panel ino-modal__panel--default">
+    <div class="ino-card">
+      <div class="ino-modal__header">
+        <h2 class="ino-modal__heading" style="text-transform:none;letter-spacing:0;font-size:var(--ino-type-h3-size);color:var(--ino-color-on-surface);margin:0;">تأكيد التصدير</h2>
+        <div class="ino-modal__header-actions">
+          <button class="ino-modal__close" aria-label="إغلاق">✕</button>
+        </div>
+      </div>
+      <div class="ino-modal__body">يتم تصدير 1,204 سجل ككشف موقّع. تنتهي صلاحية الملف بعد 7 أيام.</div>
+      <div class="ino-modal__footer">
+        <button class="mock-btn mock-btn--ghost">إلغاء</button>
+        <button class="mock-btn mock-btn--primary">تصدير</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

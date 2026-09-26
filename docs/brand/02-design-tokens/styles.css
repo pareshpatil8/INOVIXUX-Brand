@@ -1,0 +1,68 @@
+/*
+ * INOVIXUX — Design Token Contract (Phase 2)
+ * Concept: Verified Line, structure — Adaptive Synapse, accent register
+ * (INO-31, plan revision 9 — 2026-09-08: board approved moving forward on
+ * the full design system while the logo mark itself stays a separate,
+ * open-ended workstream — see INO-31 child issue for logo iteration.
+ * This revision adds a real light-mode theme and touch-target tokens for
+ * mobile; nothing in the dark-mode values below changed.)
+ *
+ * 2026-09-08 (plan revision 10): added surface depth (--ino-color-surface-sunken,
+ * --ino-color-overlay-scrim) and a second elevation step (--ino-elevation-2) for
+ * inset panels and modal/sheet/popover surfaces — see docs/brand/
+ * 11-dark-light-mobile-accessibility.md §9. Existing surface/elevation values unchanged.
+ *
+ * 2026-09-10 (INO-92): added a third theme, [data-theme="high-contrast"]
+ * (WCAG 2.2 AAA target — see §2c below), as the proof that the primitive →
+ * semantic-role architecture genuinely supports N themes, not just a
+ * dark/light pair. Existing dark/light values unchanged. See
+ * docs/brand/09-design-system-standards.md §8 for the recipe.
+ *
+ * 2026-09-22 (INO-115): split into tokens/{colors,typography,spacing,elevation,
+ * borders,motion,density}.css behind this single entry point, so a consumer or
+ * an agent can pick the system up one category at a time instead of reading a
+ * single monolithic file. docs/brand/02-design-tokens/tokens.css remains the
+ * byte-for-byte canonical file scripts/check-theme-parity.mjs audits against
+ * (and what web/src/tokens.css / the Angular build / mobile ports consume) —
+ * this file and the tokens/ split are a generated-equivalent packaging layer on
+ * top of it, kept in sync by `node scripts/check-token-split-parity.mjs`. If
+ * you are hand-editing a token value, edit tokens.css AND the matching
+ * tokens/*.css file in the same change; the parity script fails the build
+ * otherwise.
+ *
+ * This file is the single source of truth for color, type, space, radius,
+ * elevation, and motion. Angular consumes it as-is: drop it into
+ * src/styles/tokens.css and import once in angular.json's global styles
+ * array, or paste the :root block into styles.scss. No SCSS variables, no
+ * Tailwind config, no framework-specific build step required — it is plain
+ * CSS custom properties on purpose, so it works identically in Angular
+ * component :host blocks, plain HTML collateral (letterhead/deck exports),
+ * and this repo's own mockups.
+ *
+ * Theme switching: dark is the default (:root, no attribute needed — matches
+ * the approved Vetra-register foundation). Light mode and high-contrast mode
+ * are explicit opt-ins via [data-theme="light"] / [data-theme="high-contrast"]
+ * on <html>, set by ThemeService before first paint
+ * (see docs/brand/02-design-tokens/angular-theme-contract.md §5) so there is
+ * no flash of the wrong theme. Components must bind to the semantic roles in
+ * section 2 only — never branch on data-theme directly — so the same markup
+ * repaints correctly in any theme for free.
+ *
+ * Swapping identity: change ONLY --ino-color-accent / --ino-gradient-accent
+ * / --ino-glow-accent (and, if a different concept is chosen later,
+ * --ino-font-display / --ino-font-mono) — see
+ * docs/brand/03-vetra-structural-foundation.md for the Aperture Mark /
+ * Ledger Seal swap values. Nothing else in this file should need to change
+ * for a mark swap.
+ *
+ * Full rationale, WCAG 2.2 AA contrast audit (both themes), and Angular
+ * integration notes: see README.md in docs/brand/02-design-tokens/.
+ */
+
+@import 'tokens/colors.css';
+@import 'tokens/typography.css';
+@import 'tokens/spacing.css';
+@import 'tokens/elevation.css';
+@import 'tokens/borders.css';
+@import 'tokens/motion.css';
+@import 'tokens/density.css';

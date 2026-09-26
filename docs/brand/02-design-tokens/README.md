@@ -181,6 +181,88 @@ for a mockup, wrong for shipping:
 
 ---
 
+## Indic/Devanagari typography pairing (INO-119)
+
+Geist has no Devanagari glyphs. We are an India/APAC company aligned to India Stack, so a Hindi
+string is a floor requirement, not an edge case — before this change, a Hindi string fell back to
+whatever the OS happened to pick, which silently breaks the vertical-rhythm contract every other
+token in this file is trying to guarantee.
+
+**Font choice: Noto Sans Devanagari.**
+
+- OFL-1.1 licensed, same licensing posture as Geist (free to self-host, no attribution requirement
+  beyond keeping the license file) — `github.com/notofonts/devanagari`.
+- Google's Noto family is purpose-built to pair with a Latin display face without a jarring
+  weight/x-height mismatch, and covers Hindi, Marathi, Sanskrit, Nepali, and every other
+  Devanagari-script language in one face — see "Scope beyond Hindi" below for why that matters.
+- Static `.woff2` (web) / `.ttf` (mobile) files, no build step — same integration shape as Geist.
+
+**Integration: mandatory fallback chain, not a font swap.** `tokens.css` §4 inserts
+`"Noto Sans Devanagari"` as the second entry on both `--ino-font-display` and is deliberately
+**not** added to `--ino-font-mono` (see "Roles intentionally not overridden" below):
+
+```
+--ino-font-display: "Geist", "Noto Sans Devanagari", system-ui, -apple-system, Arial, Helvetica, sans-serif;
+```
+
+A browser resolves a font-family list per character, not as a single winner-take-all choice: Latin
+glyphs keep rendering in Geist, and only glyphs Geist doesn't have (Devanagari) fall through to the
+next family in the list. This is exactly how the existing `system-ui, Arial, Helvetica` tail
+already works for this token — Noto Sans Devanagari is one more mandatory link in that same chain,
+not a parallel mechanism.
+
+**Vertical rhythm — why body is untouched and headlines are lang-scoped.** Noto Sans Devanagari's
+vertical metrics (the shirorekha headline stroke every character hangs from, plus matras that sit
+above/below the baseline) need more line-height clearance than Geist's Latin cap-height rhythm at
+the same ratio — Noto's own metrics call for roughly 1.4x as a safe minimum.
+
+- `body` / `body-lg` / `body-sm` (1.55 / 1.65 / 1.55) already clear that minimum and are
+  **unchanged**. This is also exactly where a single line legitimately mixes scripts (a KYB field
+  label plus a Hindi customer name, a button with a transliterated brand term) — one line-height
+  has to serve both scripts on that line, so being already-generous here was load-bearing, not
+  incidental.
+- `display` / `h2` / `h3` (1.05 / 1.25 / 1.4) are deliberately tight for Geist's Latin cap-height
+  headline rhythm and clip Devanagari's shirorekha/matras at those ratios. Rather than loosen them
+  globally (which would also loosen every existing Latin-only headline for a case that doesn't
+  apply to it), `tokens.css` §4b adds a `:lang(hi)` override — `1.35 / 1.5 / 1.6` — that only
+  applies to a subtree whose language resolves to Hindi. `:lang()` matches an element's own or
+  *inherited* `lang` attribute per the HTML language-inheritance algorithm, so `<html lang="hi">`
+  (a fully localized page) or a single `<span lang="hi">` mid-page both work with zero JS and no
+  new attribute contract — `web/src/index.html` already sets `lang` on `<html>`.
+  This is safe specifically because headline instances are effectively single-script (a Hindi
+  headline is not composed mid-line with an English one the way a body sentence can be).
+- `metric` / `label` (mono, all-caps tracking, count-up numerals / section eyebrows) are
+  **intentionally not overridden** — both are Latin-numeral/uppercase-tracking styles by design;
+  a Hindi label uses the `h3`/`body` roles instead, which already have a script-safe ratio. If
+  product ever needs a Hindi eyebrow, that is itself a role-composition question for that
+  component, not a token gap.
+
+**Self-hosting.** Not done in this pass, same as Geist itself (see "Font onboarding" above) — the
+CDN `<link>` in `web/src/index.html` now requests Noto Sans Devanagari alongside Geist so the
+mockup renders correctly, but the real self-hosted `.woff2`/`.ttf` asset onboarding for *both*
+fonts is one combined follow-up against the real app's asset pipeline, not two separate passes.
+
+**Platform application:**
+
+| Platform | What changed | Why it differs |
+|---|---|---|
+| Web (Angular) | `tokens.css` §4/§4b — fallback chain + `:lang(hi)` line-height override. | Canonical source; CSS resolves the fallback chain per-glyph natively. |
+| Capacitor | Nothing — `mobile/capacitor/app/src/styles.scss` imports `web/src/tokens.css` directly. | Zero drift by construction, same as every other token. |
+| React Native | `mobile/react-native/src/theme/tokens.ts` — `fontFamily.display` / `.displayDevanagariFallback`, plus `type.displaySmHi` / `.h2Hi` / `.h3Hi` line-height variants mirroring the `:lang(hi)` ratios. | **RN's `fontFamily` style prop takes exactly one linked font name per `<Text>` node — there is no CSS-style automatic multi-family fallback.** A screen rendering `lang="hi"` content must explicitly select the Devanagari font/line-height variant; the tokens exist, wiring them into a locale-aware `<Text>` wrapper is a follow-up once RN i18n plumbing exists. Documented here so the platform gap is a stated position, not a silent one — same status as Geist itself, which also isn't linked as a native font asset in RN yet. |
+| Flutter | `mobile/flutter/lib/theme/tokens.dart` — new `InoFont` class (`display` + `displayFallback` list). | Flutter's `TextStyle.fontFamilyFallback` **does** support an ordered fallback list like CSS, so this ports cleanly once `.ttf` assets are declared in `pubspec.yaml` (not done in this pass). The `:lang(hi)` line-height variants are **not** ported to Flutter: `tokens.dart` has no font-size/line-height scale at all yet (a pre-existing gap, not introduced by this ticket) — flagged here rather than silently ported around. |
+
+**Scope beyond Hindi — a stated position.** This pass covers **Devanagari only** (Hindi, Marathi,
+Sanskrit, Nepali, Konkani, Maithili, Bodo — every language that shares the script). It explicitly
+**does not** add pairings for Tamil, Bengali, Telugu, Kannada, Gujarati, Gurmukhi (Punjabi),
+Malayalam, or Odia — each is a distinct script with its own vertical-metrics/pairing decision, not
+a checkbox next to Devanagari. Those scripts currently fall back to whatever the OS provides,
+same as Devanagari did before this ticket. This is a deliberate scope line, not an oversight:
+Devanagari was promoted because Hindi is the India Stack floor requirement; the remaining
+scripts are real gaps to size and prioritize as their own follow-up work, not silently bundled
+into "Indic support" as if one face solved all of them.
+
+---
+
 ## Dense mode / Fluid mode
 
 Implemented as a `[data-density]` attribute selector (see `tokens.css` §9), not two separate
@@ -213,3 +295,12 @@ decisions, not accidents:
 3. **Light mode** — everything above is dark-surface-only, matching the approved foundation. If
    a light B2C surface is ever needed, it's a second primitives block under a
    `[data-theme="light"]` selector, not a rewrite of the role names.
+4. **Noto Sans Devanagari self-hosting** (INO-119) — same status as Geist in item 1 above; both
+   are one combined asset-onboarding pass against the real app, not two.
+5. **RN locale-aware font/line-height wiring** (INO-119) — `fontFamily.displayDevanagariFallback`
+   and the `*Hi` type variants exist as tokens but nothing selects them yet; needs RN i18n
+   plumbing (a locale value to test `=== 'hi'` against) that doesn't exist in this repo yet.
+6. **Flutter has no ported type/line-height scale at all** (pre-existing gap, surfaced by
+   INO-119, not caused by it) — `tokens.dart` only carries color/space/radius/target/motion
+   tokens; a `display`/`h2`/`h3`/`body` port (the RN `type` object's Dart equivalent) is a
+   prerequisite before Flutter can carry the Devanagari-safe line-height variants at all.

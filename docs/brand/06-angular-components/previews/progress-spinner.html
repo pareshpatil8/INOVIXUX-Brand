@@ -1,0 +1,221 @@
+<!-- @dsCard group="Misc" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ino-progress-spinner — loading / process status indicator (INO-133)</title>
+<!-- Canonical token file, linked rather than copied: this preview must repaint with the system,
+     and must never become a second place raw hex values live. -->
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-eyebrow-size);
+    letter-spacing: var(--ino-type-eyebrow-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 60ch; }
+
+  .theme-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); }
+  .theme-pane {
+    flex: 1 1 280px;
+    padding: var(--ino-space-5);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-xl);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+  }
+  .theme-pane > h3 {
+    margin: 0 0 var(--ino-space-4);
+    font-size: var(--ino-type-body-sm-size);
+    color: var(--ino-color-on-surface-muted);
+    font-weight: 600;
+  }
+
+  .row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--ino-space-6); }
+  .cell { display: flex; flex-direction: column; align-items: center; gap: var(--ino-space-2); }
+  .cell > span { font-size: var(--ino-type-body-sm-size); color: var(--ino-color-on-surface-muted); }
+
+  /* Mirrors web/src/app/components/progress-spinner/ino-progress-spinner.component.scss — same
+     token bindings, so a divergence between this preview and the shipped component is visible as a
+     visual diff. */
+  .ino-progress-spinner {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: var(--ino-control-height-default);
+    block-size: var(--ino-control-height-default);
+    color: var(--ino-color-accent);
+  }
+  .ino-progress-spinner--sm { inline-size: var(--ino-control-height-sm); block-size: var(--ino-control-height-sm); }
+  .ino-progress-spinner--lg { inline-size: var(--ino-control-height-lg); block-size: var(--ino-control-height-lg); }
+  .ino-progress-spinner--disabled { opacity: 0.5; }
+  .ino-progress-spinner--invalid { color: var(--ino-color-danger); }
+
+  .ino-progress-spinner__svg { inline-size: 100%; block-size: 100%; }
+  .ino-progress-spinner__track { stroke: var(--ino-color-border-soft); }
+  .ino-progress-spinner__value {
+    stroke: currentColor;
+    stroke-linecap: round;
+    transition: stroke-dashoffset var(--ino-motion-duration-base) var(--ino-motion-easing-standard);
+  }
+  .ino-progress-spinner--indeterminate .ino-progress-spinner__svg { transform-origin: 50px 50px; }
+  @media (prefers-reduced-motion: no-preference) {
+    .ino-progress-spinner--indeterminate .ino-progress-spinner__svg {
+      animation: ino-progress-spinner-spin var(--ino-motion-duration-slow) linear infinite;
+    }
+  }
+  @keyframes ino-progress-spinner-spin { to { transform: rotate(360deg); } }
+
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  }
+</style>
+</head>
+<body>
+
+<h1>ProgressSpinner — loading / process status indicator</h1>
+<p class="lede">
+  A standalone loading affordance, extracted from the inline ring <code>ino-button</code>/
+  <code>ino-tag</code> already draw for their own <code>loading</code> state. Supports both
+  indeterminate (continuous spin) and determinate (percentage ring) modes, per the PrimeNG
+  <code>ProgressSpinner</code> benchmark.
+</p>
+
+<h2>Indeterminate × theme</h2>
+<div class="theme-row">
+
+  <div class="theme-pane">
+    <h3>dark — :root (default)</h3>
+    <div class="row">
+      <svg class="ino-progress-spinner__svg" style="width:44px;height:44px;color:var(--ino-color-accent);transform-origin:22px 22px;animation:ino-progress-spinner-spin var(--ino-motion-duration-slow) linear infinite" viewBox="0 0 100 100" aria-hidden="true">
+        <circle class="ino-progress-spinner__track" cx="50" cy="50" r="46" stroke-width="8" fill="none"></circle>
+        <circle class="ino-progress-spinner__value" cx="50" cy="50" r="46" stroke-width="8" stroke-dasharray="217 289" fill="none" transform="rotate(-90 50 50)"></circle>
+      </svg>
+      <span aria-live="polite">Loading&hellip;</span>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="light">
+    <h3>light — [data-theme="light"]</h3>
+    <div class="row">
+      <svg class="ino-progress-spinner__svg" style="width:44px;height:44px;color:var(--ino-color-accent);transform-origin:22px 22px;animation:ino-progress-spinner-spin var(--ino-motion-duration-slow) linear infinite" viewBox="0 0 100 100" aria-hidden="true">
+        <circle class="ino-progress-spinner__track" cx="50" cy="50" r="46" stroke-width="8" fill="none"></circle>
+        <circle class="ino-progress-spinner__value" cx="50" cy="50" r="46" stroke-width="8" stroke-dasharray="217 289" fill="none" transform="rotate(-90 50 50)"></circle>
+      </svg>
+      <span aria-live="polite">Loading&hellip;</span>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="high-contrast">
+    <h3>high-contrast — [data-theme="high-contrast"]</h3>
+    <div class="row">
+      <svg class="ino-progress-spinner__svg" style="width:44px;height:44px;color:var(--ino-color-accent);transform-origin:22px 22px;animation:ino-progress-spinner-spin var(--ino-motion-duration-slow) linear infinite" viewBox="0 0 100 100" aria-hidden="true">
+        <circle class="ino-progress-spinner__track" cx="50" cy="50" r="46" stroke-width="8" fill="none"></circle>
+        <circle class="ino-progress-spinner__value" cx="50" cy="50" r="46" stroke-width="8" stroke-dasharray="217 289" fill="none" transform="rotate(-90 50 50)"></circle>
+      </svg>
+      <span aria-live="polite">Loading&hellip;</span>
+    </div>
+  </div>
+
+</div>
+
+<h2>Size (control-height scale)</h2>
+<div class="row">
+  <div class="cell">
+    <svg style="width:36px;height:36px;color:var(--ino-color-accent);transform-origin:18px 18px;animation:ino-progress-spinner-spin var(--ino-motion-duration-slow) linear infinite" viewBox="0 0 100 100" aria-hidden="true">
+      <circle class="ino-progress-spinner__track" cx="50" cy="50" r="46" stroke-width="8" fill="none"></circle>
+      <circle class="ino-progress-spinner__value" cx="50" cy="50" r="46" stroke-width="8" stroke-dasharray="217 289" fill="none" transform="rotate(-90 50 50)"></circle>
+    </svg>
+    <span>sm — 36px</span>
+  </div>
+  <div class="cell">
+    <svg style="width:44px;height:44px;color:var(--ino-color-accent);transform-origin:22px 22px;animation:ino-progress-spinner-spin var(--ino-motion-duration-slow) linear infinite" viewBox="0 0 100 100" aria-hidden="true">
+      <circle class="ino-progress-spinner__track" cx="50" cy="50" r="46" stroke-width="8" fill="none"></circle>
+      <circle class="ino-progress-spinner__value" cx="50" cy="50" r="46" stroke-width="8" stroke-dasharray="217 289" fill="none" transform="rotate(-90 50 50)"></circle>
+    </svg>
+    <span>default — 44px</span>
+  </div>
+  <div class="cell">
+    <svg style="width:52px;height:52px;color:var(--ino-color-accent);transform-origin:26px 26px;animation:ino-progress-spinner-spin var(--ino-motion-duration-slow) linear infinite" viewBox="0 0 100 100" aria-hidden="true">
+      <circle class="ino-progress-spinner__track" cx="50" cy="50" r="46" stroke-width="8" fill="none"></circle>
+      <circle class="ino-progress-spinner__value" cx="50" cy="50" r="46" stroke-width="8" stroke-dasharray="217 289" fill="none" transform="rotate(-90 50 50)"></circle>
+    </svg>
+    <span>lg — 52px</span>
+  </div>
+</div>
+
+<h2>Determinate — 25 / 60 / 100%</h2>
+<div class="row">
+  <div class="cell">
+    <svg style="width:44px;height:44px;color:var(--ino-color-accent)" viewBox="0 0 100 100" aria-hidden="true">
+      <circle class="ino-progress-spinner__track" cx="50" cy="50" r="46" stroke-width="8" fill="none"></circle>
+      <circle class="ino-progress-spinner__value" cx="50" cy="50" r="46" stroke-width="8" stroke-dasharray="289" stroke-dashoffset="217" fill="none" transform="rotate(-90 50 50)"></circle>
+    </svg>
+    <span>25%</span>
+  </div>
+  <div class="cell">
+    <svg style="width:44px;height:44px;color:var(--ino-color-accent)" viewBox="0 0 100 100" aria-hidden="true">
+      <circle class="ino-progress-spinner__track" cx="50" cy="50" r="46" stroke-width="8" fill="none"></circle>
+      <circle class="ino-progress-spinner__value" cx="50" cy="50" r="46" stroke-width="8" stroke-dasharray="289" stroke-dashoffset="116" fill="none" transform="rotate(-90 50 50)"></circle>
+    </svg>
+    <span>60%</span>
+  </div>
+  <div class="cell">
+    <svg style="width:44px;height:44px;color:var(--ino-color-accent)" viewBox="0 0 100 100" aria-hidden="true">
+      <circle class="ino-progress-spinner__track" cx="50" cy="50" r="46" stroke-width="8" fill="none"></circle>
+      <circle class="ino-progress-spinner__value" cx="50" cy="50" r="46" stroke-width="8" stroke-dasharray="289" stroke-dashoffset="0" fill="none" transform="rotate(-90 50 50)"></circle>
+    </svg>
+    <span>100%</span>
+  </div>
+</div>
+
+<h2>Invalid (error, still running) &amp; disabled</h2>
+<div class="row">
+  <div class="cell">
+    <svg style="width:44px;height:44px;color:var(--ino-color-danger);transform-origin:22px 22px;animation:ino-progress-spinner-spin var(--ino-motion-duration-slow) linear infinite" viewBox="0 0 100 100" aria-hidden="true">
+      <circle class="ino-progress-spinner__track" cx="50" cy="50" r="46" stroke-width="8" fill="none"></circle>
+      <circle class="ino-progress-spinner__value" cx="50" cy="50" r="46" stroke-width="8" stroke-dasharray="217 289" fill="none" transform="rotate(-90 50 50)"></circle>
+    </svg>
+    <span>invalid (retrying)</span>
+  </div>
+  <div class="cell">
+    <svg style="width:44px;height:44px;color:var(--ino-color-accent);opacity:0.5" viewBox="0 0 100 100" aria-hidden="true">
+      <circle class="ino-progress-spinner__track" cx="50" cy="50" r="46" stroke-width="8" fill="none"></circle>
+      <circle class="ino-progress-spinner__value" cx="50" cy="50" r="46" stroke-width="8" stroke-dasharray="289" stroke-dashoffset="116" fill="none" transform="rotate(-90 50 50)"></circle>
+    </svg>
+    <span>disabled</span>
+  </div>
+</div>
+
+<h2>Reduced motion</h2>
+<p class="lede">
+  With <code>prefers-reduced-motion: reduce</code>, the indeterminate spin animation is removed
+  entirely (not paused) and the determinate ring's fill transition drops to <code>transition:
+  none</code> — a new value jumps to its position instead of easing into it.
+</p>
+
+<h2>RTL</h2>
+<div class="row" dir="rtl">
+  <svg style="width:44px;height:44px;color:var(--ino-color-accent);transform-origin:22px 22px;animation:ino-progress-spinner-spin var(--ino-motion-duration-slow) linear infinite" viewBox="0 0 100 100" aria-hidden="true">
+    <circle class="ino-progress-spinner__track" cx="50" cy="50" r="46" stroke-width="8" fill="none"></circle>
+    <circle class="ino-progress-spinner__value" cx="50" cy="50" r="46" stroke-width="8" stroke-dasharray="217 289" fill="none" transform="rotate(-90 50 50)"></circle>
+  </svg>
+  <span>&#1580;&#1575;&#1585;&#1610; &#1575;&#1604;&#1578;&#1581;&#1605;&#1610;&#1604;&hellip;</span>
+</div>
+
+</body>
+</html>

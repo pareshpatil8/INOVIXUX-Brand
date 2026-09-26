@@ -1,0 +1,396 @@
+<!-- @dsCard group="Data" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ino-paginator — page navigation (INO-137)</title>
+<!-- Canonical token file, linked rather than copied: this preview must repaint with the system,
+     and must never become a second place raw hex values live. -->
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-label-size);
+    letter-spacing: var(--ino-type-label-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 64ch; }
+  p.note { color: var(--ino-color-on-surface-muted); margin: var(--ino-space-3) 0 0; max-width: 64ch; }
+
+  .theme-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); }
+  .theme-pane {
+    flex: 1 1 320px;
+    padding: var(--ino-space-5);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-xl);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+  }
+  .theme-pane > h3 {
+    margin: 0 0 var(--ino-space-4);
+    font-size: var(--ino-type-body-sm-size);
+    color: var(--ino-color-on-surface-muted);
+    font-weight: 600;
+  }
+
+  .state-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); }
+  .state-cell { flex: 1 1 220px; }
+  .state-cell > h3 {
+    margin: 0 0 var(--ino-space-2);
+    font-size: var(--ino-type-body-sm-size);
+    color: var(--ino-color-on-surface-muted);
+    font-weight: 600;
+  }
+
+  /*
+   * Mirrors web/src/app/components/paginator/ino-paginator.component.scss — same token bindings,
+   * so a divergence between this preview and the shipped component is visible as a visual diff.
+   */
+  .ino-paginator {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--ino-space-4);
+    padding-block: var(--ino-space-2);
+    font-family: var(--ino-font-display);
+    color: var(--ino-color-on-surface);
+    min-block-size: var(--ino-row-min-height, 44px);
+  }
+  .ino-paginator[data-size='sm'] {
+    --ino-control-height: var(--ino-control-height-sm);
+    --ino-control-font-size: var(--ino-control-font-size-sm);
+    --ino-control-padding-inline: var(--ino-control-padding-inline-sm);
+    --ino-control-gap: var(--ino-control-gap-sm);
+  }
+  .ino-paginator[data-size='lg'] {
+    --ino-control-height: var(--ino-control-height-lg);
+    --ino-control-font-size: var(--ino-control-font-size-lg);
+    --ino-control-padding-inline: var(--ino-control-padding-inline-lg);
+    --ino-control-gap: var(--ino-control-gap-lg);
+  }
+  .ino-paginator[data-disabled] { opacity: 0.5; }
+  .ino-paginator[data-loading] { opacity: 0.75; }
+  .ino-paginator[data-loading] .ino-paginator__btn { cursor: progress; }
+  .ino-paginator[data-readonly] .ino-paginator__btn:hover {
+    background: transparent;
+    color: var(--ino-color-on-surface-muted);
+  }
+
+  .ino-paginator__report {
+    font-size: var(--ino-control-font-size);
+    color: var(--ino-color-on-surface-muted);
+    white-space: nowrap;
+  }
+  .ino-paginator__rows, .ino-paginator__jump {
+    display: flex;
+    align-items: center;
+    gap: var(--ino-space-2);
+  }
+  .ino-paginator__rows-label, .ino-paginator__jump-label {
+    font-size: var(--ino-control-font-size);
+    color: var(--ino-color-on-surface-muted);
+    white-space: nowrap;
+  }
+  .ino-paginator__rows-select, .ino-paginator__jump-input {
+    min-block-size: var(--ino-control-height);
+    padding-inline: var(--ino-control-padding-inline);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-md);
+    background: var(--ino-color-surface-sunken);
+    color: var(--ino-color-on-surface);
+    font-family: inherit;
+    font-size: var(--ino-control-font-size);
+  }
+  .ino-paginator__jump-input { inline-size: calc(var(--ino-control-height) * 1.6); }
+
+  .ino-paginator__links {
+    display: flex;
+    align-items: center;
+    gap: var(--ino-space-1);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .ino-paginator__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-inline-size: var(--ino-control-height);
+    min-block-size: var(--ino-control-height);
+    padding-inline: var(--ino-space-1);
+    border: 1px solid transparent;
+    border-radius: var(--ino-radius-sm);
+    background: transparent;
+    color: var(--ino-color-on-surface-muted);
+    font-family: inherit;
+    font-size: var(--ino-control-font-size);
+    font-weight: 600;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .ino-paginator__btn:hover { background: var(--ino-color-surface-sunken); color: var(--ino-color-on-surface); }
+  .ino-paginator__btn--force-active { background: var(--ino-color-surface-sunken); color: var(--ino-color-accent-active); }
+  .ino-paginator__btn--force-focus {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+  .ino-paginator__btn:disabled { cursor: not-allowed; opacity: 0.5; }
+  .ino-paginator__btn--active {
+    background: var(--ino-color-accent);
+    color: var(--ino-color-on-accent);
+  }
+  .ino-paginator__ellipsis {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-inline-size: var(--ino-control-height);
+    color: var(--ino-color-on-surface-muted);
+    user-select: none;
+  }
+  [dir='rtl'] .ino-paginator__btn--nav svg { transform: scaleX(-1); }
+</style>
+</head>
+<body>
+
+<h1>Paginator — page navigation</h1>
+<p class="lede">
+  A controlled component: <code>first</code>/<code>rows</code>/<code>totalRecords</code> are plain
+  inputs and every gesture below round-trips through <code>(pageChange)</code>. Each pane is the
+  same markup under a different <code>data-theme</code> — nothing changes across themes except the
+  variables.
+</p>
+
+<h2>Full form × theme</h2>
+<div class="theme-row">
+
+  <div class="theme-pane">
+    <h3>dark — :root (default)</h3>
+    <nav class="ino-paginator" role="navigation" aria-label="Pagination">
+      <div class="ino-paginator__report" aria-live="polite">21–30 of 248</div>
+      <div class="ino-paginator__rows">
+        <label class="ino-paginator__rows-label" for="rows-dark">Rows per page</label>
+        <select class="ino-paginator__rows-select" id="rows-dark">
+          <option>10</option><option selected>25</option><option>50</option>
+        </select>
+      </div>
+      <ul class="ino-paginator__links">
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--nav" aria-label="Go to first page">«</button></li>
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--nav" aria-label="Go to previous page">‹</button></li>
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--page">1</button></li>
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--page ino-paginator__btn--active" aria-current="page">2</button></li>
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--page">3</button></li>
+        <li><span class="ino-paginator__ellipsis" aria-hidden="true">&hellip;</span></li>
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--page">25</button></li>
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--nav" aria-label="Go to next page">›</button></li>
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--nav" aria-label="Go to last page">»</button></li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="theme-pane" data-theme="light">
+    <h3>light — [data-theme="light"]</h3>
+    <nav class="ino-paginator" role="navigation" aria-label="Pagination">
+      <div class="ino-paginator__report" aria-live="polite">21–30 of 248</div>
+      <div class="ino-paginator__rows">
+        <label class="ino-paginator__rows-label" for="rows-light">Rows per page</label>
+        <select class="ino-paginator__rows-select" id="rows-light">
+          <option>10</option><option selected>25</option><option>50</option>
+        </select>
+      </div>
+      <ul class="ino-paginator__links">
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--nav" aria-label="Go to first page">«</button></li>
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--nav" aria-label="Go to previous page">‹</button></li>
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--page">1</button></li>
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--page ino-paginator__btn--active" aria-current="page">2</button></li>
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--page">3</button></li>
+        <li><span class="ino-paginator__ellipsis" aria-hidden="true">&hellip;</span></li>
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--page">25</button></li>
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--nav" aria-label="Go to next page">›</button></li>
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--nav" aria-label="Go to last page">»</button></li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="theme-pane" data-theme="high-contrast">
+    <h3>high-contrast — [data-theme="high-contrast"]</h3>
+    <nav class="ino-paginator" role="navigation" aria-label="Pagination">
+      <div class="ino-paginator__report" aria-live="polite">21–30 of 248</div>
+      <div class="ino-paginator__rows">
+        <label class="ino-paginator__rows-label" for="rows-hc">Rows per page</label>
+        <select class="ino-paginator__rows-select" id="rows-hc">
+          <option>10</option><option selected>25</option><option>50</option>
+        </select>
+      </div>
+      <ul class="ino-paginator__links">
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--nav" aria-label="Go to first page">«</button></li>
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--nav" aria-label="Go to previous page">‹</button></li>
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--page">1</button></li>
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--page ino-paginator__btn--active" aria-current="page">2</button></li>
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--page">3</button></li>
+        <li><span class="ino-paginator__ellipsis" aria-hidden="true">&hellip;</span></li>
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--page">25</button></li>
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--nav" aria-label="Go to next page">›</button></li>
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--nav" aria-label="Go to last page">»</button></li>
+      </ul>
+    </nav>
+  </div>
+
+</div>
+
+<h2>Size</h2>
+<div class="state-row">
+  <div class="state-cell">
+    <h3>sm</h3>
+    <nav class="ino-paginator" data-size="sm" aria-label="Pagination">
+      <ul class="ino-paginator__links">
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--page">1</button></li>
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--page ino-paginator__btn--active" aria-current="page">2</button></li>
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--page">3</button></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="state-cell">
+    <h3>default</h3>
+    <nav class="ino-paginator" aria-label="Pagination">
+      <ul class="ino-paginator__links">
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--page">1</button></li>
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--page ino-paginator__btn--active" aria-current="page">2</button></li>
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--page">3</button></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="state-cell">
+    <h3>lg</h3>
+    <nav class="ino-paginator" data-size="lg" aria-label="Pagination">
+      <ul class="ino-paginator__links">
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--page">1</button></li>
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--page ino-paginator__btn--active" aria-current="page">2</button></li>
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--page">3</button></li>
+      </ul>
+    </nav>
+  </div>
+</div>
+
+<h2>Seven states (invalid is deliberately N/A — SPEC.md §3)</h2>
+<p class="lede">
+  Hover/active/focus-visible are normally transient; a modifier class stands in for the pseudo-class
+  here so the state is visible in a static screenshot, the same trick <code>virtual-scroller.html</code>
+  uses.
+</p>
+<div class="state-row">
+  <div class="state-cell">
+    <h3>default</h3>
+    <nav class="ino-paginator" aria-label="Pagination">
+      <ul class="ino-paginator__links">
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--page ino-paginator__btn--active" aria-current="page">2</button></li>
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--page">3</button></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="state-cell">
+    <h3>hover</h3>
+    <nav class="ino-paginator" aria-label="Pagination">
+      <ul class="ino-paginator__links">
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--page" style="background: var(--ino-color-surface-sunken); color: var(--ino-color-on-surface);">3</button></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="state-cell">
+    <h3>active / pressed</h3>
+    <nav class="ino-paginator" aria-label="Pagination">
+      <ul class="ino-paginator__links">
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--page ino-paginator__btn--force-active">3</button></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="state-cell">
+    <h3>focus-visible</h3>
+    <nav class="ino-paginator" aria-label="Pagination">
+      <ul class="ino-paginator__links">
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--page ino-paginator__btn--force-focus">3</button></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="state-cell">
+    <h3>disabled</h3>
+    <nav class="ino-paginator" data-disabled aria-label="Pagination">
+      <ul class="ino-paginator__links">
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--nav" disabled aria-label="Go to previous page">‹</button></li>
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--page ino-paginator__btn--active" disabled aria-current="page">2</button></li>
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--page" disabled>3</button></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="state-cell">
+    <h3>readonly</h3>
+    <nav class="ino-paginator" data-readonly aria-label="Pagination">
+      <ul class="ino-paginator__links">
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--page ino-paginator__btn--active" aria-current="page" aria-disabled="true">2</button></li>
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--page" aria-disabled="true">3</button></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="state-cell">
+    <h3>loading / busy</h3>
+    <nav class="ino-paginator" data-loading aria-busy="true" aria-label="Pagination">
+      <ul class="ino-paginator__links">
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--page ino-paginator__btn--active" aria-current="page">2</button></li>
+        <li><button type="button" class="ino-paginator__btn ino-paginator__btn--page">3</button></li>
+      </ul>
+    </nav>
+  </div>
+</div>
+
+<h2>Jump to page</h2>
+<nav class="ino-paginator" aria-label="Pagination">
+  <ul class="ino-paginator__links">
+    <li><button type="button" class="ino-paginator__btn ino-paginator__btn--page ino-paginator__btn--active" aria-current="page">2</button></li>
+    <li><button type="button" class="ino-paginator__btn ino-paginator__btn--page">3</button></li>
+  </ul>
+  <div class="ino-paginator__jump">
+    <label class="ino-paginator__jump-label" for="jump-demo">Go to page</label>
+    <input type="number" class="ino-paginator__jump-input" id="jump-demo" min="1" max="25" value="2">
+  </div>
+</nav>
+
+<h2>RTL</h2>
+<p class="lede">
+  Layout is a plain flex row with no <code>flex-direction</code> override, so it mirrors
+  automatically against the inline axis. The nav-icon glyphs are a recorded, deliberate exception —
+  see <code>SPEC.md</code> §6 — flipped explicitly since chirality can't be expressed with logical
+  properties.
+</p>
+<nav class="ino-paginator" dir="rtl" aria-label="ترقيم الصفحات">
+  <ul class="ino-paginator__links">
+    <li><button type="button" class="ino-paginator__btn ino-paginator__btn--nav" aria-label="الانتقال إلى الصفحة الأولى">«</button></li>
+    <li><button type="button" class="ino-paginator__btn ino-paginator__btn--nav" aria-label="الانتقال إلى الصفحة السابقة">‹</button></li>
+    <li><button type="button" class="ino-paginator__btn ino-paginator__btn--page">١</button></li>
+    <li><button type="button" class="ino-paginator__btn ino-paginator__btn--page ino-paginator__btn--active" aria-current="page">٢</button></li>
+    <li><button type="button" class="ino-paginator__btn ino-paginator__btn--page">٣</button></li>
+    <li><button type="button" class="ino-paginator__btn ino-paginator__btn--nav" aria-label="الانتقال إلى الصفحة التالية">›</button></li>
+    <li><button type="button" class="ino-paginator__btn ino-paginator__btn--nav" aria-label="الانتقال إلى الصفحة الأخيرة">»</button></li>
+  </ul>
+</nav>
+
+<h2>Motion</h2>
+<p class="note">
+  Background/color/border transitions use <code>--ino-motion-duration-fast</code> +
+  <code>--ino-motion-easing-standard</code>, the same "quick, no drama" pairing <code>ino-button</code>
+  uses for non-primary state changes. Every transition on the host collapses under
+  <code>prefers-reduced-motion: reduce</code> — toggle your OS setting to see both branches.
+</p>
+
+</body>
+</html>

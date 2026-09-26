@@ -1,0 +1,324 @@
+<!-- @dsCard group="File" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ino-file-upload — labeled multi-file picker (INO-145)</title>
+<!-- Canonical token file, linked rather than copied: this preview must repaint with the system,
+     and must never become a second place raw hex values live. -->
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-eyebrow-size);
+    letter-spacing: var(--ino-type-eyebrow-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 60ch; }
+
+  .theme-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); }
+  .theme-pane {
+    flex: 1 1 320px;
+    padding: var(--ino-space-5);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-xl);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+  }
+  .theme-pane > h3 {
+    margin: 0 0 var(--ino-space-4);
+    font-size: var(--ino-type-body-sm-size);
+    color: var(--ino-color-on-surface-muted);
+    font-weight: 600;
+  }
+
+  .row { display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--ino-space-5); }
+  .field { display: flex; flex-direction: column; gap: var(--ino-space-2); min-width: 260px; }
+  .field__label { font-size: var(--ino-type-body-sm-size); font-weight: 600; color: var(--ino-color-on-surface); }
+
+  /* Mirrors web/src/app/components/file-upload/ino-file-upload.component.scss's class names/
+     token bindings 1:1, so a divergence between this preview and the shipped component is
+     visible as a visual diff — this is a static illustrative snapshot, not a live Angular
+     instance. */
+  .choose {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-block-size: var(--ino-control-height-default);
+    padding-inline: var(--ino-control-padding-inline-roomy-default);
+    border: 1px solid var(--ino-color-border); border-radius: var(--ino-radius-md);
+    background: var(--ino-color-surface-raised); color: var(--ino-color-on-surface);
+    font-family: inherit; font-size: var(--ino-control-font-size-default); font-weight: 600; cursor: pointer;
+  }
+  .choose--sm { min-block-size: var(--ino-control-height-sm); padding-inline: var(--ino-control-padding-inline-roomy-sm); font-size: var(--ino-control-font-size-sm); }
+  .choose--lg { min-block-size: var(--ino-control-height-lg); padding-inline: var(--ino-control-padding-inline-roomy-lg); font-size: var(--ino-control-font-size-lg); }
+  .choose:disabled { opacity: .5; cursor: not-allowed; }
+  .choose:focus-visible { outline: var(--ino-focus-ring); outline-offset: var(--ino-focus-ring-offset); }
+
+  .spinner {
+    inline-size: 14px; block-size: 14px; margin-inline-start: var(--ino-space-3);
+    border-radius: 50%; border: 2px solid var(--ino-color-on-surface-muted); border-top-color: transparent;
+    display: inline-block; vertical-align: middle;
+  }
+
+  .dropzone {
+    display: flex; flex-direction: column; align-items: center; gap: var(--ino-space-3);
+    padding: var(--ino-space-6); border: 1px dashed var(--ino-color-border); border-radius: var(--ino-radius-lg);
+    background: var(--ino-color-surface-sunken); text-align: center;
+  }
+  .dropzone--dragover { border-color: var(--ino-color-accent); border-style: solid; background: var(--ino-color-surface-raised); }
+  .dropzone--error { border-color: var(--ino-color-danger); }
+  .dropzone-icon { color: var(--ino-color-on-surface-muted); }
+  .dropzone-hint { margin: 0; font-size: var(--ino-type-body-sm-size); color: var(--ino-color-on-surface-muted); }
+
+  .basic { display: flex; align-items: center; gap: var(--ino-space-3); flex-wrap: wrap; }
+  .basic-filename { font-size: var(--ino-type-body-sm-size); color: var(--ino-color-on-surface); }
+  .basic-filename--empty { color: var(--ino-color-on-surface-subtle); }
+
+  .list { display: flex; flex-direction: column; gap: var(--ino-space-2); margin: 0; padding: 0; list-style: none; min-width: 320px; }
+  .item {
+    display: flex; align-items: center; gap: var(--ino-space-3);
+    min-block-size: var(--ino-control-height-default); padding-inline: var(--ino-space-4); padding-block: var(--ino-space-2);
+    border: 1px solid var(--ino-color-border); border-radius: var(--ino-radius-md); background: var(--ino-color-surface-raised);
+  }
+  .item--error { border-color: var(--ino-color-danger); }
+  .item-preview {
+    display: inline-flex; align-items: center; justify-content: center; inline-size: 36px; block-size: 36px; flex: none;
+    border-radius: var(--ino-radius-sm); background: var(--ino-color-surface-sunken); color: var(--ino-color-on-surface-muted); overflow: hidden;
+  }
+  .item-meta { display: flex; flex-direction: column; gap: var(--ino-space-1); flex: 1 1 auto; min-inline-size: 0; }
+  .item-name { font-size: var(--ino-type-body-sm-size); font-weight: 600; color: var(--ino-color-on-surface); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .item-size { font-size: var(--ino-type-caption-size); color: var(--ino-color-on-surface-muted); }
+  .item-status { font-size: var(--ino-type-caption-size); color: var(--ino-color-on-surface-muted); }
+  .item-status--error { color: var(--ino-color-danger-text-safe); font-weight: 600; }
+  .item-progress { display: block; inline-size: 100%; block-size: 4px; margin-block-start: var(--ino-space-1); border-radius: var(--ino-radius-pill); background: var(--ino-color-surface-sunken); overflow: hidden; }
+  .item-progress-fill { display: block; block-size: 100%; background: var(--ino-color-accent); }
+  .item-actions { display: flex; align-items: center; gap: var(--ino-space-2); flex: none; }
+  .item-btn {
+    display: inline-flex; align-items: center; justify-content: center; min-inline-size: var(--ino-target-min); min-block-size: var(--ino-target-min);
+    padding-inline: var(--ino-space-3); border: 1px solid var(--ino-color-border); border-radius: var(--ino-radius-sm);
+    background: transparent; color: var(--ino-color-on-surface-muted); font-family: inherit; font-size: var(--ino-type-caption-size); font-weight: 600; cursor: pointer;
+  }
+  .item-btn--remove { color: var(--ino-color-danger-text-safe); border-color: var(--ino-color-danger); }
+  .item-btn:focus-visible { outline: var(--ino-focus-ring); outline-offset: var(--ino-focus-ring-offset); }
+
+  .rejections { display: flex; flex-direction: column; gap: var(--ino-space-2); padding: var(--ino-space-4); border: 1px solid var(--ino-color-danger); border-radius: var(--ino-radius-md); background: var(--ino-color-surface-raised); min-width: 280px; }
+  .rejections-title { margin: 0; font-size: var(--ino-type-body-sm-size); font-weight: 600; color: var(--ino-color-danger-text-safe); }
+  .rejections-list { margin: 0; padding-inline-start: var(--ino-space-5); font-size: var(--ino-type-body-sm-size); }
+
+  .hint { margin: 0; font-size: var(--ino-type-body-sm-size); color: var(--ino-color-on-surface-muted); }
+  .error { margin: 0; font-size: var(--ino-type-body-sm-size); color: var(--ino-color-danger); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<h1>FileUpload — labeled multi-file picker</h1>
+<p class="lede">
+  Basic mode (single "Choose" affordance) and advanced mode (dropzone + per-file list with
+  preview/progress/cancel/retry). Controlled `items`/`itemsChange` — the host owns the upload
+  transport, this component only proposes and reflects state. See <code>SPEC.md</code> for the
+  full contract.
+</p>
+
+<h2>Theme × Choose button</h2>
+<div class="theme-row">
+
+  <div class="theme-pane">
+    <h3>dark — :root (default)</h3>
+    <div class="row">
+      <label class="field">
+        <span class="field__label">Supporting documents</span>
+        <button class="choose" type="button">Choose files</button>
+      </label>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="light">
+    <h3>light — [data-theme="light"]</h3>
+    <div class="row">
+      <label class="field">
+        <span class="field__label">Supporting documents</span>
+        <button class="choose" type="button">Choose files</button>
+      </label>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="high-contrast">
+    <h3>high-contrast — [data-theme="high-contrast"]</h3>
+    <div class="row">
+      <label class="field">
+        <span class="field__label">Supporting documents</span>
+        <button class="choose" type="button">Choose files</button>
+      </label>
+    </div>
+  </div>
+
+</div>
+
+<h2>Size (control-size scale)</h2>
+<div class="row">
+  <button class="choose choose--sm" type="button">Small</button>
+  <button class="choose" type="button">Default</button>
+  <button class="choose choose--lg" type="button">Large</button>
+</div>
+
+<h2>Choose-button states</h2>
+<div class="row">
+  <div class="field">
+    <span class="field__label">Default</span>
+    <button class="choose" type="button">Choose files</button>
+  </div>
+  <div class="field">
+    <span class="field__label">Loading</span>
+    <button class="choose" type="button" aria-busy="true">Choose files<span class="spinner" aria-hidden="true"></span></button>
+  </div>
+  <div class="field">
+    <span class="field__label">Disabled</span>
+    <button class="choose" type="button" disabled>Choose files</button>
+  </div>
+</div>
+
+<h2>Basic mode</h2>
+<div class="row">
+  <div class="basic">
+    <button class="choose" type="button">Choose file</button>
+    <span class="basic-filename">passport-scan.pdf</span>
+  </div>
+  <div class="basic">
+    <button class="choose" type="button">Choose file</button>
+    <span class="basic-filename basic-filename--empty">No file chosen</span>
+  </div>
+</div>
+
+<h2>Advanced mode — dropzone</h2>
+<div class="row">
+  <div class="dropzone" style="min-width:280px">
+    <svg class="dropzone-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+      <path d="M12 16V4M12 4l-4 4M12 4l4 4" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+    <button class="choose" type="button">Choose files</button>
+    <p class="dropzone-hint">or drag and drop files here</p>
+  </div>
+  <div class="dropzone dropzone--dragover" style="min-width:280px">
+    <svg class="dropzone-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+      <path d="M12 16V4M12 4l-4 4M12 4l4 4" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+    <button class="choose" type="button">Choose files</button>
+    <p class="dropzone-hint">Drop to add</p>
+  </div>
+  <div class="dropzone dropzone--error" style="min-width:280px">
+    <svg class="dropzone-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+      <path d="M12 16V4M12 4l-4 4M12 4l4 4" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+    <button class="choose" type="button">Choose files</button>
+    <p class="dropzone-hint">or drag and drop files here</p>
+  </div>
+</div>
+
+<h2>Advanced mode — per-file list</h2>
+<div class="row">
+  <ul class="list">
+    <li class="item">
+      <span class="item-preview" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z" stroke-linejoin="round" /><path d="M14 2v6h6" stroke-linejoin="round" /></svg>
+      </span>
+      <span class="item-meta">
+        <span class="item-name">certificate-of-incorporation.pdf</span>
+        <span class="item-size">2.4 MB</span>
+        <span class="item-status">Uploading… 62%</span>
+        <span class="item-progress"><span class="item-progress-fill" style="inline-size:62%"></span></span>
+      </span>
+      <span class="item-actions">
+        <button class="item-btn" type="button">Cancel</button>
+        <button class="item-btn item-btn--remove" type="button">Remove</button>
+      </span>
+    </li>
+    <li class="item">
+      <span class="item-preview" aria-hidden="true">
+        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBTAA7" alt="" style="inline-size:100%;block-size:100%;object-fit:cover" />
+      </span>
+      <span class="item-meta">
+        <span class="item-name">director-id-photo.jpg</span>
+        <span class="item-size">840 KB</span>
+        <span class="item-status">Uploaded</span>
+      </span>
+      <span class="item-actions">
+        <button class="item-btn item-btn--remove" type="button">Remove</button>
+      </span>
+    </li>
+    <li class="item item--error">
+      <span class="item-preview" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z" stroke-linejoin="round" /><path d="M14 2v6h6" stroke-linejoin="round" /></svg>
+      </span>
+      <span class="item-meta">
+        <span class="item-name">bank-statement-march.pdf</span>
+        <span class="item-size">6.1 MB</span>
+        <span class="item-status item-status--error">Network error — try again</span>
+      </span>
+      <span class="item-actions">
+        <button class="item-btn" type="button">Retry</button>
+        <button class="item-btn item-btn--remove" type="button">Remove</button>
+      </span>
+    </li>
+  </ul>
+</div>
+
+<h2>Rejections (role="alert")</h2>
+<div class="row">
+  <div class="rejections" role="alert">
+    <p class="rejections-title">Some files were not accepted</p>
+    <ul class="rejections-list">
+      <li>invoice.exe is not an accepted file type.</li>
+      <li>scan-full-res.tiff exceeds the 5 MB limit.</li>
+    </ul>
+  </div>
+</div>
+
+<h2>Hint / error text</h2>
+<div class="row">
+  <div class="field">
+    <span class="field__label">Supporting documents</span>
+    <button class="choose" type="button">Choose files</button>
+    <p class="hint">PDF, PNG or JPG, up to 5 MB each.</p>
+  </div>
+  <div class="field">
+    <span class="field__label">Proof of address</span>
+    <button class="choose" type="button">Choose files</button>
+    <p class="error" role="alert">At least one document is required.</p>
+  </div>
+</div>
+
+<h2>RTL</h2>
+<div class="row" dir="rtl">
+  <ul class="list">
+    <li class="item">
+      <span class="item-preview" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z" stroke-linejoin="round" /><path d="M14 2v6h6" stroke-linejoin="round" /></svg>
+      </span>
+      <span class="item-meta">
+        <span class="item-name">شهادة-التأسيس.pdf</span>
+        <span class="item-size">٢.٤ ميجابايت</span>
+        <span class="item-status">جارٍ الرفع… ٦٢٪</span>
+      </span>
+      <span class="item-actions">
+        <button class="item-btn item-btn--remove" type="button">إزالة</button>
+      </span>
+    </li>
+  </ul>
+</div>
+
+</body>
+</html>

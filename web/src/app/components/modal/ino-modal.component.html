@@ -3,16 +3,46 @@
 
   <div
     #panel
+    inoFocusTrap
     class="ino-modal__panel"
+    [class]="'ino-modal__panel--' + size"
+    [class.ino-modal__panel--maximized]="maximizable && maximized"
+    [style.transform]="maximizable && maximized ? null : panelTransform()"
     role="dialog"
     aria-modal="true"
     [attr.aria-labelledby]="heading ? headingId : null"
     tabindex="-1"
   >
     <ino-card variant="overlay" padding="lg">
-      <div ino-card-header class="ino-modal__header">
+      <div
+        ino-card-header
+        class="ino-modal__header"
+        [class.ino-modal__header--draggable]="draggable && !(maximizable && maximized)"
+        [class.ino-modal__header--dragging]="dragging()"
+        (pointerdown)="onHeaderPointerDown($event)"
+      >
         <h2 *ngIf="heading" [id]="headingId" class="ino-modal__heading">{{ heading }}</h2>
-        <button type="button" class="ino-modal__close" (click)="requestClose()" aria-label="Close dialog">✕</button>
+
+        <div class="ino-modal__header-actions">
+          <button
+            *ngIf="maximizable"
+            type="button"
+            class="ino-modal__maximize"
+            (click)="toggleMaximize()"
+            [attr.aria-label]="maximized ? 'Restore' : 'Maximize'"
+            [attr.aria-pressed]="maximized"
+          >
+            <svg *ngIf="!maximized" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <rect x="1.5" y="1.5" width="11" height="11" rx="1.5" stroke="currentColor" stroke-width="1.4" />
+            </svg>
+            <svg *ngIf="maximized" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <rect x="3.5" y="0.5" width="9.5" height="9.5" rx="1.5" stroke="currentColor" stroke-width="1.4" />
+              <path d="M1 4v8a1 1 0 0 0 1 1h8" stroke="currentColor" stroke-width="1.4" fill="none" />
+            </svg>
+          </button>
+
+          <button type="button" class="ino-modal__close" (click)="requestClose()" aria-label="Close dialog">✕</button>
+        </div>
       </div>
 
       <ng-content></ng-content>

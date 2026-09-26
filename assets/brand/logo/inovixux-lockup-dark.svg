@@ -1,20 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 172 24" width="172" height="24" role="img" aria-label="INOVIXUX">
-  <title>INOVIXUX — full lockup (on dark)</title>
-  <defs>
-    <linearGradient id="inoGrad" x1="1" y1="17" x2="17" y2="4" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#7C5CFC"/>
-      <stop offset="1" stop-color="#4F46E5"/>
-    </linearGradient>
-  </defs>
-  <g transform="translate(1, 1)">
-    <path d="M3 3 L3 17 M8 3 L16 17 M16 3 L8 17" fill="none" stroke="url(#inoGrad)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
-    <circle cx="12" cy="10" r="1.9" fill="url(#inoGrad)"/>
-    <circle cx="3" cy="3" r="1.1" fill="url(#inoGrad)" opacity="0.5"/>
-    <circle cx="3" cy="17" r="1.1" fill="url(#inoGrad)" opacity="0.5"/>
-    <circle cx="8" cy="3" r="1.1" fill="url(#inoGrad)" opacity="0.45"/>
-    <circle cx="16" cy="3" r="1.1" fill="url(#inoGrad)" opacity="0.45"/>
-    <circle cx="8" cy="17" r="1.1" fill="url(#inoGrad)" opacity="0.45"/>
-    <circle cx="16" cy="17" r="1.1" fill="url(#inoGrad)" opacity="0.45"/>
+  <title>INOVIXUX — full lockup, Border Stitch Master C (on dark)</title>
+  <g transform="translate(-2,-6.2) scale(0.9)">
+    <rect x="5" y="8" width="13" height="24" rx="4" fill="#4F46E5"/>
+    <rect x="22" y="8" width="13" height="24" rx="4" fill="#7C5CFC"/>
+    <path d="M15,11 L25,15 M15,18 L25,22 M15,25 L25,29" fill="none" stroke="#D8CEFF" stroke-width="3" stroke-linecap="round"/>
   </g>
-  <text x="32" y="17" font-family="Geist, Arial, Helvetica, sans-serif" font-weight="600" font-size="17" letter-spacing="-0.2" fill="#F5F5F4">INOVIXUX</text>
+  <text x="38" y="17" font-family="Geist, Arial, Helvetica, sans-serif" font-weight="600" font-size="17" letter-spacing="-0.2" fill="#F5F5F4">INOVIXUX</text>
 </svg>
