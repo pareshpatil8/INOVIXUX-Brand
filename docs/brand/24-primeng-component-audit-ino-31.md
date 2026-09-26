@@ -29,11 +29,16 @@
 
 **Three findings the board should see before the tables:**
 
-- **F-1 — Five Tier-1 commitments are unbuilt.** Doc 17 §4 Wave 2 committed 27 Tier-1 components
-  (T-1…T-27). 22 shipped. **T-15 ProgressBar, T-16 IconField, T-17 InputGroup, T-26 Tabs,
-  T-27 Stepper did not** — `ino-input.component.ts:19-20` still points at IconField/InputGroup as
-  future work, and no tabs/stepper/progress-bar source exists anywhere under `web/src`. Prior
-  status roll-ups that read as "Tier 1 done" were wrong on these five.
+- **F-1 — Five Tier-1 commitments were unbuilt; resolved under INO-318.** Doc 17 §4 Wave 2
+  committed 27 Tier-1 components (T-1…T-27). 22 shipped; **T-15 ProgressBar, T-16 IconField, T-17
+  InputGroup, T-26 Tabs, T-27 Stepper** did not — `ino-input.component.ts`'s own doc comment still
+  pointed at IconField/InputGroup as future work, and no tabs/stepper/progress-bar source existed
+  anywhere under `web/src`. Prior status roll-ups that read as "Tier 1 done" were wrong on these
+  five. **All five now ship** (INO-318): `web/src/app/components/{progress-bar,icon-field,
+  input-group,tabs,stepper}/`, each with a `SPEC.md`, a `docs/brand/06-angular-components/*.md`
+  a11y contract, a `COMPONENT_REGISTRY` entry in `check-theme-parity.mjs` (web-only for now — no
+  mobile port scheduled), and the manifest regenerated (43 components, was 38). `ino-input`'s doc
+  comment now names both dependencies as built rather than future work.
 - **F-2 — Tier-2 stub specs were never written.** Doc 17 promised each Tier-2 component "a stub
   spec file and a row in the docs site" (~8 d). Zero stub files exist. Consequently there is no
   written per-component Tier-2 vs Tier-3 assignment beyond the named Tier-3 examples — the "~35 /
@@ -76,7 +81,7 @@ Column meanings (the six dimensions the board named):
 | FloatLabel | `ino-float-label` | `over \| in \| on` (all 3 PrimeNG modes) | floated/resting derivation documented | ✅ | is itself a label primitive | ✅ label association contract | `floatlabel.md` |
 | IftaLabel | `ino-ifta-label` | single mode (no float by design — documented) | static | ✅ | label primitive | ✅ | `iftalabel.md` |
 | InputOtp | `ino-input-otp` | length-driven cell structure | filled/empty per cell, invalid, disabled | ✅ | aria contract for cells | ✅ paste + SR announcement handling | `input-otp.md` — built for KYB verification flows |
-| InputText | `ino-input` | `outline \| filled` | hover/focus/disabled/invalid/readonly | ✅ | full W0-3 integration | ✅ | `input.md` — icon slot & addons deferred to IconField/InputGroup, **which are unbuilt (F-1)** |
+| InputText | `ino-input` | `outline \| filled` | hover/focus/disabled/invalid/readonly | ✅ | full W0-3 integration | ✅ | `input.md` — icon slot & addons deferred to IconField/InputGroup, **both now shipped (F-1, INO-318)** |
 | Label | `ino-label` | 5 roles (`label-lg/label/label-sm/hint/caption`) | required/optional/error text states | ✅ | is the label primitive | ✅ `for` association enforced | `label.md`, `form-label-tokens.md` |
 | MultiSelect | `ino-multiselect` | chip/comma `display`; grouping; select-all; selection limit | open/closed, option hover/selected/disabled, invalid | ✅ | float/ifta compatible | ✅ APG listbox multi-select pattern | `multiselect.md` |
 | RadioButton | `ino-radio` + `ino-radio-group` | standalone + group (doc-16 gap closed) | checked, disabled, focus (roving tabindex) | ✅ | `ino-label` integration | ✅ APG radio-group pattern | `radio-group.md` |

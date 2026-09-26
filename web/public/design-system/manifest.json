@@ -8,7 +8,7 @@
     "tablet": "641-900px",
     "desktop": ">900px"
   },
-  "componentCount": 42,
+  "componentCount": 43,
   "components": [
     {
       "name": "ino-alert",
@@ -1060,6 +1060,38 @@
             "text"
           ],
           "default": "'rectangle'",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "InoControlSize",
+          "values": null,
+          "default": "'default'",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-stepper",
+      "slug": "stepper",
+      "className": "InoStepperComponent",
+      "sourcePath": "web/src/app/components/stepper/ino-stepper.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "orientation",
+          "type": "InoStepperOrientation",
+          "values": [
+            "horizontal",
+            "vertical"
+          ],
+          "default": "'horizontal'",
           "optional": true
         },
         {

@@ -1,0 +1,20 @@
+<div class="ino-tabs__list" role="tablist" [attr.aria-orientation]="orientation">
+  <button
+    *ngFor="let tab of tabs"
+    type="button"
+    role="tab"
+    class="ino-tabs__tab"
+    [id]="tabIdFor(tab)"
+    [attr.aria-selected]="isActive(tab)"
+    [attr.aria-controls]="tab.panelId"
+    [attr.aria-disabled]="tab.disabled || null"
+    [attr.tabindex]="isActive(tab) ? 0 : -1"
+    [disabled]="tab.disabled"
+    [class.ino-tabs__tab--active]="isActive(tab)"
+    (click)="select(tab)"
+    (keydown)="onKeydown($event, tab)"
+  >{{ tab.label }}</button>
+</div>
+<div class="ino-tabs__panels">
+  <ng-content></ng-content>
+</div>

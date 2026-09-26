@@ -16,9 +16,10 @@ export type InoInputVariant = 'outline' | 'filled';
  * form actually needs one.
  *
  * Icon slots are deliberately **not** an `@Input() icon` on this component — the sanctioned
- * mechanism is wrapping with `<ino-icon-field>` (T-16) for a leading/trailing icon, or
- * `<ino-input-group>` (T-17) for a prefix/suffix addon. Baking icon markup into every Tier-1 form
- * control would mean re-auditing icon padding/positioning per component; see SPEC.md §1.
+ * mechanism is wrapping with `<ino-icon-field>` (T-16, built under INO-318) for a leading/trailing
+ * icon, or `<ino-input-group>` (T-17, built under INO-318) for a prefix/suffix addon. Baking icon
+ * markup into every Tier-1 form control would mean re-auditing icon padding/positioning per
+ * component; see SPEC.md §1.
  *
  * WCAG 2.2: label is a real `<label for>`, not a placeholder-only control; error state sets
  * `aria-invalid` and wires the error text in via `aria-describedby` (hint text the same way when
