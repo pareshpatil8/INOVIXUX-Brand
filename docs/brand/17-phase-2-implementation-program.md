@@ -44,7 +44,7 @@ document is the machinery that makes that number real.
 ## 2. The unit of work: per-component Definition of Done
 
 **This is the section revision 8 was missing.** Every component child issue in §4 carries this
-contract verbatim in its description. An issue is not `done` until all eleven rows pass.
+contract verbatim in its description. An issue is not `done` until all twelve rows pass.
 
 | # | Requirement | How it is verified |
 |---|---|---|
@@ -53,15 +53,23 @@ contract verbatim in its description. An issue is not `done` until all eleven ro
 | 3 | **Size API** — `size="sm" \| "default" \| "lg"` as a typed `@Input`, driven by the Wave 0 control-height scale. | typed input present; preview renders all three |
 | 4 | **Density** — correct under both dense and fluid, including `--ino-row-min-height` where the component is row-based. | preview renders both |
 | 5 | **Eight states** — default, hover, **active/pressed**, focus-visible, disabled, readonly, invalid, loading/busy. `:active` and the focus ring both come from Wave 0 tokens, never hand-rolled. | preview renders the full state grid |
-| 6 | **Variants** — the per-component list named in the issue, derived from the PrimeNG route pinned in `specs/primeng/llms-22.1.1.txt`. Deliberate omissions are written down in the component spec, not silently dropped. | spec file lists every variant with build / decline |
+| 6 | **Variants** — the per-component list named in the issue, derived from the PrimeNG route pinned in `specs/primeng/llms-22.1.1.txt`. Deliberate omissions are written down in the component spec, not silently dropped. **Every path the spec cites resolves on the merge base**; a precedent that has not landed yet is written `(pending INO-nnn)`, never as settled precedent (doc 09 §5b). | spec file lists every variant with build / decline; `node scripts/check-spec-citations.mjs` clean |
 | 7 | **Motion** — enter/exit use named duration + easing tokens; a `prefers-reduced-motion: reduce` branch exists and is tested. | preview + reduced-motion screenshot |
 | 8 | **Accessibility** — documented role/ARIA contract; full keyboard map; visible focus; WCAG 2.2 AA text **and** non-text contrast (1.4.11); 24px minimum target (2.5.8), 44px comfortable; RTL-safe (logical properties, no `left`/`right`). | axe/pa11y clean once INO-118's gate lands; until then, the issue's keyboard-map checklist |
 | 9 | **Mobile parity** — the tracks named in the issue (§5) ship the same semantic roles; or the issue records an explicit "web-only" decision with a reason. | `check-theme-parity.mjs`, extended to component level |
 | 10 | **Docs artifact** — `docs/brand/06-angular-components/<name>.md` (API + variants + a11y contract) **and** a standalone preview HTML whose first line is `<!-- @dsCard group="…" -->`. | file exists; §8 depends on this marker |
 | 11 | **Merge hygiene** — touches only its own directory plus the append-only registry line (§6). No edits to `tokens.css` after Wave 0. | diff review |
+| 12 | **Behavioral smoke test** *(added INO-272, ratified INO-268 §6).* Any component with imperative open/close/toggle methods, anchored positioning, or `OnPush` plus internally-mutated inputs ships with at least one spec that drives it through its own documented public API and asserts the resulting DOM. At minimum: it renders when opened, and it is positioned relative to its anchor. | `ng test` (Angular/vitest/jsdom, already wired via `web/package.json`); see note below on CI enforcement |
 
-Two notes on this contract:
+Four notes on this contract:
 
+- **Row 6's citation clause is the one rule that gets stricter as the waves widen.** Siblings are
+  built on parallel unmerged branches, so a spec that cites `checkbox/SPEC.md` is routinely citing a
+  file the reviewer cannot open. A decision record whose precedent is unverifiable is worse than no
+  record — the next implementer copies a pattern that was never agreed. The full rule, the four
+  cases it covers and the `(pending INO-nnn)` escape hatch are in doc 09 §5b; the gate is
+  `scripts/check-spec-citations.mjs`, which runs in `npm run check:ds` and in the `design-system.yml`
+  PR job alongside the parity and adherence scripts (S-10 / INO-185).
 - **Row 10 is not documentation busywork.** The `@dsCard` preview file is the exact artifact Claude
   Design ingests (§8) and the exact artifact the hosted docs site (INO-116/H-6) renders. Writing it
   per component costs minutes; retrofitting 101 of them later is its own project.
@@ -69,6 +77,28 @@ Two notes on this contract:
   multiplier on themes becomes ×3 for that component forever. This is the discipline the whole
   estimate rests on, which is why INO-118 (the lint) is promoted into Wave 0 rather than left in
   backlog.
+- **Row 12 exists because rows 1–11 are all static.** During the PR #38 review, QA (INO-267) ran
+  every gate script, `tsc --noEmit`, a manual file review and a true-merge-base diff, and passed
+  all eleven rows that existed at the time — correctly; CTO review would have passed the same
+  diff. Two defects in PR #38 and one already-merged, board-approved defect in
+  `<ino-confirm-popup>` were invisible to both static sign-offs. Only running the component (`ng
+  test` against the harness already in `web/package.json` — `@angular/build:unit-test`, vitest,
+  jsdom) caught them, in one ~30-line spec. Row 12 does not replace the standing QA test → CTO
+  review → board approval sequencing; it adds a DoD row, not a third sign-off.
+  - **Applies from 2026-09-23 forward, not retroactively.** In-flight and future G-1 components
+    owe row 12 from the date this revision lands; the 26 components merged before it are not
+    reopened for a spec. The one standing exception is the **overlay family**
+    (`ino-popover`/INO-150, `ino-tooltip`, `ino-drawer`, `ino-confirm-dialog`, `ino-focus-trap`) —
+    it is in scope regardless of merge date because INO-150 and INO-270 already carry it as
+    explicit scope.
+  - **CI enforcement is deliberately deferred, not silently absent.** `ng test` is **not** added
+    to `.github/workflows/design-system.yml` in this revision. A DoD row with no gate behind it is
+    honoured unevenly, but wiring it before any component has a spec would land the gate red on
+    day one for reasons unrelated to anyone's PR. CTO-ratified plan: add an `ng test` step scoped
+    to `web/` once the overlay family (the set above) has specs satisfying row 12 — that is the
+    first cohort required to carry them, per INO-150/INO-270 — so the gate goes green-by-default
+    the day it starts blocking. Tracked as a follow-up to INO-150/INO-270; owner CTO + QALead
+    (QALead owns the test gate per the standing collaboration rule).
 
 ---
 
@@ -438,6 +468,7 @@ to claim now); the rest are `backlog` and will surface as their blockers merge.
 | S-7 | **INO-169** | PrimeNG AI tooling + pinned `llms.txt` drift check |
 | S-8 | **INO-170** | Sound/haptics + public accessibility statement |
 | S-9 | **INO-171** | Component-level theme-parity check (resolves P-7) |
+| S-10 | **INO-185** | SPEC.md citation gate — `check-spec-citations.mjs` + doc 09 §5b (§2 row 6) |
 | H-6 | **INO-116** | Hosted component docs site *(re-scoped, promoted to high)* |
 | M-10 | **INO-117** | Foundation + motion specimen cards |
 | H-4 | **INO-120** | KYB report PDF/print theme |

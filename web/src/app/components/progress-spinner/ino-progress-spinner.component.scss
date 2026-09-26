@@ -1,0 +1,99 @@
+/*
+ * <ino-progress-spinner> — INO-133 / INO-31 T-21.
+ *
+ * No literal colour/space/radius/duration/font-size — every declaration resolves through a
+ * semantic role in tokens.css, logical properties only (RTL-safe: the ring is rotationally
+ * symmetric, and the only inline-direction geometry is the host's own box, sized with
+ * inline-size/block-size below).
+ */
+
+/*
+ * Size API — DoD row 3. Diameter reads the Wave 0 control-height scale, not a local value: the
+ * default rung is a no-op read of the ambient --ino-control-height alias (same idiom every other
+ * component's :host block uses), and sm/lg re-point that alias the same way ino-tag's size
+ * variants re-point font-size/padding/gap.
+ */
+:host([data-size='sm']) {
+  --ino-control-height: var(--ino-control-height-sm);
+}
+
+:host([data-size='lg']) {
+  --ino-control-height: var(--ino-control-height-lg);
+}
+
+:host {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--ino-control-height);
+  block-size: var(--ino-control-height);
+  vertical-align: middle;
+  color: var(--ino-color-accent);
+
+  /* State 5 — disabled. No native `disabled` attribute on a non-form host; `aria-disabled` +
+     dimming, same rationale ino-tag documents for its own disabled state. */
+  &.ino-progress-spinner--disabled {
+    opacity: 0.5;
+  }
+
+  /* State 7 — invalid. Recolors the ring only; see SPEC.md §1 for why this isn't a form-validity
+     concept here. --ino-color-danger (not the -text-safe text pair) since the ring is a
+     non-text graphical object — SC 1.4.11 floor is 3:1, not the 4.5:1 text floor. */
+  &.ino-progress-spinner--invalid {
+    color: var(--ino-color-danger);
+  }
+}
+
+.ino-progress-spinner__svg {
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+/* State 1 — default / track. Always-visible ring bed the value/spin ring draws over. */
+.ino-progress-spinner__track {
+  stroke: var(--ino-color-border-soft);
+}
+
+.ino-progress-spinner__value {
+  stroke: currentColor;
+  stroke-linecap: round;
+  transition: stroke-dashoffset var(--ino-motion-duration-base) var(--ino-motion-easing-standard);
+}
+
+/* State 8 — loading/busy (indeterminate mode). Rotates the whole ring, same
+   --ino-motion-duration-slow linear-infinite convention ino-button/ino-tag already spin their
+   inline spinners with. transform-origin is the fixed viewBox center (50, 50) — see the
+   component's VIEWBOX_SIZE constant, not exposed as an @Input so this stays a matched pair. */
+:host([data-mode='indeterminate']) .ino-progress-spinner__svg {
+  transform-origin: 50px 50px;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: ino-progress-spinner-spin var(--ino-motion-duration-slow) linear infinite;
+  }
+}
+
+@keyframes ino-progress-spinner-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ino-progress-spinner__value {
+    transition: none;
+  }
+}
+
+/* Live-region announcement text (DoD row 8) — visually hidden, still announced. Standard sr-only
+   clip, same pattern as ino-alert__sr-status / ino-tag__label--sr-only. */
+.ino-progress-spinner__sr-only {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

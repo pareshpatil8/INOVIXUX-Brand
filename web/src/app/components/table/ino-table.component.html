@@ -1,0 +1,348 @@
+<!--
+  Always role="grid" (never plain role="table") — SPEC.md §8. Roving tabindex: every focusable
+  cell carries [data-ino-row]/[data-ino-col] and a tabindex of 0 only when it is the active cell;
+  everything else is -1. Arrow keys move the active cell and imperatively focus the target DOM
+  node (see onGridKeydown / focusCell in the .ts) rather than duplicating an index model in markup.
+-->
+<div class="ino-table" [class.ino-table--frozen]="hasFrozenColumns">
+  <div class="ino-table__scroll">
+    <table
+      class="ino-table__table"
+      role="grid"
+      [attr.aria-label]="ariaLabel"
+      [attr.aria-rowcount]="totalRowsForPaginator + 1"
+      [attr.aria-colcount]="navColumns.length || 1"
+      [attr.aria-busy]="loading || null"
+      [attr.aria-readonly]="readonly || null"
+      [attr.aria-disabled]="disabled || null"
+      [attr.aria-invalid]="invalid || null"
+      (keydown)="onGridKeydown($event)"
+    >
+      <thead role="rowgroup">
+        <tr role="row" aria-rowindex="1">
+          @if (selectionMode !== 'none') {
+            <th
+              role="columnheader"
+              class="ino-table__th ino-table__th--select"
+              scope="col"
+              [attr.data-ino-row]="0"
+              [attr.data-ino-col]="selectColIndex"
+              [attr.tabindex]="isActiveCell(0, selectColIndex) ? 0 : -1"
+              (focus)="onCellFocus(0, selectColIndex)"
+            >
+              @if (selectionMode === 'checkbox') {
+                <input
+                  type="checkbox"
+                  class="ino-table__checkbox"
+                  aria-label="Select all rows"
+                  tabindex="-1"
+                  [checked]="allVisibleSelected"
+                  [indeterminate]="someVisibleSelected"
+                  [disabled]="!interactive"
+                  (click)="toggleSelectAll()"
+                />
+              }
+            </th>
+          }
+          @if (expandableRows) {
+            <th
+              role="columnheader"
+              class="ino-table__th ino-table__th--expand"
+              scope="col"
+              aria-hidden="true"
+              [attr.data-ino-row]="0"
+              [attr.data-ino-col]="expandColIndex"
+              [attr.tabindex]="isActiveCell(0, expandColIndex) ? 0 : -1"
+              (focus)="onCellFocus(0, expandColIndex)"
+            ></th>
+          }
+          @for (column of orderedColumns; track column.id) {
+            <th
+              #headerCell
+              role="columnheader"
+              class="ino-table__th"
+              [class.ino-table__th--sortable]="column.sortable"
+              [class.ino-table__th--frozen]="!!column.frozen"
+              [style.opacity]="draggingColumnId === column.id ? 0.5 : null"
+              [style.inset-inline-start.px]="column.frozen === 'start' ? frozenOffset(column) : null"
+              [style.inset-inline-end.px]="column.frozen === 'end' ? frozenOffset(column) : null"
+              [style.inline-size]="columnWidth(column)"
+              [style.text-align]="column.align ?? 'start'"
+              scope="col"
+              [attr.aria-sort]="column.sortable ? columnSortState(column) : null"
+              [attr.data-ino-row]="0"
+              [attr.data-ino-col]="navIndexOf(column)"
+              [attr.tabindex]="isActiveCell(0, navIndexOf(column)) ? 0 : -1"
+              [attr.draggable]="reorderableColumns && column.reorderable !== false ? 'true' : null"
+              (focus)="onCellFocus(0, navIndexOf(column))"
+              (click)="toggleSort(column)"
+              (dragstart)="onColumnDragStart($event, column)"
+              (dragover)="onColumnDragOver($event, column)"
+              (dragend)="onColumnDragEnd()"
+            >
+              <span class="ino-table__th-content">
+                <span class="ino-table__th-label">{{ column.header }}</span>
+                @if (column.sortable) {
+                  <span
+                    class="ino-table__sort-icon"
+                    [class.ino-table__sort-icon--asc]="columnSortState(column) === 'ascending'"
+                    [class.ino-table__sort-icon--desc]="columnSortState(column) === 'descending'"
+                    aria-hidden="true"
+                  >
+                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                      <path d="M5 1.5 8.5 6h-7L5 1.5Z" fill="currentColor" />
+                    </svg>
+                  </span>
+                }
+              </span>
+              @if (reorderableColumns && column.reorderable !== false) {
+                <span class="ino-table__reorder-controls">
+                  <button
+                    type="button"
+                    class="ino-table__reorder-btn"
+                    tabindex="-1"
+                    [attr.aria-label]="'Move ' + column.header + ' column left'"
+                    [disabled]="!canMoveColumn(column, -1) || !interactive"
+                    (click)="moveColumn(column, -1); $event.stopPropagation()"
+                  >‹</button>
+                  <button
+                    type="button"
+                    class="ino-table__reorder-btn"
+                    tabindex="-1"
+                    [attr.aria-label]="'Move ' + column.header + ' column right'"
+                    [disabled]="!canMoveColumn(column, 1) || !interactive"
+                    (click)="moveColumn(column, 1); $event.stopPropagation()"
+                  >›</button>
+                </span>
+              }
+              @if (resizableColumns && column.resizable !== false) {
+                <span
+                  class="ino-table__resize-handle"
+                  aria-hidden="true"
+                  (pointerdown)="onResizePointerDown($event, column, headerCell)"
+                  (click)="$event.stopPropagation()"
+                ></span>
+              }
+            </th>
+          }
+        </tr>
+
+        @if (hasFilterableColumns) {
+          <tr role="row" class="ino-table__filter-row">
+            @if (selectionMode !== 'none') {
+              <td class="ino-table__td ino-table__td--select" role="presentation"></td>
+            }
+            @if (expandableRows) {
+              <td class="ino-table__td ino-table__td--expand" role="presentation"></td>
+            }
+            @for (column of orderedColumns; track column.id) {
+              <td
+                class="ino-table__td ino-table__filter-cell"
+                role="presentation"
+                [class.ino-table__td--frozen]="!!column.frozen"
+                [style.inset-inline-start.px]="column.frozen === 'start' ? frozenOffset(column) : null"
+                [style.inset-inline-end.px]="column.frozen === 'end' ? frozenOffset(column) : null"
+              >
+                @if (column.filterable) {
+                  @if (column.filterType === 'select') {
+                    <select
+                      class="ino-table__filter-select"
+                      [attr.aria-label]="'Filter ' + column.header"
+                      [disabled]="!interactive"
+                      (change)="setFilter(column, $any($event.target).value)"
+                    >
+                      <option value="">All</option>
+                      @for (opt of column.filterOptions ?? []; track opt.value) {
+                        <option [value]="opt.value" [selected]="filters[column.id] === opt.value">{{ opt.label }}</option>
+                      }
+                    </select>
+                  } @else {
+                    <input
+                      type="text"
+                      class="ino-table__filter-input"
+                      [attr.aria-label]="'Filter ' + column.header"
+                      [disabled]="!interactive"
+                      [value]="filters[column.id] ?? ''"
+                      (input)="onFilterInput(column, $event)"
+                    />
+                  }
+                }
+              </td>
+            }
+          </tr>
+        }
+      </thead>
+
+      <tbody role="rowgroup">
+        @if (loading) {
+          @for (i of skeletonRows; track trackIndex(i)) {
+            <tr role="row" class="ino-table__row ino-table__row--skeleton">
+              @if (selectionMode !== 'none') {
+                <td class="ino-table__td ino-table__td--select" role="gridcell"><span class="ino-table__skeleton-bar" aria-hidden="true"></span></td>
+              }
+              @if (expandableRows) {
+                <td class="ino-table__td ino-table__td--expand" role="gridcell"></td>
+              }
+              @for (column of orderedColumns; track column.id) {
+                <td class="ino-table__td" role="gridcell"><span class="ino-table__skeleton-bar" aria-hidden="true"></span></td>
+              }
+            </tr>
+          }
+        } @else if (isEmpty) {
+          <tr role="row" class="ino-table__row ino-table__row--empty">
+            <td class="ino-table__td ino-table__empty-cell" role="gridcell" [attr.colspan]="navColumns.length || 1">
+              @if (emptyDef) {
+                <ng-container *ngTemplateOutlet="emptyDef.template"></ng-container>
+              } @else {
+                <div class="ino-table__empty">{{ emptyMessage }}</div>
+              }
+            </td>
+          </tr>
+        } @else {
+          @for (item of displayRows; track trackDisplayRow($index, item); let ri = $index) {
+            @if (item.kind === 'group') {
+              <tr role="row" class="ino-table__row ino-table__row--group">
+                <td
+                  class="ino-table__td ino-table__group-cell"
+                  role="gridcell"
+                  [attr.colspan]="navColumns.length || 1"
+                  [attr.data-ino-row]="ri + 1"
+                  [attr.data-ino-col]="0"
+                  [attr.tabindex]="isActiveCell(ri + 1, 0) ? 0 : -1"
+                  (focus)="onCellFocus(ri + 1, 0)"
+                  (click)="toggleGroup(item.key)"
+                >
+                  <span class="ino-table__group-toggle" style="display: inline-flex; align-items: center; gap: var(--ino-space-2)">
+                    <span
+                      class="ino-table__chevron"
+                      [class.ino-table__chevron--open]="!isGroupCollapsed(item.key)"
+                      aria-hidden="true"
+                    ></span>
+                    <span>{{ groupBy }}: {{ item.label }} ({{ item.count }})</span>
+                  </span>
+                </td>
+              </tr>
+            } @else {
+              <tr
+                role="row"
+                class="ino-table__row"
+                [class.ino-table__row--selected]="selectionMode !== 'none' && isSelected(item.row, item.dataIndex)"
+                [attr.aria-selected]="selectionMode !== 'none' ? isSelected(item.row, item.dataIndex) : null"
+                [attr.aria-rowindex]="item.dataIndex + 2"
+              >
+                @if (selectionMode !== 'none') {
+                  <td
+                    class="ino-table__td ino-table__td--select"
+                    role="gridcell"
+                    [attr.data-ino-row]="ri + 1"
+                    [attr.data-ino-col]="selectColIndex"
+                    [attr.tabindex]="isActiveCell(ri + 1, selectColIndex) ? 0 : -1"
+                    (focus)="onCellFocus(ri + 1, selectColIndex)"
+                  >
+                    <input
+                      [type]="selectionMode === 'single' ? 'radio' : 'checkbox'"
+                      class="ino-table__checkbox"
+                      aria-label="Select row"
+                      tabindex="-1"
+                      [checked]="isSelected(item.row, item.dataIndex)"
+                      [disabled]="!interactive"
+                      (click)="toggleRowSelection(item.row, item.dataIndex, $event)"
+                    />
+                  </td>
+                }
+                @if (expandableRows) {
+                  <td
+                    class="ino-table__td ino-table__td--expand"
+                    role="gridcell"
+                    [attr.data-ino-row]="ri + 1"
+                    [attr.data-ino-col]="expandColIndex"
+                    [attr.tabindex]="isActiveCell(ri + 1, expandColIndex) ? 0 : -1"
+                    (focus)="onCellFocus(ri + 1, expandColIndex)"
+                    (click)="toggleExpand(item.row, item.dataIndex)"
+                  >
+                    <span
+                      class="ino-table__expand-toggle"
+                      [attr.aria-expanded]="isExpanded(item.row, item.dataIndex)"
+                      [attr.aria-label]="isExpanded(item.row, item.dataIndex) ? 'Collapse row' : 'Expand row'"
+                    >
+                      <span
+                        class="ino-table__chevron"
+                        [class.ino-table__chevron--open]="isExpanded(item.row, item.dataIndex)"
+                        aria-hidden="true"
+                      ></span>
+                    </span>
+                  </td>
+                }
+                @for (column of orderedColumns; track column.id) {
+                  <td
+                    class="ino-table__td"
+                    [class.ino-table__td--frozen]="!!column.frozen"
+                    [style.cursor]="column.editable ? 'text' : null"
+                    [style.inset-inline-start.px]="column.frozen === 'start' ? frozenOffset(column) : null"
+                    [style.inset-inline-end.px]="column.frozen === 'end' ? frozenOffset(column) : null"
+                    [style.inline-size]="columnWidth(column)"
+                    [style.text-align]="column.align ?? 'start'"
+                    role="gridcell"
+                    [attr.data-ino-row]="ri + 1"
+                    [attr.data-ino-col]="navIndexOf(column)"
+                    [attr.tabindex]="isActiveCell(ri + 1, navIndexOf(column)) ? 0 : -1"
+                    (focus)="onCellFocus(ri + 1, navIndexOf(column))"
+                    (dblclick)="startEdit(item.row, item.dataIndex, column)"
+                  >
+                    @if (isEditing(item.row, item.dataIndex, column)) {
+                      <input
+                        class="ino-table__edit-input"
+                        type="text"
+                        [(ngModel)]="editDraft"
+                        (blur)="commitEdit(item.row, column)"
+                        (keydown.enter)="commitEdit(item.row, column)"
+                        (keydown.escape)="cancelEdit(item.row, column)"
+                      />
+                    } @else {
+                      @if (cellTemplateFor(column.id); as tpl) {
+                        <ng-container
+                          *ngTemplateOutlet="
+                            tpl.template;
+                            context: { $implicit: getCellValue(item.row, column), row: item.row, column: column, rowIndex: item.dataIndex }
+                          "
+                        ></ng-container>
+                      } @else {
+                        {{ getCellValue(item.row, column) }}
+                      }
+                    }
+                  </td>
+                }
+              </tr>
+              @if (expandableRows && isExpanded(item.row, item.dataIndex)) {
+                <tr role="row" class="ino-table__row ino-table__row--detail">
+                  <td class="ino-table__td ino-table__detail-cell" role="gridcell" [attr.colspan]="navColumns.length || 1">
+                    @if (rowDetailDef) {
+                      <ng-container
+                        *ngTemplateOutlet="rowDetailDef.template; context: { $implicit: item.row, rowIndex: item.dataIndex }"
+                      ></ng-container>
+                    }
+                  </td>
+                </tr>
+              }
+            }
+          }
+        }
+      </tbody>
+    </table>
+  </div>
+
+  @if (paginator) {
+    <ino-paginator
+      class="ino-table__paginator"
+      [totalRecords]="totalRowsForPaginator"
+      [rows]="rowsPerPage"
+      [first]="first"
+      [rowsPerPageOptions]="rowsPerPageOptions"
+      [size]="size"
+      [disabled]="disabled"
+      [readonly]="readonly"
+      [loading]="loading"
+      (pageChange)="onPageChange($event)"
+    ></ino-paginator>
+  }
+</div>

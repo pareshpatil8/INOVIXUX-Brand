@@ -1,0 +1,175 @@
+<!-- @dsCard group="Overlay" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ino-confirm-popup — ConfirmPopup (INO-148)</title>
+<!-- Canonical token file, linked rather than copied: this preview must repaint with the system,
+     and must never become a second place raw hex values live. -->
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-eyebrow-size);
+    letter-spacing: var(--ino-type-eyebrow-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 60ch; }
+  p.note { color: var(--ino-color-on-surface-muted); margin: var(--ino-space-3) 0 0; max-width: 64ch; }
+
+  .demo {
+    position: relative;
+    padding: var(--ino-space-9) var(--ino-space-6);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-xl);
+    background: var(--ino-color-surface-sunken);
+    display: flex;
+    gap: var(--ino-space-6);
+    flex-wrap: wrap;
+  }
+
+  button.ino-btn {
+    min-block-size: var(--ino-control-height-default);
+    padding-inline: var(--ino-control-padding-inline-default);
+    border-radius: var(--ino-radius-md);
+    border: 1px solid transparent;
+    font: inherit;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+  }
+  button.ino-btn:focus-visible { outline: var(--ino-focus-ring); outline-offset: var(--ino-focus-ring-offset); }
+  .ino-btn--secondary { background: transparent; border-color: var(--ino-color-border); color: var(--ino-color-on-surface); }
+  .ino-btn--danger { background: var(--ino-color-danger); color: var(--ino-color-on-danger); }
+
+  /* Mirrors web/src/app/components/confirm-popup/ino-confirm-popup.component.scss. `top`/`left`
+     are set by the script below via the same physical-coordinate reasoning as
+     `overlay-position.ts` — see that file's doc comment for why this is RTL-correct, not an
+     exception. */
+  .ino-confirm-popup {
+    position: absolute;
+    z-index: 10;
+    box-sizing: border-box;
+    max-inline-size: 260px;
+    padding: var(--ino-space-5);
+    background: var(--ino-color-surface-raised);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-lg);
+    box-shadow: var(--ino-elevation-neutral-3);
+    display: none;
+  }
+  .ino-confirm-popup.is-open { display: block; }
+  .ino-confirm-popup__arrow {
+    position: absolute;
+    inline-size: var(--ino-space-3);
+    block-size: var(--ino-space-3);
+    background: var(--ino-color-surface-raised);
+    border-inline-start: 1px solid var(--ino-color-border);
+    border-block-start: 1px solid var(--ino-color-border);
+    transform: rotate(45deg);
+  }
+  .ino-confirm-popup--bottom .ino-confirm-popup__arrow {
+    inset-block-start: calc(var(--ino-space-3) / -2);
+    inset-inline-start: calc(50% - var(--ino-space-3) / 2);
+  }
+  .ino-confirm-popup--top .ino-confirm-popup__arrow {
+    inset-block-end: calc(var(--ino-space-3) / -2);
+    inset-inline-start: calc(50% - var(--ino-space-3) / 2);
+    border-inline-start: none; border-block-start: none;
+    border-inline-end: 1px solid var(--ino-color-border);
+    border-block-end: 1px solid var(--ino-color-border);
+  }
+  .ino-confirm-popup__message { margin: 0; color: var(--ino-color-on-surface-muted); }
+  .ino-confirm-popup__footer {
+    display: flex; justify-content: flex-end; gap: var(--ino-space-3);
+    margin-block-start: var(--ino-space-4);
+  }
+</style>
+</head>
+<body>
+
+<h1>ConfirmPopup</h1>
+<p class="lede">
+  Inline confirm/cancel prompt anchored next to a trigger element — no scrim, no centered panel.
+  Click a trigger below; the popup positions itself relative to the button and flips to the
+  opposite side if it doesn't fit, the same rule <code>overlay-position.ts</code>'s
+  <code>computeOverlayPlacement</code> implements for the real component.
+</p>
+
+<h2>Anchored trigger</h2>
+<div class="demo">
+  <button type="button" class="ino-btn ino-btn--secondary" id="trigger-bottom">Archive (bottom)</button>
+  <button type="button" class="ino-btn ino-btn--danger" id="trigger-top">Delete (top)</button>
+</div>
+
+<div class="ino-confirm-popup ino-confirm-popup--bottom" id="popup" role="alertdialog" aria-labelledby="popup-message">
+  <span class="ino-confirm-popup__arrow" aria-hidden="true"></span>
+  <p class="ino-confirm-popup__message" id="popup-message">Are you sure?</p>
+  <div class="ino-confirm-popup__footer">
+    <button type="button" class="ino-btn ino-btn--secondary" id="popup-cancel">Cancel</button>
+    <button type="button" class="ino-btn ino-btn--danger" id="popup-confirm">Confirm</button>
+  </div>
+</div>
+
+<p class="note">
+  <code>Escape</code>, the Cancel button, or a click outside the popup all dismiss it — same three
+  routes the shipped component wires up. This preview reimplements only the placement math in
+  ~20 lines of vanilla JS for demonstration; the shipped directive additionally handles focus
+  trapping (<code>[inoFocusTrap]</code>), viewport-resize/scroll repositioning, and the
+  next-macrotask outside-pointerdown guard described in SPEC.md.
+</p>
+
+<script>
+  const popup = document.getElementById('popup');
+  let anchor = null;
+
+  function place(preferredBottom) {
+    if (!anchor) return;
+    const a = anchor.getBoundingClientRect();
+    const demo = document.querySelector('.demo').getBoundingClientRect();
+    popup.classList.toggle('ino-confirm-popup--bottom', preferredBottom);
+    popup.classList.toggle('ino-confirm-popup--top', !preferredBottom);
+    popup.style.display = 'block';
+    const p = popup.getBoundingClientRect();
+    const gap = 8;
+    const top = preferredBottom ? (a.bottom - demo.top + gap) : (a.top - demo.top - gap - p.height);
+    const left = (a.left - demo.left) + a.width / 2 - p.width / 2;
+    popup.style.top = top + 'px';
+    popup.style.left = Math.max(0, left) + 'px';
+  }
+
+  function open(trigger, preferredBottom) {
+    anchor = trigger;
+    place(preferredBottom);
+    popup.classList.add('is-open');
+  }
+
+  function close() {
+    popup.classList.remove('is-open');
+    anchor = null;
+  }
+
+  document.getElementById('trigger-bottom').addEventListener('click', (e) => open(e.currentTarget, true));
+  document.getElementById('trigger-top').addEventListener('click', (e) => open(e.currentTarget, false));
+  document.getElementById('popup-cancel').addEventListener('click', close);
+  document.getElementById('popup-confirm').addEventListener('click', close);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+  document.addEventListener('pointerdown', (e) => {
+    if (popup.classList.contains('is-open') && !popup.contains(e.target) && e.target !== anchor) close();
+  });
+</script>
+
+</body>
+</html>

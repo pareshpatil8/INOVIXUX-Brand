@@ -1,0 +1,76 @@
+.ino-confirm-dialog {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--ino-space-6);
+}
+
+.ino-confirm-dialog__scrim {
+  position: absolute;
+  inset: 0;
+  background: var(--ino-color-overlay-scrim);
+}
+
+.ino-confirm-dialog__panel {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  /* Narrower than <ino-modal>'s 480px on purpose: a confirm prompt is a short question, not a
+     content surface, and PrimeNG's ConfirmDialog similarly renders at an intrinsic/auto width
+     rather than the wider generic dialog max. */
+  max-width: 400px;
+  max-height: calc(100vh - var(--ino-space-9) * 2);
+  overflow-y: auto;
+
+  &:focus-visible {
+    outline: none;
+  }
+}
+
+.ino-confirm-dialog__heading {
+  margin: 0;
+  font-size: var(--ino-type-h3-size);
+  line-height: var(--ino-type-h3-line);
+  font-weight: var(--ino-type-h3-weight);
+  letter-spacing: var(--ino-type-h3-tracking);
+  color: var(--ino-color-on-surface);
+}
+
+.ino-confirm-dialog__message {
+  margin: var(--ino-space-2) 0 0;
+  font-size: var(--ino-type-body-size);
+  line-height: var(--ino-type-body-line);
+  color: var(--ino-color-on-surface-muted);
+}
+
+.ino-confirm-dialog__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--ino-space-3);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ino-confirm-dialog__scrim {
+    animation: ino-confirm-dialog-fade var(--ino-motion-duration-base) var(--ino-motion-easing-standard);
+  }
+
+  .ino-confirm-dialog__panel {
+    animation: ino-confirm-dialog-rise var(--ino-motion-duration-base) var(--ino-motion-easing-decelerate);
+  }
+}
+
+@keyframes ino-confirm-dialog-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes ino-confirm-dialog-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+}

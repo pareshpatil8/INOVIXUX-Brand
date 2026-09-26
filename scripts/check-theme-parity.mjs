@@ -1,6 +1,6 @@
 // Dependency-free source-contract audit. Run from any directory with Node.
 import assert from 'node:assert/strict';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 const root = new URL('../', import.meta.url);
 const read = p => readFileSync(new URL(p, root), 'utf8');
@@ -39,7 +39,8 @@ function rgba(value) {
 }
 const rn = read('mobile/react-native/src/theme/tokens.ts').replace(/\/\/[^\n]*/g, '');
 const dart = read('mobile/flutter/lib/theme/tokens.dart').replace(/\/\/[^\n]*/g, '');
-const camel = key => key.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
+// Digit segments fold too: chart-cat-1 → chartCat1 (INO-113 — the first roles with numbered slots).
+const camel = key => key.replace(/-([a-z0-9])/g, (_, c) => c.toUpperCase());
 const palettes = { dark: ['Dark', 'dark'], light: ['Light', 'light'], 'high-contrast': ['HighContrast', 'highContrast'] };
 const resolved = {};
 let colorChecks = 0;
@@ -86,6 +87,27 @@ for (const name of ['fast','base','slow']) {
   assert.match(rn, new RegExp(`duration${name[0].toUpperCase()+name.slice(1)}: ${n}`));
   assert.match(dart, new RegExp(`${name} = Duration\\(milliseconds: ${n}\\)`));
 }
+
+// Devanagari typography pairing (INO-119) — tokens.css §4/§4b mandatory fallback chain +
+// :lang(hi) vertical-rhythm override, mirrored into RN (full parity) and Flutter (font pairing
+// only — Flutter has no ported line-height scale to mirror the ratios into, see README).
+assert.match(base['--ino-font-display'], /"Noto Sans Devanagari"/, 'canonical font-display fallback chain includes Noto Sans Devanagari');
+const langHi = Object.assign({}, ...blocks.filter(m => m[1].trim() === ':lang(hi)').map(m => declarations(m[2])));
+for (const cssVar of ['--ino-type-display-line', '--ino-type-h2-line', '--ino-type-h3-line']) {
+  assert.ok(langHi[cssVar], `:lang(hi) override for ${cssVar} present`);
+}
+const rnFont = Object.fromEntries([...rnGroup('fontFamily').matchAll(/(\w+):\s*'([^']+)'/g)].map(m => [m[1], m[2]]));
+assert.equal(rnFont.display, 'Geist', 'RN display font name matches canonical chain');
+assert.equal(rnFont.displayDevanagariFallback, 'Noto Sans Devanagari', 'RN Devanagari fallback name matches canonical chain');
+const rnType = rn.match(/export const type = \{([\s\S]*?)\n\};/)?.[1];
+assert.ok(rnType, 'RN type scale present');
+for (const [role, cssVar] of [['displaySmHi', '--ino-type-display-line'], ['h2Hi', '--ino-type-h2-line'], ['h3Hi', '--ino-type-h3-line']]) {
+  const m = rnType.match(new RegExp(`${role}:\\s*\\{\\s*fontSize:\\s*[\\d.]+,\\s*lineHeight:\\s*[\\d.]+\\s*\\*\\s*([\\d.]+)`));
+  assert.ok(m, `RN type.${role} present`);
+  assert.equal(Number(m[1]), parseFloat(langHi[cssVar]), `RN type.${role} line-height ratio matches tokens.css :lang(hi) override`);
+}
+assert.match(dart, /static const String display = 'Geist';/, 'Flutter InoFont.display matches canonical chain');
+assert.match(dart, /static const List<String> displayFallback = \['Noto Sans Devanagari'\];/, 'Flutter InoFont.displayFallback matches canonical chain');
 function luminance(c) {
   const v = c.slice(0,3).map(n => n/255).map(n => n <= .04045 ? n/12.92 : ((n+.055)/1.055)**2.4);
   return v[0]*.2126+v[1]*.7152+v[2]*.0722;
@@ -129,6 +151,28 @@ for (const [theme, vars] of Object.entries(themes)) {
   assert.ok(ring, `${theme}: --ino-focus-ring missing`);
   assert.match(ring, /^\d+px solid var\(--ino-color-accent\)$/, `${theme}: --ino-focus-ring must stay "<n>px solid var(--ino-color-accent)", got "${ring}"`);
   assert.match(vars['--ino-focus-ring-offset'] ?? '', /^\d+px$/, `${theme}: --ino-focus-ring-offset must be a px length`);
+}
+// ── Wave 0 / INO-257 (W0-7) — the invalid-state ring (tokens.css §12) ──────────────────────────
+// The focus ring's opposite-channel twin: box-shadow rather than outline, because a control that
+// is focused AND invalid has to paint both at once. Three things can break it, and none of the
+// three shows up in a diff:
+//   1. A theme inlines a literal colour, so a severity re-theme stops carrying the ring — the same
+//      drift --ino-focus-ring was created to end, one channel over.
+//   2. A theme flattens it to `none` alongside the elevation tokens it sits next to. That is
+//      correct for elevation and catastrophic here: high-contrast is precisely the theme where an
+//      invalid affordance must survive. A theme may WIDEN a state ring; it may never thin it.
+//   3. --ino-color-danger drifts to a value that no longer reads against a surface. The ring is a
+//      non-text state indicator (WCAG 2.2 SC 1.4.11, 3:1), which is why it reads `danger` and not
+//      the heavier `danger-text-safe` the invalid LABEL uses — so 3:1 has to be measured, not
+//      assumed, on every surface a ringed control can sit on.
+const invalidRingWeight = v => Number(/^0 0 0 (\d+)px var\(--ino-color-danger\)$/.exec(v ?? '')?.[1]);
+const baseInvalidRing = invalidRingWeight(base['--ino-invalid-ring']);
+assert.ok(baseInvalidRing > 0, `:root: --ino-invalid-ring must be "0 0 0 <n>px var(--ino-color-danger)", got "${base['--ino-invalid-ring']}"`);
+for (const [theme, vars] of Object.entries(themes)) {
+  const weight = invalidRingWeight(vars['--ino-invalid-ring']);
+  assert.ok(weight > 0, `${theme}: --ino-invalid-ring must stay "0 0 0 <n>px var(--ino-color-danger)" — it must never inline a colour and must never flatten to none the way elevation does in this theme, got "${vars['--ino-invalid-ring']}"`);
+  assert.ok(weight >= baseInvalidRing, `${theme}: --ino-invalid-ring is ${weight}px against the base ring's ${baseInvalidRing}px — a theme may widen a state ring, never thin it`);
+  for (const bg of ['surface', 'surfaceRaised', 'surfaceSunken']) pair('danger', bg, 3, resolved[theme], `${theme} invalid-ring `);
 }
 // ── Wave 0 / INO-124 — the control-size scale (tokens.css §12) ─────────────────────────────────
 // Every component's size="sm"|"default"|"lg" API resolves entirely through these tokens, so the
@@ -357,6 +401,75 @@ for (let i = 0; i < ELEVATION_GROUPS.brand.length; i++) {
   assert.ok(pct('light') < pct('dark'), `${key}: light color-mix % (${pct('light')}) must be lower than dark (${pct('dark')})`);
 }
 
+// ── INO-113 / INO-31.1 — data-visualization token layer (tokens.css §13) ───────────────────────
+// Three families, three invariant shapes. The CVD (deuteranopia/protanopia) separation numbers
+// are measured offline with the dataviz skill's validator (Machado–Oliveira–Fernandes 2009,
+// severity 1.0) and recorded in docs/brand/24-data-visualization-tokens.md — this script guards
+// the invariants a later hex edit silently breaks: declaration completeness in every theme, the
+// shared-categorical-identity contract, per-surface contrast floors, ramp direction and
+// monotonicity, and midpoint neutrality. Cross-platform value parity for the 21 chart roles
+// needs no code here: they are first-class palette fields in both mobile ports, so the RN/Flutter
+// role-completeness loop above already byte-checks them across all three themes.
+const CHART = {
+  cat: [1, 2, 3, 4, 5, 6].map(n => `chartCat${n}`),
+  seq: [1, 2, 3, 4, 5, 6, 7, 8].map(n => `chartSeq${n}`),
+  divNeg: ['chartDivNeg1', 'chartDivNeg2', 'chartDivNeg3'],
+  divPos: ['chartDivPos1', 'chartDivPos2', 'chartDivPos3'],
+};
+let vizChecks = 0;
+for (const [theme, palette] of Object.entries(resolved)) {
+  for (const key of [...CHART.cat, ...CHART.seq, ...CHART.divNeg, ...CHART.divPos, 'chartDivMid']) {
+    assert.ok(palette[key], `${theme}: chart role ${key} missing`);
+    vizChecks++;
+  }
+  const vs = key => contrast(palette[key], palette.surface);
+  // Categorical slots are non-text marks — each must clear SC 1.4.11 (3:1) on its own surface.
+  for (const key of CHART.cat) { pair(key, 'surface', 3, palette, `${theme} `); vizChecks++; }
+  // Sequential: contrast vs surface strictly increases 1→8, so step 8 (highest risk) anchors as
+  // the strong-contrast end of THIS surface regardless of which way the theme flips lightness;
+  // the near end may recede but never below the 2:1 ordinal floor, the strong end stays ≥10:1.
+  for (let i = 1; i < CHART.seq.length; i++) {
+    assert.ok(vs(CHART.seq[i]) > vs(CHART.seq[i - 1]),
+      `${theme}: ${CHART.seq[i]} must read stronger against the surface than ${CHART.seq[i - 1]} — the ramp lost its direction`);
+    vizChecks++;
+  }
+  assert.ok(vs('chartSeq1') >= 2, `${theme}: chartSeq1 is ${vs('chartSeq1').toFixed(2)}:1 vs surface — below the 2:1 near-surface floor`);
+  assert.ok(vs('chartSeq8') >= 10, `${theme}: chartSeq8 is ${vs('chartSeq8').toFixed(2)}:1 vs surface — the highest-risk step must anchor ≥10:1`);
+  vizChecks += 2;
+  // Diverging: each arm strengthens strictly outward from the midpoint, and each pole clears 3:1.
+  // The midpoint itself may sit under 3:1 by design — a "no change" cell recedes and never
+  // carries a value alone (tokens.css §13).
+  for (const arm of [CHART.divNeg, CHART.divPos]) {
+    let prev = vs('chartDivMid');
+    for (const key of arm) {
+      assert.ok(vs(key) > prev, `${theme}: ${key} must read stronger against the surface than the step inside it — the arm lost its outward direction`);
+      prev = vs(key);
+      vizChecks++;
+    }
+    pair(arm[2], 'surface', 3, palette, `${theme} `);
+    vizChecks++;
+  }
+  // The midpoint is NEUTRAL — near-gray, so "no change" never leans toward either arm's hue.
+  const mid = palette.chartDivMid;
+  assert.ok(Math.max(...mid.slice(0, 3)) - Math.min(...mid.slice(0, 3)) <= 10,
+    `${theme}: chartDivMid must stay near-neutral (max channel spread 10), got rgb(${mid.slice(0, 3).join(',')})`);
+  vizChecks++;
+}
+// Shared-identity contract: light deliberately does NOT repaint the categorical slots — dark and
+// light share hexes (each slot's OKLCH L clears 3:1 on both surfaces) so series identity survives
+// a theme toggle without repainting. High-contrast deliberately DOES restep, and both ramps
+// re-step per surface — pin all three decisions so none can silently regress.
+for (const key of CHART.cat) {
+  assert.deepEqual(resolved.light[key], resolved.dark[key],
+    `light ${key} must stay hex-identical to dark — the shared categorical identity contract (tokens.css §13)`);
+}
+assert.notDeepEqual(CHART.cat.map(k => resolved['high-contrast'][k]), CHART.cat.map(k => resolved.dark[k]),
+  'high-contrast categorical must be its own restep, not a copy of dark');
+assert.notDeepEqual(CHART.seq.map(k => resolved.light[k]), CHART.seq.map(k => resolved.dark[k]),
+  'light sequential ramp must re-step for its surface, not inherit dark');
+assert.notDeepEqual(CHART.seq.map(k => resolved['high-contrast'][k]), CHART.seq.map(k => resolved.dark[k]),
+  'high-contrast sequential ramp must re-step for its surface, not inherit dark');
+
 // ── Wave 0 / INO-126 (W0-4) — leading/tracking rhythm scale + composite type aliases (§4c) ──────
 // Two independent claims: (1) the --ino-leading-*/--ino-tracking-* primitives form a strictly
 // ascending scale and every type role's -line/-tracking now resolves through one of them, never a
@@ -404,5 +517,390 @@ for (const [scope, decls] of [['[data-density="dense"]', rawDense], ['[data-dens
   }
 }
 
-console.log(`PASS: CSS mirrors; Capacitor import; ${colorChecks} color roles across 3 themes × 2 mobile ports; space/radius/targets/durations; focus-ring shape; pressed-accent contrast in 3 themes; control-size scale across 3 densities + ${controlChecks} mobile port values; form-label tokens across 3 themes × 2 densities; elevation scale (6 neutral + 3 brand + 2 inset) across 3 themes; leading/tracking rhythm scale + composite type aliases across 3 densities.`);
+// ── S-9 / INO-171 — component-level theme-parity check (resolves P-7) ──────────────────────────
+// Everything above proves the TOKEN layer is byte-identical across tracks. It says nothing about
+// whether a component present on web exists on the mobile tracks, or whether a port that DOES
+// exist reads the same semantic roles web reads. This section closes that gap with an append-only
+// registry: one entry per component, alphabetically inserted — the shared-file merge rule for this
+// file (docs/brand/17-phase-2-implementation-program.md §6): a merge conflict here should only
+// ever be "insert my line between these two neighbours," never a semantic collision.
+//
+// Any role a mobile port drops or substitutes relative to web must be declared in that entry's
+// `divergences` with a written reason, so an intentional difference reads as a decision instead of
+// drift — and a declared divergence that no longer reflects a real gap fails just as loudly, so the
+// registry cannot rot into stale permissions either.
+const ALL_ROLE_FIELDS = new Set([...dart.matchAll(/final Color (\w+);/g)].map(m => m[1]));
+
+function webColorRoles(dir) {
+  const scssFiles = readdirSync(new URL(`${dir}/`, root)).filter(f => f.endsWith('.scss'));
+  assert.ok(scssFiles.length, `${dir}: no .scss files found`);
+  const roles = new Set();
+  for (const f of scssFiles) {
+    for (const m of read(`${dir}/${f}`).matchAll(/var\(--ino-color-([\w-]+)\)/g)) roles.add(camel(m[1]));
+  }
+  return roles;
+}
+
+const COMPONENT_REGISTRY = [
+  {
+    name: 'button',
+    web: 'web/src/app/components/button',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoButton.tsx',
+        roles: ['accent', 'accentActive', 'border', 'danger', 'onAccent', 'onSurface', 'onSurfaceMuted', 'surfaceRaised', 'surfaceSunken'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_button.dart',
+        roles: ['accent', 'accentActive', 'border', 'danger', 'onAccent', 'onSurface', 'onSurfaceMuted', 'surface', 'surfaceRaised', 'surfaceSunken'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['onDanger'], reason: 'the danger variant text reuses onAccent instead of reading a dedicated onDanger. onAccent and onDanger are numerically identical white/black pairs in all three themes today (mobile/react-native/src/theme/tokens.ts), so this is not a contrast regression right now, but it is a value coincidence rather than a declared alias like --ino-color-label-invalid. Flagged for the button owner via INO-171: either add a dedicated onDanger read or formally alias the two roles.' },
+      { platform: 'flutter', roles: ['onDanger'], reason: 'same as the React Native entry above — the danger variant reuses onAccent instead of onDanger.' },
+      { platform: 'flutter', roles: ['surface'], reason: "ghost/icon fill uses colors.surface.withValues(alpha: 0) as a typed transparent Color; RN uses the bare string 'transparent' for the same visual result, so this role never actually reads a surface value." },
+    ],
+  },
+  {
+    name: 'confirm-dialog',
+    web: 'web/src/app/components/confirm-dialog',
+    mobile: { reactNative: 'web-only', flutter: 'web-only' },
+    reason: 'web-only by explicit decision (INO-148, plan rev 9 §5 desktop-idiom porting rule) — the mobile counterpart is a native action-sheet idiom (`ino-confirm-action-sheet`, already shipped on all three mobile tracks), not a port of the centered card-with-scrim dialog. See web/src/app/components/confirm-dialog/SPEC.md §5 and docs/brand/06-angular-components/confirm-dialog.md#mobile.',
+  },
+  {
+    name: 'confirm-popup',
+    web: 'web/src/app/components/confirm-popup',
+    mobile: { reactNative: 'web-only', flutter: 'web-only' },
+    reason: 'web-only by explicit decision (INO-148, plan rev 9 §5 desktop-idiom porting rule) — same rationale as confirm-dialog above; `ino-confirm-action-sheet` already covers mobile confirm. See web/src/app/components/confirm-popup/SPEC.md §5 and docs/brand/06-angular-components/confirm-popup.md#mobile.',
+  },
+  {
+    name: 'datepicker',
+    web: 'web/src/app/components/datepicker',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoDatepicker.tsx',
+        roles: ['accent', 'border', 'danger', 'onAccent', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'surfaceRaised', 'surfaceSunken'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_datepicker.dart',
+        roles: ['accent', 'border', 'danger', 'onAccent', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'surfaceRaised', 'surfaceSunken'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['accentActive'], reason: 'same rationale as the input entry above — web reserves accent-active for the transient mousedown-before-focus-settles flash on the trigger and nav buttons (ino-datepicker.component.scss); touch has no pointer-down-before-focus phase, so Pressable goes straight from unfocused to colors.accent on selection, using its built-in pressed style instead of a dedicated role read.' },
+      { platform: 'flutter', roles: ['accentActive'], reason: 'same as the React Native entry above.' },
+      { platform: 'reactNative', roles: ['borderSoft'], reason: 'web reads border-soft for the internal calendar-grid week divider (a lighter rule than the panel border); the mobile ports are scoped to single-selection only (SPEC.md §9) and never render week dividers, so the role has nothing to draw and the port reads border for every border it does draw.' },
+      { platform: 'flutter', roles: ['borderSoft'], reason: 'same as the React Native entry above.' },
+      { platform: 'reactNative', roles: ['accentTextSafe'], reason: 'web reads accent-text-safe only for the in-range cell tint (range-mode text over a flat accent-tinted surface); the mobile ports are single-selection-only (SPEC.md §9) and have no in-range state to color, so the role is never reached.' },
+      { platform: 'flutter', roles: ['accentTextSafe'], reason: 'same as the React Native entry above.' },
+    ],
+  },
+  {
+    name: 'drawer',
+    web: 'web/src/app/components/drawer',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoDrawer.tsx',
+        roles: ['borderSoft', 'onSurface', 'onSurfaceMuted', 'overlayScrim', 'surfaceRaised'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_drawer.dart',
+        roles: ['borderSoft', 'onSurface', 'onSurfaceMuted', 'overlayScrim', 'surfaceRaised'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['accentActive'], reason: 'web reads accent-active for the close button\'s :active (mousedown) state; touch has no separate pointer-down-before-release phase for a plain Pressable with no custom pressed style here, so the port has no press-state color to read. Same rationale the input/datepicker entries above record for their own accent-active omission.' },
+      { platform: 'flutter', roles: ['accentActive'], reason: 'same as the React Native entry above — IconButton\'s built-in press ripple is used instead of a dedicated accent-active read.' },
+      { platform: 'reactNative', roles: ['surfaceSunken'], reason: 'web reads surface-sunken for the close button\'s :hover/:active background; touch has no hover and the port\'s Pressable has no custom pressed background, so the role is never reached (same gap as accent-active above, same button, same missing pressed-state affordance).' },
+      { platform: 'flutter', roles: ['surfaceSunken'], reason: 'same as the React Native entry above.' },
+    ],
+  },
+  {
+    name: 'file-upload',
+    web: 'web/src/app/components/file-upload',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoFileUpload.tsx',
+        roles: ['accent', 'accentActive', 'border', 'danger', 'dangerTextSafe', 'onSurface', 'onSurfaceMuted', 'surfaceRaised', 'surfaceSunken'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_file_upload.dart',
+        roles: ['accent', 'accentActive', 'border', 'danger', 'dangerTextSafe', 'onSurface', 'onSurfaceMuted', 'surfaceRaised', 'surfaceSunken'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['onSurfaceSubtle'], reason: 'web reads on-surface-subtle only for the basic-mode "No file chosen" empty-state placeholder text (.ino-fu__basic-filename--empty); the mobile ports render that same string with onSurfaceMuted instead of adding a third muted tier, since neither native palette needs the finer distinction for one line of copy.' },
+      { platform: 'flutter', roles: ['onSurfaceSubtle'], reason: 'same as the React Native entry above.' },
+    ],
+  },
+  {
+    name: 'floatlabel',
+    web: 'web/src/app/components/floatlabel',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoFloatLabel.tsx',
+        roles: ['onSurfaceMuted', 'onSurfaceSubtle', 'dangerTextSafe', 'surface'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_float_label.dart',
+        roles: ['onSurfaceMuted', 'onSurfaceSubtle', 'dangerTextSafe', 'surface'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['onSurfaceMuted', 'onSurfaceSubtle', 'dangerTextSafe'], reason: 'web composes <ino-label> internally and re-points its --ino-type-label-* size/weight custom properties only — colour itself stays whichever role <ino-label>\'s OWN stylesheet already resolves (label/ino-label.component.scss: onSurface/onSurfaceMuted/onSurfaceSubtle/dangerTextSafe), so floatlabel/ino-floatlabel.component.scss never references those colour roles directly. The RN port has no separate label component to delegate to (it renders the label Text itself), so it reads the three non-default label colour roles inline. See SPEC.md §2.' },
+      { platform: 'flutter', roles: ['onSurfaceMuted', 'onSurfaceSubtle', 'dangerTextSafe'], reason: 'same as the React Native entry above — ino_float_label.dart renders its own label Text instead of delegating to InoLabel.' },
+    ],
+  },
+  {
+    name: 'focus-trap',
+    web: 'web/src/app/components/focus-trap',
+    mobile: { reactNative: 'web-only', flutter: 'web-only' },
+    reason: 'web-only by explicit decision — neither platform has the DOM tab-order construct this component exists for (RN: accessibilityViewIsModal; Flutter: FocusScope on the modal route). See docs/brand/06-angular-components/focus-trap.md#mobile and web/src/app/components/focus-trap/SPEC.md §5.',
+  },
+  {
+    name: 'iftalabel',
+    web: 'web/src/app/components/iftalabel',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoIftaLabel.tsx',
+        roles: ['onSurfaceMuted', 'onSurfaceSubtle', 'dangerTextSafe'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_ifta_label.dart',
+        roles: ['onSurfaceMuted', 'onSurfaceSubtle', 'dangerTextSafe'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['onSurfaceMuted', 'onSurfaceSubtle', 'dangerTextSafe'], reason: 'web composes <ino-label> internally and never references a --ino-color-* role directly in iftalabel/ino-iftalabel.component.scss (colour is entirely delegated to <ino-label>\'s own stylesheet: onSurface/onSurfaceMuted/onSurfaceSubtle/dangerTextSafe). The RN port has no separate label component to delegate to (it renders the label Text itself), so it reads the three non-default label colour roles inline. Same divergence shape the sibling floatlabel/ino-float-label wrapper (INO-141) declares for the same reason (minus the "surface" role — this component has no on-variant background cutout, SPEC.md §3). See SPEC.md §7.' },
+      { platform: 'flutter', roles: ['onSurfaceMuted', 'onSurfaceSubtle', 'dangerTextSafe'], reason: 'same as the React Native entry above — ino_ifta_label.dart renders its own label Text instead of delegating to InoLabel.' },
+    ],
+  },
+  {
+    name: 'input',
+    web: 'web/src/app/components/input',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoInput.tsx',
+        roles: ['accent', 'border', 'danger', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'surfaceRaised', 'surfaceSunken'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_input.dart',
+        roles: ['accent', 'border', 'danger', 'onSurface', 'onSurfaceMuted', 'surfaceRaised', 'surfaceSunken'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['accentActive'], reason: 'web reserves accent-active for the transient mousedown-before-focus-settles flash (ino-input.component.scss); touch input has no pointer-down-before-focus phase, so the port goes straight from unfocused to colors.accent on focus.' },
+      { platform: 'flutter', roles: ['accentActive'], reason: 'same as the React Native entry above.' },
+      // NOT a declared design decision — this is an apparent gap this check surfaced while being
+      // written (INO-171). RN sets placeholderTextColor={colors.onSurfaceSubtle} explicitly
+      // (InoInput.tsx); Flutter's TextField/InputDecoration sets no hintStyle at all, so the
+      // placeholder falls back to Flutter's default theme color instead of reading the role web
+      // and RN both use. Recorded here so the check passes without masking the finding — flagged
+      // to the input component owner (INO-157) to fix Flutter or confirm the omission is intended.
+      { platform: 'flutter', roles: ['onSurfaceSubtle'], reason: 'GAP, not a decision: Flutter InoInput sets no explicit placeholder/hint color (no hintStyle on the InputDecoration), so it never reads onSurfaceSubtle at all, unlike web (::placeholder) and RN (placeholderTextColor). Filed as a follow-up against the input component owner rather than fixed here — see INO-171 handoff comment.' },
+    ],
+  },
+  {
+    name: 'input-otp',
+    web: 'web/src/app/components/input-otp',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoInputOtp.tsx',
+        roles: ['accent', 'border', 'danger', 'onSurface', 'onSurfaceMuted', 'surfaceSunken'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_input_otp.dart',
+        roles: ['accent', 'border', 'danger', 'onSurface', 'onSurfaceMuted', 'surfaceSunken'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['accentActive', 'surfaceRaised'], reason: 'accentActive is the transient mousedown-before-focus-settles flash (same rationale as the input entry above), which touch input never triggers, so the port goes straight from unfocused to colors.accent on focus. surfaceRaised is unused because the mobile ports never swap fills for readonly the way the web component does (ino-input-otp.component.scss :read-only rule) — boxes always render colors.surfaceSunken regardless of readOnly.' },
+      { platform: 'flutter', roles: ['accentActive', 'surfaceRaised'], reason: 'same as the React Native entry above.' },
+    ],
+  },
+  {
+    name: 'meter-group',
+    web: 'web/src/app/components/meter-group',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoMeterGroup.tsx',
+        roles: ['accent', 'accentSecondary', 'success', 'warning', 'danger', 'info', 'surfaceSunken', 'onSurface', 'onSurfaceMuted'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_meter_group.dart',
+        roles: ['accent', 'accentSecondary', 'success', 'warning', 'danger', 'info', 'surfaceSunken', 'onSurface', 'onSurfaceMuted'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['borderSoft'], reason: 'web reads border-soft for the loading-state shimmer gradient sweeping across the track; neither mobile port renders a shimmer texture (both simply show an empty track while busy, avoiding a new animation-gradient dependency for a single state), so the role is never reached. Full reasoning: web/src/app/components/meter-group/SPEC.md §7.' },
+      { platform: 'flutter', roles: ['borderSoft'], reason: 'same as the React Native entry above.' },
+    ],
+  },
+  {
+    name: 'multiselect',
+    web: 'web/src/app/components/multiselect',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoMultiSelect.tsx',
+        roles: ['accent', 'accentTextSafe', 'border', 'borderSoft', 'danger', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'overlayScrim', 'surfaceRaised', 'surfaceSunken'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_multi_select.dart',
+        roles: ['accent', 'accentTextSafe', 'border', 'borderSoft', 'danger', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'overlayScrim', 'surfaceRaised', 'surfaceSunken'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['accentActive'], reason: 'same rationale as the select entry above (INO-152/INO-258) — web reserves accent-active for the transient mousedown-before-focus-settles flash on the trigger (ino-multiselect.component.scss `.ino-field__control:active`); touch has no pointer-down-before-focus phase, so the Pressable goes straight from unfocused to colors.accent when the sheet opens.' },
+      { platform: 'flutter', roles: ['accentActive'], reason: 'same as the React Native entry above.' },
+      { platform: 'reactNative', roles: ['overlayScrim', 'borderSoft'], reason: 'ADDED roles, not dropped ones — same one intentional visual divergence ino-select\'s port declares (INO-258). Web anchors the option panel absolutely under the trigger with no scrim and no sheet chrome; this port presents the same checkbox list in a modal bottom sheet (ConfirmActionSheet.tsx idiom, docs/brand/13-mobile-app-patterns.md §2) for the same reason — an anchored popover under a field collides with the keyboard and the bottom safe area on a phone. overlay-scrim is that sheet backdrop and border-soft its grabber. See web/src/app/components/multiselect/SPEC.md §9.' },
+      { platform: 'flutter', roles: ['overlayScrim', 'borderSoft'], reason: 'same as the React Native entry above — showModalBottomSheet barrierColor is overlay-scrim and the grabber is border-soft, matching confirm_action_sheet.dart / ino_select.dart.' },
+    ],
+  },
+  {
+    name: 'popover',
+    web: 'web/src/app/components/popover',
+    mobile: { reactNative: 'web-only', flutter: 'web-only' },
+    reason: 'web-only by explicit decision (INO-31 plan rev 9 §5 desktop-idiom porting rule) — an anchor-positioned floating panel keyed to getBoundingClientRect() and mouse/keyboard dismiss gestures is a desktop pointer-and-keyboard idiom. The mobile counterpart is a different component and gets its own issue in a later wave. See web/src/app/components/popover/SPEC.md §5 and docs/brand/06-angular-components/popover.md#mobile-parity.',
+  },
+  {
+    name: 'select',
+    web: 'web/src/app/components/select',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoSelect.tsx',
+        roles: ['accent', 'accentTextSafe', 'border', 'borderSoft', 'danger', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'overlayScrim', 'surfaceRaised', 'surfaceSunken'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_select.dart',
+        roles: ['accent', 'accentTextSafe', 'border', 'borderSoft', 'danger', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'overlayScrim', 'surfaceRaised', 'surfaceSunken'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['accentActive'], reason: 'same rationale as the input and datepicker entries above — web reserves accent-active for the transient mousedown-before-focus-settles flash on the trigger (ino-select.component.scss `.ino-field__control:active`); touch has no pointer-down-before-focus phase, so the Pressable goes straight from unfocused to colors.accent when the sheet opens.' },
+      { platform: 'flutter', roles: ['accentActive'], reason: 'same as the React Native entry above.' },
+      { platform: 'reactNative', roles: ['overlayScrim', 'borderSoft'], reason: 'ADDED roles, not dropped ones — the two consequences of the one intentional visual divergence in this port (INO-258). Web anchors the option panel absolutely under the trigger with no scrim and no sheet chrome; an anchored popover under a field is a pointer idiom that on a phone collides with the software keyboard and the bottom safe area, so the port presents the same list in a modal bottom sheet (ConfirmActionSheet.tsx, docs/brand/13-mobile-app-patterns.md §2). overlay-scrim is that sheet backdrop and border-soft its grabber — both read from the same shared palette the existing sheet template already uses, not new values. See web/src/app/components/select/SPEC.md §9.' },
+      { platform: 'flutter', roles: ['overlayScrim', 'borderSoft'], reason: 'same as the React Native entry above — showModalBottomSheet barrierColor is overlay-scrim and the grabber is border-soft, matching confirm_action_sheet.dart.' },
+    ],
+  },
+  {
+    name: 'table',
+    web: 'web/src/app/components/table',
+    mobile: { reactNative: 'web-only', flutter: 'web-only' },
+    reason: 'web-only by explicit decision (INO-155, plan rev 9 §5 desktop-idiom porting rule) — a dense grid with column resize/reorder/frozen columns and roving-tabindex keyboard nav is a desktop pointer-and-keyboard idiom. The mobile counterpart is a different component and gets its own issue in a later wave. See web/src/app/components/table/SPEC.md §1 and docs/brand/06-angular-components/table.md#mobile-parity.',
+  },
+  {
+    name: 'tag',
+    web: 'web/src/app/components/tag',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoTag.tsx',
+        roles: ['info', 'onInfo', 'success', 'onSuccess', 'warning', 'onWarning', 'danger', 'onDanger'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_tag.dart',
+        roles: ['info', 'onInfo', 'success', 'onSuccess', 'warning', 'onWarning', 'danger', 'onDanger'],
+      },
+    },
+    divergences: [
+      {
+        platform: 'reactNative',
+        roles: ['onSurfaceMuted', 'riskHighDot', 'riskHighFill', 'riskHighOnFill', 'riskLowDot', 'riskLowFill', 'riskLowOnFill', 'riskMediumDot', 'riskMediumFill', 'riskMediumOnFill', 'success', 'onSuccess', 'warning', 'onWarning', 'danger', 'onDanger'],
+        reason: 'severity remaps onto the roles the mobile palettes actually carry — high→danger, medium→warning, low→success, info→info — since neither native palette has risk-* fields (mobile/react-native/src/theme/tokens.ts). Dot mode also drops the adjacent label text color (on-surface-muted) because the RN/Flutter dot renders only the indicator, no text. Full reasoning: web/src/app/components/tag/SPEC.md §7 and docs/brand/06-angular-components/tag.md#mobile-parity.',
+      },
+      {
+        platform: 'flutter',
+        roles: ['onSurfaceMuted', 'riskHighDot', 'riskHighFill', 'riskHighOnFill', 'riskLowDot', 'riskLowFill', 'riskLowOnFill', 'riskMediumDot', 'riskMediumFill', 'riskMediumOnFill', 'success', 'onSuccess', 'warning', 'onWarning', 'danger', 'onDanger'],
+        reason: 'same remapping as the React Native entry above.',
+      },
+    ],
+  },
+  {
+    name: 'textarea',
+    web: 'web/src/app/components/textarea',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoTextarea.tsx',
+        roles: ['accent', 'border', 'danger', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'surfaceRaised', 'surfaceSunken'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_textarea.dart',
+        roles: ['accent', 'border', 'danger', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'surfaceRaised', 'surfaceSunken'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['accentActive'], reason: 'same rationale as the input entry above — web reserves accent-active for the transient mousedown-before-focus-settles flash (ino-textarea.component.scss); touch input has no pointer-down-before-focus phase, so the port goes straight from unfocused to colors.accent on focus.' },
+      { platform: 'flutter', roles: ['accentActive'], reason: 'same as the React Native entry above.' },
+    ],
+  },
+  {
+    name: 'tooltip',
+    web: 'web/src/app/components/tooltip',
+    mobile: { reactNative: 'web-only', flutter: 'web-only' },
+    reason: 'web-only by explicit decision (INO-149, plan rev 9 §5 desktop-idiom porting rule) — hover and keyboard focus have no touch equivalent; a long-press hint is a materially different interaction, not a port. See web/src/app/components/tooltip/SPEC.md §5 and docs/brand/06-angular-components/tooltip.md#mobile.',
+  },
+  {
+    name: 'virtual-scroller',
+    web: 'web/src/app/components/virtual-scroller',
+    mobile: { reactNative: 'web-only', flutter: 'web-only' },
+    reason: 'web-only by design — the mobile tracks have platform-native equivalents (FlatList, ListView.builder) that are strictly better than a port. See web/src/app/components/virtual-scroller/SPEC.md §1 and docs/brand/06-angular-components/virtual-scroller.md#mobile.',
+  },
+];
+
+for (let i = 1; i < COMPONENT_REGISTRY.length; i++) {
+  assert.ok(COMPONENT_REGISTRY[i - 1].name < COMPONENT_REGISTRY[i].name,
+    `COMPONENT_REGISTRY must stay alphabetically inserted: "${COMPONENT_REGISTRY[i - 1].name}" is not before "${COMPONENT_REGISTRY[i].name}"`);
+}
+
+let componentChecks = 0;
+for (const entry of COMPONENT_REGISTRY) {
+  assert.ok(existsSync(new URL(entry.web, root)), `${entry.name}: web path ${entry.web} does not exist`);
+  const webRoles = webColorRoles(entry.web);
+
+  const bothWebOnly = entry.mobile.reactNative === 'web-only' && entry.mobile.flutter === 'web-only';
+  if (bothWebOnly) {
+    assert.ok(entry.reason?.trim(), `${entry.name}: web-only on both mobile tracks needs a top-level "reason"`);
+    componentChecks++;
+    continue;
+  }
+
+  for (const platform of ['reactNative', 'flutter']) {
+    const decl = entry.mobile[platform];
+    const declaredDivergences = (entry.divergences ?? []).filter(d => d.platform === platform);
+    if (decl === 'web-only') {
+      const reason = declaredDivergences[0]?.reason ?? entry.reason;
+      assert.ok(reason?.trim(), `${entry.name}/${platform}: declared web-only needs a reason (top-level "reason" or a divergence entry)`);
+      componentChecks++;
+      continue;
+    }
+    assert.ok(decl?.path, `${entry.name}/${platform}: registry entry must set either "web-only" or { path, roles }`);
+    assert.ok(existsSync(new URL(decl.path, root)), `${entry.name}/${platform}: ${decl.path} does not exist`);
+    const declaredRoles = new Set(decl.roles ?? []);
+    const portSource = read(decl.path);
+    for (const role of declaredRoles) {
+      assert.ok(ALL_ROLE_FIELDS.has(role), `${entry.name}/${platform}: declared role "${role}" is not a known palette field`);
+      // The registry's role list is author-declared, not auto-extracted (mobile role access is too
+      // varied to parse reliably — literal `colors.x`, bracket lookups, indirection tables like
+      // InoTag's SEVERITY_ROLE map). This whole-word presence check is the cheap guard against the
+      // declaration going stale after a port edit: it would not have caught the role rename above.
+      assert.ok(new RegExp(`\\b${role}\\b`).test(portSource),
+        `${entry.name}/${platform}: registry declares role "${role}" for ${decl.path}, but that name does not appear anywhere in the file — update the registry (or the port) so the declaration stops describing code that no longer exists`);
+    }
+    for (const d of declaredDivergences) assert.ok(d.reason?.trim(), `${entry.name}/${platform}: divergence entry missing a reason`);
+    const declaredDiffRoles = new Set(declaredDivergences.flatMap(d => d.roles));
+
+    const missing = [...webRoles].filter(r => !declaredRoles.has(r));
+    const extra = [...declaredRoles].filter(r => !webRoles.has(r));
+    for (const role of [...missing, ...extra]) {
+      assert.ok(declaredDiffRoles.has(role),
+        `${entry.name}/${platform}: role "${role}" differs between web (${entry.web}) and the port (${decl.path}) with no declared divergence — either make the port consume the same role, or add a { platform: '${platform}', roles: ['${role}'], reason } entry to this component's divergences`);
+    }
+    for (const role of declaredDiffRoles) {
+      assert.ok(missing.includes(role) || extra.includes(role),
+        `${entry.name}/${platform}: declared divergence for role "${role}" no longer reflects an actual difference — remove the stale entry`);
+    }
+    componentChecks++;
+  }
+}
+
+console.log(`PASS: CSS mirrors; Capacitor import; ${colorChecks} color roles across 3 themes × 2 mobile ports; space/radius/targets/durations; Devanagari font pairing + line-height parity; focus-ring shape; invalid-ring shape, never-flatten rule and SC 1.4.11 budget in 3 themes; pressed-accent contrast in 3 themes; control-size scale across 3 densities + ${controlChecks} mobile port values; form-label tokens across 3 themes × 2 densities; elevation scale (6 neutral + 3 brand + 2 inset) across 3 themes; data-viz layer (6 categorical + 8 sequential + 7 diverging, ${vizChecks} checks) across 3 themes; leading/tracking rhythm scale + composite type aliases across 3 densities; component registry (${COMPONENT_REGISTRY.length} components, ${componentChecks} platform checks).`);
 console.log('High-contrast token pairs (AAA text >=7; non-text borders >=3; excludes disabled/decorative subtle role);\nplus per-theme pressed-accent pairs (INO-123):\n'+measurements.join('\n'));

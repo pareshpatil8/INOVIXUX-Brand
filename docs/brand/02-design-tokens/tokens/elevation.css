@@ -1,0 +1,13 @@
+/* INOVIXUX design tokens — elevation (base values; per-theme overrides live in colors.css alongside the theme block they belong to). Split from tokens.css (INO-115); imported by styles.css.
+ * Do not hand-edit tokens.css directly for elevation (base values; per-theme overrides live in colors.css alongside the theme block they belong to) changes — this file is now the source. */
+
+:root {
+  --ino-elevation-0: none;
+  --ino-elevation-1: 0 40px 80px -40px rgba(0, 0, 0, 0.6);   /* resting raised surfaces — cards, tier cards */
+  --ino-elevation-2: 0 60px 120px -32px rgba(0, 0, 0, 0.72); /* surfaces above the overlay scrim — modals, sheets, popovers */
+
+  /* ---------------------------------------------------------------------
+   * 8. ELEVATION (see section 2 for the actual --ino-elevation-* values;
+   *    numbered here to keep the section order stable across themes)
+   * ------------------------------------------------------------------- */
+}

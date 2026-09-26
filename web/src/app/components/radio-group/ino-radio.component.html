@@ -1,0 +1,26 @@
+<label
+  class="ino-radio"
+  [attr.data-size]="size"
+  [class.ino-radio--disabled]="disabled"
+  [class.ino-radio--readonly]="readonly && !disabled"
+  [class.ino-radio--loading]="loading"
+>
+  <span class="ino-radio__row">
+    <input
+      [id]="controlId"
+      type="radio"
+      class="ino-radio__input"
+      [name]="name"
+      [value]="value"
+      [checked]="checked"
+      [disabled]="disabled || loading"
+      [attr.aria-invalid]="invalid ? true : null"
+      [attr.aria-readonly]="readonly ? true : null"
+      [attr.aria-busy]="loading ? true : null"
+      (click)="onClick($event)"
+      (change)="onChange($event)"
+    />
+    <span class="ino-radio__spinner" *ngIf="loading" aria-hidden="true"></span>
+    <span class="ino-radio__label" *ngIf="label">{{ label }}</span>
+  </span>
+</label>
