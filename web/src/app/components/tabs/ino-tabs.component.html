@@ -1,0 +1,63 @@
+<div class="ino-tabs__strip">
+  <button
+    *ngIf="scrollable && hasOverflow"
+    type="button"
+    class="ino-tabs__scroll ino-tabs__scroll--prev"
+    aria-label="Scroll tabs backward"
+    (click)="scrollBy(-1)"
+  >‹</button>
+
+  <div
+    #track
+    class="ino-tabs__track"
+    role="tablist"
+    aria-orientation="horizontal"
+    [attr.data-readonly]="readonly || null"
+  >
+    <button
+      *ngFor="let panel of panels; let i = index"
+      role="tab"
+      type="button"
+      class="ino-tabs__tab"
+      [id]="panel.tabButtonId"
+      [attr.aria-controls]="panel.panelId"
+      [attr.aria-selected]="panel.id === currentActiveId"
+      [attr.aria-busy]="panel.loading || null"
+      [attr.aria-invalid]="panel.invalid || null"
+      [attr.aria-disabled]="readonly && panel.id !== currentActiveId ? 'true' : null"
+      [attr.tabindex]="panel.id === currentActiveId ? 0 : -1"
+      [disabled]="panel.disabled"
+      [class.ino-tabs__tab--active]="panel.id === currentActiveId"
+      [class.ino-tabs__tab--invalid]="panel.invalid"
+      (click)="selectTab(panel)"
+      (keydown)="onKeydown($event, i)"
+    >
+      <span *ngIf="panel.loading" class="ino-tabs__tab-spinner" aria-hidden="true"></span>
+      <span *ngIf="panel.invalid && !panel.loading" class="ino-tabs__tab-invalid-dot" aria-hidden="true"></span>
+      <span class="ino-tabs__tab-label">{{ panel.label }}</span>
+      <!-- Presentational, never a nested control: interactive content inside a <button> is invalid
+           HTML and unreachable for keyboard/AT users. The keyboard path to the same action is the
+           APG "tabs with close buttons" Delete/Backspace key handled on the tab itself, and the
+           accessible name carries the affordance ("Reports, closable") — SPEC.md §7. -->
+      <span
+        *ngIf="panel.closable && !readonly"
+        class="ino-tabs__tab-close"
+        aria-hidden="true"
+        (click)="closeTab($event, panel)"
+      >✕</span>
+      <span *ngIf="panel.closable && !readonly" class="ino-tabs__sr-only">
+        , closable — press Delete to close
+      </span>
+    </button>
+  </div>
+
+  <button
+    *ngIf="scrollable && hasOverflow"
+    type="button"
+    class="ino-tabs__scroll ino-tabs__scroll--next"
+    aria-label="Scroll tabs forward"
+    (click)="scrollBy(1)"
+  >›</button>
+</div>
+
+<ng-content></ng-content>
