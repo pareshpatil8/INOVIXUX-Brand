@@ -1,0 +1,102 @@
+/*
+ * <ino-progress-bar> — INO-132 / INO-31 T-15.
+ *
+ * No literal colour/space/radius/duration/font-size — every declaration resolves through a
+ * semantic role in tokens.css, and logical properties only (RTL is one code path, see SPEC.md §8).
+ *
+ * Size API (DoD row 3) — same adoption recipe as every other Wave 0/1/2 component
+ * (control-size-scale.md §3), applied the way `ino-tag` applies it to a non-44px-tall element
+ * (tag/SPEC.md §3): the base rule reads the bare `--ino-control-font-size` alias (for the visible
+ * value label) plus a component-private `--ino-progress-bar-track-size` alias built on the space
+ * scale (for the track's own thickness — a status bar has no reason to stretch to a 44px control
+ * height), and the size attribute re-points both. See SPEC.md §3 for the full reasoning.
+ */
+:host {
+  --ino-progress-bar-track-size: var(--ino-space-3);
+}
+
+:host([data-size='sm']) {
+  --ino-control-font-size: var(--ino-control-font-size-sm);
+  --ino-progress-bar-track-size: var(--ino-space-2);
+}
+
+:host([data-size='lg']) {
+  --ino-control-font-size: var(--ino-control-font-size-lg);
+  --ino-progress-bar-track-size: var(--ino-space-4);
+}
+
+:host {
+  display: flex;
+  align-items: center;
+  gap: var(--ino-control-gap);
+  inline-size: 100%;
+
+  /* State 1 — default (below). State 8 — loading/busy carried via [data-mode='indeterminate']
+     (this component's other core reason for being — see SPEC.md §1 for why the other 6 of 8 DoD
+     states are N/A). */
+}
+
+.ino-progress-bar__track {
+  position: relative;
+  flex: 1 1 auto;
+  inline-size: 100%;
+  block-size: var(--ino-progress-bar-track-size);
+  overflow: hidden; /* clips the determinate fill and the indeterminate sweep to the track */
+  border-radius: var(--ino-radius-pill);
+  background: var(--ino-color-border-soft);
+}
+
+.ino-progress-bar__fill {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inline-size: 0%; /* determinate: overridden per-instance by [style.inline-size.%] (host binding) */
+  border-radius: inherit;
+  background: var(--ino-gradient-accent);
+
+  /* Pattern A (motion-contract.md §2) — a determinate value change is state feedback: the bar
+     must still move under `reduce`, only the easing is removed (below). */
+  transition: inline-size var(--ino-motion-duration-base) var(--ino-motion-easing-standard);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ino-progress-bar__fill {
+    transition: none;
+  }
+}
+
+/*
+ * Indeterminate sweep — Pattern B (motion-contract.md §2, decorative/opt-in under
+ * `no-preference`): the resting state is a static partial fill at a fixed position (below),
+ * which is also exactly what `reduce` users see, since the animation is gated entirely inside
+ * `no-preference` — nothing to cancel, nothing forgotten.
+ */
+.ino-progress-bar__fill--indeterminate {
+  inline-size: 40%;
+  inset-inline-start: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ino-progress-bar__fill--indeterminate {
+    animation: ino-progress-bar-indeterminate calc(var(--ino-motion-duration-slow) * 3)
+      var(--ino-motion-easing-standard) infinite;
+  }
+}
+
+@keyframes ino-progress-bar-indeterminate {
+  0% {
+    inset-inline-start: -40%;
+  }
+  100% {
+    inset-inline-start: 100%;
+  }
+}
+
+.ino-progress-bar__value {
+  flex: 0 0 auto;
+  color: var(--ino-color-on-surface-muted);
+  font-family: var(--ino-font-display);
+  font-size: var(--ino-control-font-size);
+  line-height: 1;
+  white-space: nowrap;
+}
