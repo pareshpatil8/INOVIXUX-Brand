@@ -1,0 +1,33 @@
+name: PrimeNG drift check
+
+# The pinned-snapshot integrity check in design-system.yml only asks "was the pin
+# edited". It cannot ask "has PrimeNG shipped more since we pinned" — that needs
+# network access to primeng.dev, which the PR gate deliberately avoids (see
+# design-system.yml's comment on why there's no `npm ci`). So that question lives
+# here instead, on a schedule, never blocking a PR.
+#
+# Drift is not a regression in our code — it's the signal to cut a new
+# specs/primeng/llms-<version>.txt and open the next doc 16 rebaseline (INO-31).
+# See scripts/check-primeng-snapshot.mjs for the --drift implementation.
+
+on:
+  schedule:
+    - cron: '0 6 * * 1' # weekly, Monday 06:00 UTC
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  drift:
+    name: Compare pin vs live llms.txt
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Check upstream drift
+        run: node scripts/check-primeng-snapshot.mjs --drift
