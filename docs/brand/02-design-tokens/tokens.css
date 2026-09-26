@@ -829,6 +829,30 @@
   --ino-color-risk-low-dot: var(--ino-primitive-green-500);
   --ino-color-risk-low-fill: var(--ino-primitive-green-700);
   --ino-color-risk-low-on-fill: #FFFFFF;                /* 5.31:1 */
+
+  /* §13 data-viz overrides. Categorical -cat-1..6 are deliberately NOT
+     overridden: the shared hexes clear 3:1 on this surface too (see §13),
+     so series identity survives a theme toggle without repainting. The
+     ramps DO re-step: on this light surface the strong-contrast end is
+     the DARK end, so sequential runs light→dark (step 1 = 2.07:1, the
+     ordinal 2:1 near-surface floor; step 8 = 12.05:1) and the diverging
+     arms darken outward (4.64:1 neg / 4.99:1 pos). */
+  --ino-color-chart-seq-1: #B4A8EB;
+  --ino-color-chart-seq-2: #A193DD;
+  --ino-color-chart-seq-3: #8F7ECF;
+  --ino-color-chart-seq-4: #7D6ABF;
+  --ino-color-chart-seq-5: #6B57AC;
+  --ino-color-chart-seq-6: #5A4697;
+  --ino-color-chart-seq-7: #49367F;
+  --ino-color-chart-seq-8: #392866;
+
+  --ino-color-chart-div-neg-3: #2F74BB;
+  --ino-color-chart-div-neg-2: #6193CB;
+  --ino-color-chart-div-neg-1: #8EB1DA;
+  --ino-color-chart-div-mid: #EBEBE9;
+  --ino-color-chart-div-pos-1: #D79E95;
+  --ino-color-chart-div-pos-2: #C97469;
+  --ino-color-chart-div-pos-3: #B9473D;
 }
 
 /* ---------------------------------------------------------------------
@@ -931,6 +955,40 @@
      --ino-color-danger. At 3px the 3px focus outline (offset 2px) overpaints the
      ring's outer 1px, leaving 2px of coral — the dark/light baseline. */
   --ino-invalid-ring: 0 0 0 3px var(--ino-color-danger);
+
+  /* §13 data-viz overrides — this theme's own restep, not a recolor: the
+     same six hue families lifted to the top of the dark lightness band
+     (OKLCH L 0.66) so every slot clears ~6:1 on pure black (5.90-6.70:1)
+     while the set STAYS validator-legal — worst adjacent CVD ΔE 10.9,
+     normal-vision 21.2, and slots 1-3 clear all-pairs (see doc 24). The
+     ramps stretch wider than dark mode's for the same reason the §2c
+     borders go opaque: this theme's job is to not be subtle. */
+  --ino-color-chart-cat-1: #5896D9; /* azure  — 6.39:1 on black */
+  --ino-color-chart-cat-2: #D76797; /* rose   — 5.92:1 */
+  --ino-color-chart-cat-3: #8B9D26; /* lime   — 6.55:1 */
+  --ino-color-chart-cat-4: #BC6ECE; /* orchid — 5.90:1 */
+  --ino-color-chart-cat-5: #D37732; /* orange — 6.09:1 */
+  --ino-color-chart-cat-6: #15A7A5; /* teal   — 6.70:1 */
+
+  --ino-color-chart-seq-1: #5A4A90;
+  --ino-color-chart-seq-2: #6E5CAD;
+  --ino-color-chart-seq-3: #836FC9;
+  --ino-color-chart-seq-4: #9883E3;
+  --ino-color-chart-seq-5: #AC9CF0;
+  --ino-color-chart-seq-6: #C2B7F7;
+  --ino-color-chart-seq-7: #D8D1FD;
+  --ino-color-chart-seq-8: #EEECFB; /* highest risk — 18.03:1 on black */
+
+  --ino-color-chart-div-neg-3: #ADD1FB; /* 13.29:1 */
+  --ino-color-chart-div-neg-2: #64A2E7;
+  --ino-color-chart-div-neg-1: #4374AA;
+  --ino-color-chart-div-mid: #535350;   /* lifted above dark mode's mid — 2.57:1, still sub-3:1 by design (a "no change" cell recedes), never carries a value alone */
+  --ino-color-chart-div-pos-1: #AD5349;
+  --ino-color-chart-div-pos-2: #E8796C;
+  --ino-color-chart-div-pos-3: #F69C8F; /* 10.07:1 — deepened vs the arm's pastel endpoint so the two
+                                           poles stay tellable-apart to FULL-color vision too (pole↔pole
+                                           normal ΔE 18.2, CVD 14.2; at matched lightness it was 12.8,
+                                           under the 15.0 normal-vision hard floor) */
 }
 
 /* Respect the OS preference the FIRST time a visitor arrives, before
@@ -1114,4 +1172,93 @@
   --ino-safe-area-right: env(safe-area-inset-right, 0px);
   --ino-safe-area-bottom: env(safe-area-inset-bottom, 0px);
   --ino-safe-area-left: env(safe-area-inset-left, 0px);
+}
+
+/* ---------------------------------------------------------------------
+ * 13. DATA VISUALIZATION (INO-113 / INO-31.1) — chart series, magnitude,
+ *     and polarity color for the KYB risk tables/matrices and every
+ *     dashboard built from this system. Doc 16 §5.1/§7.1 gap: before this
+ *     section the token set had zero data-viz coverage.
+ *
+ *     Three families, one job each (never mix jobs in one chart):
+ *       -cat-1..6   categorical — series IDENTITY. Assign in fixed slot
+ *                   order 1→N, never cycled, never re-ordered by a filter;
+ *                   color follows the entity, not its rank. A 7th series
+ *                   folds into "Other" or facets. For scatter/bubble/
+ *                   choropleth/small-multiples (where any two marks can
+ *                   touch) the cap is THREE series — slots 1-3 are the
+ *                   only triple that validates all-pairs; see doc 24.
+ *       -seq-1..8   sequential — MAGNITUDE (risk score, volume). One hue
+ *                   (the accent violet family — magnitude reads as brand,
+ *                   and it cannot be mistaken for a categorical slot,
+ *                   none of which is violet). Step 8 = highest value and
+ *                   is re-stepped per theme so it always lands at the
+ *                   strong-contrast end of THAT surface: darkest on
+ *                   light, lightest on dark/HC. Step 1 may recede toward
+ *                   the surface by design (near-zero should whisper).
+ *       -div-*      diverging — POLARITY (risk delta). Cool azure arm =
+ *                   decrease/improvement, warm red arm = increase, neutral
+ *                   gray midpoint = no change. The intuitive green↔red
+ *                   pairing was REJECTED ON MEASUREMENT: under deuteranopia
+ *                   (Machado-Oliveira-Fernandes 2009, severity 1.0) the
+ *                   existing RAG green/red poles collapse to ΔE 5.8 —
+ *                   below even the 6.0 hard floor — while azure↔red
+ *                   measures 20.1. A risk-delta chart whose two directions
+ *                   are indistinguishable to ~5% of male readers is not an
+ *                   option for a KYB product. The warm/danger hue language
+ *                   still marks "risk went up"; -pos-* deliberately does
+ *                   not reuse the danger hexes so a delta arm never
+ *                   impersonates a RAG status chip.
+ *
+ *     RAG/status collision rule: when a series MEANS good/bad (pass/fail,
+ *     flagged/clean) it wears the §3 risk tokens; when it is just "series
+ *     N" it wears -cat-N — never both languages in one chart.
+ *
+ *     Raw hexes are declared here rather than §1 on purpose: every value
+ *     is single-use, generated (OKLCH), theme-stepped, and consumed only
+ *     through its role name — a 1:1 primitive alias per hex would double
+ *     57 lines to zero benefit. Dark and light intentionally SHARE the
+ *     categorical hexes: each slot's OKLCH L (0.49-0.66) clears 3:1 on
+ *     both #0A0A0A and #FAFAFA at once, so a chart survives a theme
+ *     toggle without repainting series identity mid-session.
+ *
+ *     Every number below is validated, not eyeballed — CVD simulation
+ *     (deuteranopia/protanopia, MOF 2009 severity 1.0), lightness band,
+ *     chroma floor, normal-vision floor, and 3:1 surface contrast, per
+ *     theme, via the dataviz skill's validator; ramp monotonicity is
+ *     re-asserted on every run of scripts/check-theme-parity.mjs. Full
+ *     audit tables: docs/brand/24-data-visualization-tokens.md.
+ *
+ *     DARK-MODE values (default, same convention as §2).
+ * ------------------------------------------------------------------- */
+:root {
+  /* categorical — worst adjacent CVD ΔE 9.4 (target ≥8), worst adjacent
+     normal-vision ΔE 21.3 (floor ≥15), all slots ≥3:1 on this surface */
+  --ino-color-chart-cat-1: #4683C5; /* azure  — 5.01:1 dark / 3.79:1 light */
+  --ino-color-chart-cat-2: #C95A8B; /* rose   — 5.01:1 dark / 3.78:1 light */
+  --ino-color-chart-cat-3: #829417; /* lime   — 5.84:1 dark / 3.25:1 light */
+  --ino-color-chart-cat-4: #AF62C1; /* orchid — 5.03:1 dark / 3.77:1 light */
+  --ino-color-chart-cat-5: #C56B23; /* orange — 5.19:1 dark / 3.66:1 light */
+  --ino-color-chart-cat-6: #1E9997; /* teal   — 5.71:1 dark / 3.32:1 light */
+
+  /* sequential (violet, low→high) — on this dark surface the HIGH end is
+     the LIGHT end: step 8 is 15.0:1, step 1 recedes at 2.25:1 by design */
+  --ino-color-chart-seq-1: #4F417E;
+  --ino-color-chart-seq-2: #63529C;
+  --ino-color-chart-seq-3: #7764BA;
+  --ino-color-chart-seq-4: #8C77D6;
+  --ino-color-chart-seq-5: #A18EE8;
+  --ino-color-chart-seq-6: #B5A9EF;
+  --ino-color-chart-seq-7: #CBC2F8;
+  --ino-color-chart-seq-8: #E1DDF9;
+
+  /* diverging (risk delta) — arms brighten OUTWARD from the midpoint on
+     this surface; strongest steps 6.89:1 (neg) / 6.42:1 (pos) */
+  --ino-color-chart-div-neg-3: #589CE6; /* largest decrease */
+  --ino-color-chart-div-neg-2: #467DB9;
+  --ino-color-chart-div-neg-1: #3A6089;
+  --ino-color-chart-div-mid: #383836;   /* no change — recedes by design, never carries a value alone */
+  --ino-color-chart-div-pos-1: #894840;
+  --ino-color-chart-div-pos-2: #BB584D;
+  --ino-color-chart-div-pos-3: #E66F62; /* largest increase */
 }
