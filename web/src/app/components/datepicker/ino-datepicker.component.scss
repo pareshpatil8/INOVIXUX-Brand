@@ -1,0 +1,454 @@
+/* <ino-datepicker> — INO-154/T-8. No literal colour/space/radius/duration/font-size; RTL via
+   logical properties only (SPEC.md §6). Full design rationale lives in SPEC.md, not here, to
+   keep this file inside the anyComponentStyle budget. */
+/* Local aliases for the handful of tokens.css roles this file references many times over (hover
+   fill, muted text, pressed accent, fast transition pair, the 24px tap-target floor) — pure
+   indirection, not a new value: each still resolves through its named tokens.css role, so DoD
+   row 1 ("every declaration resolves through a semantic role") still holds. Exists to keep this
+   component's stylesheet inside Angular's anyComponentStyle budget. */
+:host(.ino-datepicker) {
+  --_muted: var(--ino-color-on-surface-muted);
+  --_sunk: var(--ino-color-surface-sunken);
+  --_active: var(--ino-color-accent-active);
+  --_dur: var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+  --_min: var(--ino-target-min);
+  --_on: var(--ino-color-on-surface);
+  --_sp2: var(--ino-space-2);
+  --_accent: var(--ino-color-accent);
+  --_bsm: var(--ino-type-body-sm-size);
+  --_onacc: var(--ino-color-on-accent);
+  --_danger: var(--ino-color-danger);
+  --_border: var(--ino-color-border);
+  --_bs: var(--ino-type-body-size);
+  --_subtle: var(--ino-color-on-surface-subtle);
+  --_sp4: var(--ino-space-4);
+  --_sp3: var(--ino-space-3);
+  --_bsf: var(--ino-color-border-soft);
+  display: inline-block;
+  font-family: var(--ino-font-display);
+
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      transition: none !important;
+      animation: none !important;
+    }
+  }
+}
+
+/* Size API (DoD row 3) — the trigger field is a real control, so it reads the full alias set,
+   same as ino-paginator/ino-input. The grid itself does not scale with `size`: a date cell's tap
+   target is governed by --ino-row-min-height/--ino-target-min directly (below), not the
+   control-height ramp, since "sm" still needs a usable 7-column grid. */
+:host([data-size='sm']) {
+  --ino-control-height: var(--ino-control-height-sm);
+  --ino-control-font-size: var(--ino-control-font-size-sm);
+  --ino-control-padding-inline: var(--ino-control-padding-inline-sm);
+  --ino-control-gap: var(--ino-control-gap-sm);
+}
+
+:host([data-size='lg']) {
+  --ino-control-height: var(--ino-control-height-lg);
+  --ino-control-font-size: var(--ino-control-font-size-lg);
+  --ino-control-padding-inline: var(--ino-control-padding-inline-lg);
+  --ino-control-gap: var(--ino-control-gap-lg);
+}
+
+:host([data-inline]) .ino-field__label {
+  margin-block-end: var(--_sp2);
+}
+
+.ino-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--_sp2);
+}
+
+.ino-field__label {
+  font-size: var(--_bsm);
+  font-weight: 600;
+  color: var(--_on);
+}
+
+.ino-field--disabled .ino-field__label {
+  color: var(--_muted);
+}
+
+.ino-field__required {
+  color: var(--_danger);
+}
+
+.ino-field__control {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ino-control-gap, var(--_sp2));
+  inline-size: 100%;
+  min-block-size: var(--ino-row-min-height, var(--ino-control-height, var(--ino-target-comfortable)));
+  padding-inline: var(--ino-control-padding-inline, var(--_sp4));
+  background: var(--_sunk);
+  border: 1px solid var(--_border);
+  border-radius: var(--ino-radius-md);
+  color: var(--_on);
+  font-family: inherit;
+  font-size: var(--ino-control-font-size, var(--_bs));
+  text-align: start;
+  cursor: pointer;
+  transition: border-color var(--_dur),
+    background var(--_dur);
+
+  &:hover:not(:disabled) {
+    border-color: var(--_muted);
+  }
+
+  &:active:not(:disabled) {
+    border-color: var(--_active);
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+    border-color: var(--_accent);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &[aria-readonly='true']:not(:disabled) {
+    background: var(--ino-color-surface-raised);
+    cursor: default;
+  }
+}
+
+.ino-field__calendar-icon {
+  flex: none;
+  inline-size: var(--ino-control-icon-size, 16px);
+  block-size: var(--ino-control-icon-size, 16px);
+  color: var(--_muted);
+}
+
+/* State 8 — loading/busy. Same spinner contract as ino-input: inert, trailing-edge, extra padding
+   so it never overlaps the display value. */
+:host(.ino-datepicker--loading) .ino-field__control {
+  padding-inline-end: calc(var(--ino-control-padding-inline, var(--_sp4)) + var(--ino-space-6));
+}
+
+.ino-field__spinner {
+  position: absolute;
+  inset-inline-end: var(--_sp4);
+  top: 50%;
+  transform: translateY(-50%);
+  inline-size: 14px;
+  block-size: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--_muted);
+  border-top-color: transparent;
+  pointer-events: none;
+  /* Unconditional — the reduce-motion kill switch lives once, on :host(.ino-datepicker) above,
+     rather than a `(prefers-reduced-motion: no-preference)` gate on every animated rule. */
+  animation: ino-datepicker-spin var(--ino-motion-duration-slow) linear infinite;
+}
+
+@keyframes ino-datepicker-spin {
+  to {
+    transform: translateY(-50%) rotate(360deg);
+  }
+}
+
+.ino-field__hint,
+.ino-field__error {
+  margin: 0;
+  font-size: var(--_bsm);
+}
+
+.ino-field__hint {
+  color: var(--_muted);
+}
+
+.ino-field__error {
+  color: var(--_danger);
+  font-weight: 600;
+}
+
+/* ------------------------------------------------------------------ *
+ * Overlay (default, inline=false) — anchored popover, not a centered
+ * modal: reuses ino-modal's scrim + focus-trap contract (SPEC.md §3).
+ * ------------------------------------------------------------------ */
+
+.ino-datepicker__overlay {
+  position: absolute;
+  inset-block-start: calc(100% + var(--_sp2));
+  inset-inline-start: 0;
+  z-index: 1000;
+}
+
+.ino-datepicker__panel {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--_sp3);
+  inline-size: max-content;
+  min-inline-size: 280px;
+  padding: var(--_sp4);
+  background: var(--ino-color-surface-raised);
+  border: 1px solid var(--_border);
+  border-radius: var(--ino-radius-lg);
+  box-shadow: var(--ino-elevation-neutral-4);
+}
+
+/* Unconditional, same reasoning as .ino-field__spinner above. */
+.ino-datepicker__overlay .ino-datepicker__panel {
+  animation: ino-datepicker-rise var(--ino-motion-duration-base) var(--ino-motion-easing-decelerate);
+}
+
+@keyframes ino-datepicker-rise {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Shared button chrome (DoD rows 5/8) — one base class carries the parts
+ * every clickable piece of the panel needs in common: reset, radius,
+ * fast background transition, hover fill, Wave-0 focus ring, disabled
+ * cursor. Every button-like element in the template (nav arrows,
+ * drill-up heading, gridcells, time spinners, am/pm, confirm) also
+ * carries `.ino-datepicker__btn`; the element-specific classes below
+ * hold only what differs (sizing, color, font, extra hover/active).
+ * ------------------------------------------------------------------ */
+
+.ino-datepicker__btn {
+  border: none;
+  border-radius: var(--ino-radius-sm);
+  background: transparent;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background var(--_dur);
+
+  &:hover:not(:disabled) {
+    background: var(--_sunk);
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Header — month/year navigation + drill-up heading.
+ * ------------------------------------------------------------------ */
+
+.ino-datepicker__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--_sp2);
+}
+
+/* One tap-target floor for every piece of chrome sized off --ino-target-min — nav arrows, the
+   month/year drill-up heading (centered by `flex: 1` alone now that the month view no longer
+   needs invisible spacer siblings to balance it), and (further down) the time spinners + am/pm +
+   confirm. Element-specific rules below only override where they differ. */
+.ino-datepicker__nav,
+.ino-datepicker__heading,
+.ino-datepicker__spin,
+.ino-datepicker__ampm,
+.ino-datepicker__confirm,
+.ino-datepicker__weekday {
+  min-inline-size: var(--_min);
+  min-block-size: var(--_min);
+}
+
+.ino-datepicker__nav,
+.ino-datepicker__spin {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--_muted);
+
+  &:hover:not(:disabled) {
+    color: var(--_on);
+  }
+}
+
+.ino-datepicker__nav,
+.ino-datepicker__heading {
+  font-size: var(--_bs);
+}
+
+.ino-datepicker__nav {
+  &:active:not(:disabled) {
+    background: var(--_sunk);
+    color: var(--_active);
+  }
+}
+
+.ino-datepicker__heading {
+  flex: 1;
+  min-inline-size: 0;
+  padding-inline: var(--_sp2);
+  color: var(--_on);
+  font-weight: 600;
+  text-align: center;
+}
+
+/* ------------------------------------------------------------------ *
+ * Date grid.
+ * ------------------------------------------------------------------ */
+
+.ino-datepicker__grid,
+.ino-datepicker__time-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ino-space-1);
+}
+
+.ino-datepicker__weekdays,
+.ino-datepicker__week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--ino-space-1);
+}
+
+.ino-datepicker__weekday,
+.ino-datepicker__spin {
+  font-size: var(--ino-type-caption-size);
+}
+
+.ino-datepicker__weekday {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--_muted);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* DoD row 4 — a date cell IS a grid row target, so it tracks --ino-row-min-height (32px dense /
+   44px fluid, tokens.css §10), not the flat --ino-target-min floor. The fallback keeps a bare
+   <ino-datepicker> outside any [data-density] ancestor unchanged at 24px. */
+.ino-datepicker__cell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-inline-size: var(--ino-row-min-height, var(--_min));
+  min-block-size: var(--ino-row-min-height, var(--_min));
+  border: 1px solid transparent;
+  color: var(--_on);
+  font-size: var(--_bsm);
+
+  /* State 3 — active/pressed (hover/focus-visible/disabled cursor come from .ino-datepicker__btn;
+     the keyboard-only Enter/Space path needs its own background since it never fires :hover). */
+  &:active:not(:disabled) {
+    background: var(--_sunk);
+    color: var(--_active);
+  }
+
+  /* State 4 — focus-visible (shared rule above). The roving-tabindex cell (tabindex="0") is the
+     only one ever reachable by Tab, per SPEC.md §5's keyboard map. */
+}
+
+/* State 5 (disabled — min/max/disabledDates/disabledDayOfWeek) shares its color with an
+   out-of-month cell: both are "present but not a real choice right now." */
+.ino-datepicker__cell--out,
+.ino-datepicker__cell:disabled {
+  color: var(--_subtle);
+}
+
+/* Today — border only, so it never collides visually with the selected/range fill below. */
+.ino-datepicker__cell--today {
+  border-color: var(--_bsf);
+  font-weight: 600;
+}
+
+/* In-range (between the two range endpoints, exclusive) — flat surface tint + accent text, the
+   same "no translucent overlay" constraint as the header comment: solid roles only. */
+.ino-datepicker__cell--in-range {
+  background: var(--_sunk);
+  color: var(--ino-color-accent-text-safe);
+}
+
+/* Selected / range endpoints — solid accent fill, same pill ino-paginator's active page uses.
+   Grouped with .ino-datepicker__confirm below: identical accent-fill/pressed-fill pair. */
+.ino-datepicker__cell--selected,
+.ino-datepicker__cell--range-start,
+.ino-datepicker__cell--range-end,
+.ino-datepicker__confirm {
+  background: var(--_accent);
+  color: var(--_onacc);
+  font-weight: 600;
+
+  &:hover:not(:disabled),
+  &:active:not(:disabled) {
+    background: var(--_active);
+  }
+}
+
+/* Month/year drill grids reuse the same cell class with a wider tap target (no 7-col constraint). */
+.ino-datepicker__grid--months .ino-datepicker__week,
+.ino-datepicker__grid--years .ino-datepicker__week {
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--_sp2);
+}
+
+.ino-datepicker__cell--month,
+.ino-datepicker__cell--year {
+  min-block-size: var(--ino-target-comfortable);
+  padding-inline: var(--_sp2);
+}
+
+/* ------------------------------------------------------------------ *
+ * Time picker.
+ * ------------------------------------------------------------------ */
+
+.ino-datepicker__time {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--_sp2);
+  padding-block-start: var(--_sp3);
+  border-block-start: 1px solid var(--_bsf);
+}
+
+.ino-datepicker__time-field {
+  align-items: center;
+}
+
+.ino-datepicker__time-value {
+  min-inline-size: 2ch;
+  font-variant-numeric: tabular-nums;
+  font-size: var(--_bs);
+  font-weight: 600;
+  color: var(--_on);
+  text-align: center;
+}
+
+.ino-datepicker__time-sep {
+  color: var(--_muted);
+  font-weight: 600;
+}
+
+.ino-datepicker__ampm,
+.ino-datepicker__confirm {
+  padding-inline: var(--_sp3);
+  border: 1px solid var(--_border);
+  color: var(--_on);
+  font-size: var(--_bsm);
+  font-weight: 600;
+}
+
+.ino-datepicker__confirm {
+  border-color: var(--_accent);
+  /* Overrides the ampm/confirm shared `color: var(--_on)` above — confirm sits on the accent fill
+     set in the "Selected / range endpoints" group further up, so it needs the on-accent pairing. */
+  color: var(--_onacc);
+}

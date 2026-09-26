@@ -7,7 +7,7 @@
     [id]="rowsSelectId"
     [disabled]="disabled || loading"
     [attr.aria-readonly]="readonly ? 'true' : null"
-    (change)="onRowsPerPageChange($any($event.target).value)"
+    (change)="onRowsPerPageChange($event)"
   >
     <option *ngFor="let option of rowsPerPageOptions" [value]="option" [selected]="option === rows">{{ option }}</option>
   </select>

@@ -44,7 +44,7 @@ document is the machinery that makes that number real.
 ## 2. The unit of work: per-component Definition of Done
 
 **This is the section revision 8 was missing.** Every component child issue in §4 carries this
-contract verbatim in its description. An issue is not `done` until all eleven rows pass.
+contract verbatim in its description. An issue is not `done` until all twelve rows pass.
 
 | # | Requirement | How it is verified |
 |---|---|---|
@@ -59,8 +59,9 @@ contract verbatim in its description. An issue is not `done` until all eleven ro
 | 9 | **Mobile parity** — the tracks named in the issue (§5) ship the same semantic roles; or the issue records an explicit "web-only" decision with a reason. | `check-theme-parity.mjs`, extended to component level |
 | 10 | **Docs artifact** — `docs/brand/06-angular-components/<name>.md` (API + variants + a11y contract) **and** a standalone preview HTML whose first line is `<!-- @dsCard group="…" -->`. | file exists; §8 depends on this marker |
 | 11 | **Merge hygiene** — touches only its own directory plus the append-only registry line (§6). No edits to `tokens.css` after Wave 0. | diff review |
+| 12 | **Behavioral smoke test** *(added INO-272, ratified INO-268 §6).* Any component with imperative open/close/toggle methods, anchored positioning, or `OnPush` plus internally-mutated inputs ships with at least one spec that drives it through its own documented public API and asserts the resulting DOM. At minimum: it renders when opened, and it is positioned relative to its anchor. | `ng test` (Angular/vitest/jsdom, already wired via `web/package.json`); see note below on CI enforcement |
 
-Three notes on this contract:
+Four notes on this contract:
 
 - **Row 6's citation clause is the one rule that gets stricter as the waves widen.** Siblings are
   built on parallel unmerged branches, so a spec that cites `checkbox/SPEC.md` is routinely citing a
@@ -76,6 +77,28 @@ Three notes on this contract:
   multiplier on themes becomes ×3 for that component forever. This is the discipline the whole
   estimate rests on, which is why INO-118 (the lint) is promoted into Wave 0 rather than left in
   backlog.
+- **Row 12 exists because rows 1–11 are all static.** During the PR #38 review, QA (INO-267) ran
+  every gate script, `tsc --noEmit`, a manual file review and a true-merge-base diff, and passed
+  all eleven rows that existed at the time — correctly; CTO review would have passed the same
+  diff. Two defects in PR #38 and one already-merged, board-approved defect in
+  `<ino-confirm-popup>` were invisible to both static sign-offs. Only running the component (`ng
+  test` against the harness already in `web/package.json` — `@angular/build:unit-test`, vitest,
+  jsdom) caught them, in one ~30-line spec. Row 12 does not replace the standing QA test → CTO
+  review → board approval sequencing; it adds a DoD row, not a third sign-off.
+  - **Applies from 2026-09-23 forward, not retroactively.** In-flight and future G-1 components
+    owe row 12 from the date this revision lands; the 26 components merged before it are not
+    reopened for a spec. The one standing exception is the **overlay family**
+    (`ino-popover`/INO-150, `ino-tooltip`, `ino-drawer`, `ino-confirm-dialog`, `ino-focus-trap`) —
+    it is in scope regardless of merge date because INO-150 and INO-270 already carry it as
+    explicit scope.
+  - **CI enforcement is deliberately deferred, not silently absent.** `ng test` is **not** added
+    to `.github/workflows/design-system.yml` in this revision. A DoD row with no gate behind it is
+    honoured unevenly, but wiring it before any component has a spec would land the gate red on
+    day one for reasons unrelated to anyone's PR. CTO-ratified plan: add an `ng test` step scoped
+    to `web/` once the overlay family (the set above) has specs satisfying row 12 — that is the
+    first cohort required to carry them, per INO-150/INO-270 — so the gate goes green-by-default
+    the day it starts blocking. Tracked as a follow-up to INO-150/INO-270; owner CTO + QALead
+    (QALead owns the test gate per the standing collaboration rule).
 
 ---
 

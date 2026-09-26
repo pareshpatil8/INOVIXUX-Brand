@@ -181,9 +181,17 @@ export class InoPaginatorComponent {
     this.goToPage(this.pageCount - 1);
   }
 
-  protected onRowsPerPageChange(value: string): void {
-    if (!this.interactive) return;
-    const rows = Number(value);
+  protected onRowsPerPageChange(event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    if (!this.interactive) {
+      // The <select> is never natively disabled under `readonly` (SPEC.md §3) so it stays in the
+      // tab order, but that means the browser already committed the user's DOM selection before
+      // this handler ran. Force it back to the true `rows` state instead of leaving the control
+      // showing a value the component never actually adopted.
+      select.value = String(this.rows);
+      return;
+    }
+    const rows = Number(select.value);
     if (!Number.isFinite(rows) || rows <= 0 || rows === this.rows) return;
     this.commit(0, rows);
   }

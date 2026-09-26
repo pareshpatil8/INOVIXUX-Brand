@@ -1,0 +1,23 @@
+/* INOVIXUX design tokens — motion durations + easings. Split from tokens.css (INO-115); imported by styles.css.
+ * Do not hand-edit tokens.css directly for motion durations + easings changes — this file is now the source. */
+
+:root {
+  /* ---------------------------------------------------------------------
+   * 9. MOTION — durations/easings map to Angular's animate() timing
+   *    strings 1:1 (e.g. animate('{{ino-motion-duration-base}} {{ino-motion-easing-standard}}')).
+   *    Easing curves are Material's standard set (M3 token model, not
+   *    M3 color) — see README §"Why M3 roles".
+   * ------------------------------------------------------------------- */
+  --ino-motion-duration-fast: 120ms;
+  --ino-motion-duration-base: 200ms;
+  --ino-motion-duration-slow: 480ms;
+  --ino-motion-duration-countup: 900ms;
+  --ino-motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ino-motion-easing-decelerate: cubic-bezier(0, 0, 0, 1);
+  --ino-motion-easing-accelerate: cubic-bezier(0.3, 0, 1, 1);
+
+  /* prefers-reduced-motion is handled at the component/animation-trigger
+     level in Angular (see angular-theme-contract.md), not by zeroing
+     durations here — zeroing here would also kill non-motion transitions
+     components rely on for state (focus rings, etc). */
+}

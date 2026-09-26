@@ -1,0 +1,69 @@
+/*
+ * <ino-label> — INO-140 / INO-31 T-19.
+ *
+ * No literal colour/space/font-size/duration — every declaration resolves through a semantic role
+ * in tokens.css §4b (INO-125/W0-3), and logical properties only (RTL is one code path, see
+ * SPEC.md §5). Size tiers are hand-composed from the individual weight/size/line/tracking fields
+ * (not the `--ino-type-label*` composite shorthand) because the shorthand omits letter-spacing —
+ * the same idiom `ino-tag`/`ino-hero`/`ino-footer` already use for their eyebrow role.
+ */
+:host {
+  display: inline-block;
+}
+
+.ino-label__control {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--ino-space-1);
+  font-family: var(--ino-font-display);
+  font-size: var(--ino-type-label-size);
+  line-height: var(--ino-type-label-line);
+  font-weight: var(--ino-type-label-weight);
+  letter-spacing: var(--ino-type-label-tracking);
+  color: var(--ino-color-label);
+  transition: color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+/* Size API (DoD row 3) — the three tiers map 1:1 onto InoControlSize; a control's own `size`
+   input can pass straight through to drive this. Density (dense/fluid) needs no extra rule here:
+   --ino-type-label-* is itself re-declared per [data-density] ancestor (tokens.css §4b), so the
+   default tier tracks density automatically — same free inheritance §12-driven components get. */
+:host([data-size='sm']) .ino-label__control {
+  font-size: var(--ino-type-label-sm-size);
+  line-height: var(--ino-type-label-sm-line);
+  font-weight: var(--ino-type-label-sm-weight);
+  letter-spacing: var(--ino-type-label-sm-tracking);
+}
+
+:host([data-size='lg']) .ino-label__control {
+  font-size: var(--ino-type-label-lg-size);
+  line-height: var(--ino-type-label-lg-line);
+  font-weight: var(--ino-type-label-lg-weight);
+  letter-spacing: var(--ino-type-label-lg-tracking);
+}
+
+/* State — readonly (labels a readonly field, form-label-tokens.md §4). */
+:host(.ino-label--readonly) .ino-label__control {
+  color: var(--ino-color-label-muted);
+}
+
+/* State — invalid (the field this label names failed validation). */
+:host(.ino-label--invalid) .ino-label__control {
+  color: var(--ino-color-label-invalid);
+}
+
+/* State — disabled. Wins over readonly/invalid (source order); WCAG 1.4.3 exempts disabled
+   content, same carve-out `--ino-color-label-disabled` already carries. */
+:host(.ino-label--disabled) .ino-label__control {
+  color: var(--ino-color-label-disabled);
+}
+
+/* The asterisk is never the only signal (WCAG 1.4.1) — callers must also set `aria-required`/
+   the word "required" on the control itself; see SPEC.md §3. */
+.ino-label__required {
+  color: var(--ino-color-required-marker);
+}
