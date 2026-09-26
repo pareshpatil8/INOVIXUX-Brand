@@ -1,11 +1,14 @@
 name: Design system
 
-# The design-system gate (INO-118, extended by INO-185). Three checks that ask
+# The design-system gate (INO-118, extended by INO-185, INO-121). Four checks that ask
 # different questions:
 #
-#   parity    — do web, React Native and Flutter agree about what the tokens ARE?
-#   adherence — does the component source actually USE them?
-#   citations — do the files a component's SPEC.md cites actually EXIST here?
+#   parity      — do web, React Native and Flutter agree about what the tokens ARE?
+#   adherence   — does the component source actually USE them?
+#   citations   — do the files a component's SPEC.md cites actually EXIST here?
+#   email-tokens — do the transactional email templates still match a fresh
+#                  regeneration from tokens.css (INO-121), or did someone hand-edit
+#                  the generated HTML and make email a third source of truth?
 #
 # Parity passes with flying colours on a codebase where every component hardcodes
 # #7C5CFC, because the token files still agree with each other. Adherence is the
@@ -15,10 +18,22 @@ name: Design system
 # Deliberately NOT part of deploy-pages.yml: that workflow only runs on push to
 # main, so it can only tell you about drift you have already merged. This one runs
 # on the pull request, which is the only place the answer is still cheap to act on.
+#
+# None of those four asks the fifth question: DOES IT BUILD. A component can be
+# token-perfect, cite correctly, regenerate its emails byte-for-byte, and not
+# compile. Until INO-262 no workflow on any branch ran ng build, tsc or flutter
+# analyze — the "Angular / RN / Flutter green" rows in every SPEC.md were author
+# hand-run claims, not CI facts. The compile-* jobs below are the CI facts.
 
 on:
   push:
-    branches: [main]
+    # ino-31-design-system-parity is the Wave 1/2 integration branch: nine-plus
+    # component branches merge into it and only then does it PR into main. Gating
+    # it on push is the only way the COMBINED post-merge state gets checked —
+    # per-PR green says each branch was fine against the base as it was, and
+    # GitHub does not re-run a PR's checks when the base moves underneath it.
+    # (INO-262: PRs #8 and #12 both displayed green against a base 34 commits stale.)
+    branches: [main, ino-31-design-system-parity]
   pull_request:
   workflow_dispatch: {}
 
@@ -72,3 +87,130 @@ jobs:
       # Do not delete the reasoning — a declared forward reference is the point.
       - name: SPEC.md citations resolve
         run: node scripts/check-spec-citations.mjs
+
+      # Regenerates docs/brand/07-collateral/email/templates/*.html from tokens.css in
+      # place and diffs against what's committed. Fails if the generated HTML was
+      # hand-edited, or if tokens.css changed without regenerating the emails.
+      #
+      # If this step fails on your PR: run `node scripts/gen-email-templates.mjs` and
+      # commit the result instead of editing the HTML directly.
+      - name: Email templates match tokens.css
+        run: node scripts/check-email-tokens.mjs
+
+  # ---------------------------------------------------------------------------
+  # The compile gate (INO-262). Three SEPARATE jobs, deliberately:
+  #
+  #  * separate from `check` — `check` installs nothing and finishes in ~15s, and
+  #    the header above asks that this be preserved. Adding `npm ci` to it would
+  #    turn the cheap gate into a 3-minute one and someone would switch it off.
+  #  * separate from EACH OTHER — they run in parallel (wall-clock is the slowest
+  #    leg, not the sum), each installs only its own toolchain, and a red Flutter
+  #    leg cannot hide a red Angular one behind a single "compile failed".
+  #
+  # No `paths:` filters on this workflow, and please don't add any. A required
+  # check that is skipped by a path filter is reported as *pending*, not passing,
+  # and blocks the PR forever. Caching makes the docs-only case cheap enough.
+  #
+  # Status as of INO-262: all four toolchains compile clean. Deliberately NOT citing
+  # a local hand-run here — "I ran it and it was fine" is the exact class of claim
+  # this issue was opened to retire. The evidence is CI run 35948536470, these jobs
+  # green on the merge of this branch with the integration branch at 2b4f6e7.
+  # Nothing was broken — the gate was just never watching. Verified red as well as
+  # green: run 35875857219 has all three compile jobs failing on a deliberately
+  # broken tree while the token `check` job still passed.
+  #
+  # So these jobs land BLOCKING, not advisory: the issue proposed
+  # advisory-first because nobody knew what was broken, and now we do. Making the
+  # jobs required *in branch protection* is a separate repo-admin change and stays
+  # out of scope here; what this file controls is that a compile failure fails the
+  # workflow instead of being invisible.
+
+  compile-web:
+    name: Compile — Angular (web + capacitor)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      # web/ and mobile/capacitor/app/ are npm workspaces sharing one root install
+      # so their @angular/* deps can't drift apart (INO-99) — install from the repo
+      # root, not from web/. One `npm ci` covers both builds below.
+      - name: Install dependencies
+        run: npm ci
+
+      # --configuration production, not development: AOT template type-checking and
+      # the SCSS budgets only run in the production configuration, and AOT is where
+      # a bad template binding actually becomes an error rather than a runtime blank.
+      - name: ng build — web
+        working-directory: web
+        run: npx ng build --configuration production
+
+      # The capacitor app is the second Angular consumer of the same token layer.
+      # It is not in INO-262's stated scope, but it shares the root install, adds
+      # ~40s, and is the other place an Angular-side token change can break.
+      - name: ng build — capacitor app
+        working-directory: mobile/capacitor/app
+        run: npx ng build --configuration production
+
+  compile-react-native:
+    name: Compile — React Native
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: mobile/react-native/package-lock.json
+
+      # Separate lockfile and node_modules from the root workspace — the RN track is
+      # deliberately not an npm workspace member (Expo's resolver and Angular's do
+      # not co-exist happily in one hoisted tree).
+      - name: Install dependencies
+        working-directory: mobile/react-native
+        run: npm ci
+
+      # tsc --noEmit, not `expo export`: the question here is "do the types hold",
+      # and a Metro bundle is a much slower way to ask it. The web export still runs
+      # in deploy-pages.yml on main, which is where a bundler-only failure would show.
+      - name: tsc --noEmit
+        working-directory: mobile/react-native
+        run: npm run typecheck
+
+  compile-flutter:
+    name: Compile — Flutter
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Third-party action, so pinned to a commit SHA rather than a moving tag —
+      # a tag is repointable by its owner and this job runs on every PR.
+      # 1a44944 is subosito/flutter-action v2.23.0 (== the v2 tag as of 2026-09-23).
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2
+        with:
+          flutter-version: 3.47.4
+          channel: stable
+          cache: true
+
+      - name: flutter pub get
+        working-directory: mobile/flutter
+        run: flutter pub get
+
+      # `flutter analyze` with no flags is fatal on INFOS, which is a style gate, not
+      # a compile gate — the branch carries 21 of them today (prefer_const_constructors
+      # and deprecated_member_use on Flutter's `announce`). Fatal on errors AND
+      # warnings, not on infos, is the honest setting for a job named "compile":
+      # `unused_import` and friends are real defects, `prefer_const` is a preference.
+      #
+      # Ratchet, deliberately not done here: clear the 21 infos, then drop
+      # --no-fatal-infos. That is a Flutter-track cleanup, tracked separately, and it
+      # should not hold up turning the gate on.
+      - name: flutter analyze
+        working-directory: mobile/flutter
+        run: flutter analyze --no-pub --no-fatal-infos

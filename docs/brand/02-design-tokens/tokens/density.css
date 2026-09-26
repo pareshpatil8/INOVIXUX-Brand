@@ -1,0 +1,40 @@
+/* INOVIXUX design tokens — touch targets + density-mode overrides. Split from tokens.css (INO-115); imported by styles.css.
+ * Do not hand-edit tokens.css directly for touch targets + density-mode overrides changes — this file is now the source. */
+
+:root {
+  /* ---------------------------------------------------------------------
+   * 7. TOUCH TARGETS — mobile app + touch-input web/dense-table minimums.
+   *    -min meets WCAG 2.2 §2.5.8 (24x24 CSS px floor, AA). -comfortable
+   *    meets platform HIG guidance (iOS 44pt / Android 48dp) and is the
+   *    default for any primary tappable control on a mobile viewport;
+   *    -min is for unavoidable dense-mode exceptions only (see
+   *    docs/brand/02-design-tokens/README.md §Mobile + touch targets).
+   * ------------------------------------------------------------------- */
+  --ino-target-min: 24px;
+  --ino-target-comfortable: 44px;
+  --ino-target-spacing: 8px; /* min gap between adjacent small targets, WCAG 2.2 2.5.8 */
+}
+
+/* ---------------------------------------------------------------------
+ * 10. DENSITY MODES — Dense (G2B/B2B risk dashboards) vs Fluid (B2C).
+ *    Applied via [data-density] on a container (e.g. <body> or a feature
+ *    root), never globally hardcoded, so one Angular app can host both.
+ *    Dense-mode row height is fixed at 32px to clear WCAG 2.2 §2.5.8
+ *    (24x24 CSS px minimum target) with margin for a real pointer, even
+ *    at maximum information density. Orthogonal to [data-theme] — any
+ *    density × theme combination is valid (e.g. dense + light for a
+ *    daytime-office risk desk).
+ * ------------------------------------------------------------------- */
+[data-density="dense"] {
+  --ino-space-row: 8px;
+  --ino-type-body-size: 12.5px;
+  --ino-type-body-line: 1.4;
+  --ino-row-min-height: 32px; /* WCAG 2.2 2.5.8 floor is 24px; padded above it deliberately */
+}
+
+[data-density="fluid"] {
+  --ino-space-row: 16px;
+  --ino-type-body-size: 15px;
+  --ino-type-body-line: 1.65;
+  --ino-row-min-height: 44px;
+}

@@ -1,0 +1,199 @@
+<!-- @dsCard group="Forms" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ino-checkbox — indeterminate, group, size API (INO-158)</title>
+<!-- Canonical token file, linked rather than copied: this preview must repaint with the system,
+     and must never become a second place raw hex values live. -->
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-eyebrow-size);
+    letter-spacing: var(--ino-type-eyebrow-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 60ch; }
+
+  .theme-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); }
+  .theme-pane {
+    flex: 1 1 280px;
+    padding: var(--ino-space-5);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-xl);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+  }
+  .theme-pane > h3 {
+    margin: 0 0 var(--ino-space-4);
+    font-size: var(--ino-type-body-sm-size);
+    color: var(--ino-color-on-surface-muted);
+    font-weight: 600;
+  }
+
+  .col { display: flex; flex-direction: column; gap: var(--ino-space-3); }
+  .row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--ino-space-6); }
+
+  /* Mirrors web/src/app/components/checkbox/ino-checkbox.component.scss — same token bindings, so
+     a divergence between this preview and the shipped component is visible as a visual diff. */
+  .ino-checkbox__row {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--ino-control-gap-default);
+    min-height: var(--ino-target-comfortable);
+    cursor: pointer;
+  }
+  .ino-checkbox__input {
+    width: var(--ino-control-icon-size-default);
+    height: var(--ino-control-icon-size-default);
+    flex-shrink: 0;
+    accent-color: var(--ino-color-accent);
+    cursor: pointer;
+    transition: filter var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+      box-shadow var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+  }
+  .ino-checkbox__input:hover:not(:disabled) { filter: brightness(1.15); }
+  .ino-checkbox__input:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+  .ino-checkbox__input:active:not(:disabled) { filter: brightness(0.9); }
+  /* State 7 — the shared invalid ring (tokens.css §12), the same one ino-radio paints. On the
+     box-shadow channel, so it stacks with the focus outline above rather than yielding to it: tab
+     onto an invalid box and both rings show (INO-269). */
+  .ino-checkbox__input--invalid { box-shadow: var(--ino-invalid-ring); }
+  .ino-checkbox__input--sm { width: var(--ino-control-icon-size-sm); height: var(--ino-control-icon-size-sm); }
+  .ino-checkbox__input--lg { width: var(--ino-control-icon-size-lg); height: var(--ino-control-icon-size-lg); }
+
+  .ino-checkbox__label { font-size: var(--ino-type-body-size); color: var(--ino-color-on-surface); }
+  .ino-checkbox--disabled .ino-checkbox__label { color: var(--ino-color-on-surface-muted); }
+  .ino-checkbox--disabled .ino-checkbox__row { cursor: not-allowed; }
+
+  .ino-checkbox__spinner {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    border: 2px solid var(--ino-color-on-surface-muted);
+    border-inline-start-color: transparent;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .ino-checkbox__spinner { animation: ino-checkbox-spin var(--ino-motion-duration-slow) linear infinite; }
+  }
+  @keyframes ino-checkbox-spin { to { transform: rotate(360deg); } }
+
+  .ino-checkbox-group { display: flex; flex-direction: column; gap: var(--ino-space-2); margin: 0; padding: 0; border: none; }
+  .ino-checkbox-group__legend {
+    padding: 0; margin-bottom: var(--ino-space-1);
+    font-size: var(--ino-type-body-sm-size); font-weight: 600; color: var(--ino-color-on-surface);
+  }
+  .ino-checkbox-group__error, .ino-checkbox__error {
+    margin: 0; font-size: var(--ino-type-body-sm-size); color: var(--ino-color-danger); font-weight: 600;
+  }
+</style>
+</head>
+<body>
+
+<h1>Checkbox — indeterminate, group, size API</h1>
+<p class="lede">
+  A native <code>&lt;input type="checkbox"&gt;</code> restyled via <code>accent-color</code>
+  (never a custom box + SVG checkmark), now carrying the tri-state indeterminate visual, the full
+  eight-state contract, and a <code>&lt;ino-checkbox-group&gt;</code> sibling for a shared-name
+  multi-select set.
+</p>
+
+<h2>States × theme</h2>
+<div class="theme-row">
+
+  <div class="theme-pane">
+    <h3>dark — :root (default)</h3>
+    <div class="col">
+      <label class="ino-checkbox__row"><input class="ino-checkbox__input" type="checkbox"><span class="ino-checkbox__label">Default</span></label>
+      <label class="ino-checkbox__row"><input class="ino-checkbox__input" type="checkbox" checked><span class="ino-checkbox__label">Checked</span></label>
+      <label class="ino-checkbox__row"><input class="ino-checkbox__input" type="checkbox" disabled><span class="ino-checkbox__label">Disabled</span></label>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="light">
+    <h3>light — [data-theme="light"]</h3>
+    <div class="col">
+      <label class="ino-checkbox__row"><input class="ino-checkbox__input" type="checkbox"><span class="ino-checkbox__label">Default</span></label>
+      <label class="ino-checkbox__row"><input class="ino-checkbox__input" type="checkbox" checked><span class="ino-checkbox__label">Checked</span></label>
+      <label class="ino-checkbox__row"><input class="ino-checkbox__input" type="checkbox" disabled><span class="ino-checkbox__label">Disabled</span></label>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="high-contrast">
+    <h3>high-contrast — [data-theme="high-contrast"]</h3>
+    <div class="col">
+      <label class="ino-checkbox__row"><input class="ino-checkbox__input" type="checkbox"><span class="ino-checkbox__label">Default</span></label>
+      <label class="ino-checkbox__row"><input class="ino-checkbox__input" type="checkbox" checked><span class="ino-checkbox__label">Checked</span></label>
+      <label class="ino-checkbox__row"><input class="ino-checkbox__input" type="checkbox" disabled><span class="ino-checkbox__label">Disabled</span></label>
+    </div>
+  </div>
+
+</div>
+
+<h2>Indeterminate</h2>
+<p class="lede">Tri-state visual driven entirely by the native <code>indeterminate</code> IDL property — <code>accent-color</code> themes the dash the same way it themes the checked fill.</p>
+<div class="row">
+  <label class="ino-checkbox__row"><input class="ino-checkbox__input" type="checkbox" id="cb-mixed"><span class="ino-checkbox__label">Select all (mixed)</span></label>
+</div>
+<script>document.getElementById('cb-mixed').indeterminate = true;</script>
+
+<h2>Size (control-size scale)</h2>
+<div class="row">
+  <label class="ino-checkbox__row"><input class="ino-checkbox__input ino-checkbox__input--sm" type="checkbox" checked><span class="ino-checkbox__label">sm</span></label>
+  <label class="ino-checkbox__row"><input class="ino-checkbox__input" type="checkbox" checked><span class="ino-checkbox__label">default</span></label>
+  <label class="ino-checkbox__row"><input class="ino-checkbox__input ino-checkbox__input--lg" type="checkbox" checked><span class="ino-checkbox__label">lg</span></label>
+</div>
+
+<h2>Readonly &amp; loading</h2>
+<div class="row">
+  <label class="ino-checkbox__row" style="cursor: default;">
+    <input class="ino-checkbox__input" style="cursor: default;" type="checkbox" checked aria-readonly="true" onclick="return false;">
+    <span class="ino-checkbox__label">Readonly (checked, locked)</span>
+  </label>
+  <label class="ino-checkbox__row">
+    <input class="ino-checkbox__input" type="checkbox" checked disabled aria-busy="true">
+    <span class="ino-checkbox__spinner" aria-hidden="true"></span>
+    <span class="ino-checkbox__label">Saving&hellip;</span>
+  </label>
+</div>
+
+<h2>Invalid</h2>
+<div class="col" style="align-items: flex-start;">
+  <label class="ino-checkbox__row">
+    <input class="ino-checkbox__input ino-checkbox__input--invalid" type="checkbox" aria-invalid="true">
+    <span class="ino-checkbox__label">I agree to the terms</span>
+  </label>
+  <p class="ino-checkbox__error" role="alert">Required to continue</p>
+</div>
+
+<h2>Checkbox group</h2>
+<p class="lede">Shared <code>name</code>, one validation message, <code>value</code> as a <code>string[]</code> — mirrors <code>&lt;ino-radio-group&gt;</code>'s <code>&lt;fieldset&gt;</code>/<code>&lt;legend&gt;</code> pattern for a multi-select set.</p>
+<fieldset class="ino-checkbox-group">
+  <legend class="ino-checkbox-group__legend">Notify me about</legend>
+  <label class="ino-checkbox__row"><input class="ino-checkbox__input" type="checkbox" name="notify" checked><span class="ino-checkbox__label">Product updates</span></label>
+  <label class="ino-checkbox__row"><input class="ino-checkbox__input" type="checkbox" name="notify"><span class="ino-checkbox__label">Security alerts</span></label>
+  <label class="ino-checkbox__row"><input class="ino-checkbox__input" type="checkbox" name="notify" disabled><span class="ino-checkbox__label">Beta programs (disabled)</span></label>
+</fieldset>
+
+<h2>RTL</h2>
+<div class="row" dir="rtl">
+  <label class="ino-checkbox__row"><input class="ino-checkbox__input" type="checkbox" checked><span class="ino-checkbox__label">أوافق على الشروط</span></label>
+</div>
+
+</body>
+</html>

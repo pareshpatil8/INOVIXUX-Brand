@@ -13,6 +13,11 @@
 }
 
 .ino-logo {
+  /* Border Stitch Master C (INO-82): the stitch thread flips with theme; the
+     territory fills (#4F46E5 / #7C5CFC) are constant. Lives here, not in
+     tokens.css, because tokens.css is frozen post-Wave 0. */
+  --ino-logo-thread: #D8CEFF;
+
   display: inline-flex;
   align-items: center;
   gap: var(--ino-space-2);
@@ -34,6 +39,10 @@
       line-height: 1.6;
     }
   }
+}
+
+[data-theme='light'] .ino-logo {
+  --ino-logo-thread: #2A1F6E;
 }
 
 .dash {

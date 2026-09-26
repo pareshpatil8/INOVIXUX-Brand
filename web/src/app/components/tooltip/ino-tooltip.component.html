@@ -1,0 +1,16 @@
+<div
+  *ngIf="open"
+  class="ino-tooltip"
+  [class.ino-tooltip--top]="position === 'top'"
+  [class.ino-tooltip--bottom]="position === 'bottom'"
+  [class.ino-tooltip--left]="position === 'left'"
+  [class.ino-tooltip--right]="position === 'right'"
+  [attr.data-size]="size"
+  [style.top.px]="top"
+  [style.left.px]="left"
+  [id]="tooltipId"
+  role="tooltip"
+>
+  <span class="ino-tooltip__arrow" aria-hidden="true"></span>
+  {{ text }}
+</div>

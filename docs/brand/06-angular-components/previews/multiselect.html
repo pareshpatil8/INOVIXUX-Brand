@@ -1,0 +1,369 @@
+<!-- @dsCard group="Form" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ino-multiselect — checkbox listbox / chip list (INO-153)</title>
+<!-- Canonical token file, linked rather than copied: this preview must repaint with the system,
+     and must never become a second place raw hex values live. -->
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-eyebrow-size);
+    letter-spacing: var(--ino-type-eyebrow-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 60ch; }
+
+  .theme-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); }
+  .theme-pane {
+    flex: 1 1 300px;
+    padding: var(--ino-space-5);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-xl);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+  }
+  .theme-pane > h3 {
+    margin: 0 0 var(--ino-space-4);
+    font-size: var(--ino-type-body-sm-size);
+    color: var(--ino-color-on-surface-muted);
+    font-weight: 600;
+  }
+
+  .row { display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--ino-space-5); }
+
+  /* Mirrors web/src/app/components/multiselect/ino-multiselect.component.scss's class names/token
+     bindings, so a divergence between this static snapshot and the shipped component is visible
+     as a visual diff — this is an illustrative snapshot, not a live Angular instance. */
+  .ino-field { display: flex; flex-direction: column; gap: var(--ino-space-2); min-inline-size: 240px; }
+  .ino-field__label { font-size: var(--ino-type-label-size, var(--ino-type-body-sm-size)); font-weight: 600; }
+  .ino-field__control-wrap { position: relative; }
+  .ino-field__control {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    inline-size: 100%;
+    min-block-size: var(--ino-target-comfortable);
+    padding-inline: var(--ino-space-4);
+    padding-inline-end: var(--ino-space-8);
+    padding-block: var(--ino-space-1);
+    gap: var(--ino-space-1);
+    background: var(--ino-color-surface-sunken);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-md);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+  }
+  .ino-field__control--sm { min-block-size: var(--ino-control-height-sm); font-size: var(--ino-control-font-size-sm); }
+  .ino-field__control--lg { min-block-size: var(--ino-control-height-lg); font-size: var(--ino-control-font-size-lg); }
+  .ino-field__control--placeholder { color: var(--ino-color-on-surface-subtle); }
+  .ino-field__control--error { border-color: var(--ino-color-danger); }
+  .ino-field__control--active { border-color: var(--ino-color-accent); outline: var(--ino-focus-ring); outline-offset: var(--ino-focus-ring-offset); }
+  .ino-field__control--pressed { border-color: var(--ino-color-accent-active); }
+  .ino-field__control--disabled { opacity: 0.5; }
+  .ino-field__control--readonly { background: var(--ino-color-surface-raised); }
+  .ino-field__chevron { position: absolute; inset-block-start: 50%; inset-inline-end: var(--ino-space-4); transform: translateY(-50%); color: var(--ino-color-on-surface-muted); font-size: 12px; }
+  .ino-field__clear { position: absolute; inset-block-start: 50%; inset-inline-end: var(--ino-space-7); transform: translateY(-50%); color: var(--ino-color-on-surface-muted); font-size: 16px; }
+  .ino-field__spinner {
+    position: absolute; inset-block-start: 50%; inset-inline-end: var(--ino-space-7); transform: translateY(-50%);
+    inline-size: 14px; block-size: 14px; border-radius: 50%;
+    border: 2px solid var(--ino-color-on-surface-muted); border-top-color: transparent;
+  }
+  .ino-field__hint { margin: 0; font-size: var(--ino-type-body-sm-size); color: var(--ino-color-on-surface-muted); }
+  .ino-field__error { margin: 0; font-size: var(--ino-type-body-sm-size); color: var(--ino-color-danger); font-weight: 600; }
+
+  .ino-field__chips { display: flex; flex-wrap: wrap; align-items: center; gap: var(--ino-space-1); flex: 1 1 auto; }
+  .ino-field__chip {
+    display: inline-flex; align-items: center; gap: var(--ino-space-1);
+    padding-inline: var(--ino-space-2); padding-block: var(--ino-space-1);
+    border-radius: var(--ino-radius-pill); background: var(--ino-color-surface-raised);
+    border: 1px solid var(--ino-color-border); font-size: var(--ino-type-body-sm-size);
+  }
+  .ino-field__chip--overflow { color: var(--ino-color-on-surface-muted); background: transparent; border-color: transparent; padding-inline: 0; }
+  .ino-field__chip-remove { color: var(--ino-color-on-surface-muted); font-size: 14px; line-height: 1; }
+
+  .ino-field__panel {
+    margin-block-start: var(--ino-space-2);
+    display: flex; flex-direction: column;
+    background: var(--ino-color-surface-raised);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-md);
+    box-shadow: var(--ino-elevation-neutral-3);
+    overflow: hidden;
+    max-inline-size: 280px;
+  }
+  .ino-field__filter {
+    inline-size: 100%; min-block-size: var(--ino-target-comfortable); padding-inline: var(--ino-space-3);
+    border: none; border-block-end: 1px solid var(--ino-color-border); background: transparent;
+    color: var(--ino-color-on-surface); font-family: var(--ino-font-display); font-size: var(--ino-type-body-sm-size);
+  }
+  .ino-field__listbox { margin: 0; padding: var(--ino-space-1) 0; list-style: none; }
+  .ino-field__group-heading { padding: var(--ino-space-2) var(--ino-space-4) var(--ino-space-1); font-size: var(--ino-type-caption-size); font-weight: 600; color: var(--ino-color-on-surface-muted); }
+  .ino-field__option { padding: var(--ino-space-2) var(--ino-space-4); min-block-size: var(--ino-target-comfortable); display: flex; align-items: center; gap: var(--ino-space-3); }
+  .ino-field__option--active { background: var(--ino-color-surface-sunken); outline: var(--ino-focus-ring); outline-offset: calc(-1 * var(--ino-focus-ring-offset)); }
+  .ino-field__option--selected { color: var(--ino-color-accent-text-safe); font-weight: 600; }
+  .ino-field__option--disabled { color: var(--ino-color-on-surface-subtle); }
+  .ino-field__option--select-all { border-block-end: 1px solid var(--ino-color-border); font-weight: 600; }
+  .ino-field__checkbox { inline-size: 16px; block-size: 16px; accent-color: var(--ino-color-accent); flex: 0 0 auto; }
+</style>
+</head>
+<body>
+
+<h1>MultiSelect — checkbox listbox / chip list</h1>
+<p class="lede">
+  Follow-up to <code>&lt;ino-select&gt;</code> (INO-152/T-9): checkbox option rows, a chip-list or
+  comma-summary trigger display, a filter-scoped "select all," a hard <code>selectionLimit</code>,
+  plus the reused filter box, option groups, and virtual scrolling for long lists. Full
+  <code>role="combobox"</code> + <code>role="listbox" aria-multiselectable="true"</code> ARIA
+  contract with <code>aria-activedescendant</code> — see <code>SPEC.md</code> and
+  <code>multiselect.md</code> for the full keyboard map and the deliberate-omissions list.
+</p>
+
+<h2>Theme × trigger field</h2>
+<div class="theme-row">
+
+  <div class="theme-pane">
+    <h3>dark — :root (default)</h3>
+    <div class="row">
+      <label class="ino-field">
+        <span class="ino-field__label">Regions</span>
+        <span class="ino-field__control">
+          <span class="ino-field__chips">
+            <span class="ino-field__chip">India</span>
+            <span class="ino-field__chip">Singapore</span>
+          </span>
+          <span class="ino-field__chevron">▾</span>
+        </span>
+      </label>
+      <label class="ino-field">
+        <span class="ino-field__label">Placeholder</span>
+        <span class="ino-field__control ino-field__control--placeholder"><span>Select options</span><span class="ino-field__chevron">▾</span></span>
+      </label>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="light">
+    <h3>light — [data-theme="light"]</h3>
+    <div class="row">
+      <label class="ino-field">
+        <span class="ino-field__label">Regions</span>
+        <span class="ino-field__control">
+          <span class="ino-field__chips">
+            <span class="ino-field__chip">India</span>
+            <span class="ino-field__chip">Singapore</span>
+          </span>
+          <span class="ino-field__chevron">▾</span>
+        </span>
+      </label>
+      <label class="ino-field">
+        <span class="ino-field__label">Placeholder</span>
+        <span class="ino-field__control ino-field__control--placeholder"><span>Select options</span><span class="ino-field__chevron">▾</span></span>
+      </label>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="high-contrast">
+    <h3>high-contrast — [data-theme="high-contrast"]</h3>
+    <div class="row">
+      <label class="ino-field">
+        <span class="ino-field__label">Regions</span>
+        <span class="ino-field__control">
+          <span class="ino-field__chips">
+            <span class="ino-field__chip">India</span>
+            <span class="ino-field__chip">Singapore</span>
+          </span>
+          <span class="ino-field__chevron">▾</span>
+        </span>
+      </label>
+      <label class="ino-field">
+        <span class="ino-field__label">Placeholder</span>
+        <span class="ino-field__control ino-field__control--placeholder"><span>Select options</span><span class="ino-field__chevron">▾</span></span>
+      </label>
+    </div>
+  </div>
+
+</div>
+
+<h2>Size (control-size scale)</h2>
+<div class="row">
+  <label class="ino-field">
+    <span class="ino-field__label">Small</span>
+    <span class="ino-field__control ino-field__control--sm"><span class="ino-field__chips"><span class="ino-field__chip">India</span></span><span class="ino-field__chevron">▾</span></span>
+  </label>
+  <label class="ino-field">
+    <span class="ino-field__label">Default</span>
+    <span class="ino-field__control"><span class="ino-field__chips"><span class="ino-field__chip">India</span></span><span class="ino-field__chevron">▾</span></span>
+  </label>
+  <label class="ino-field">
+    <span class="ino-field__label">Large</span>
+    <span class="ino-field__control ino-field__control--lg"><span class="ino-field__chips"><span class="ino-field__chip">India</span></span><span class="ino-field__chevron">▾</span></span>
+  </label>
+</div>
+
+<h2>Trigger states (all eight)</h2>
+<div class="row">
+  <label class="ino-field">
+    <span class="ino-field__label">Default</span>
+    <span class="ino-field__control"><span class="ino-field__chips"><span class="ino-field__chip">India</span></span><span class="ino-field__chevron">▾</span></span>
+  </label>
+  <label class="ino-field">
+    <span class="ino-field__label">Hover</span>
+    <span class="ino-field__control" style="border-color: var(--ino-color-on-surface-muted);"><span class="ino-field__chips"><span class="ino-field__chip">India</span></span><span class="ino-field__chevron">▾</span></span>
+  </label>
+  <label class="ino-field">
+    <span class="ino-field__label">Active/pressed</span>
+    <span class="ino-field__control ino-field__control--pressed"><span class="ino-field__chips"><span class="ino-field__chip">India</span></span><span class="ino-field__chevron">▾</span></span>
+  </label>
+  <label class="ino-field">
+    <span class="ino-field__label">Focus-visible</span>
+    <span class="ino-field__control ino-field__control--active"><span class="ino-field__chips"><span class="ino-field__chip">India</span></span><span class="ino-field__chevron">▾</span></span>
+  </label>
+  <label class="ino-field">
+    <span class="ino-field__label">Disabled</span>
+    <span class="ino-field__control ino-field__control--disabled"><span class="ino-field__chips"><span class="ino-field__chip">India</span></span><span class="ino-field__chevron">▾</span></span>
+  </label>
+  <label class="ino-field">
+    <span class="ino-field__label">Readonly</span>
+    <span class="ino-field__control ino-field__control--readonly"><span class="ino-field__chips"><span class="ino-field__chip">India</span></span><span class="ino-field__chevron">▾</span></span>
+  </label>
+  <label class="ino-field">
+    <span class="ino-field__label">Invalid</span>
+    <span class="ino-field__control ino-field__control--error" aria-invalid="true"><span class="ino-field__control--placeholder">Select options</span><span class="ino-field__chevron">▾</span></span>
+    <p class="ino-field__error" role="alert">Select at least one region.</p>
+  </label>
+  <label class="ino-field">
+    <span class="ino-field__label">Loading</span>
+    <span class="ino-field__control" aria-busy="true"><span>Syncing…</span><span class="ino-field__spinner" aria-hidden="true"></span><span class="ino-field__chevron">▾</span></span>
+  </label>
+</div>
+
+<h2>Chip mode — overflow, removal, clearable</h2>
+<div class="row">
+  <label class="ino-field">
+    <span class="ino-field__label">Overflow (maxSelectedLabels=3)</span>
+    <span class="ino-field__control">
+      <span class="ino-field__chips">
+        <span class="ino-field__chip">India <span class="ino-field__chip-remove" aria-hidden="true">×</span></span>
+        <span class="ino-field__chip">Singapore <span class="ino-field__chip-remove" aria-hidden="true">×</span></span>
+        <span class="ino-field__chip">Indonesia <span class="ino-field__chip-remove" aria-hidden="true">×</span></span>
+        <span class="ino-field__chip ino-field__chip--overflow">+2 more</span>
+      </span>
+      <span class="ino-field__chevron">▾</span>
+    </span>
+  </label>
+  <label class="ino-field">
+    <span class="ino-field__label">Clearable</span>
+    <span class="ino-field__control">
+      <span class="ino-field__chips"><span class="ino-field__chip">India <span class="ino-field__chip-remove" aria-hidden="true">×</span></span></span>
+      <span class="ino-field__clear" aria-hidden="true">×</span>
+      <span class="ino-field__chevron">▾</span>
+    </span>
+  </label>
+</div>
+
+<h2>Comma mode</h2>
+<div class="row">
+  <label class="ino-field">
+    <span class="ino-field__label">Regions (display="comma")</span>
+    <span class="ino-field__control"><span>India, Singapore, Indonesia</span><span class="ino-field__chevron">▾</span></span>
+  </label>
+</div>
+
+<h2>Open panel — select all, checkboxes, groups, filter</h2>
+<div class="row">
+  <div class="ino-field" style="min-inline-size: 280px;">
+    <span class="ino-field__label">Region (select all, filterable, grouped)</span>
+    <span class="ino-field__control ino-field__control--active">
+      <span class="ino-field__chips"><span class="ino-field__chip">India</span></span>
+      <span class="ino-field__chevron" style="transform: translateY(-50%) scaleY(-1);">▾</span>
+    </span>
+    <div class="ino-field__panel">
+      <input class="ino-field__filter" placeholder="Search…" value="in" readonly>
+      <ul class="ino-field__listbox" role="list">
+        <li class="ino-field__option ino-field__option--select-all">
+          <input type="checkbox" class="ino-field__checkbox" disabled>
+          <span>Select all</span>
+        </li>
+        <li class="ino-field__group-heading">APAC</li>
+        <li class="ino-field__option ino-field__option--selected">
+          <input type="checkbox" class="ino-field__checkbox" checked disabled>
+          <span>India</span>
+        </li>
+        <li class="ino-field__option">
+          <input type="checkbox" class="ino-field__checkbox" disabled>
+          <span>Indonesia</span>
+        </li>
+        <li class="ino-field__option ino-field__option--active">
+          <input type="checkbox" class="ino-field__checkbox" disabled>
+          <span>Singapore</span>
+        </li>
+        <li class="ino-field__group-heading">EMEA</li>
+        <li class="ino-field__option ino-field__option--disabled">
+          <input type="checkbox" class="ino-field__checkbox" disabled>
+          <span>Iran (sanctioned)</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<h2>Selection limit — reached (3 of 3)</h2>
+<div class="row">
+  <div class="ino-field" style="min-inline-size: 240px;">
+    <span class="ino-field__label">Assignees (max 3)</span>
+    <span class="ino-field__control ino-field__control--active">
+      <span class="ino-field__chips">
+        <span class="ino-field__chip">Aiko</span><span class="ino-field__chip">Ben</span><span class="ino-field__chip">Cy</span>
+      </span>
+      <span class="ino-field__chevron" style="transform: translateY(-50%) scaleY(-1);">▾</span>
+    </span>
+    <div class="ino-field__panel">
+      <ul class="ino-field__listbox" role="list">
+        <li class="ino-field__option ino-field__option--selected">
+          <input type="checkbox" class="ino-field__checkbox" checked disabled>
+          <span>Aiko</span>
+        </li>
+        <li class="ino-field__option ino-field__option--selected">
+          <input type="checkbox" class="ino-field__checkbox" checked disabled>
+          <span>Ben</span>
+        </li>
+        <li class="ino-field__option ino-field__option--selected">
+          <input type="checkbox" class="ino-field__checkbox" checked disabled>
+          <span>Cy</span>
+        </li>
+        <li class="ino-field__option ino-field__option--disabled">
+          <input type="checkbox" class="ino-field__checkbox" disabled>
+          <span>Dev (limit reached)</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<h2>RTL</h2>
+<div dir="rtl" class="row">
+  <label class="ino-field">
+    <span class="ino-field__label">بلدان</span>
+    <span class="ino-field__control">
+      <span class="ino-field__chips"><span class="ino-field__chip">الهند</span></span>
+      <span class="ino-field__chevron">▾</span>
+    </span>
+  </label>
+</div>
+
+</body>
+</html>

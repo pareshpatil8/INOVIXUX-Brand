@@ -1,0 +1,150 @@
+/*
+ * Size API — DoD row 3. Same three-alias subset `ino-checkbox`/`ino-tag` read for the same reason:
+ * a radio is a compact inline control, not a full-height one like `ino-button`/`ino-input`, so
+ * `--ino-control-height` itself is deliberately not consumed here — see SPEC.md §3.
+ */
+.ino-radio {
+  --ino-radio-box-size: var(--ino-control-icon-size-default);
+  --ino-radio-font-size: var(--ino-control-font-size-default);
+  --ino-radio-gap: var(--ino-control-gap-default);
+
+  display: inline-block;
+  cursor: pointer;
+
+  &[data-size='sm'] {
+    --ino-radio-box-size: var(--ino-control-icon-size-sm);
+    --ino-radio-font-size: var(--ino-control-font-size-sm);
+    --ino-radio-gap: var(--ino-control-gap-sm);
+  }
+
+  &[data-size='lg'] {
+    --ino-radio-box-size: var(--ino-control-icon-size-lg);
+    --ino-radio-font-size: var(--ino-control-font-size-lg);
+    --ino-radio-gap: var(--ino-control-gap-lg);
+  }
+}
+
+.ino-radio__row {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ino-radio-gap);
+  /* DoD row 4 — density. Reads the density-scoped row floor where one is in scope (32px dense /
+     44px fluid, tokens.css §10) and falls back to the standalone comfortable target outside any
+     [data-density] ancestor. */
+  min-height: var(--ino-row-min-height, var(--ino-target-comfortable));
+}
+
+.ino-radio__input {
+  inline-size: var(--ino-radio-box-size);
+  block-size: var(--ino-radio-box-size);
+  flex-shrink: 0;
+  accent-color: var(--ino-color-accent);
+  cursor: pointer;
+
+  /* State 1 — default (accent-color above). Motion: state changes (hover brightness, invalid
+     ring) animate in/out on the fast duration+easing pair; collapses under reduced motion. */
+  transition: filter var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+    box-shadow var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+
+  /* State 2 — hover. `accent-color` offers no "lighten" hook of its own, so this reuses the same
+     `filter: brightness()` idiom `ino-checkbox`/`ino-button` already use for the same reason. */
+  &:hover:not(:disabled) {
+    filter: brightness(1.15);
+  }
+
+  /* State 4 — focus-visible. Ring comes from the Wave 0 tokens; never hand-rolled. */
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+
+  /* State 3 — active/pressed. Guarded on :not(:disabled) because a disabled native control still
+     matches :active on some engines. */
+  &:active:not(:disabled) {
+    accent-color: var(--ino-color-accent-active);
+    filter: brightness(0.9);
+  }
+
+  /* State 5 — disabled. */
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  /* State 7 — invalid. A box-shadow ring, not a border — a native radio's own chrome isn't a
+     paintable border, matching `ino-checkbox`'s own invalid treatment. Weight and per-theme
+     behaviour live in the token (tokens.css §12, INO-257), not here: this is the one box-shadow
+     high-contrast KEEPS and widens rather than flattening to `none` the way it does every
+     elevation step. Composes with State 4 above — the token's spread-only geometry sits inside
+     the gap --ino-focus-ring-offset leaves, so a focused invalid radio shows both rings. */
+  &[aria-invalid='true'] {
+    box-shadow: var(--ino-invalid-ring);
+  }
+}
+
+.ino-radio__label {
+  font-size: var(--ino-radio-font-size);
+  color: var(--ino-color-on-surface);
+}
+
+/* State 5 — disabled (row-level). */
+.ino-radio--disabled {
+  cursor: not-allowed;
+
+  .ino-radio__row {
+    cursor: not-allowed;
+  }
+
+  .ino-radio__label {
+    color: var(--ino-color-on-surface-muted);
+  }
+}
+
+/* State 6 — readonly. Same trade `ino-checkbox` documents: content stays fully legible (unlike
+   disabled's dimming) and the control stays keyboard-reachable and focusable — only the
+   interactive affordances (hover feedback, pointer cursor) withdraw. The actual value lock is
+   enforced in the component (`onClick` calls `preventDefault()`); this block is presentation only.
+   `.ino-radio--readonly` is (0,2,0) on `.ino-radio__input:hover`, outranking the (0,1,1) hover rule
+   above regardless of source order. */
+.ino-radio--readonly {
+  cursor: default;
+
+  .ino-radio__row {
+    cursor: default;
+  }
+
+  .ino-radio__input {
+    cursor: default;
+
+    &:hover:not(:disabled) {
+      filter: none;
+    }
+  }
+}
+
+/* State 8 — loading/busy. The dot keeps its last committed value on screen (never blanks mid
+   round-trip); a spinner appears alongside it, matching `ino-checkbox`/`ino-tag`'s spinner
+   treatment. The input is natively disabled while loading (template `[disabled]="disabled ||
+   loading"`), so the disabled cursor is intentionally not reapplied here — "busy" and "inert" read
+   differently. */
+.ino-radio__spinner {
+  inline-size: calc(var(--ino-radio-box-size) / 2);
+  block-size: calc(var(--ino-radio-box-size) / 2);
+  border-radius: 50%;
+  border: 2px solid var(--ino-color-on-surface-muted);
+  border-inline-start-color: transparent; /* logical, not border-top — RTL-safe */
+  flex-shrink: 0;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: ino-radio-spin var(--ino-motion-duration-slow) linear infinite;
+  }
+}
+
+@keyframes ino-radio-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

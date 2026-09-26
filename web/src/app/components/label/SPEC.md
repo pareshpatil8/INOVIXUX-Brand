@@ -66,17 +66,21 @@ markup, which already pairs a visible `*` with the control's own `[required]` at
 
 ---
 
-## 4. Not retrofit onto `ino-input`/`ino-select` (DoD row 11, merge hygiene)
+## 4. Retrofit onto `ino-input`/`ino-select` — done under INO-243
 
-`ino-input` and `ino-select` currently hand-roll their own `<label for>` block inline (`.ino-field__label`
-+ `.ino-field__required`, still on `--ino-type-body-sm-size`, not yet migrated onto the W0-3 label
-tokens). This issue does **not** touch either file: merge hygiene (DoD row 11) scopes a component
-issue to `web/src/app/components/<name>/**` plus docs/preview — reaching into `ino-input`/`ino-select`
-to swap their inline label markup for `<ino-label>` would touch two components this issue was not
-scoped to modify, on branches that may already be in flight. That migration is a natural follow-up
-(tracked informally here, not yet its own issue) once `<ino-label>` lands on
-`ino-31-design-system-parity`; `ino-datepicker` (T-8, INO-154) and `ino-iftalabel` (T-20, INO-142) —
-the two issues this one blocks — are the first real consumers.
+`ino-input` and `ino-select` used to hand-roll their own `<label for>` block inline
+(`.ino-field__label` + `.ino-field__required`, on `--ino-type-body-sm-size`). That was scoped out of
+this issue by DoD row 11 merge hygiene (a component issue is confined to
+`web/src/app/components/<name>/**`, and both controls could be in flight on other branches) and
+tracked informally in this paragraph rather than as its own issue — flagged during CTO review of
+PR #25 and formalized as [INO-243](/INO/issues/INO-243). INO-243 landed the retrofit once T-8
+(INO-154) and INO-142 (T-20) were clear: both controls now render `<ino-label>` instead of the
+inline markup, and the dead `.ino-field__label`/`.ino-field__required` rules are removed from both
+SCSS files. See `input/SPEC.md` §10 for the `ino-input` side of that change; `ino-select` predates
+its own uplift issue (no `size`/`invalid`/`readonly` inputs exist there yet) so it forwards only
+`required`, `disabled`, and `invalid` (derived from `error`) — `size`/`readonly` stay a gap for a
+future `ino-select` uplift issue, consistent with the parity doc's existing "native `<select>`, not
+yet uplifted" note.
 
 ---
 
