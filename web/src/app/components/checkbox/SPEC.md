@@ -26,7 +26,7 @@ apply:
 | Focus-visible | ✅ | `--ino-focus-ring` / `--ino-focus-ring-offset`, unchanged |
 | Disabled | ✅ | `:disabled` — `cursor: not-allowed`, row/label dim to `--ino-color-on-surface-muted` |
 | Readonly | ✅ **(new)** | See §4 below — not a CSS-only state |
-| Invalid | ✅ | Pre-existing `error` text input now additionally paints an `outline` ring on the box itself via `[aria-invalid='true']:not(:focus-visible)` **(new)**, so the invalid signal isn't text-only |
+| Invalid | ✅ | Pre-existing `error` text input now additionally paints a ring on the box itself via `[aria-invalid='true']` **(new)**, so the invalid signal isn't text-only — `box-shadow: var(--ino-invalid-ring)` (INO-257's Wave 0 token), on a different channel from the focus outline, so a focused invalid checkbox shows **both** rings. See §12 |
 | Loading/busy | ✅ **(new)** | `aria-busy` + `[disabled]="disabled || loading"` + an adjacent spinner (not an overlay — see §5) |
 
 ---
@@ -165,8 +165,9 @@ handling beyond the `readonly` click-cancel in §4.
 (16px `sm` is the box's *visual* size, not its target — the effective click target is the full
 label row per `--ino-row-min-height`/`--ino-target-comfortable`, both >= 32px even in dense mode);
 `default`/`lg` boxes are 20px/24px. Focus ring and invalid ring both resolve through
-`--ino-focus-ring`/`--ino-color-danger`, audited across all three themes by
-`check-theme-parity.mjs`.
+`--ino-focus-ring`/`--ino-invalid-ring`, audited across all three themes by
+`check-theme-parity.mjs` — including the invalid ring's SC 1.4.11 3:1 budget against all three
+surface roles and the never-flatten/never-thin rules.
 
 ---
 
@@ -224,3 +225,44 @@ scripts/check-theme-parity.mjs` passes unchanged. Component-level token adherenc
 | `ng build` (web/) | ✅ passes |
 | Hardcoded colour/space/radius/duration/font-size | none — every value resolves through a token; box-size/font-size/gap resolve through the control-size scale, spinner size derives from the box size via `calc()` |
 | `[data-theme]` branch in either component | none |
+
+---
+
+## 12. Invalid ring — converged onto `--ino-invalid-ring` (INO-269)
+
+**Supersedes the State-7 decision this file originally recorded.** The ring shipped as a hand-rolled
+`outline: 2px solid var(--ino-color-danger)` guarded by `:not(:focus-visible)`. Both halves of that
+are gone:
+
+```scss
+&[aria-invalid='true'] {
+  box-shadow: var(--ino-invalid-ring);
+}
+```
+
+**Why the guard existed, and why it no longer has to.** `outline` was the only ring channel the Wave
+0 contract offered, and State 4's focus ring already owns it; `box-shadow` was reserved for the
+themed elevation scale (tokens.css §8). Two rings could not share one property, so the guard made
+focus win outright while focused. That was a correct read of the constraint — but it cost the user
+the State-7 chrome affordance for exactly as long as they were interacting with the failing control.
+INO-257 (W0-7) added `--ino-invalid-ring` on the box-shadow channel, the constraint is gone, and
+both affordances now paint at once. `ino-radio` was the first component onto the token; this brings
+`ino-checkbox` and `ino-toggle` alongside it, so all three binary controls share one idiom.
+
+**Two defects closed:**
+
+1. A focused invalid checkbox showed no invalid ring at all. Only the danger-coloured `error` text
+   remained — the mitigation the old comment cited, but a text-only signal for the whole interaction.
+2. The ring stayed 2px in high-contrast while the focus ring widened to 3px, because the weight was
+   a literal in this stylesheet rather than the token's. High-contrast now widens the invalid ring to
+   3px with it (`check-theme-parity.mjs` enforces never-flatten and never-thin).
+
+**The two rings stack, they do not collide.** `--ino-invalid-ring` is spread-only (`0 0 0 Npx`), so
+it paints from the border box outward; the focus outline starts at `--ino-focus-ring-offset` (2px).
+In dark/light the 2px ring fills 0–2px and the 2px outline fills 2–4px — adjacent, no overlap. In
+high-contrast the 3px ring fills 0–3px and the 3px outline fills 2–5px, so the outline overpaints
+the ring's outer 1px and 2px of coral stays visible, which is the behaviour tokens.css §12 documents
+deliberately for that theme.
+
+**No change to the `error: string` API, the ARIA contract (§7), or the mobile ports (§9)** — the
+ports paint their own danger border and never read this CSS token.

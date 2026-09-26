@@ -26,7 +26,10 @@
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <!-- Noto Sans Devanagari added INO-119 — mandatory fallback chain (tokens.css §4) needs a
+       Devanagari-capable face on the CDN mockup path too, same as Geist; self-hosting both is
+       tracked, not done in this pass (README §Font onboarding). -->
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Noto+Sans+Devanagari:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
   <app-root></app-root>
