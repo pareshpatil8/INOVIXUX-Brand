@@ -1,0 +1,66 @@
+<!-- @dsCard group="Foundations" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Borders &amp; Radius · INOVIXUX Design Tokens</title>
+<link rel="stylesheet" href="../tokens.css">
+<style>
+  body { margin: 0; padding: var(--ino-space-7); background: var(--ino-color-surface); color: var(--ino-color-on-surface); font-family: var(--ino-font-display); }
+  h1 { font: var(--ino-type-h3); font-family: var(--ino-font-display); margin: 0 0 var(--ino-space-2); }
+  h2 { font: var(--ino-type-eyebrow); font-family: var(--ino-font-mono); letter-spacing: var(--ino-type-eyebrow-tracking); text-transform: uppercase; color: var(--ino-color-on-surface-muted); margin: var(--ino-space-7) 0 var(--ino-space-3); }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 68ch; }
+
+  .radius-grid { display: flex; gap: var(--ino-space-5); flex-wrap: wrap; }
+  .radius-box { width: 84px; height: 84px; background: var(--ino-color-surface-raised); border: 1px solid var(--ino-color-border); display: flex; align-items: center; justify-content: center; font-family: var(--ino-font-mono); font-size: 10.5px; color: var(--ino-color-on-surface-muted); }
+
+  .focus-demo { display: flex; gap: var(--ino-space-4); margin-top: var(--ino-space-4); }
+  .focus-btn { padding: var(--ino-space-3) var(--ino-space-5); border-radius: var(--ino-radius-md); border: 1px solid var(--ino-color-border); background: var(--ino-color-surface-raised); color: var(--ino-color-on-surface); font: inherit; font-size: 13px; cursor: pointer; }
+  .focus-btn:focus-visible { outline: var(--ino-focus-ring); outline-offset: var(--ino-focus-ring-offset); }
+
+  .theme-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); margin-top: var(--ino-space-3); }
+  .theme-pane { flex: 1 1 220px; padding: var(--ino-space-5); border: 1px solid var(--ino-color-border); border-radius: var(--ino-radius-xl); background: var(--ino-color-surface); }
+  .theme-pane > h3 { margin: 0 0 var(--ino-space-3); font-size: var(--ino-type-body-sm-size); color: var(--ino-color-on-surface-muted); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<h1>Borders &amp; Radius</h1>
+<p class="lede">
+  Hairline border roles (<code>tokens.css</code> §2), the corner-radius scale (§6), and the focus
+  ring (§12) — one <code>outline</code> shorthand every component consumes instead of hand-rolling
+  its own, so the ring can never drift width/offset/colour per component again.
+</p>
+
+<h2>Radius scale</h2>
+<div class="radius-grid">
+  <div class="radius-box" style="border-radius:var(--ino-radius-sm)">sm · 6px</div>
+  <div class="radius-box" style="border-radius:var(--ino-radius-md)">md · 8px</div>
+  <div class="radius-box" style="border-radius:var(--ino-radius-lg)">lg · 10px</div>
+  <div class="radius-box" style="border-radius:var(--ino-radius-xl)">xl · 14px</div>
+  <div class="radius-box" style="border-radius:var(--ino-radius-pill)">pill · 20px</div>
+</div>
+
+<h2>Focus ring — tab to each button, per theme</h2>
+<div class="theme-row">
+  <div class="theme-pane">
+    <h3>dark</h3>
+    <div class="focus-demo"><button class="focus-btn">Tab to me</button></div>
+  </div>
+  <div class="theme-pane" data-theme="light">
+    <h3>light</h3>
+    <div class="focus-demo"><button class="focus-btn">Tab to me</button></div>
+  </div>
+  <div class="theme-pane" data-theme="high-contrast">
+    <h3>high-contrast — 3px ring</h3>
+    <div class="focus-demo"><button class="focus-btn">Tab to me</button></div>
+  </div>
+</div>
+<p style="color:var(--ino-color-on-surface-muted);font-size:12.5px;margin-top:var(--ino-space-4);">
+  <code>--ino-focus-ring</code> always resolves its colour from <code>var(--ino-color-accent)</code>
+  so an accent swap re-themes focus for free; high-contrast widens the same shorthand to 3px.
+</p>
+
+</body>
+</html>

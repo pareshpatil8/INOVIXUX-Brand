@@ -1,0 +1,69 @@
+<!-- @dsCard group="Foundations" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Type — Scale · INOVIXUX Design Tokens</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../tokens.css">
+<style>
+  body { margin: 0; padding: var(--ino-space-7); background: var(--ino-color-surface); color: var(--ino-color-on-surface); font-family: var(--ino-font-display); }
+  h1 { font: var(--ino-type-h3); font-family: var(--ino-font-display); margin: 0 0 var(--ino-space-2); }
+  h2 { font: var(--ino-type-eyebrow); font-family: var(--ino-font-mono); letter-spacing: var(--ino-type-eyebrow-tracking); text-transform: uppercase; color: var(--ino-color-on-surface-muted); margin: var(--ino-space-7) 0 var(--ino-space-3); }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 68ch; }
+
+  .type-row { display: flex; align-items: baseline; gap: var(--ino-space-4); padding: var(--ino-space-3) 0; border-bottom: 1px solid var(--ino-color-border-soft); }
+  .type-row:last-child { border-bottom: none; }
+  .type-row .tag { width: 100px; flex: none; font-family: var(--ino-font-mono); font-size: 11px; color: var(--ino-color-on-surface-muted); }
+  .type-row .sample { color: var(--ino-color-on-surface); }
+
+  table { border-collapse: collapse; width: 100%; font-size: 12px; margin-top: var(--ino-space-4); }
+  th, td { text-align: left; padding: var(--ino-space-2) var(--ino-space-3); border-bottom: 1px solid var(--ino-color-border-soft); }
+  th { color: var(--ino-color-on-surface-muted); font-weight: 600; }
+  td code { font-family: var(--ino-font-mono); font-size: 11px; }
+</style>
+</head>
+<body>
+
+<h1>Type — Scale</h1>
+<p class="lede">
+  Every size/role below reads live from <code>tokens.css</code> §4 via its <code>--ino-type-*</code>
+  composite alias. Renders once in this theme's default; the roles do not change color per theme,
+  only by <code>on-surface</code>/<code>on-surface-muted</code> pairing.
+</p>
+
+<h2>Roles</h2>
+<div class="type-row"><span class="tag">display</span><span class="sample" style="font:var(--ino-type-display);letter-spacing:var(--ino-type-display-tracking)">Verify, don't decide</span></div>
+<div class="type-row"><span class="tag">h2</span><span class="sample" style="font:var(--ino-type-h2);letter-spacing:var(--ino-type-h2-tracking)">Human reviews every case</span></div>
+<div class="type-row"><span class="tag">h3</span><span class="sample" style="font:var(--ino-type-h3);letter-spacing:var(--ino-type-h3-tracking)">Feature card heading</span></div>
+<div class="type-row"><span class="tag">body-lg</span><span class="sample" style="font:var(--ino-type-body-lg)">A structured risk-flag report your team can act on, not an automated decision.</span></div>
+<div class="type-row"><span class="tag">body</span><span class="sample" style="font:var(--ino-type-body)">Vendor GSTIN cross-checked against MCA21 filing status.</span></div>
+<div class="type-row"><span class="tag">body-sm</span><span class="sample" style="font:var(--ino-type-body-sm);color:var(--ino-color-on-surface-muted)">Last synced 4 minutes ago via ABDM sandbox</span></div>
+<div class="type-row"><span class="tag">metric</span><span class="sample" style="font:var(--ino-type-metric)">2,481</span></div>
+<div class="type-row"><span class="tag">eyebrow</span><span class="sample" style="font:var(--ino-type-eyebrow);letter-spacing:var(--ino-type-eyebrow-tracking);text-transform:uppercase;color:var(--ino-color-on-surface-muted)">Verification throughput</span></div>
+<div class="type-row"><span class="tag">label-lg</span><span class="sample" style="font:var(--ino-type-label-lg);letter-spacing:var(--ino-type-label-lg-tracking);color:var(--ino-color-label)">Legal entity name</span></div>
+<div class="type-row"><span class="tag">label</span><span class="sample" style="font:var(--ino-type-label);letter-spacing:var(--ino-type-label-tracking);color:var(--ino-color-label)">Registered address</span></div>
+<div class="type-row"><span class="tag">label-sm</span><span class="sample" style="font:var(--ino-type-label-sm);letter-spacing:var(--ino-type-label-sm-tracking);color:var(--ino-color-label)">Postal code</span></div>
+<div class="type-row"><span class="tag">hint</span><span class="sample" style="font:var(--ino-type-hint);letter-spacing:var(--ino-type-hint-tracking);color:var(--ino-color-hint)">Matches the certificate of incorporation.</span></div>
+<div class="type-row"><span class="tag">caption</span><span class="sample" style="font:var(--ino-type-caption);letter-spacing:var(--ino-type-caption-tracking);color:var(--ino-color-caption)">Last synced 2 minutes ago</span></div>
+
+<h2>Measured in this browser</h2>
+<table id="measured-table">
+  <thead><tr><th>Role</th><th>Font size</th><th>Line height</th><th>Weight</th></tr></thead>
+  <tbody id="measured"></tbody>
+</table>
+
+<script>
+  const ROLES = ['display','h2','h3','body-lg','body','body-sm','metric','eyebrow','label-lg','label','label-sm','hint','caption'];
+  const rows = document.querySelectorAll('.type-row .sample');
+  document.getElementById('measured').innerHTML = Array.from(rows).map((el, i) => {
+    const cs = getComputedStyle(el);
+    return `<tr><td><code>${ROLES[i]}</code></td><td>${cs.fontSize}</td><td>${cs.lineHeight}</td><td>${cs.fontWeight}</td></tr>`;
+  }).join('');
+</script>
+
+</body>
+</html>

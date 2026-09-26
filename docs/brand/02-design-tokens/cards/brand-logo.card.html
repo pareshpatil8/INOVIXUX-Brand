@@ -1,0 +1,92 @@
+<!-- @dsCard group="Foundations" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brand — Logo lockups &amp; marks · INOVIXUX Design Tokens</title>
+<link rel="stylesheet" href="../tokens.css">
+<style>
+  body { margin: 0; padding: var(--ino-space-7); background: var(--ino-color-surface); color: var(--ino-color-on-surface); font-family: var(--ino-font-display); }
+  h1 { font: var(--ino-type-h3); font-family: var(--ino-font-display); margin: 0 0 var(--ino-space-2); }
+  h2 { font: var(--ino-type-eyebrow); font-family: var(--ino-font-mono); letter-spacing: var(--ino-type-eyebrow-tracking); text-transform: uppercase; color: var(--ino-color-on-surface-muted); margin: var(--ino-space-7) 0 var(--ino-space-3); }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 68ch; }
+
+  .logo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: var(--ino-space-4); }
+  .logo-tile { border: 1px solid var(--ino-color-border); border-radius: var(--ino-radius-lg); overflow: hidden; }
+  .logo-tile .canvas { height: 96px; display: flex; align-items: center; justify-content: center; padding: var(--ino-space-4); }
+  .logo-tile .canvas img { max-height: 48px; max-width: 100%; }
+  .logo-tile .canvas.on-dark { background: #0A0A0A; }
+  .logo-tile .canvas.on-light { background: #FAFAFA; }
+  .logo-tile .meta { padding: var(--ino-space-2) var(--ino-space-3); font-family: var(--ino-font-mono); font-size: 10.5px; color: var(--ino-color-on-surface-muted); background: var(--ino-color-surface-raised); }
+</style>
+</head>
+<body>
+
+<h1>Brand — Logo lockups &amp; marks</h1>
+<p class="lede">
+  The shipped SVG set in <code>/assets/brand/logo/</code> — icon mark and full lockup, each with an
+  on-dark/on-light pairing, plus mono variants for one-color print. Final artwork iteration remains
+  a separate open workstream (INO-82); this card renders exactly what exists today, live from the
+  real files.
+</p>
+
+<h2>Marks &amp; lockups — fixed dark/light canvases</h2>
+<div class="logo-grid">
+  <div class="logo-tile">
+    <div class="canvas on-dark"><img src="../../../../assets/brand/logo/inovixux-mark-on-dark.svg" alt="INOVIXUX mark, on-dark variant"></div>
+    <div class="meta">mark-on-dark.svg</div>
+  </div>
+  <div class="logo-tile">
+    <div class="canvas on-light"><img src="../../../../assets/brand/logo/inovixux-mark-on-light.svg" alt="INOVIXUX mark, on-light variant"></div>
+    <div class="meta">mark-on-light.svg</div>
+  </div>
+  <div class="logo-tile">
+    <div class="canvas on-dark"><img src="../../../../assets/brand/logo/inovixux-lockup-dark.svg" alt="INOVIXUX full lockup, dark variant"></div>
+    <div class="meta">lockup-dark.svg</div>
+  </div>
+  <div class="logo-tile">
+    <div class="canvas on-light"><img src="../../../../assets/brand/logo/inovixux-lockup-light.svg" alt="INOVIXUX full lockup, light variant"></div>
+    <div class="meta">lockup-light.svg</div>
+  </div>
+  <div class="logo-tile">
+    <div class="canvas on-light"><img src="../../../../assets/brand/logo/inovixux-mark-mono-black.svg" alt="INOVIXUX mark, monochrome black"></div>
+    <div class="meta">mark-mono-black.svg — one-color print</div>
+  </div>
+  <div class="logo-tile">
+    <div class="canvas on-dark"><img src="../../../../assets/brand/logo/inovixux-mark-mono-white.svg" alt="INOVIXUX mark, monochrome white"></div>
+    <div class="meta">mark-mono-white.svg — one-color print</div>
+  </div>
+  <div class="logo-tile">
+    <div class="canvas on-dark"><img src="../../../../assets/brand/logo/inovixux-icon-b2c.svg" alt="INOVIXUX B2C app icon mark"></div>
+    <div class="meta">icon-b2c.svg — app-icon-scale subset</div>
+  </div>
+  <div class="logo-tile">
+    <div class="canvas on-dark"><img src="../../../../assets/brand/logo/favicon.svg" alt="INOVIXUX favicon"></div>
+    <div class="meta">favicon.svg</div>
+  </div>
+</div>
+
+<h2>Live theme repaint — mark reacts to --ino-color-* like a component</h2>
+<p class="lede" style="max-width:68ch;">
+  The tiles above are fixed on-dark/on-light canvases (the SVGs are pre-baked for those two
+  backgrounds). This row instead uses the mono outline mark filtered onto the live theme surface,
+  so it repaints with the same three panes every other foundation card does.
+</p>
+<div style="display:flex;flex-wrap:wrap;gap:var(--ino-space-6);">
+  <div style="flex:1 1 200px;padding:var(--ino-space-5);border:1px solid var(--ino-color-border);border-radius:var(--ino-radius-xl);background:var(--ino-color-surface);text-align:center;">
+    <h3 style="margin:0 0 var(--ino-space-4);font-size:var(--ino-type-body-sm-size);color:var(--ino-color-on-surface-muted);font-weight:600;">dark — :root</h3>
+    <img src="../../../../assets/brand/logo/inovixux-mark-mono-white.svg" alt="INOVIXUX mark on dark theme surface" style="height:40px;">
+  </div>
+  <div data-theme="light" style="flex:1 1 200px;padding:var(--ino-space-5);border:1px solid var(--ino-color-border);border-radius:var(--ino-radius-xl);background:var(--ino-color-surface);text-align:center;">
+    <h3 style="margin:0 0 var(--ino-space-4);font-size:var(--ino-type-body-sm-size);color:var(--ino-color-on-surface-muted);font-weight:600;">light — [data-theme="light"]</h3>
+    <img src="../../../../assets/brand/logo/inovixux-mark-mono-black.svg" alt="INOVIXUX mark on light theme surface" style="height:40px;">
+  </div>
+  <div data-theme="high-contrast" style="flex:1 1 200px;padding:var(--ino-space-5);border:1px solid var(--ino-color-border);border-radius:var(--ino-radius-xl);background:var(--ino-color-surface);text-align:center;">
+    <h3 style="margin:0 0 var(--ino-space-4);font-size:var(--ino-type-body-sm-size);color:var(--ino-color-on-surface-muted);font-weight:600;">high-contrast</h3>
+    <img src="../../../../assets/brand/logo/inovixux-mark-mono-white.svg" alt="INOVIXUX mark on high-contrast theme surface" style="height:40px;">
+  </div>
+</div>
+
+</body>
+</html>

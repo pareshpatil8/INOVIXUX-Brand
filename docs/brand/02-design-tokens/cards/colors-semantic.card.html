@@ -1,0 +1,113 @@
+<!-- @dsCard group="Foundations" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Colors — Semantic (severity &amp; RAG risk) · INOVIXUX Design Tokens</title>
+<link rel="stylesheet" href="../tokens.css">
+<style>
+  body { margin: 0; padding: var(--ino-space-7); background: var(--ino-color-surface); color: var(--ino-color-on-surface); font-family: var(--ino-font-display); }
+  h1 { font: var(--ino-type-h3); font-family: var(--ino-font-display); margin: 0 0 var(--ino-space-2); }
+  h2 { font: var(--ino-type-eyebrow); font-family: var(--ino-font-mono); letter-spacing: var(--ino-type-eyebrow-tracking); text-transform: uppercase; color: var(--ino-color-on-surface-muted); margin: var(--ino-space-7) 0 var(--ino-space-3); }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 68ch; }
+
+  .theme-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); }
+  .theme-pane { flex: 1 1 280px; padding: var(--ino-space-5); border: 1px solid var(--ino-color-border); border-radius: var(--ino-radius-xl); background: var(--ino-color-surface); color: var(--ino-color-on-surface); }
+  .theme-pane > h3 { margin: 0 0 var(--ino-space-4); font-size: var(--ino-type-body-sm-size); color: var(--ino-color-on-surface-muted); font-weight: 600; }
+
+  .chip-row { display: flex; gap: var(--ino-space-2); flex-wrap: wrap; margin-bottom: var(--ino-space-4); }
+  .chip { display: inline-flex; align-items: center; padding: var(--ino-space-1) var(--ino-space-3); border-radius: var(--ino-radius-pill); font-family: var(--ino-font-mono); font-size: 10.5px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+
+  .rag-row { display: flex; gap: var(--ino-space-4); align-items: center; margin-bottom: var(--ino-space-4); }
+  .rag-item { display: flex; align-items: center; gap: var(--ino-space-2); font-family: var(--ino-font-mono); font-size: 11px; color: var(--ino-color-on-surface-muted); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  .danger-text-demo { font-size: 12.5px; color: var(--ino-color-danger-text-safe); }
+</style>
+</head>
+<body>
+
+<h1>Colors — Semantic</h1>
+<p class="lede">
+  Severity roles (success / warning / danger / info) plus the KYB risk-flag matrix (RAG): a raw
+  <code>-dot</code> for non-text indicators and a solid <code>-fill</code>/<code>-on-fill</code>
+  chip pair for real badge text. Source: <code>tokens.css</code> §2–§3.
+</p>
+
+<h2>Theme × severity + RAG roles</h2>
+<div class="theme-row">
+
+  <div class="theme-pane">
+    <h3>dark — :root (default)</h3>
+    <div class="chip-row">
+      <span class="chip" style="background:var(--ino-color-success);color:var(--ino-color-on-success)">Success</span>
+      <span class="chip" style="background:var(--ino-color-warning);color:var(--ino-color-on-warning)">Warning</span>
+      <span class="chip" style="background:var(--ino-color-danger);color:var(--ino-color-on-danger)">Danger</span>
+      <span class="chip" style="background:var(--ino-color-info);color:var(--ino-color-on-info)">Info</span>
+    </div>
+    <div class="chip-row">
+      <span class="chip" style="background:var(--ino-color-risk-high-fill);color:var(--ino-color-risk-high-on-fill)">High risk</span>
+      <span class="chip" style="background:var(--ino-color-risk-medium-fill);color:var(--ino-color-risk-medium-on-fill)">Medium risk</span>
+      <span class="chip" style="background:var(--ino-color-risk-low-fill);color:var(--ino-color-risk-low-on-fill)">Low risk</span>
+    </div>
+    <div class="rag-row">
+      <span class="rag-item"><span class="dot" style="background:var(--ino-color-risk-high-dot)"></span>high-dot</span>
+      <span class="rag-item"><span class="dot" style="background:var(--ino-color-risk-medium-dot)"></span>medium-dot</span>
+      <span class="rag-item"><span class="dot" style="background:var(--ino-color-risk-low-dot)"></span>low-dot</span>
+    </div>
+    <div class="danger-text-demo">Invalid label / inline error — danger-text-safe</div>
+  </div>
+
+  <div class="theme-pane" data-theme="light">
+    <h3>light — [data-theme="light"]</h3>
+    <div class="chip-row">
+      <span class="chip" style="background:var(--ino-color-success);color:var(--ino-color-on-success)">Success</span>
+      <span class="chip" style="background:var(--ino-color-warning);color:var(--ino-color-on-warning)">Warning</span>
+      <span class="chip" style="background:var(--ino-color-danger);color:var(--ino-color-on-danger)">Danger</span>
+      <span class="chip" style="background:var(--ino-color-info);color:var(--ino-color-on-info)">Info</span>
+    </div>
+    <div class="chip-row">
+      <span class="chip" style="background:var(--ino-color-risk-high-fill);color:var(--ino-color-risk-high-on-fill)">High risk</span>
+      <span class="chip" style="background:var(--ino-color-risk-medium-fill);color:var(--ino-color-risk-medium-on-fill)">Medium risk</span>
+      <span class="chip" style="background:var(--ino-color-risk-low-fill);color:var(--ino-color-risk-low-on-fill)">Low risk</span>
+    </div>
+    <div class="rag-row">
+      <span class="rag-item"><span class="dot" style="background:var(--ino-color-risk-high-dot)"></span>high-dot</span>
+      <span class="rag-item"><span class="dot" style="background:var(--ino-color-risk-medium-dot)"></span>medium-dot</span>
+      <span class="rag-item"><span class="dot" style="background:var(--ino-color-risk-low-dot)"></span>low-dot</span>
+    </div>
+    <div class="danger-text-demo">Invalid label / inline error — danger-text-safe</div>
+  </div>
+
+  <div class="theme-pane" data-theme="high-contrast">
+    <h3>high-contrast — [data-theme="high-contrast"]</h3>
+    <div class="chip-row">
+      <span class="chip" style="background:var(--ino-color-success);color:var(--ino-color-on-success)">Success</span>
+      <span class="chip" style="background:var(--ino-color-warning);color:var(--ino-color-on-warning)">Warning</span>
+      <span class="chip" style="background:var(--ino-color-danger);color:var(--ino-color-on-danger)">Danger</span>
+      <span class="chip" style="background:var(--ino-color-info);color:var(--ino-color-on-info)">Info</span>
+    </div>
+    <div class="chip-row">
+      <span class="chip" style="background:var(--ino-color-risk-high-fill);color:var(--ino-color-risk-high-on-fill)">High risk</span>
+      <span class="chip" style="background:var(--ino-color-risk-medium-fill);color:var(--ino-color-risk-medium-on-fill)">Medium risk</span>
+      <span class="chip" style="background:var(--ino-color-risk-low-fill);color:var(--ino-color-risk-low-on-fill)">Low risk</span>
+    </div>
+    <div class="rag-row">
+      <span class="rag-item"><span class="dot" style="background:var(--ino-color-risk-high-dot)"></span>high-dot</span>
+      <span class="rag-item"><span class="dot" style="background:var(--ino-color-risk-medium-dot)"></span>medium-dot</span>
+      <span class="rag-item"><span class="dot" style="background:var(--ino-color-risk-low-dot)"></span>low-dot</span>
+    </div>
+    <div class="danger-text-demo">Invalid label / inline error — danger-text-safe</div>
+  </div>
+
+</div>
+
+<p style="color:var(--ino-color-on-surface-muted);font-size:12.5px;margin-top:var(--ino-space-5);">
+  Dot form is for icons/charts only — never text. Fill/on-fill is AA-verified (AAA in high-contrast)
+  for real badge text in dense risk tables. See <code>scripts/check-theme-parity.mjs</code> for the
+  per-theme contrast audit that guards these pairs.
+</p>
+
+</body>
+</html>
