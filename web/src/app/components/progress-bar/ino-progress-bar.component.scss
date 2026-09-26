@@ -1,0 +1,110 @@
+/*
+ * <ino-progress-bar> — INO-132 / INO-31 T-15.
+ *
+ * No literal colour/space/radius/duration/font-size — every declaration resolves through a
+ * semantic role in tokens.css, and logical properties only (RTL is one code path, see SPEC.md §6).
+ *
+ * Size API — DoD row 3. A track is a thin bar, not a control: `--ino-control-height` (32-44px) is
+ * the wrong scale entirely (same reasoning `ino-tag` documents in its own SPEC.md §3 for why it
+ * skips that alias). Instead the track thickness steps through three rungs of the §5 space scale
+ * — the only on-scale primitive whose granularity fits a 4-12px bar — resolved once per host via
+ * a component-local custom property, the same idiom `ino-tag` uses for `--ino-tag-fill`.
+ */
+:host([data-size='sm']) {
+  --ino-progress-bar-track-size: var(--ino-space-1);
+  --ino-control-font-size: var(--ino-control-font-size-sm);
+}
+
+:host([data-size='default']) {
+  --ino-progress-bar-track-size: var(--ino-space-2);
+}
+
+:host([data-size='lg']) {
+  --ino-progress-bar-track-size: var(--ino-space-3);
+  --ino-control-font-size: var(--ino-control-font-size-lg);
+}
+
+:host {
+  display: flex;
+  align-items: center;
+  gap: var(--ino-space-3);
+  inline-size: 100%;
+  /* DoD row 4 — row-based density floor, opt-in only. A progress bar is not itself a row, but
+     when one sits inside a density-scoped table row (the `ino-tag` idiom, SPEC.md §3) the whole
+     control — track plus value label — should not shrink the row below its own floor. Fallback is
+     the dense value (32px), matching ino-tag/ino-metric-panel's own fallback outside a
+     [data-density] ancestor — not a free-floating `auto` the contract doesn't sanction
+     (tokens.css §10 only ever defines this as 32px | 44px). */
+  min-block-size: var(--ino-row-min-height, 32px);
+  font-family: var(--ino-font-display);
+
+  /* State 5 — disabled. */
+  &.ino-progress-bar--disabled {
+    opacity: 0.5;
+  }
+}
+
+.ino-progress-bar__track {
+  position: relative;
+  flex: 1 1 auto;
+  inline-size: 100%;
+  block-size: var(--ino-progress-bar-track-size, var(--ino-space-2));
+  border-radius: var(--ino-radius-pill);
+  background: var(--ino-color-surface-sunken);
+  border: 1px solid var(--ino-color-border); /* essential boundary, WCAG 2.2 SC 1.4.11 (>=3:1) */
+  overflow: hidden;
+}
+
+.ino-progress-bar__fill {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  block-size: 100%;
+  border-radius: var(--ino-radius-pill);
+  background: var(--ino-gradient-accent);
+  transition: inline-size var(--ino-motion-duration-base) var(--ino-motion-easing-standard);
+}
+
+/* State 7 — invalid. Fill swaps to the danger register; matches ino-tag's `high` severity fill,
+   the same "risk/failure" register reused rather than a new token. */
+:host(.ino-progress-bar--invalid) .ino-progress-bar__fill {
+  background: var(--ino-color-danger);
+}
+
+/* State 8 — loading/busy. `mode="indeterminate"` IS the busy state (aria-busy is set on the host
+   in the component). A fixed-width segment sweeps end-to-end; width is expressed in inline-size
+   percentage points so the sweep is RTL-safe for free (no left/right, see SPEC.md §6). */
+.ino-progress-bar__fill--indeterminate {
+  inline-size: 40%;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: ino-progress-bar-sweep var(--ino-motion-duration-slow) var(--ino-motion-easing-standard) infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    /* Motion is the only signal indeterminate mode has — under reduced motion it collapses to a
+       static partial fill (same "stop, don't fake it" rule ino-tag/ino-toggle apply to their own
+       transitions) while aria-busy keeps communicating the ongoing state to assistive tech. */
+    inset-inline-start: 30%;
+  }
+}
+
+@keyframes ino-progress-bar-sweep {
+  0% {
+    inset-inline-start: -40%;
+  }
+  100% {
+    inset-inline-start: 100%;
+  }
+}
+
+.ino-progress-bar__label {
+  flex: 0 0 auto;
+  color: var(--ino-color-on-surface-muted);
+  font-size: var(--ino-control-font-size);
+  font-variant-numeric: tabular-nums;
+}
+
+:host(.ino-progress-bar--invalid) .ino-progress-bar__label {
+  color: var(--ino-color-danger-text-safe);
+}
