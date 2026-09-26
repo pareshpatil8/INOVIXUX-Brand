@@ -1,0 +1,61 @@
+<article class="ino-article docs-components">
+  <p class="ino-article-eyebrow">Docs / Components</p>
+  <h1>Component library</h1>
+  <p class="ino-article-lead">
+    Every shipped INOVIXUX component, generated straight from
+    <code>docs/brand/design-system.manifest.json</code> — plus the explicit, in-writing
+    Tier-1/Tier-2/Tier-3 disposition for every PrimeNG component with no dedicated build
+    (<code>docs/brand/24-primeng-component-audit-ino-31.md</code> §2, finding F-2). Nothing on
+    this page is hand-claimed.
+  </p>
+
+  <h2>Shipped components ({{ components().length }})</h2>
+  <table class="docs-table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Slug</th>
+        <th>Variants</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let component of components()">
+        <td><code>{{ component.name }}</code></td>
+        <td>{{ component.slug }}</td>
+        <td>{{ variantsLabel(component) }}</td>
+        <td><a [routerLink]="['/docs/components', component.slug]">View →</a></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Not implemented — Tier disposition (finding F-2)</h2>
+  <p>
+    Every PrimeNG component with no dedicated INOVIXUX build gets an explicit disposition here:
+    <strong>Tier-1</strong> (committed, unbuilt), <strong>Tier-2</strong> (open — no build
+    committed, no spec written; specify before building), or <strong>Tier-3</strong> (formally
+    declined in doc 17). None of these are built, so there are no links.
+  </p>
+
+  <ng-container *ngFor="let group of tierGroups()">
+    <h3 class="docs-tier-heading">{{ group.tier }} ({{ group.items.length }})</h3>
+    <table class="docs-table docs-table--disposition">
+      <thead>
+        <tr>
+          <th>Component</th>
+          <th>Group</th>
+          <th>Tier</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of group.items">
+          <td><code>{{ item.component }}</code></td>
+          <td>{{ item.group }}</td>
+          <td><span class="docs-tier-badge" [attr.data-tier]="item.tier">{{ item.tier }}</span></td>
+          <td>{{ item.status }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
+</article>

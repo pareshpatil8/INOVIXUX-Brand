@@ -1,0 +1,54 @@
+/*
+ * <ino-icon-field> — INO-31 T-16 / F-1.
+ *
+ * No literal colour/space/radius/duration/font-size below; every declaration resolves through a
+ * semantic role in tokens.css, logical properties only (RTL-safe).
+ */
+:host {
+  position: relative;
+  display: block;
+  inline-size: 100%;
+
+  /* The offset the projected control's own padding must reserve so its text never underlaps the
+     icon — read by ino-icon-field.component.ts via Renderer2 (governance N-11: no ::ng-deep), and
+     also consumed below to position the icon wrapper itself, so both stay a single source of
+     truth. Icon glyph occupies --ino-control-icon-size-default; --ino-space-3 on each side of it
+     matches the padding-inline this system's fields already use (ino-input.component.scss). */
+  --ino-icon-field-offset: calc(var(--ino-control-icon-size-default) + (var(--ino-space-3) * 2));
+}
+
+.ino-icon-field__control {
+  display: block;
+}
+
+.ino-icon-field__icon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--ino-control-icon-size-default);
+  block-size: var(--ino-control-icon-size-default);
+  color: var(--ino-color-on-surface-muted);
+  pointer-events: none; /* decorative — a leading/trailing glyph never intercepts clicks meant for
+    the control beneath it; aria-hidden on the host template element carries the same intent */
+
+  &:empty {
+    display: none;
+  }
+}
+
+:host([data-position='start']) .ino-icon-field__icon {
+  inset-inline-start: var(--ino-space-3);
+}
+
+:host([data-position='end']) .ino-icon-field__icon {
+  inset-inline-end: var(--ino-space-3);
+}
+
+/* Disabled (DoD row 5) — dims the icon in step with the projected control's own :disabled chrome;
+   this component never disables the control itself (SPEC.md §1). */
+:host(.ino-icon-field--disabled) .ino-icon-field__icon {
+  opacity: 0.5;
+}

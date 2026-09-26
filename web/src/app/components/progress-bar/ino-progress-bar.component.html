@@ -1,0 +1,9 @@
+<span class="ino-progress-bar__track">
+  <span
+    class="ino-progress-bar__fill"
+    [class.ino-progress-bar__fill--indeterminate]="mode === 'indeterminate'"
+    [style.inline-size.%]="mode === 'determinate' ? clampedValue : null"
+  ></span>
+  <span *ngIf="showValue && mode === 'determinate'" class="ino-progress-bar__value">{{ clampedValue }}%</span>
+</span>
+<span class="ino-progress-bar__sr-only" aria-live="polite">{{ srAnnouncement }}</span>
