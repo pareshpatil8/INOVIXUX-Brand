@@ -44,7 +44,7 @@
 
 .docs-tier-badge {
   display: inline-block;
-  padding: 2px 8px;
+  padding: var(--ino-space-1) var(--ino-space-2);
   border-radius: var(--ino-radius-sm);
   font-family: var(--ino-font-mono);
   font-size: 11px;
