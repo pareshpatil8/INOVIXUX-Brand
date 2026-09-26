@@ -1,0 +1,13 @@
+/* INOVIXUX design tokens — border radius. Split from tokens.css (INO-115); imported by styles.css.
+ * Do not hand-edit tokens.css directly for border radius changes — this file is now the source. */
+
+:root {
+  /* ---------------------------------------------------------------------
+   * 6. RADIUS
+   * ------------------------------------------------------------------- */
+  --ino-radius-sm: 6px;
+  --ino-radius-md: 8px;
+  --ino-radius-lg: 10px;
+  --ino-radius-xl: 14px;
+  --ino-radius-pill: 20px;
+}

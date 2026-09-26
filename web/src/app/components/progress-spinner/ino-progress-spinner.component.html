@@ -1,0 +1,23 @@
+<svg class="ino-progress-spinner__svg" [attr.viewBox]="viewBox" aria-hidden="true" focusable="false">
+  <circle
+    class="ino-progress-spinner__track"
+    [attr.cx]="center"
+    [attr.cy]="center"
+    [attr.r]="radius"
+    [attr.stroke-width]="strokeWidth"
+    fill="none"
+  ></circle>
+  <circle
+    class="ino-progress-spinner__value"
+    [attr.cx]="center"
+    [attr.cy]="center"
+    [attr.r]="radius"
+    [attr.stroke-width]="strokeWidth"
+    [attr.stroke-dasharray]="mode === 'determinate' ? circumference : indeterminateDashArray"
+    [attr.stroke-dashoffset]="dashOffset"
+    [attr.transform]="'rotate(-90 ' + center + ' ' + center + ')'"
+    fill="none"
+  ></circle>
+</svg>
+
+<span class="ino-progress-spinner__sr-only" aria-live="polite">{{ srAnnouncement }}</span>

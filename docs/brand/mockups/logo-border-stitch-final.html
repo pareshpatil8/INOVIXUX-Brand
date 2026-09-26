@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>INOVIXUX — Border Stitch Finalization (INO-82, Round 5)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A0A0A; --bg-raised:#131315; --card:#111113; --ink:#F5F5F4; --sub:#9A9A9C; --sub-dim:#5A5A5C;
+    --line:rgba(255,255,255,.10); --line-soft:rgba(255,255,255,.06);
+    --violet:#7C5CFC; --indigo:#4F46E5;
+    --radius:14px;
+    --f-display:"Geist",system-ui,-apple-system,Arial,sans-serif;
+    --f-mono:"Geist Mono",ui-monospace,"SFMono-Regular",monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-display);-webkit-font-smoothing:antialiased}
+  .banner{background:#000;color:#6B6B6D;font-size:11px;letter-spacing:.08em;
+    padding:10px 32px;border-bottom:1px solid var(--line-soft);text-transform:uppercase;font-family:var(--f-mono)}
+  .wrap{max-width:1180px;margin:0 auto;padding:56px 40px 100px}
+  h1{font-size:32px;letter-spacing:-.02em;margin:0 0 10px}
+  .lede{color:var(--sub);font-size:15px;line-height:1.6;max-width:760px;margin:0 0 8px}
+  .anchors{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 44px}
+  .anchor{font-family:var(--f-mono);font-size:11px;letter-spacing:.03em;color:var(--sub);
+    border:1px solid var(--line);border-radius:999px;padding:6px 12px}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  @media(max-width:980px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:28px;position:relative;overflow:hidden}
+  .num{font-family:var(--f-mono);font-size:11px;color:var(--sub-dim);letter-spacing:.08em}
+  .stage{display:flex;align-items:center;gap:16px;margin:16px 0 20px;flex-wrap:wrap}
+  .mark-dark, .mark-light{width:88px;height:88px;border-radius:20px;display:flex;align-items:center;justify-content:center;flex:none}
+  .mark-dark{background:#0A0A0A;border:1px solid var(--line)}
+  .mark-light{background:#F5F5F4;border:1px solid var(--line)}
+  .mark-dark svg, .mark-light svg{width:56px;height:56px}
+  .mark-tiny{width:88px;height:88px;border-radius:20px;display:flex;align-items:center;justify-content:center;flex:none;
+    background:var(--bg-raised);border:1px solid var(--line-soft)}
+  .mark-tiny svg{width:16px;height:16px}
+  h2{font-size:19px;margin:0 0 4px;letter-spacing:-.01em}
+  h3{font-size:15px;margin:44px 0 6px;letter-spacing:-.01em}
+  .tag{font-family:var(--f-mono);font-size:11px;color:var(--violet);margin-bottom:14px;letter-spacing:.02em}
+  p.copy{color:var(--sub);font-size:13.5px;line-height:1.65;margin:0 0 12px}
+  .distinct{margin-top:16px;padding-top:16px;border-top:1px solid var(--line-soft);font-size:12.5px;color:var(--sub-dim);line-height:1.6}
+  .distinct b{color:var(--sub)}
+  .apps{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;margin-top:16px}
+  @media(max-width:860px){.apps{grid-template-columns:1fr}}
+  .app-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px}
+  .app-label{font-family:var(--f-mono);font-size:11px;color:var(--sub-dim);letter-spacing:.08em;margin-bottom:16px;text-transform:uppercase}
+  .lockup-dark,.lockup-light{border-radius:12px;padding:28px 32px;display:flex;align-items:center;gap:16px}
+  .lockup-dark{background:#0A0A0A;border:1px solid var(--line)}
+  .lockup-light{background:#F5F5F4;border:1px solid var(--line);margin-top:14px}
+  .lockup-dark svg,.lockup-light svg{width:36px;height:36px;flex:none}
+  .wordmark{font-family:var(--f-display);font-weight:600;font-size:24px;letter-spacing:.045em}
+  .lockup-dark .wordmark{color:#F5F5F4}
+  .lockup-light .wordmark{color:#111113}
+  .stacked{display:flex;flex-direction:column;align-items:center;gap:14px;padding:32px}
+  .stacked svg{width:44px;height:44px}
+  .stacked .wordmark{font-size:19px}
+  .favrow{display:flex;align-items:center;gap:22px;background:#0A0A0A;border:1px solid var(--line);border-radius:12px;padding:26px 32px}
+  .favrow .cell{display:flex;flex-direction:column;align-items:center;gap:10px}
+  .favrow .cap{font-family:var(--f-mono);font-size:10px;color:var(--sub-dim)}
+  .tile{width:72px;height:72px;border-radius:17px;background:linear-gradient(135deg,#4F46E5,#7C5CFC);
+    display:flex;align-items:center;justify-content:center}
+  .tile svg{width:44px;height:44px}
+  .monorow{display:flex;gap:14px}
+  .mono-dark,.mono-light{flex:1;border-radius:12px;padding:26px;display:flex;align-items:center;justify-content:center}
+  .mono-dark{background:#0A0A0A;border:1px solid var(--line)}
+  .mono-light{background:#F5F5F4;border:1px solid var(--line)}
+  .mono-dark svg,.mono-light svg{width:48px;height:48px}
+  footer{margin-top:56px;padding-top:28px;border-top:1px solid var(--line);color:var(--sub-dim);font-size:12px;line-height:1.7;font-family:var(--f-mono)}
+</style>
+</head>
+<body>
+  <div class="banner">INOVIXUX &middot; INO-82 &middot; border stitch — finalization (round 5)</div>
+  <div class="wrap">
+    <h1>Border Stitch — master refinement &amp; applications</h1>
+    <p class="lede">The board approved <b>R4-4 Border Stitch</b> on 2026-09-24 — two territories, stitched into
+      one settlement system. This round finalizes it: three master-geometry candidates (same concept, different
+      tuning), then the application suite — wordmark lockups, app icon, favicon scale, one-color reductions —
+      shown on the recommended master. One verdict per master candidate; when one is approved it becomes the
+      production mark behind the single <code>--ino-logo-mark</code> swap point.</p>
+    <div class="anchors">
+      <span class="anchor">approved concept: border stitch</span>
+      <span class="anchor">cross-border settlement</span>
+      <span class="anchor">two systems, one platform</span>
+      <span class="anchor">bar: Apple / SpaceX / 21st.dev</span>
+    </div>
+
+    <div class="grid">
+
+      <!-- Master A — As approved, optically trued -->
+      <div class="card">
+        <div class="num">MASTER A / 3 &middot; RECOMMENDED</div>
+        <div class="stage">
+          <div class="mark-dark">
+            <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+              <rect x="6" y="8" width="11" height="24" rx="4" fill="#4F46E5"/>
+              <rect x="23" y="8" width="11" height="24" rx="4" fill="#7C5CFC"/>
+              <path d="M14,11 L26,15 M14,18 L26,22 M14,25 L26,29" stroke="#D8CEFF" stroke-width="2.6" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="mark-light">
+            <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+              <rect x="6" y="8" width="11" height="24" rx="4" fill="#4F46E5"/>
+              <rect x="23" y="8" width="11" height="24" rx="4" fill="#7C5CFC"/>
+              <path d="M14,11 L26,15 M14,18 L26,22 M14,25 L26,29" stroke="#2A1F6E" stroke-width="2.6" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="mark-tiny" title="16px favicon scale">
+            <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+              <rect x="6" y="8" width="11" height="24" rx="4" fill="#4F46E5"/>
+              <rect x="23" y="8" width="11" height="24" rx="4" fill="#7C5CFC"/>
+              <path d="M14,11 L26,15 M14,18 L26,22 M14,25 L26,29" stroke="#D8CEFF" stroke-width="3.2" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+        <h2>A — Approved geometry, trued</h2>
+        <div class="tag">the round-4 mark, optically centered</div>
+        <p class="copy">Exactly what the board approved, with one correction: the stitch band sat 1 unit low
+          in Round 4; here it is optically centered against the blocks. Nothing else moves. Lightest-touch
+          path to production.</p>
+        <div class="distinct"><b>Trade-off:</b> stitches touch the block edges but do not enter them; at very
+          small sizes the thread can read as floating between the territories rather than binding them.</div>
+      </div>
+
+      <!-- Master B — Anchored stitches -->
+      <div class="card">
+        <div class="num">MASTER B / 3</div>
+        <div class="stage">
+          <div class="mark-dark">
+            <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+              <rect x="6" y="8" width="11" height="24" rx="4" fill="#4F46E5"/>
+              <rect x="23" y="8" width="11" height="24" rx="4" fill="#7C5CFC"/>
+              <path d="M11,11 L29,15 M11,18 L29,22 M11,25 L29,29" stroke="#D8CEFF" stroke-width="2.6" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="mark-light">
+            <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+              <rect x="6" y="8" width="11" height="24" rx="4" fill="#4F46E5"/>
+              <rect x="23" y="8" width="11" height="24" rx="4" fill="#7C5CFC"/>
+              <path d="M11,11 L29,15 M11,18 L29,22 M11,25 L29,29" stroke="#2A1F6E" stroke-width="2.6" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="mark-tiny" title="16px favicon scale">
+            <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+              <rect x="6" y="8" width="11" height="24" rx="4" fill="#4F46E5"/>
+              <rect x="23" y="8" width="11" height="24" rx="4" fill="#7C5CFC"/>
+              <path d="M11,11 L29,15 M11,18 L29,22 M11,25 L29,29" stroke="#D8CEFF" stroke-width="3.2" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+        <h2>B — Anchored stitches</h2>
+        <div class="tag">the thread passes through the territories</div>
+        <p class="copy">Same blocks, but each stitch runs 3 units into both territories — sewn through, not
+          laid across. The mark reads more like one bound object; the stitches are unmistakably structural.</p>
+        <div class="distinct"><b>Trade-off:</b> busier interior on the blocks; the light-lavender thread over
+          the violet block loses a little contrast on the overlap.</div>
+      </div>
+
+      <!-- Master C — Narrow border -->
+      <div class="card">
+        <div class="num">MASTER C / 3</div>
+        <div class="stage">
+          <div class="mark-dark">
+            <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+              <rect x="5" y="8" width="13" height="24" rx="4" fill="#4F46E5"/>
+              <rect x="22" y="8" width="13" height="24" rx="4" fill="#7C5CFC"/>
+              <path d="M15,11 L25,15 M15,18 L25,22 M15,25 L25,29" stroke="#D8CEFF" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="mark-light">
+            <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+              <rect x="5" y="8" width="13" height="24" rx="4" fill="#4F46E5"/>
+              <rect x="22" y="8" width="13" height="24" rx="4" fill="#7C5CFC"/>
+              <path d="M15,11 L25,15 M15,18 L25,22 M15,25 L25,29" stroke="#2A1F6E" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="mark-tiny" title="16px favicon scale">
+            <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+              <rect x="5" y="8" width="13" height="24" rx="4" fill="#4F46E5"/>
+              <rect x="22" y="8" width="13" height="24" rx="4" fill="#7C5CFC"/>
+              <path d="M15,11 L25,15 M15,18 L25,22 M15,25 L25,29" stroke="#D8CEFF" stroke-width="3.4" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+        <h2>C — Narrow border, heavy thread</h2>
+        <div class="tag">denser mass, built for 16px</div>
+        <p class="copy">Wider territories, tighter border gap, heavier stitches. The most solid, monolithic
+          read of the three — closest to the Apple-register single-object feel, and the most legible at
+          favicon scale.</p>
+        <div class="distinct"><b>Trade-off:</b> the narrower gap de-emphasizes the "border" itself; the
+          two-territories story is quieter, the one-object story louder.</div>
+      </div>
+
+    </div>
+
+    <h3>Applications — shown on Master A</h3>
+    <p class="lede" style="font-size:13.5px">Approving a master approves this suite built from it (regenerated
+      for B or C if one of those wins instead).</p>
+
+    <div class="apps">
+
+      <div class="app-card">
+        <div class="app-label">Horizontal lockup — primary</div>
+        <div class="lockup-dark">
+          <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+            <rect x="6" y="8" width="11" height="24" rx="4" fill="#4F46E5"/>
+            <rect x="23" y="8" width="11" height="24" rx="4" fill="#7C5CFC"/>
+            <path d="M14,11 L26,15 M14,18 L26,22 M14,25 L26,29" stroke="#D8CEFF" stroke-width="2.6" stroke-linecap="round"/>
+          </svg>
+          <span class="wordmark">INOVIXUX</span>
+        </div>
+        <div class="lockup-light">
+          <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+            <rect x="6" y="8" width="11" height="24" rx="4" fill="#4F46E5"/>
+            <rect x="23" y="8" width="11" height="24" rx="4" fill="#7C5CFC"/>
+            <path d="M14,11 L26,15 M14,18 L26,22 M14,25 L26,29" stroke="#2A1F6E" stroke-width="2.6" stroke-linecap="round"/>
+          </svg>
+          <span class="wordmark">INOVIXUX</span>
+        </div>
+      </div>
+
+      <div class="app-card">
+        <div class="app-label">Stacked lockup — square surfaces</div>
+        <div class="lockup-dark stacked">
+          <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+            <rect x="6" y="8" width="11" height="24" rx="4" fill="#4F46E5"/>
+            <rect x="23" y="8" width="11" height="24" rx="4" fill="#7C5CFC"/>
+            <path d="M14,11 L26,15 M14,18 L26,22 M14,25 L26,29" stroke="#D8CEFF" stroke-width="2.6" stroke-linecap="round"/>
+          </svg>
+          <span class="wordmark">INOVIXUX</span>
+        </div>
+      </div>
+
+      <div class="app-card">
+        <div class="app-label">App icon &middot; favicon scale</div>
+        <div class="favrow">
+          <div class="cell">
+            <div class="tile">
+              <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                <rect x="6" y="8" width="11" height="24" rx="4" fill="#FFFFFF" fill-opacity=".92"/>
+                <rect x="23" y="8" width="11" height="24" rx="4" fill="#FFFFFF"/>
+                <path d="M14,11 L26,15 M14,18 L26,22 M14,25 L26,29" stroke="#2A1F6E" stroke-width="2.6" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <span class="cap">app icon 72</span>
+          </div>
+          <div class="cell">
+            <svg width="32" height="32" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+              <rect x="6" y="8" width="11" height="24" rx="4" fill="#4F46E5"/>
+              <rect x="23" y="8" width="11" height="24" rx="4" fill="#7C5CFC"/>
+              <path d="M14,11 L26,15 M14,18 L26,22 M14,25 L26,29" stroke="#D8CEFF" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+            <span class="cap">32</span>
+          </div>
+          <div class="cell">
+            <svg width="16" height="16" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+              <rect x="6" y="8" width="11" height="24" rx="4" fill="#4F46E5"/>
+              <rect x="23" y="8" width="11" height="24" rx="4" fill="#7C5CFC"/>
+              <path d="M14,11 L26,15 M14,18 L26,22 M14,25 L26,29" stroke="#D8CEFF" stroke-width="3.2" stroke-linecap="round"/>
+            </svg>
+            <span class="cap">16</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="app-card">
+        <div class="app-label">One-color reductions — print, embroidery, engraving</div>
+        <div class="monorow">
+          <div class="mono-dark">
+            <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+              <rect x="6" y="8" width="11" height="24" rx="4" fill="#F5F5F4"/>
+              <rect x="23" y="8" width="11" height="24" rx="4" fill="#F5F5F4"/>
+              <path d="M14,11 L26,15 M14,18 L26,22 M14,25 L26,29" stroke="#0A0A0A" stroke-width="2.6" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="mono-light">
+            <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+              <rect x="6" y="8" width="11" height="24" rx="4" fill="#111113"/>
+              <rect x="23" y="8" width="11" height="24" rx="4" fill="#111113"/>
+              <path d="M14,11 L26,15 M14,18 L26,22 M14,25 L26,29" stroke="#F5F5F4" stroke-width="2.6" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <footer>
+      INO-82 &middot; Round 5 — finalization of the approved Border Stitch concept (R4-4, approved 2026-09-24).<br>
+      Verdict per master candidate via the interaction card on INO-82 or a plain comment. Approving one master
+      ratifies it as the production mark; implementation lands behind the single <code>--ino-logo-mark</code>
+      swap point (SVG/PNG exports, favicon, letterhead, pitch deck, social card). The shipped IX monogram stays
+      live and untouched until then.
+    </footer>
+  </div>
+</body>
+</html>

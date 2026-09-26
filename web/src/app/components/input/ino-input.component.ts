@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, booleanAttribute } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { InoControlSize } from '../control-size';
+import { InoLabelComponent } from '../label/ino-label.component';
 
 let idCounter = 0;
 
@@ -31,7 +32,7 @@ export type InoInputVariant = 'outline' | 'filled';
 @Component({
   selector: 'ino-input',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, InoLabelComponent],
   templateUrl: './ino-input.component.html',
   styleUrl: './ino-input.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

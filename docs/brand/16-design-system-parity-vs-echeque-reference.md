@@ -202,7 +202,7 @@ Legend: ✅ Covered · ⚠️ Partial · ❌ Missing · **[38]** = was in the or
 | OrgChart | **[38]** | — | ❌ |
 | **Paginator** | [new] | — | ❌ — a table prerequisite the 38-plan missed |
 | PickList | **[38]** | — | ❌ |
-| Timeline | [new] | — | ❌ — **strong fit for a KYB audit trail** |
+| **Timeline** | [new] | `<ino-timeline>` | ✅ — marker/connector rail, vertical + horizontal layout, alternate zig-zag, interactive roving-tabindex mode; web-only by design (INO-134) |
 | Tree | **[38]** | — | ❌ |
 | TreeTable | **[38]** | — | ❌ |
 | **VirtualScroller** | [new] | `<ino-virtual-scroller>` | ✅ — fixed + variable item size, lazy loading, scroll-position restoration; web-only by design (INO-129) |
@@ -233,7 +233,7 @@ did not list; VirtualScroller is the first of the three closed.
 
 | PrimeNG component | In 38-plan? | Our equivalent | Status |
 |---|---|---|---|
-| Dialog | **[38]** | `<ino-modal>` | ⚠️ centred only; no maximize/drag/size |
+| Dialog | **[38]** | `<ino-modal>` | ✅ size sm/default/lg, maximize, drag — INO-162 / INO-31 U-7 |
 | ConfirmDialog | **[38]** | `<ino-confirm-action-sheet>` (3 mobile tracks) | ⚠️ **mobile only — nothing on web** |
 | ConfirmPopup | **[38]** | — | ❌ (the "inline anchor popup" variant from rev 2 §3.2) |
 | Drawer | **[38]** | — | ❌ — `ino-modal` has no edge positioning |
@@ -565,9 +565,9 @@ the same scaffold plus 40 pages of backfill.
 | Standard blocking modal | ✅ `role="dialog"` + `aria-modal` |
 | Dynamic runtime content | ✅ `ng-content` — *(rebaselined: PrimeNG splits this out as `DynamicDialog`)* |
 | Header title | ✅ `@Input() heading` |
-| Footer action shelf | ⚠️ projected, no named slot |
-| Maximizable / Draggable | ❌ |
-| Width variants sm/md/lg | ❌ |
+| Footer action shelf | ✅ `[ino-modal-footer]` named slot *(this row was already stale before INO-162 — the slot has been named since the component's original build)* |
+| Maximizable / Draggable | ✅ `maximizable` + `[(maximized)]`; `draggable` — INO-162 |
+| Width variants sm/md/lg | ✅ `size` input (sm/default/lg) — INO-162 |
 | Edge positioning | ❌ — **rebaselined target: `Drawer`** |
 
 ### Menubar — `<ino-nav>`
@@ -698,7 +698,7 @@ Filled · Invalid/Error · Disabled · Loading.
 | `ino-toggle` | ✅ | ❌ | ✅ | ❌ | n/a | ❌ | ✅ | n/a |
 | `ino-card` | ✅ | ✅ | ✅ | ❌ | n/a | n/a | n/a | ❌ |
 | `ino-alert` | ✅ | ✅ | ✅ | ❌ | n/a | ✅ | n/a | n/a |
-| `ino-modal` | ✅ | ✅ | ✅ | ❌ | n/a | n/a | n/a | ❌ |
+| `ino-modal` | ✅ | ✅ | ✅ | ✅ | n/a | n/a | n/a | ❌ |
 | `ino-nav` | ✅ | ✅ | ✅ | ❌ | n/a | n/a | n/a | n/a |
 | `ino-footer` | ✅ | ✅ | ✅ | ❌ | n/a | n/a | n/a | n/a |
 | `ino-hero` | ✅ | n/a | n/a | n/a | n/a | n/a | n/a | n/a |
@@ -735,7 +735,7 @@ keyboard support per component — the format §6.1 item 7 adopts.
 | `ino-checkbox` | `role`, `aria-invalid`, `aria-describedby` | ❌ no `aria-checked="mixed"` |
 | `ino-radio-group` | `role`, `aria-describedby` | ⚠️ arrow-key cycling comes free from native radios |
 | `ino-toggle` | `role="switch"`, `aria-checked`, `aria-label` | ✅ meets contract |
-| `ino-modal` | `role="dialog"`, `aria-modal`, `aria-label`, `tabindex` | 🔲 focus trap unverified (**P-1** → rebaselined to the `FocusTrap` component) |
+| `ino-modal` | `role="dialog"`, `aria-modal`, `aria-labelledby`, `tabindex` | ✅ meets contract — focus containment delegated to `[inoFocusTrap]` (T-11); resolves **P-1** (INO-162) |
 | `ino-alert` | `role`, `aria-label` | ⚠️ `aria-live` sits on the container, not the alert; inline-injected alerts may not announce |
 | `ino-toast-container` | `aria-live`, `aria-atomic` | ⚠️ single politeness level; needs `assertive` for errors, `polite` otherwise |
 | `ino-nav` | `aria-label` | ❌ no `role="menubar"`, no `aria-current` |
@@ -750,7 +750,7 @@ keyboard support per component — the format §6.1 item 7 adopts.
 | 1.4.11 | Non-text Contrast 3:1 | ⚠️ | Border/focus colours token-derived but **not measured** |
 | 1.4.1 | Use of Colour | ⚠️ | RAG uses colour **and** text in `metric-panel`; not enforced as a rule |
 | 2.1.1 | Keyboard | ⚠️ | Interactive card not operable; anchor-button disabled gap |
-| 2.1.2 | No Keyboard Trap | 🔲 | Modal focus trap unverified (P-1) |
+| 2.1.2 | No Keyboard Trap | ✅ | `[inoFocusTrap]` (T-11) on `ino-modal`'s panel — 15 passing tests in `ino-focus-trap.spec.ts`; resolves P-1 (INO-162) |
 | 2.4.7 | Focus Visible | ⚠️ | Present everywhere but **hand-repeated, no token**, already drifted |
 | 3.3.1 | Error Identification | ✅ | `aria-invalid` + visible error text |
 | 3.3.2 | Labels or Instructions | ✅ | `label`/`legend`/`hint` on all form controls |
@@ -877,7 +877,7 @@ the current component count and get monotonically more expensive. §4.4 makes th
 
 | # | Item | Status | Blocked by |
 |---|---|---|---|
-| **M-6** | Email design system — transactional templates (verification, approval-requested, report-ready) + HTML signature block | ❌ Missing | — |
+| **M-6** | Email design system — transactional templates (verification, approval-requested, report-ready) + HTML signature block | ✅ **Closed** by **INO-121** — `docs/brand/07-collateral/email/`, 4 transactional templates + signature block, values generated from `tokens.css` (`scripts/gen-email-templates.mjs`), drift-checked in CI (`scripts/check-email-tokens.mjs`). Also covers password-reset (not separately listed here). Final logo swap pending **INO-82** | — |
 | **M-7** | Brand guidelines PDF — the single distributable file a vendor/printer/partner gets | ❌ Missing | **INO-82** |
 | **M-8** | Print colour specification — CMYK + Pantone for the violet/indigo accent | ❌ Missing | **INO-82** |
 | **M-9** | Social profile kit — LinkedIn/X banner, avatar crops, post templates | ❌ Missing | partly **INO-82** |
@@ -928,14 +928,15 @@ the current component count and get monotonically more expensive. §4.4 makes th
 
 | # | Item | Resolves via |
 |---|---|---|
-| P-1 | Modal focus trap (WCAG 2.1.2) | keyboard test or axe run — rebaselined target is the `FocusTrap` component |
 | P-2 | `ino-nav` mobile hamburger | read the site shell, or a mobile-viewport screenshot |
 | P-3 | Toast sticky/persistent mode | read the toast service |
 | P-4 | Hardcoded-value audit (ds_context req. 1) | **H-5** — this is exactly what it is for |
 | P-5 | Rendered contrast of non-text elements (SC 1.4.11) | extend the ratio script to borders and focus rings |
 | P-7 | Mobile-track component parity | per-track audit, or extend `check-theme-parity.mjs` to component level |
 
-*(P-6 Figma and P-8 Claude Design are now resolved and removed from this list.)*
+*(P-6 Figma and P-8 Claude Design are now resolved and removed from this list. P-1 modal focus
+trap is also resolved — INO-162 adopted `[inoFocusTrap]` (T-11) on `ino-modal`'s panel; see §11.1
+and §11.2 above.)*
 
 ---
 
