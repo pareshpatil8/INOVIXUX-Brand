@@ -883,7 +883,7 @@ the current component count and get monotonically more expensive. §4.4 makes th
 | **M-9** | Social profile kit — LinkedIn/X banner, avatar crops, post templates | ❌ Missing | partly **INO-82** |
 | **M-10** | Motion specimen — rendered page demonstrating durations and easings | ❌ Missing | folded into **H-6** |
 | **M-11** | Imagery / illustration direction | ❌ Missing | — |
-| **M-12** | App store listing assets — screenshots, feature graphic, store copy × 3 tracks | ❌ Missing | partly **INO-82** |
+| **M-12** | App store listing assets — screenshots, feature graphic, store copy × 3 tracks | ⚠️ Partial — spec, icon-size pipeline docs, placeholder feature graphic, and store copy done (`07-collateral/app-store-listing-assets.md`); screenshots need a build/simulator step (handed to QALead), final artwork gated on INO-82, submission gated on the INO-14 hold | partly **INO-82** |
 | **M-13** | **PrimeNG AI tooling adoption** *(NEW)* — install the Plugin; pin `llms.txt` to `specs/primeng/llms-22.1.1.txt` | ❌ Not started | §2 | 
 | **M-14** | **Decompose `ino-metric-panel`** *(NEW)* into `Tag` + `MeterGroup` inside a `Card` | 🔲 Decision | §7 |
 | **N-5** | Composite type aliases + `--leading-*` / `--tracking-*` scales | ✅ **Closed** by **INO-126** (W0-4) — `tokens.css` §4c: 9-step `--ino-leading-*` + 7-step `--ino-tracking-*` scale, every existing role re-pointed at it, plus one `font`-shorthand composite alias per role, asserted by `check-theme-parity.mjs` | — |
@@ -908,9 +908,9 @@ the current component count and get monotonically more expensive. §4.4 makes th
 | Priority | Items | ❌ Missing | ⚠️ Partial | 🔲 Decision | ✅ Unblocked |
 |---|---|---|---|---|---|
 | High | 11 | 10 | 0 | 1 | 0 |
-| Medium | 15 | 11 | 3 | 2 | 0 |
+| Medium | 15 | 10 | 4 | 2 | 0 |
 | Low | 5 | 4 | 0 | 0 | 1 |
-| **Total** | **31** | **25** | **3** | **3** | **1** |
+| **Total** | **31** | **24** | **4** | **3** | **1** |
 
 ---
 
