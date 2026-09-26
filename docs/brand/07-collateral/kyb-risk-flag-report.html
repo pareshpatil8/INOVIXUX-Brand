@@ -27,8 +27,23 @@
    *
    * Monochrome/press print profile: office mono printers and offset press both collapse hue, so
    * RAG status is never color-only here — every risk row also carries a shape (●/▲/■) and the
-   * word HIGH/MEDIUM/LOW. This is the same redundant-encoding rule the digital risk chip already
-   * follows (09-design-system-standards.md §"RAG risk chip"), applied to the print substrate.
+   * word HIGH/MEDIUM/LOW. This is the token-role rule from 09-design-system-standards.md §5
+   * ("never a raw color prop — this is what keeps the WCAG-audited RAG pairs from being
+   * bypassed"), applied to the print substrate.
+   *
+   * Measured, not assumed — under a luminance-preserving greyscale conversion the triad lands on:
+   *     red-600 → grey 28 · amber-800 → grey 34 · green-700 → grey 38
+   * Those are 1.08:1–1.24:1 against EACH OTHER, far under the 3:1 needed to tell two non-text
+   * fills apart, so on a mono printer the hue signal is not merely degraded, it is gone. What
+   * survives is white-on-fill text at 6.59 / 5.73 / 5.31:1 — still comfortably AA on all three
+   * greys. That is the whole reason the shape+word redundancy is mandatory rather than a nicety,
+   * and the reason the @media print block forces print-color-adjust:exact on the chips: the
+   * redundancy is printed IN white on those greys, so it only exists if the fill prints.
+   *
+   * Press/CMYK: 07-collateral/print-color-spec.md (INO-122) is the color-managed source for
+   * accent + neutrals. It does NOT yet carry the risk triad — for an offset run these three
+   * need CMYK/Pantone equivalents added there first. Tracked as a follow-up; a browser
+   * Print-to-PDF export (the documented path for this template) is unaffected.
    */
   :root{
     --paper:        #FAFAFA; /* = --ino-primitive-off-white, [data-theme="light"] surface */
@@ -38,7 +53,7 @@
     --ink-muted:    #55555C; /* = --ino-primitive-charcoal-muted, 7.08:1 on paper */
     --rule:         rgba(10,10,10,0.10); /* = --ino-primitive-line-dark */
     --rule-soft:    rgba(10,10,10,0.06); /* = --ino-primitive-line-dark-soft */
-    --accent:       #4F46E5; /* = [data-theme="light"] --ino-color-accent-text-safe (indigo-500), 6.29:1 — the only accent-TEXT-safe role on light per tokens.css */
+    --accent:       #4F46E5; /* = [data-theme="light"] --ino-color-accent-text-safe (indigo-500) — the only accent-TEXT-safe role on light per tokens.css. 6.02:1 on this file's --paper (#FAFAFA); tokens.css's 6.29:1 is the pure-#FFFFFF figure, so the number is restated here against the substrate actually used. AA either way. */
 
     /* Risk fill triad — copied verbatim from tokens.css [data-theme="light"], §2b */
     --risk-high-fill:    #A6362D; /* --ino-primitive-red-600 */
@@ -176,6 +191,20 @@
     .page{box-shadow:none;margin:0 auto}
     table.risk-table tr{break-inside:avoid}
     .signoff,.disclaimer{break-inside:avoid}
+
+    /* Force the risk fills to print. Chrome/Edge/Safari all ship the print dialog's
+       "Background graphics" option OFF by default, which drops background-color. Every RAG
+       signal in this report is white-on-fill (chip and legend swatch), so without this rule a
+       default Print-to-PDF or office-printer run renders the status text and its ●/▲/■ glyph
+       white-on-white — i.e. the risk column disappears entirely, silently, on the one artifact
+       whose whole purpose is carrying risk status to a human reviewer. The redundant
+       shape+word encoding does NOT rescue it, because that redundancy lives *inside* the chip
+       in --risk-*-on-fill white. This must stay in place. */
+    .risk-chip,.rag-legend .swatch,.trace-rule{
+      -webkit-print-color-adjust:exact; print-color-adjust:exact;
+    }
+    /* Zebra striping and the panel fills are cosmetic — let the driver drop them to save ink,
+       the borders already carry the structure. Deliberately NOT forced to exact. */
   }
 </style>
 </head>
