@@ -35,6 +35,32 @@ class InoPalette {
   final Color info;
   final Color onInfo;
 
+  /// INO-113 — data-viz layer, tokens.css §13. Categorical = series identity in fixed slot
+  /// order; sequential = magnitude (violet, step 8 = highest); diverging = risk delta (cool
+  /// azure decrease / warm red increase, neutral midpoint). Audit tables:
+  /// docs/brand/24-data-visualization-tokens.md.
+  final Color chartCat1;
+  final Color chartCat2;
+  final Color chartCat3;
+  final Color chartCat4;
+  final Color chartCat5;
+  final Color chartCat6;
+  final Color chartSeq1;
+  final Color chartSeq2;
+  final Color chartSeq3;
+  final Color chartSeq4;
+  final Color chartSeq5;
+  final Color chartSeq6;
+  final Color chartSeq7;
+  final Color chartSeq8;
+  final Color chartDivNeg3;
+  final Color chartDivNeg2;
+  final Color chartDivNeg1;
+  final Color chartDivMid;
+  final Color chartDivPos1;
+  final Color chartDivPos2;
+  final Color chartDivPos3;
+
   const InoPalette({
     required this.surface,
     required this.surfaceRaised,
@@ -59,6 +85,27 @@ class InoPalette {
     required this.dangerTextSafe,
     required this.info,
     required this.onInfo,
+    required this.chartCat1,
+    required this.chartCat2,
+    required this.chartCat3,
+    required this.chartCat4,
+    required this.chartCat5,
+    required this.chartCat6,
+    required this.chartSeq1,
+    required this.chartSeq2,
+    required this.chartSeq3,
+    required this.chartSeq4,
+    required this.chartSeq5,
+    required this.chartSeq6,
+    required this.chartSeq7,
+    required this.chartSeq8,
+    required this.chartDivNeg3,
+    required this.chartDivNeg2,
+    required this.chartDivNeg1,
+    required this.chartDivMid,
+    required this.chartDivPos1,
+    required this.chartDivPos2,
+    required this.chartDivPos3,
   });
 
   static const dark = InoPalette(
@@ -85,6 +132,28 @@ class InoPalette {
     dangerTextSafe: Color(0xFFDE6A61), // danger-500 is only 4.16:1 on dark surface, fails AA 1.4.3 as text
     info: Color(0xFF3D92BD), // INO-128 — fourth, non-alarming severity register
     onInfo: Color(0xFF000000),
+    // INO-113 — data-viz layer, tokens.css §13 dark-mode values.
+    chartCat1: Color(0xFF4683C5),
+    chartCat2: Color(0xFFC95A8B),
+    chartCat3: Color(0xFF829417),
+    chartCat4: Color(0xFFAF62C1),
+    chartCat5: Color(0xFFC56B23),
+    chartCat6: Color(0xFF1E9997),
+    chartSeq1: Color(0xFF4F417E),
+    chartSeq2: Color(0xFF63529C),
+    chartSeq3: Color(0xFF7764BA),
+    chartSeq4: Color(0xFF8C77D6),
+    chartSeq5: Color(0xFFA18EE8),
+    chartSeq6: Color(0xFFB5A9EF),
+    chartSeq7: Color(0xFFCBC2F8),
+    chartSeq8: Color(0xFFE1DDF9),
+    chartDivNeg3: Color(0xFF589CE6),
+    chartDivNeg2: Color(0xFF467DB9),
+    chartDivNeg1: Color(0xFF3A6089),
+    chartDivMid: Color(0xFF383836),
+    chartDivPos1: Color(0xFF894840),
+    chartDivPos2: Color(0xFFBB584D),
+    chartDivPos3: Color(0xFFE66F62),
   );
 
   static const light = InoPalette(
@@ -111,6 +180,29 @@ class InoPalette {
     dangerTextSafe: Color(0xFFA6362D), // light's fill red is already a legible text red — roles converge
     info: Color(0xFF226587),
     onInfo: Color(0xFFFFFFFF),
+    // INO-113 — categorical identical to dark (shared identity across the theme toggle);
+    // ramps re-stepped so the strong end anchors against this light surface.
+    chartCat1: Color(0xFF4683C5),
+    chartCat2: Color(0xFFC95A8B),
+    chartCat3: Color(0xFF829417),
+    chartCat4: Color(0xFFAF62C1),
+    chartCat5: Color(0xFFC56B23),
+    chartCat6: Color(0xFF1E9997),
+    chartSeq1: Color(0xFFB4A8EB),
+    chartSeq2: Color(0xFFA193DD),
+    chartSeq3: Color(0xFF8F7ECF),
+    chartSeq4: Color(0xFF7D6ABF),
+    chartSeq5: Color(0xFF6B57AC),
+    chartSeq6: Color(0xFF5A4697),
+    chartSeq7: Color(0xFF49367F),
+    chartSeq8: Color(0xFF392866),
+    chartDivNeg3: Color(0xFF2F74BB),
+    chartDivNeg2: Color(0xFF6193CB),
+    chartDivNeg1: Color(0xFF8EB1DA),
+    chartDivMid: Color(0xFFEBEBE9),
+    chartDivPos1: Color(0xFFD79E95),
+    chartDivPos2: Color(0xFFC97469),
+    chartDivPos3: Color(0xFFB9473D),
   );
 
   static const highContrast = InoPalette(
@@ -137,6 +229,29 @@ class InoPalette {
     dangerTextSafe: Color(0xFFFF6B6B), // clears this theme's AAA bar as text — roles converge
     info: Color(0xFF6BB6FF), // true blue — accentSecondary already owns cyan in this theme
     onInfo: Color(0xFF000000),
+    // INO-113 — high-contrast restep: same hue families at the top of the dark lightness
+    // band (~6:1 on pure black), ramps stretched wider than dark mode's.
+    chartCat1: Color(0xFF5896D9),
+    chartCat2: Color(0xFFD76797),
+    chartCat3: Color(0xFF8B9D26),
+    chartCat4: Color(0xFFBC6ECE),
+    chartCat5: Color(0xFFD37732),
+    chartCat6: Color(0xFF15A7A5),
+    chartSeq1: Color(0xFF5A4A90),
+    chartSeq2: Color(0xFF6E5CAD),
+    chartSeq3: Color(0xFF836FC9),
+    chartSeq4: Color(0xFF9883E3),
+    chartSeq5: Color(0xFFAC9CF0),
+    chartSeq6: Color(0xFFC2B7F7),
+    chartSeq7: Color(0xFFD8D1FD),
+    chartSeq8: Color(0xFFEEECFB),
+    chartDivNeg3: Color(0xFFADD1FB),
+    chartDivNeg2: Color(0xFF64A2E7),
+    chartDivNeg1: Color(0xFF4374AA),
+    chartDivMid: Color(0xFF535350),
+    chartDivPos1: Color(0xFFAD5349),
+    chartDivPos2: Color(0xFFE8796C),
+    chartDivPos3: Color(0xFFF69C8F),
   );
 }
 
@@ -179,6 +294,17 @@ class InoTypeLabel {
   static const labelLg = InoTypeLabel(fontSize: 16, height: 1.35, letterSpacing: -0.16);
   static const label = InoTypeLabel(fontSize: 14.5, height: 1.45, letterSpacing: 0);
   static const labelSm = InoTypeLabel(fontSize: 12, height: 1.4, letterSpacing: 0.06);
+
+/// Font pairing (INO-119) — tokens.css §4's mandatory fallback chain, ported as data. Unlike
+/// React Native, Flutter's `TextStyle.fontFamilyFallback` genuinely supports an ordered list
+/// like CSS does, so [displayFallback] can be passed there directly once the `.ttf` assets are
+/// declared in pubspec.yaml (not done in this pass — same "flagged, not fetched" status as Geist
+/// itself on this platform). No Devanagari-safe line-height variants are ported here: tokens.dart
+/// has no font-size/line-height scale at all yet (a pre-existing gap, not introduced by this
+/// ticket) — see tokens.css README §Indic/Devanagari typography pairing.
+class InoFont {
+  static const String display = 'Geist';
+  static const List<String> displayFallback = ['Noto Sans Devanagari'];
 }
 
 /// tokens.css §12 — control-size scale behind the `size` prop, FLUID resolution only

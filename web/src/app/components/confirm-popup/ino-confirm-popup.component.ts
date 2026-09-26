@@ -1,5 +1,6 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -19,7 +20,7 @@ import { InoControlSize } from '../control-size';
 import { InoButtonComponent } from '../button/ino-button.component';
 import { InoFocusTrapDirective } from '../focus-trap/ino-focus-trap.directive';
 import { InoConfirmSeverity } from '../confirm-dialog/ino-confirm-dialog.component';
-import { InoOverlayPosition, computeOverlayPlacement } from './overlay-position';
+import { InoOverlayPosition, computeOverlayPlacement } from '../overlay/overlay-position';
 
 let popupIdCounter = 0;
 
@@ -32,8 +33,8 @@ let popupIdCounter = 0;
  * Shares the confirm/cancel action contract and `InoConfirmSeverity` type with
  * `<ino-confirm-dialog>` (same buttons, same severity axis) but is a genuinely different surface,
  * not a themed variant of it: no scrim, no viewport-centered panel, and it positions itself
- * relative to an anchor element via `computeOverlayPlacement` (`./overlay-position.ts`) — the
- * reusable core this issue exists partly to establish for Tooltip (T-22) and Popover (T-23).
+ * relative to an anchor element via `computeOverlayPlacement` (`../overlay/overlay-position.ts`),
+ * the shared placement core also used by Tooltip (T-22) and Popover (T-23) (INO-271).
  *
  * Usage — either call `toggle()` from the trigger's own handler (PrimeNG-style, anchor inferred
  * from the event) or drive `[(open)]` directly and pass `[target]` yourself:
@@ -76,6 +77,8 @@ export class InoConfirmPopupComponent implements OnChanges, OnDestroy {
   @Output() confirmed = new EventEmitter<void>();
   @Output() cancelled = new EventEmitter<void>();
   @Output() openChange = new EventEmitter<boolean>();
+  @Output() shown = new EventEmitter<void>();
+  @Output() hidden = new EventEmitter<void>();
 
   @ViewChild('panel') private panelRef?: ElementRef<HTMLElement>;
 
@@ -86,8 +89,15 @@ export class InoConfirmPopupComponent implements OnChanges, OnDestroy {
   protected effectivePosition: InoOverlayPosition = this.position;
 
   private readonly zone = inject(NgZone);
+  private readonly cdr = inject(ChangeDetectorRef);
   private anchorEl: HTMLElement | null = null;
   private outsideClickBound = false;
+  /**
+   * Tracks the actual open/closed state, independent of the `open` @Input — see
+   * `../overlay/SPEC.md` §2 for why this (not comparing against `this.open`) is what makes
+   * `shown`/`hidden` fire exactly once per real transition regardless of the path.
+   */
+  private isOpenState = false;
 
   private readonly onWindowChange = (): void => this.reposition();
   private readonly onDocumentPointerDown = (event: PointerEvent): void => {
@@ -103,11 +113,7 @@ export class InoConfirmPopupComponent implements OnChanges, OnDestroy {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['open']) {
-      if (this.open) {
-        this.activate();
-      } else {
-        this.deactivate();
-      }
+      this.setOpen(this.open);
     }
   }
 
@@ -122,14 +128,12 @@ export class InoConfirmPopupComponent implements OnChanges, OnDestroy {
    * isn't the element that received the click (e.g. a row action inside a table cell).
    */
   toggle(event?: Event, anchor?: HTMLElement): void {
-    if (this.open) {
+    if (this.isOpenState) {
       this.requestCancel();
       return;
     }
     this.anchorEl = anchor ?? (event?.currentTarget as HTMLElement | null) ?? this.resolveTarget();
-    this.open = true;
-    this.openChange.emit(true);
-    this.activate();
+    this.setOpen(true);
   }
 
   onKeydown(event: KeyboardEvent): void {
@@ -147,20 +151,41 @@ export class InoConfirmPopupComponent implements OnChanges, OnDestroy {
   }
 
   requestCancel(): void {
-    if (!this.open || this.loading) {
+    if (!this.isOpenState || this.loading) {
       return;
     }
-    this.open = false;
-    this.openChange.emit(false);
     this.cancelled.emit();
-    this.deactivate();
+    this.setOpen(false);
+  }
+
+  /**
+   * The single choke point every path that can change `open` funnels through — imperative
+   * `toggle()`/`requestCancel()`, and the `[(open)]`-bound input path via `ngOnChanges`. See
+   * `../overlay/SPEC.md` §2.
+   */
+  private setOpen(next: boolean): void {
+    this.open = next;
+    if (this.isOpenState === next) {
+      return;
+    }
+    this.isOpenState = next;
+    this.openChange.emit(next);
+    if (next) {
+      this.shown.emit();
+      this.activate();
+    } else {
+      this.hidden.emit();
+      this.deactivate();
+    }
+    this.cdr.markForCheck();
   }
 
   private activate(): void {
     this.anchorEl ??= this.resolveTarget();
     // Popup content isn't laid out on this tick yet — same deferral <ino-modal> uses before
-    // measuring/focusing its panel.
-    queueMicrotask(() => this.reposition());
+    // measuring/focusing its panel. `setTimeout`, not `queueMicrotask`: zone drains microtasks
+    // before `ApplicationRef.tick()` runs, so a microtask fires before `#panel` exists in the DOM.
+    setTimeout(() => this.reposition());
 
     window.addEventListener('resize', this.onWindowChange);
     window.addEventListener('scroll', this.onWindowChange, true);
@@ -210,5 +235,6 @@ export class InoConfirmPopupComponent implements OnChanges, OnDestroy {
     this.top = placement.top;
     this.left = placement.left;
     this.effectivePosition = placement.position;
+    this.cdr.markForCheck();
   }
 }

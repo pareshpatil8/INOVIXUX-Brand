@@ -52,7 +52,7 @@ Same set `<ino-checkbox>` carries, adapted from a multi-select box to a single-s
 | Focus-visible | ✅ | `--ino-focus-ring` / `--ino-focus-ring-offset`, unchanged |
 | Disabled | ✅ | `:disabled` — `cursor: not-allowed`, row/label dim to `--ino-color-on-surface-muted` |
 | Readonly | ✅ **(new)** | Same click-cancel approach as `<ino-checkbox>` — see §3 |
-| Invalid | ✅ **(new)** | `invalid` boolean @Input (not an `error` string — see §4) paints a `box-shadow` ring via `[aria-invalid='true']` |
+| Invalid | ✅ **(new)** | `invalid` boolean @Input (not an `error` string — see §4) paints `box-shadow: var(--ino-invalid-ring)` via `[aria-invalid='true']` — INO-257's Wave 0 token, on a different channel from the focus outline so a focused invalid radio shows both rings, and the one box-shadow high-contrast keeps and widens instead of flattening |
 | Loading/busy | ✅ **(new)** | `aria-busy` + `[disabled]="disabled || loading"` + an adjacent spinner, matching `<ino-checkbox>`'s "keep the last committed value on screen" treatment |
 
 ---

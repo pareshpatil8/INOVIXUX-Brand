@@ -1,0 +1,294 @@
+<!-- @dsCard group="Form" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ino-textarea — labeled multi-line text control (INO-147)</title>
+<!-- Canonical token file, linked rather than copied: this preview must repaint with the system,
+     and must never become a second place raw hex values live. -->
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-eyebrow-size);
+    letter-spacing: var(--ino-type-eyebrow-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 60ch; }
+
+  .theme-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); }
+  .theme-pane {
+    flex: 1 1 280px;
+    padding: var(--ino-space-5);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-xl);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+  }
+  .theme-pane > h3 {
+    margin: 0 0 var(--ino-space-4);
+    font-size: var(--ino-type-body-sm-size);
+    color: var(--ino-color-on-surface-muted);
+    font-weight: 600;
+  }
+
+  .row { display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--ino-space-5); }
+
+  /* Mirrors web/src/app/components/textarea/ino-textarea.component.scss — same token bindings,
+     so a divergence between this preview and the shipped component is visible as a visual diff. */
+  .ino-field { display: flex; flex-direction: column; gap: var(--ino-space-2); min-width: 220px; }
+  .ino-field__label { font-size: var(--ino-type-body-sm-size); font-weight: 600; color: var(--ino-color-on-surface); }
+  .ino-field__required { color: var(--ino-color-danger); }
+
+  .ino-field__control-wrap { position: relative; display: block; }
+
+  .ino-field__control {
+    box-sizing: border-box;
+    display: block;
+    inline-size: 100%;
+    min-block-size: var(--ino-target-comfortable);
+    padding-block: var(--ino-space-3);
+    padding-inline: var(--ino-control-padding-inline-default);
+    background: var(--ino-color-surface-sunken);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-md);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-control-font-size-default);
+    resize: vertical;
+  }
+  .ino-field__control::placeholder { color: var(--ino-color-on-surface-subtle); }
+  .ino-field__control:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+    border-color: var(--ino-color-accent);
+  }
+  .ino-field__control--sm { padding-inline: var(--ino-control-padding-inline-sm); font-size: var(--ino-control-font-size-sm); }
+  .ino-field__control--lg { padding-inline: var(--ino-control-padding-inline-lg); font-size: var(--ino-control-font-size-lg); }
+
+  .ino-field__control--auto-resize { resize: none; overflow-y: hidden; }
+
+  .ino-field__control--error { border-color: var(--ino-color-danger); }
+  .ino-field__control:disabled { opacity: 0.5; cursor: not-allowed; resize: none; }
+  .ino-field__control[readonly] { background: var(--ino-color-surface-raised); cursor: default; }
+
+  .ino-field__control--filled {
+    background: var(--ino-color-surface-raised);
+    border-color: transparent;
+    border-block-end: 1px solid var(--ino-color-border);
+    border-end-start-radius: 0;
+    border-end-end-radius: 0;
+  }
+  .ino-field__control--filled[readonly] { background: var(--ino-color-surface-sunken); }
+  .ino-field__control--filled.ino-field__control--error { border-block-end-color: var(--ino-color-danger); }
+
+  .ino-field__control--loading { padding-inline-end: calc(var(--ino-control-padding-inline-default) + 24px); }
+  .ino-field__spinner {
+    position: absolute; inset-inline-end: var(--ino-space-4); top: var(--ino-space-3);
+    inline-size: 14px; block-size: 14px; border-radius: 50%;
+    border: 2px solid var(--ino-color-on-surface-muted); border-top-color: transparent;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .ino-field__spinner { animation: ino-textarea-spin var(--ino-motion-duration-slow) linear infinite; }
+  }
+  @keyframes ino-textarea-spin { to { transform: rotate(360deg); } }
+
+  .ino-field__meta { display: flex; align-items: baseline; justify-content: space-between; gap: var(--ino-space-3); }
+  .ino-field__hint { margin: 0; font-size: var(--ino-type-body-sm-size); color: var(--ino-color-on-surface-muted); }
+  .ino-field__error { margin: 0; font-size: var(--ino-type-body-sm-size); color: var(--ino-color-danger); font-weight: 600; }
+  .ino-field__counter { margin: 0; margin-inline-start: auto; font-size: var(--ino-type-body-sm-size); color: var(--ino-color-on-surface-muted); white-space: nowrap; }
+  .ino-field__counter--limit { color: var(--ino-color-danger); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<h1>Textarea — labeled multi-line text control</h1>
+<p class="lede">
+  Built (INO-147) with auto-resize, fixed rows, a character counter, a <code>filled</code> variant,
+  and the same size/state contract as <code>&lt;ino-input&gt;</code>. See <code>SPEC.md</code> for
+  the auto-resize and counter decisions.
+</p>
+
+<h2>Theme × variant</h2>
+<div class="theme-row">
+
+  <div class="theme-pane">
+    <h3>dark — :root (default)</h3>
+    <div class="row">
+      <label class="ino-field">
+        <span class="ino-field__label">Notes<span class="ino-field__required" aria-hidden="true"> *</span></span>
+        <span class="ino-field__control-wrap">
+          <textarea class="ino-field__control" rows="3" placeholder="Add a note…"></textarea>
+        </span>
+      </label>
+      <label class="ino-field">
+        <span class="ino-field__label">Notes (filled)</span>
+        <span class="ino-field__control-wrap">
+          <textarea class="ino-field__control ino-field__control--filled" rows="3" placeholder="Add a note…"></textarea>
+        </span>
+      </label>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="light">
+    <h3>light — [data-theme="light"]</h3>
+    <div class="row">
+      <label class="ino-field">
+        <span class="ino-field__label">Notes<span class="ino-field__required" aria-hidden="true"> *</span></span>
+        <span class="ino-field__control-wrap">
+          <textarea class="ino-field__control" rows="3" placeholder="Add a note…"></textarea>
+        </span>
+      </label>
+      <label class="ino-field">
+        <span class="ino-field__label">Notes (filled)</span>
+        <span class="ino-field__control-wrap">
+          <textarea class="ino-field__control ino-field__control--filled" rows="3" placeholder="Add a note…"></textarea>
+        </span>
+      </label>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="high-contrast">
+    <h3>high-contrast — [data-theme="high-contrast"]</h3>
+    <div class="row">
+      <label class="ino-field">
+        <span class="ino-field__label">Notes<span class="ino-field__required" aria-hidden="true"> *</span></span>
+        <span class="ino-field__control-wrap">
+          <textarea class="ino-field__control" rows="3" placeholder="Add a note…"></textarea>
+        </span>
+      </label>
+      <label class="ino-field">
+        <span class="ino-field__label">Notes (filled)</span>
+        <span class="ino-field__control-wrap">
+          <textarea class="ino-field__control ino-field__control--filled" rows="3" placeholder="Add a note…"></textarea>
+        </span>
+      </label>
+    </div>
+  </div>
+
+</div>
+
+<h2>Size (control-size scale)</h2>
+<div class="row">
+  <label class="ino-field">
+    <span class="ino-field__label">Small</span>
+    <span class="ino-field__control-wrap">
+      <textarea class="ino-field__control ino-field__control--sm" rows="3" placeholder="sm"></textarea>
+    </span>
+  </label>
+  <label class="ino-field">
+    <span class="ino-field__label">Default</span>
+    <span class="ino-field__control-wrap">
+      <textarea class="ino-field__control" rows="3" placeholder="default"></textarea>
+    </span>
+  </label>
+  <label class="ino-field">
+    <span class="ino-field__label">Large</span>
+    <span class="ino-field__control-wrap">
+      <textarea class="ino-field__control ino-field__control--lg" rows="3" placeholder="lg"></textarea>
+    </span>
+  </label>
+</div>
+
+<h2>Rows vs. auto-resize</h2>
+<div class="row">
+  <label class="ino-field">
+    <span class="ino-field__label">Fixed rows (rows=3, user-resizable)</span>
+    <span class="ino-field__control-wrap">
+      <textarea class="ino-field__control" rows="3">Line one
+Line two
+Line three</textarea>
+    </span>
+  </label>
+  <label class="ino-field">
+    <span class="ino-field__label">Auto-resize (grows with content, resize handle off)</span>
+    <span class="ino-field__control-wrap">
+      <textarea class="ino-field__control ino-field__control--auto-resize" rows="2">This grows with its content up to a maxRows cap, then scrolls instead of growing further.</textarea>
+    </span>
+  </label>
+</div>
+
+<h2>Character counter</h2>
+<div class="row">
+  <label class="ino-field">
+    <span class="ino-field__label">Under limit</span>
+    <span class="ino-field__control-wrap">
+      <textarea class="ino-field__control" rows="3" aria-describedby="counter-under">Short bio text.</textarea>
+    </span>
+    <div class="ino-field__meta">
+      <p class="ino-field__counter" id="counter-under">15/200</p>
+    </div>
+  </label>
+  <label class="ino-field">
+    <span class="ino-field__label">At limit</span>
+    <span class="ino-field__control-wrap">
+      <textarea class="ino-field__control ino-field__control--error" rows="3" aria-invalid="true" aria-describedby="counter-limit">This bio is exactly at the character limit allowed for this field.</textarea>
+    </span>
+    <div class="ino-field__meta">
+      <p class="ino-field__counter ino-field__counter--limit" id="counter-limit">68/68</p>
+    </div>
+  </label>
+</div>
+
+<h2>States</h2>
+<div class="row">
+  <label class="ino-field">
+    <span class="ino-field__label">Hint</span>
+    <span class="ino-field__control-wrap">
+      <textarea class="ino-field__control" rows="3" aria-describedby="textarea-hint-demo">Acme Corp is a payments infrastructure provider.</textarea>
+    </span>
+    <p class="ino-field__hint" id="textarea-hint-demo">Two to three sentences, plain text only.</p>
+  </label>
+  <label class="ino-field">
+    <span class="ino-field__label">Invalid</span>
+    <span class="ino-field__control-wrap">
+      <textarea class="ino-field__control ino-field__control--error" rows="3" aria-invalid="true" aria-describedby="textarea-error-demo"></textarea>
+    </span>
+    <p class="ino-field__error" id="textarea-error-demo" role="alert">This field is required.</p>
+  </label>
+  <label class="ino-field">
+    <span class="ino-field__label">Readonly</span>
+    <span class="ino-field__control-wrap">
+      <textarea class="ino-field__control" rows="3" readonly>Submitted 2026-09-20, cannot be edited.</textarea>
+    </span>
+  </label>
+  <label class="ino-field">
+    <span class="ino-field__label">Loading</span>
+    <span class="ino-field__control-wrap">
+      <textarea class="ino-field__control ino-field__control--loading" rows="3" readonly aria-busy="true">Verifying…</textarea>
+      <span class="ino-field__spinner" aria-hidden="true"></span>
+    </span>
+  </label>
+  <label class="ino-field">
+    <span class="ino-field__label">Disabled</span>
+    <span class="ino-field__control-wrap">
+      <textarea class="ino-field__control" rows="3" disabled>Locked</textarea>
+    </span>
+  </label>
+</div>
+
+<h2>RTL</h2>
+<div class="row" dir="rtl">
+  <label class="ino-field">
+    <span class="ino-field__label">ملاحظات</span>
+    <span class="ino-field__control-wrap">
+      <textarea class="ino-field__control ino-field__control--loading" rows="3" readonly aria-busy="true">جارٍ التحقق…</textarea>
+      <span class="ino-field__spinner" aria-hidden="true"></span>
+    </span>
+  </label>
+</div>
+
+</body>
+</html>

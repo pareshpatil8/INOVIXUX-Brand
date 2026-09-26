@@ -1,0 +1,165 @@
+<div class="ino-field" [class.ino-field--disabled]="disabled">
+  <ino-label [for]="selectId" [size]="size" [required]="required" [disabled]="disabled" [readonly]="readonly" [invalid]="!!error">{{ label }}</ino-label>
+
+  <div class="ino-field__control-wrap">
+    <!-- A `<div>`, not a `<button>` (unlike ino-select's trigger): chip-mode nests a real, focusable
+         remove `<button>` per chip, and nesting interactive elements inside a `<button>` is invalid
+         HTML. `role="combobox"` + `tabindex` replicates the button's semantics/focusability. -->
+    <div
+      #trigger
+      [id]="selectId"
+      class="ino-field__control ino-field__control--trigger"
+      [class.ino-field__control--error]="!!error"
+      [class.ino-field__control--placeholder]="!selectedOptions.length"
+      [attr.tabindex]="disabled ? -1 : 0"
+      role="combobox"
+      aria-haspopup="listbox"
+      [attr.aria-controls]="listboxId"
+      [attr.aria-expanded]="open"
+      [attr.aria-activedescendant]="filter ? null : activeOptionId()"
+      [attr.aria-disabled]="disabled || readonly ? true : null"
+      [attr.aria-busy]="loading || null"
+      [attr.aria-invalid]="error ? true : null"
+      [attr.aria-describedby]="error ? errorId : (hint ? hintId : null)"
+      (click)="toggle()"
+      (keydown)="onTriggerKeydown($event)"
+    >
+      <span class="ino-field__value" *ngIf="!selectedOptions.length; else valueDisplay">{{ placeholder }}</span>
+
+      <ng-template #valueDisplay>
+        <span *ngIf="display === 'comma'" class="ino-field__value">{{ commaSummary }}</span>
+
+        <span *ngIf="display === 'chip'" class="ino-field__chips">
+          <span *ngFor="let chip of visibleChips" class="ino-field__chip">
+            <span class="ino-field__chip-label">{{ chip.label }}</span>
+            <button
+              type="button"
+              class="ino-field__chip-remove"
+              [attr.aria-label]="'Remove ' + chip.label"
+              [disabled]="disabled || readonly"
+              (click)="removeChip(chip, $event)"
+            >×</button>
+          </span>
+          <span *ngIf="overflowCount > 0" class="ino-field__chip ino-field__chip--overflow">+{{ overflowCount }} more</span>
+        </span>
+      </ng-template>
+    </div>
+
+    <span *ngIf="loading" class="ino-field__spinner" aria-hidden="true"></span>
+    <button
+      *ngIf="clearable && value.length && !disabled && !readonly && !loading"
+      type="button"
+      class="ino-field__clear"
+      aria-label="Clear all selections"
+      (click)="onClear($event)"
+    >×</button>
+    <span class="ino-field__chevron" aria-hidden="true">▾</span>
+
+    <div *ngIf="open" class="ino-field__panel">
+      <input
+        *ngIf="filter"
+        #filterInput
+        type="text"
+        class="ino-field__filter"
+        [placeholder]="filterPlaceholder"
+        [value]="filterText"
+        [attr.aria-controls]="listboxId"
+        [attr.aria-activedescendant]="activeOptionId()"
+        (input)="onFilterInput($event)"
+        (keydown)="onFilterKeydown($event)"
+      />
+
+      <ng-container *ngIf="filteredRows.length; else emptyState">
+        <ng-container *ngIf="!useVirtualScroll">
+          <ul [id]="listboxId" class="ino-field__listbox" role="listbox" aria-multiselectable="true" [attr.aria-label]="label || placeholder">
+            <ng-container *ngFor="let row of filteredRows">
+              <li *ngIf="row.groupHeading" role="presentation" class="ino-field__group-heading">{{ row.groupHeading }}</li>
+
+              <li
+                *ngIf="row.isSelectAll"
+                [id]="optionId(row.index)"
+                role="option"
+                class="ino-field__option ino-field__option--select-all"
+                [class.ino-field__option--active]="isActive(row.index)"
+                [attr.aria-selected]="selectAllChecked"
+                (mouseenter)="activeIndex = row.index"
+                (click)="toggleSelectAll()"
+              >
+                <input type="checkbox" class="ino-field__checkbox" tabindex="-1" aria-hidden="true" [checked]="selectAllChecked" [indeterminate]="selectAllIndeterminate" />
+                <span>Select all</span>
+              </li>
+
+              <li
+                *ngIf="!row.isSelectAll && row.option as option"
+                [id]="optionId(row.index)"
+                role="option"
+                class="ino-field__option"
+                [class.ino-field__option--active]="isActive(row.index)"
+                [class.ino-field__option--selected]="isSelected(option)"
+                [class.ino-field__option--disabled]="isRowNonInteractive(row)"
+                [attr.aria-selected]="isSelected(option)"
+                [attr.aria-disabled]="isRowNonInteractive(row) || null"
+                (mouseenter)="activeIndex = row.index"
+                (click)="toggleOption(option)"
+              >
+                <input type="checkbox" class="ino-field__checkbox" tabindex="-1" aria-hidden="true" [checked]="isSelected(option)" [disabled]="isRowNonInteractive(row)" />
+                <span>{{ option.label }}</span>
+              </li>
+            </ng-container>
+          </ul>
+        </ng-container>
+
+        <ino-virtual-scroller
+          *ngIf="useVirtualScroll"
+          [id]="listboxId"
+          [items]="filteredRows"
+          role="listbox"
+          itemRole="option"
+          [ariaLabel]="label || placeholder"
+          [size]="size"
+          scrollHeight="calc(var(--ino-control-height, var(--ino-target-comfortable)) * 8)"
+        >
+          <ng-template inoVirtualScrollerItem let-row>
+            <div
+              *ngIf="row.isSelectAll; else vsOption"
+              [id]="optionId(row.index)"
+              role="option"
+              class="ino-field__option ino-field__option--select-all"
+              [class.ino-field__option--active]="isActive(row.index)"
+              [attr.aria-selected]="selectAllChecked"
+              (mouseenter)="activeIndex = row.index"
+              (click)="toggleSelectAll()"
+            >
+              <input type="checkbox" class="ino-field__checkbox" tabindex="-1" aria-hidden="true" [checked]="selectAllChecked" [indeterminate]="selectAllIndeterminate" />
+              <span>Select all</span>
+            </div>
+            <ng-template #vsOption>
+              <div
+                [id]="optionId(row.index)"
+                role="option"
+                class="ino-field__option"
+                [class.ino-field__option--active]="isActive(row.index)"
+                [class.ino-field__option--selected]="isSelected(row.option)"
+                [class.ino-field__option--disabled]="isRowNonInteractive(row)"
+                [attr.aria-selected]="isSelected(row.option)"
+                [attr.aria-disabled]="isRowNonInteractive(row) || null"
+                (mouseenter)="activeIndex = row.index"
+                (click)="toggleOption(row.option)"
+              >
+                <input type="checkbox" class="ino-field__checkbox" tabindex="-1" aria-hidden="true" [checked]="isSelected(row.option)" [disabled]="isRowNonInteractive(row)" />
+                <span>{{ row.option.label }}</span>
+              </div>
+            </ng-template>
+          </ng-template>
+        </ino-virtual-scroller>
+      </ng-container>
+
+      <ng-template #emptyState>
+        <p class="ino-field__empty">No options found.</p>
+      </ng-template>
+    </div>
+  </div>
+
+  <p *ngIf="hint && !error" [id]="hintId" class="ino-field__hint">{{ hint }}</p>
+  <p *ngIf="error" [id]="errorId" class="ino-field__error" role="alert">{{ error }}</p>
+</div>

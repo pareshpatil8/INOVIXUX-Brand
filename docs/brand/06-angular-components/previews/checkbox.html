@@ -63,7 +63,7 @@
     accent-color: var(--ino-color-accent);
     cursor: pointer;
     transition: filter var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
-      outline-color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+      box-shadow var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
   }
   .ino-checkbox__input:hover:not(:disabled) { filter: brightness(1.15); }
   .ino-checkbox__input:focus-visible {
@@ -71,10 +71,10 @@
     outline-offset: var(--ino-focus-ring-offset);
   }
   .ino-checkbox__input:active:not(:disabled) { filter: brightness(0.9); }
-  .ino-checkbox__input--invalid:not(:focus-visible) {
-    outline: 2px solid var(--ino-color-danger);
-    outline-offset: var(--ino-focus-ring-offset);
-  }
+  /* State 7 — the shared invalid ring (tokens.css §12), the same one ino-radio paints. On the
+     box-shadow channel, so it stacks with the focus outline above rather than yielding to it: tab
+     onto an invalid box and both rings show (INO-269). */
+  .ino-checkbox__input--invalid { box-shadow: var(--ino-invalid-ring); }
   .ino-checkbox__input--sm { width: var(--ino-control-icon-size-sm); height: var(--ino-control-icon-size-sm); }
   .ino-checkbox__input--lg { width: var(--ino-control-icon-size-lg); height: var(--ino-control-icon-size-lg); }
 

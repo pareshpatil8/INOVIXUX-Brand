@@ -1,0 +1,47 @@
+<div class="ino-otp-field">
+  <ino-label
+    *ngIf="label"
+    [id]="labelId"
+    [size]="size"
+    [required]="required"
+    [disabled]="disabled"
+    [invalid]="!!error"
+    [readonly]="readonly"
+  >{{ label }}</ino-label>
+
+  <span class="ino-otp-field__cells-wrap">
+    <span
+      class="ino-otp-field__cells"
+      role="group"
+      [attr.aria-labelledby]="label ? labelId : null"
+      [attr.aria-label]="label ? null : 'One-time code'"
+      [attr.aria-describedby]="error ? errorId : (hint ? hintId : null)"
+    >
+      <input
+        *ngFor="let char of cells; let i = index; trackBy: trackByIndex"
+        #cell
+        class="ino-otp-field__cell"
+        [class.ino-otp-field__cell--error]="!!error"
+        [type]="mask ? 'password' : 'text'"
+        [attr.inputmode]="integerOnly ? 'numeric' : 'text'"
+        autocomplete="one-time-code"
+        [attr.name]="groupId"
+        maxlength="1"
+        [value]="char"
+        [disabled]="disabled"
+        [readOnly]="readonly || loading"
+        [attr.aria-label]="'Digit ' + (i + 1) + ' of ' + length"
+        [attr.aria-invalid]="error ? true : null"
+        (input)="onCellInput(i, $event)"
+        (keydown)="onKeydown(i, $event)"
+        (paste)="onPaste(i, $event)"
+        (focus)="onFocus($event)"
+      />
+    </span>
+    <span class="ino-otp-field__spinner" *ngIf="loading" aria-hidden="true"></span>
+  </span>
+
+  <p *ngIf="hint && !error" [id]="hintId" class="ino-otp-field__hint">{{ hint }}</p>
+  <p *ngIf="error" [id]="errorId" class="ino-otp-field__error" role="alert">{{ error }}</p>
+  <span class="ino-otp-field__sr-only" aria-live="polite">{{ announcement }}</span>
+</div>

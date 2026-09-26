@@ -9,8 +9,8 @@
 Inline confirm/cancel prompt anchored next to a trigger element (INO-31 T-25 / INO-148) — no scrim,
 no centered panel. Shares its confirm/cancel action contract and `severity` axis with
 `<ino-confirm-dialog>`, but is a genuinely different, non-modal surface positioned relative to an
-anchor via a small private helper (`overlay-position.ts`) meant to be the reusable core Tooltip
-(T-22) and Popover (T-23) build on next.
+anchor via a small shared helper (`overlay-position.ts`, promoted to `../overlay/` in INO-271) also
+used by Tooltip (T-22) and Popover (T-23).
 
 ```html
 <button #del type="button" (click)="popup.toggle($event)">Delete</button>
