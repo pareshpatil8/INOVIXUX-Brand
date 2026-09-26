@@ -294,6 +294,7 @@ class InoTypeLabel {
   static const labelLg = InoTypeLabel(fontSize: 16, height: 1.35, letterSpacing: -0.16);
   static const label = InoTypeLabel(fontSize: 14.5, height: 1.45, letterSpacing: 0);
   static const labelSm = InoTypeLabel(fontSize: 12, height: 1.4, letterSpacing: 0.06);
+}
 
 /// Font pairing (INO-119) — tokens.css §4's mandatory fallback chain, ported as data. Unlike
 /// React Native, Flutter's `TextStyle.fontFamilyFallback` genuinely supports an ordered list
