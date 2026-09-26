@@ -1,0 +1,39 @@
+<div
+  *ngIf="open"
+  #panel
+  class="ino-popover"
+  [class.ino-popover--top]="effectivePosition === 'top'"
+  [class.ino-popover--bottom]="effectivePosition === 'bottom'"
+  [class.ino-popover--left]="effectivePosition === 'left'"
+  [class.ino-popover--right]="effectivePosition === 'right'"
+  [style.top.px]="top"
+  [style.left.px]="left"
+  role="dialog"
+  [attr.aria-labelledby]="heading ? headingId : null"
+  [attr.aria-label]="!heading && ariaLabel ? ariaLabel : null"
+  tabindex="-1"
+  inoFocusTrap
+  (keydown)="onKeydown($event)"
+>
+  <span class="ino-popover__arrow" aria-hidden="true"></span>
+
+  <div class="ino-popover__header" *ngIf="heading || showCloseIcon">
+    <h2 *ngIf="heading" [id]="headingId" class="ino-popover__heading">{{ heading }}</h2>
+    <button
+      *ngIf="showCloseIcon"
+      type="button"
+      ino-button
+      variant="icon"
+      [size]="size"
+      class="ino-popover__close"
+      [attr.aria-label]="closeLabel"
+      (click)="hide()"
+    >
+      ✕
+    </button>
+  </div>
+
+  <div class="ino-popover__content">
+    <ng-content></ng-content>
+  </div>
+</div>

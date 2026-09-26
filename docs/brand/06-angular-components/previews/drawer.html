@@ -1,0 +1,211 @@
+<!-- @dsCard group="Overlay" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ino-drawer — edge-anchored overlay panel (INO-151)</title>
+<!-- Canonical token file, linked rather than copied: this preview must repaint with the system,
+     and must never become a second place raw hex values live. -->
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-eyebrow-size);
+    letter-spacing: var(--ino-type-eyebrow-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 60ch; }
+
+  .row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--ino-space-4); }
+
+  button.trigger {
+    display: inline-flex; align-items: center; justify-content: center;
+    height: var(--ino-target-comfortable);
+    padding-inline: var(--ino-space-4);
+    background: var(--ino-color-surface-raised);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-md);
+    color: var(--ino-color-on-surface);
+    font: inherit;
+    cursor: pointer;
+  }
+  button.trigger:hover { background: var(--ino-color-surface-sunken); }
+  button.trigger:focus-visible { outline: var(--ino-focus-ring); outline-offset: var(--ino-focus-ring-offset); }
+
+  /* Mirrors web/src/app/components/drawer/ino-drawer.component.scss — same token bindings, so a
+     divergence between this preview and the shipped component is visible as a visual diff. */
+  .ino-drawer { position: absolute; inset: 0; }
+  .ino-drawer__scrim { position: absolute; inset: 0; background: var(--ino-color-overlay-scrim); }
+  .ino-drawer__panel {
+    position: absolute;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    background: var(--ino-color-surface-raised);
+    box-shadow: var(--ino-elevation-2);
+    padding: var(--ino-space-6);
+  }
+  .ino-drawer__panel--start, .ino-drawer__panel--end { inset-block: 0; width: 240px; }
+  .ino-drawer__panel--start { inset-inline-start: 0; border-start-end-radius: var(--ino-radius-xl); border-end-end-radius: var(--ino-radius-xl); }
+  .ino-drawer__panel--end { inset-inline-end: 0; border-start-start-radius: var(--ino-radius-xl); border-end-start-radius: var(--ino-radius-xl); }
+  .ino-drawer__panel--top, .ino-drawer__panel--bottom { inset-inline: 0; height: 140px; }
+  .ino-drawer__panel--top { inset-block-start: 0; border-end-start-radius: var(--ino-radius-xl); border-end-end-radius: var(--ino-radius-xl); }
+  .ino-drawer__panel--bottom { inset-block-end: 0; border-start-start-radius: var(--ino-radius-xl); border-start-end-radius: var(--ino-radius-xl); }
+
+  .ino-drawer__header {
+    display: flex; align-items: center; justify-content: space-between; gap: var(--ino-space-4);
+    margin: calc(var(--ino-space-6) * -1) calc(var(--ino-space-6) * -1) var(--ino-space-4);
+    padding: var(--ino-space-4) var(--ino-space-6);
+    border-block-end: 1px solid var(--ino-color-border-soft);
+  }
+  .ino-drawer__heading {
+    margin: 0; font-size: var(--ino-type-h3-size); line-height: var(--ino-type-h3-line);
+    font-weight: var(--ino-type-h3-weight); letter-spacing: var(--ino-type-h3-tracking);
+    color: var(--ino-color-on-surface);
+  }
+  .ino-drawer__close {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: var(--ino-target-comfortable); height: var(--ino-target-comfortable);
+    margin-inline-start: auto; background: transparent; border: none;
+    border-radius: var(--ino-radius-md); color: var(--ino-color-on-surface-muted);
+    font-size: 16px; cursor: pointer;
+  }
+  .ino-drawer__close:hover { background: var(--ino-color-surface-sunken); color: var(--ino-color-on-surface); }
+  .ino-drawer__close:focus-visible { outline: var(--ino-focus-ring); outline-offset: var(--ino-focus-ring-offset); }
+  .ino-drawer__body { flex: 1; color: var(--ino-color-on-surface); }
+
+  .frame {
+    position: relative;
+    height: 320px;
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-xl);
+    overflow: hidden;
+    background: var(--ino-color-surface-sunken);
+  }
+  .frame-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--ino-space-6); margin-bottom: var(--ino-space-6); }
+</style>
+</head>
+<body>
+
+<h1>Drawer — edge-anchored overlay panel</h1>
+<p class="lede">
+  Four logical positions (<code>start</code>/<code>end</code>/<code>top</code>/<code>bottom</code>),
+  three sizes, modal or non-modal mode, and an automatic full-screen layout under the mobile
+  breakpoint. Static markup below — the shipped component (<code>ino-drawer.component.*</code>)
+  drives the same classes from <code>[open]</code>/<code>position</code>/<code>size</code>/
+  <code>modal</code> instead of a static <code>class</code> attribute.
+</p>
+
+<h2>Four positions (static, always "open" for preview purposes)</h2>
+<div class="frame-grid">
+
+  <div class="frame">
+    <div class="ino-drawer">
+      <div class="ino-drawer__scrim"></div>
+      <div class="ino-drawer__panel ino-drawer__panel--start" role="dialog" aria-modal="true">
+        <div class="ino-drawer__header">
+          <h2 class="ino-drawer__heading" style="text-transform:none;letter-spacing:normal;font-size:var(--ino-type-h3-size);margin:0;">start</h2>
+          <button type="button" class="ino-drawer__close" aria-label="Close drawer">✕</button>
+        </div>
+        <div class="ino-drawer__body">Filters, navigation — content the user reaches from the leading edge.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="frame">
+    <div class="ino-drawer">
+      <div class="ino-drawer__scrim"></div>
+      <div class="ino-drawer__panel ino-drawer__panel--end" role="dialog" aria-modal="true">
+        <div class="ino-drawer__header">
+          <h2 class="ino-drawer__heading" style="text-transform:none;letter-spacing:normal;font-size:var(--ino-type-h3-size);margin:0;">end</h2>
+          <button type="button" class="ino-drawer__close" aria-label="Close drawer">✕</button>
+        </div>
+        <div class="ino-drawer__body">Record detail, edit forms — the default position.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="frame">
+    <div class="ino-drawer">
+      <div class="ino-drawer__scrim"></div>
+      <div class="ino-drawer__panel ino-drawer__panel--top" role="dialog" aria-modal="true">
+        <div class="ino-drawer__header">
+          <h2 class="ino-drawer__heading" style="text-transform:none;letter-spacing:normal;font-size:var(--ino-type-h3-size);margin:0;">top</h2>
+          <button type="button" class="ino-drawer__close" aria-label="Close drawer">✕</button>
+        </div>
+        <div class="ino-drawer__body">Notifications, quick search.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="frame">
+    <div class="ino-drawer">
+      <div class="ino-drawer__scrim"></div>
+      <div class="ino-drawer__panel ino-drawer__panel--bottom" role="dialog" aria-modal="true">
+        <div class="ino-drawer__header">
+          <h2 class="ino-drawer__heading" style="text-transform:none;letter-spacing:normal;font-size:var(--ino-type-h3-size);margin:0;">bottom</h2>
+          <button type="button" class="ino-drawer__close" aria-label="Close drawer">✕</button>
+        </div>
+        <div class="ino-drawer__body">Action sheets — mirrors the mobile bottom-sheet idiom on web.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<h2>Non-modal (no scrim)</h2>
+<p class="lede">Persistent panel alongside page content — <code>modal="false"</code> drops the scrim, the focus trap, and the body-scroll lock.</p>
+<div class="frame">
+  <div class="ino-drawer">
+    <div class="ino-drawer__panel ino-drawer__panel--end" role="dialog">
+      <div class="ino-drawer__header">
+        <h2 class="ino-drawer__heading" style="text-transform:none;letter-spacing:normal;font-size:var(--ino-type-h3-size);margin:0;">Filters</h2>
+        <button type="button" class="ino-drawer__close" aria-label="Close drawer">✕</button>
+      </div>
+      <div class="ino-drawer__body">The rest of the page stays interactive while this is open.</div>
+    </div>
+  </div>
+</div>
+
+<h2>Themes × modal panel</h2>
+<div class="frame-grid">
+  <div class="frame" data-theme="light" style="background:var(--ino-color-surface-sunken);">
+    <div class="ino-drawer">
+      <div class="ino-drawer__scrim"></div>
+      <div class="ino-drawer__panel ino-drawer__panel--end" role="dialog" aria-modal="true">
+        <div class="ino-drawer__header">
+          <h2 class="ino-drawer__heading" style="text-transform:none;letter-spacing:normal;font-size:var(--ino-type-h3-size);margin:0;">light</h2>
+          <button type="button" class="ino-drawer__close" aria-label="Close drawer">✕</button>
+        </div>
+        <div class="ino-drawer__body">[data-theme="light"]</div>
+      </div>
+    </div>
+  </div>
+  <div class="frame" data-theme="high-contrast" style="background:var(--ino-color-surface-sunken);">
+    <div class="ino-drawer">
+      <div class="ino-drawer__scrim"></div>
+      <div class="ino-drawer__panel ino-drawer__panel--end" role="dialog" aria-modal="true">
+        <div class="ino-drawer__header">
+          <h2 class="ino-drawer__heading" style="text-transform:none;letter-spacing:normal;font-size:var(--ino-type-h3-size);margin:0;">high-contrast</h2>
+          <button type="button" class="ino-drawer__close" aria-label="Close drawer">✕</button>
+        </div>
+        <div class="ino-drawer__body">[data-theme="high-contrast"]</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

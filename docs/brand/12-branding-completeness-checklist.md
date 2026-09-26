@@ -87,7 +87,7 @@ assumed-done or silently dropped. `✅` = built and pushed. `🟡` = partial / s
 | Business card spec | ✅ | `07-collateral/business-card-spec.md` |
 | Letterhead | ✅ | `07-collateral/letterhead.html` |
 | Pitch deck template | ✅ | `07-collateral/pitch-deck-template.html` |
-| Print-ready vector exports | ⬜ blocked | Needs final logo mark (INO-82) per `09-design-system-standards.md` §6 |
+| Print-ready vector exports | ✅ | `assets/brand/print/` — 6 vector PDFs of the Master C mark/lockups/monos + CMYK/Pantone spec (`07-collateral/print-color-spec.md`), INO-122 |
 
 ## 7. What this checklist deliberately does NOT add
 
@@ -117,5 +117,5 @@ assumed-done or silently dropped. `✅` = built and pushed. `🟡` = partial / s
    components and all three mobile tracks.
 
 **Remaining ⬜ items** are the lower-priority §3 component rows (tabs, table, badge/chip, avatar,
-empty state, skeleton, pagination) and §6's print-ready vector exports (still gated on the final
-logo mark, INO-82). None of them block the website or mobile surfaces that now exist.
+empty state, skeleton, pagination); §6's print-ready vector exports landed with the Master C
+mark (INO-122). None of them block the website or mobile surfaces that now exist.
