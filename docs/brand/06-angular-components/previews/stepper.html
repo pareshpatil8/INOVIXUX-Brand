@@ -1,0 +1,379 @@
+<!-- @dsCard group="Panel" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ino-stepper — Stepper (INO-136)</title>
+<!-- Canonical token file, linked rather than copied: this preview must repaint with the system,
+     and must never become a second place raw hex values live. -->
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-eyebrow-size);
+    letter-spacing: var(--ino-type-eyebrow-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 70ch; }
+  p.note { color: var(--ino-color-on-surface-muted); margin: var(--ino-space-3) 0 0; max-width: 70ch; font-size: var(--ino-type-body-sm-size); }
+
+  .theme-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); }
+  .theme-pane {
+    flex: 1 1 320px;
+    padding: var(--ino-space-5);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-xl);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+  }
+  .theme-pane > h3 {
+    margin: 0 0 var(--ino-space-4);
+    font-size: var(--ino-type-body-sm-size);
+    color: var(--ino-color-on-surface-muted);
+    font-weight: 600;
+  }
+  .panel-body {
+    padding: var(--ino-space-5) 0 0;
+    color: var(--ino-color-on-surface-muted);
+    font-size: var(--ino-type-body-sm-size);
+  }
+
+  /* ------------------------------------------------------------------ *
+     Mirrors web/src/app/components/stepper/ino-stepper.component.scss — same token bindings, so
+     a divergence between this preview and the shipped component shows up as a visual diff.
+   * ------------------------------------------------------------------ */
+  .ino-stepper {
+    display: block;
+    --ino-control-height: var(--ino-control-height-default);
+    --ino-control-padding-inline-roomy: var(--ino-control-padding-inline-roomy-default);
+    --ino-control-font-size: var(--ino-control-font-size-default);
+    --ino-control-gap: var(--ino-control-gap-default);
+    --ino-control-icon-size: var(--ino-control-icon-size-default);
+  }
+  .ino-stepper[data-size='sm'] {
+    --ino-control-icon-size: var(--ino-control-icon-size-sm);
+    --ino-control-padding-inline-roomy: var(--ino-control-padding-inline-roomy-sm);
+    --ino-control-font-size: var(--ino-control-font-size-sm);
+    --ino-control-gap: var(--ino-control-gap-sm);
+  }
+  .ino-stepper[data-size='lg'] {
+    --ino-control-icon-size: var(--ino-control-icon-size-lg);
+    --ino-control-padding-inline-roomy: var(--ino-control-padding-inline-roomy-lg);
+    --ino-control-font-size: var(--ino-control-font-size-lg);
+    --ino-control-gap: var(--ino-control-gap-lg);
+  }
+
+  .ino-stepper__track {
+    --ino-stepper-indicator-size: max(var(--ino-control-icon-size), var(--ino-target-min));
+    display: flex;
+    align-items: flex-start;
+  }
+  .ino-stepper[data-orientation='vertical'] .ino-stepper__track { flex-direction: column; align-items: stretch; }
+
+  .ino-stepper__connector { flex: 1 1 auto; background: var(--ino-color-border); }
+  .ino-stepper:not([data-orientation='vertical']) .ino-stepper__connector {
+    block-size: 2px; align-self: flex-start;
+    margin-block-start: calc(var(--ino-stepper-indicator-size) / 2);
+    min-inline-size: var(--ino-space-5);
+  }
+  .ino-stepper[data-orientation='vertical'] .ino-stepper__connector {
+    inline-size: 2px; min-block-size: var(--ino-space-7);
+    margin-inline-start: calc(var(--ino-stepper-indicator-size) / 2);
+  }
+  .ino-stepper__connector--filled { background: var(--ino-color-accent); }
+
+  .ino-stepper__step {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: var(--ino-control-gap);
+    flex: 0 0 auto;
+    border: none;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+    text-align: start;
+  }
+  .ino-stepper:not([data-orientation='vertical']) .ino-stepper__step {
+    flex-direction: column; align-items: center;
+    padding-inline: var(--ino-control-padding-inline-roomy);
+    text-align: center;
+  }
+
+  .ino-stepper__indicator {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: var(--ino-stepper-indicator-size);
+    block-size: var(--ino-stepper-indicator-size);
+    flex-shrink: 0;
+    border: 2px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-pill);
+    color: var(--ino-color-on-surface-muted);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-control-font-size);
+    font-weight: 600;
+  }
+  .ino-stepper__text { display: flex; flex-direction: column; min-inline-size: 0; }
+  .ino-stepper__label { color: var(--ino-color-on-surface-muted); font-weight: 600; }
+  .ino-stepper__description { color: var(--ino-color-on-surface-muted); font: var(--ino-type-hint); }
+
+  .ino-stepper__step:focus-visible { outline: var(--ino-focus-ring); outline-offset: var(--ino-focus-ring-offset); border-radius: var(--ino-radius-sm); }
+
+  .ino-stepper__step--active .ino-stepper__indicator { border-color: var(--ino-color-accent); color: var(--ino-color-accent); }
+  .ino-stepper__step--active .ino-stepper__label { color: var(--ino-color-on-surface); }
+
+  .ino-stepper__step--completed .ino-stepper__indicator {
+    background: var(--ino-color-accent); border-color: var(--ino-color-accent); color: var(--ino-color-on-accent);
+  }
+
+  .ino-stepper__step--invalid .ino-stepper__indicator { border-color: var(--ino-color-danger-text-safe); color: var(--ino-color-danger-text-safe); }
+  .ino-stepper__step--invalid .ino-stepper__label { color: var(--ino-color-danger-text-safe); }
+
+  .ino-stepper__step:disabled .ino-stepper__indicator,
+  .ino-stepper__step:disabled .ino-stepper__label { color: var(--ino-color-on-surface-subtle); }
+  .ino-stepper__step:disabled .ino-stepper__indicator { border-color: var(--ino-color-on-surface-subtle); }
+
+  .ino-stepper__step--locked,
+  .ino-stepper__track[data-readonly] .ino-stepper__step:not(.ino-stepper__step--active) { cursor: default; }
+
+  .ino-stepper__spinner {
+    display: inline-block; inline-size: 70%; block-size: 70%;
+    border: 2px solid currentColor; border-inline-start-color: transparent; border-radius: 50%; opacity: 0.85;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .ino-stepper__spinner { animation: ino-stepper-spin var(--ino-motion-duration-slow) linear infinite; }
+  }
+  @keyframes ino-stepper-spin { to { transform: rotate(360deg); } }
+
+  .ino-stepper__sr-only { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+</style>
+</head>
+<body>
+
+<h1>Stepper — Tier 1 Panel group</h1>
+<p class="lede">
+  A wizard-style step rail, reusing <code>&lt;ino-tabs&gt;</code>'s tablist/tab/tabpanel
+  interaction model (the APG defines no "stepper" pattern) and adding a numbered/checkmark
+  indicator, a connector line, <code>orientation</code>, and <strong>linear gating</strong> — a
+  step unlocks only once every step before it is marked <code>completed</code>. This page is
+  static markup mirroring the component's stylesheet — it demonstrates the painted states, not the
+  keyboard model.
+</p>
+
+<h2>Themes — current / completed / upcoming</h2>
+<div class="theme-row">
+
+  <div class="theme-pane">
+    <h3>dark — :root (default)</h3>
+    <div class="ino-stepper">
+      <div class="ino-stepper__track" role="tablist" aria-orientation="horizontal">
+        <button role="tab" type="button" class="ino-stepper__step ino-stepper__step--completed" aria-selected="false">
+          <span class="ino-stepper__indicator" aria-hidden="true"><span>✓</span></span>
+          <span class="ino-stepper__text"><span class="ino-stepper__label">Business</span></span>
+        </button>
+        <div class="ino-stepper__connector ino-stepper__connector--filled" aria-hidden="true"></div>
+        <button role="tab" type="button" class="ino-stepper__step ino-stepper__step--active" aria-selected="true">
+          <span class="ino-stepper__indicator" aria-hidden="true"><span>2</span></span>
+          <span class="ino-stepper__text"><span class="ino-stepper__label">Documents</span></span>
+        </button>
+        <div class="ino-stepper__connector" aria-hidden="true"></div>
+        <button role="tab" type="button" class="ino-stepper__step" aria-selected="false" aria-disabled="true">
+          <span class="ino-stepper__indicator" aria-hidden="true"><span>3</span></span>
+          <span class="ino-stepper__text"><span class="ino-stepper__label">Review</span></span>
+        </button>
+      </div>
+      <div class="panel-body" role="tabpanel">Documents panel content.</div>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="light">
+    <h3>light — [data-theme="light"]</h3>
+    <div class="ino-stepper">
+      <div class="ino-stepper__track" role="tablist" aria-orientation="horizontal">
+        <button role="tab" type="button" class="ino-stepper__step ino-stepper__step--completed" aria-selected="false">
+          <span class="ino-stepper__indicator" aria-hidden="true"><span>✓</span></span>
+          <span class="ino-stepper__text"><span class="ino-stepper__label">Business</span></span>
+        </button>
+        <div class="ino-stepper__connector ino-stepper__connector--filled" aria-hidden="true"></div>
+        <button role="tab" type="button" class="ino-stepper__step ino-stepper__step--active" aria-selected="true">
+          <span class="ino-stepper__indicator" aria-hidden="true"><span>2</span></span>
+          <span class="ino-stepper__text"><span class="ino-stepper__label">Documents</span></span>
+        </button>
+        <div class="ino-stepper__connector" aria-hidden="true"></div>
+        <button role="tab" type="button" class="ino-stepper__step" aria-selected="false" aria-disabled="true">
+          <span class="ino-stepper__indicator" aria-hidden="true"><span>3</span></span>
+          <span class="ino-stepper__text"><span class="ino-stepper__label">Review</span></span>
+        </button>
+      </div>
+      <div class="panel-body" role="tabpanel">Documents panel content.</div>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="high-contrast">
+    <h3>high-contrast — [data-theme="high-contrast"]</h3>
+    <div class="ino-stepper">
+      <div class="ino-stepper__track" role="tablist" aria-orientation="horizontal">
+        <button role="tab" type="button" class="ino-stepper__step ino-stepper__step--completed" aria-selected="false">
+          <span class="ino-stepper__indicator" aria-hidden="true"><span>✓</span></span>
+          <span class="ino-stepper__text"><span class="ino-stepper__label">Business</span></span>
+        </button>
+        <div class="ino-stepper__connector ino-stepper__connector--filled" aria-hidden="true"></div>
+        <button role="tab" type="button" class="ino-stepper__step ino-stepper__step--active" aria-selected="true">
+          <span class="ino-stepper__indicator" aria-hidden="true"><span>2</span></span>
+          <span class="ino-stepper__text"><span class="ino-stepper__label">Documents</span></span>
+        </button>
+        <div class="ino-stepper__connector" aria-hidden="true"></div>
+        <button role="tab" type="button" class="ino-stepper__step" aria-selected="false" aria-disabled="true">
+          <span class="ino-stepper__indicator" aria-hidden="true"><span>3</span></span>
+          <span class="ino-stepper__text"><span class="ino-stepper__label">Review</span></span>
+        </button>
+      </div>
+      <div class="panel-body" role="tabpanel">Documents panel content.</div>
+    </div>
+  </div>
+
+</div>
+
+<h2>Size — control-size scale</h2>
+<p class="lede">
+  <code>sm</code> / <code>default</code> / <code>lg</code> read
+  <code>--ino-control-icon-size</code> (indicator diameter, floored at
+  <code>--ino-target-min</code>), <code>--ino-control-padding-inline-roomy</code>,
+  <code>--ino-control-font-size</code> and <code>--ino-control-gap</code>. Nothing is invented
+  locally.
+</p>
+<div style="display:flex; gap: var(--ino-space-6); flex-wrap: wrap;">
+  <div class="ino-stepper" data-size="sm">
+    <div class="ino-stepper__track" role="tablist">
+      <button role="tab" type="button" class="ino-stepper__step ino-stepper__step--active" aria-selected="true">
+        <span class="ino-stepper__indicator" aria-hidden="true"><span>1</span></span>
+        <span class="ino-stepper__text"><span class="ino-stepper__label">Small</span></span>
+      </button>
+    </div>
+  </div>
+  <div class="ino-stepper">
+    <div class="ino-stepper__track" role="tablist">
+      <button role="tab" type="button" class="ino-stepper__step ino-stepper__step--active" aria-selected="true">
+        <span class="ino-stepper__indicator" aria-hidden="true"><span>1</span></span>
+        <span class="ino-stepper__text"><span class="ino-stepper__label">Default</span></span>
+      </button>
+    </div>
+  </div>
+  <div class="ino-stepper" data-size="lg">
+    <div class="ino-stepper__track" role="tablist">
+      <button role="tab" type="button" class="ino-stepper__step ino-stepper__step--active" aria-selected="true">
+        <span class="ino-stepper__indicator" aria-hidden="true"><span>1</span></span>
+        <span class="ino-stepper__text"><span class="ino-stepper__label">Large</span></span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<h2>Vertical orientation + linear gating</h2>
+<p class="lede">
+  In <code>linear</code> mode (the default), a step unlocks only once every step before it is
+  <code>completed</code> — the <code>aria-disabled</code> "Review" step below cannot be activated
+  until "Documents" is completed.
+</p>
+<div class="ino-stepper" data-orientation="vertical" style="max-inline-size: 320px;">
+  <div class="ino-stepper__track" role="tablist" aria-orientation="vertical">
+    <button role="tab" type="button" class="ino-stepper__step ino-stepper__step--completed" aria-selected="false">
+      <span class="ino-stepper__indicator" aria-hidden="true"><span>✓</span></span>
+      <span class="ino-stepper__text">
+        <span class="ino-stepper__label">Business details</span>
+        <span class="ino-stepper__description">Legal name, registration</span>
+      </span>
+    </button>
+    <div class="ino-stepper__connector ino-stepper__connector--filled" aria-hidden="true"></div>
+    <button role="tab" type="button" class="ino-stepper__step ino-stepper__step--active" aria-selected="true">
+      <span class="ino-stepper__indicator" aria-hidden="true"><span>2</span></span>
+      <span class="ino-stepper__text">
+        <span class="ino-stepper__label">Documents</span>
+        <span class="ino-stepper__description">Upload verification files</span>
+      </span>
+    </button>
+    <div class="ino-stepper__connector" aria-hidden="true"></div>
+    <button role="tab" type="button" class="ino-stepper__step ino-stepper__step--locked" aria-selected="false" aria-disabled="true">
+      <span class="ino-stepper__indicator" aria-hidden="true"><span>3</span></span>
+      <span class="ino-stepper__text">
+        <span class="ino-stepper__label">Review</span>
+        <span class="ino-stepper__description">Final submission</span>
+      </span>
+    </button>
+  </div>
+</div>
+
+<h2>Disabled, invalid, loading</h2>
+<p class="lede">
+  Invalid pairs colour with the indicator's outline (SC 1.4.1) and uses
+  <code>--ino-color-danger-text-safe</code>. Loading keeps the label in the DOM and sets
+  <code>aria-busy</code> on both the step and its panel.
+</p>
+<div class="ino-stepper">
+  <div class="ino-stepper__track" role="tablist">
+    <button role="tab" type="button" class="ino-stepper__step ino-stepper__step--active" aria-selected="true">
+      <span class="ino-stepper__indicator" aria-hidden="true"><span>1</span></span>
+      <span class="ino-stepper__text"><span class="ino-stepper__label">Applicant</span></span>
+    </button>
+    <div class="ino-stepper__connector" aria-hidden="true"></div>
+    <button role="tab" type="button" class="ino-stepper__step ino-stepper__step--invalid" aria-selected="false" aria-invalid="true">
+      <span class="ino-stepper__indicator" aria-hidden="true"><span>2</span></span>
+      <span class="ino-stepper__text"><span class="ino-stepper__label">Right to work</span></span>
+    </button>
+    <div class="ino-stepper__connector" aria-hidden="true"></div>
+    <button role="tab" type="button" class="ino-stepper__step" aria-selected="false" aria-busy="true">
+      <span class="ino-stepper__indicator" aria-hidden="true"><span class="ino-stepper__spinner"></span></span>
+      <span class="ino-stepper__text"><span class="ino-stepper__label">Screening</span></span>
+    </button>
+    <div class="ino-stepper__connector" aria-hidden="true"></div>
+    <button role="tab" type="button" class="ino-stepper__step" aria-selected="false" disabled>
+      <span class="ino-stepper__indicator" aria-hidden="true"><span>4</span></span>
+      <span class="ino-stepper__text"><span class="ino-stepper__label">Audit trail</span></span>
+    </button>
+  </div>
+</div>
+
+<h2>Readonly</h2>
+<p class="lede">
+  Focusable but inert — arrow keys still move focus, activation is refused, and non-active steps
+  carry <code>aria-disabled</code>. This is the audit-trail case: show which step was reached
+  without letting the current viewer change it.
+</p>
+<div class="ino-stepper">
+  <div class="ino-stepper__track" role="tablist" data-readonly>
+    <button role="tab" type="button" class="ino-stepper__step ino-stepper__step--completed" aria-selected="false" aria-disabled="true">
+      <span class="ino-stepper__indicator" aria-hidden="true"><span>✓</span></span>
+      <span class="ino-stepper__text"><span class="ino-stepper__label">Business</span></span>
+    </button>
+    <div class="ino-stepper__connector ino-stepper__connector--filled" aria-hidden="true"></div>
+    <button role="tab" type="button" class="ino-stepper__step ino-stepper__step--active" aria-selected="true">
+      <span class="ino-stepper__indicator" aria-hidden="true"><span>2</span></span>
+      <span class="ino-stepper__text"><span class="ino-stepper__label">Documents</span></span>
+    </button>
+    <div class="ino-stepper__connector" aria-hidden="true"></div>
+    <button role="tab" type="button" class="ino-stepper__step" aria-selected="false" aria-disabled="true">
+      <span class="ino-stepper__indicator" aria-hidden="true"><span>3</span></span>
+      <span class="ino-stepper__text"><span class="ino-stepper__label">Review</span></span>
+    </button>
+  </div>
+</div>
+
+<p class="note">
+  Docs: <code>docs/brand/06-angular-components/stepper.md</code> ·
+  Decisions record: <code>web/src/app/components/stepper/SPEC.md</code>
+</p>
+
+</body>
+</html>
