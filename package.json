@@ -14,7 +14,8 @@
     "check:spec-citations": "node scripts/check-spec-citations.mjs",
     "check:email-tokens": "node scripts/check-email-tokens.mjs",
     "gen:email": "node scripts/gen-email-templates.mjs",
-    "check:ds": "npm run check:parity && npm run check:deep-link-parity && npm run check:adherence && npm run check:spec-citations && npm run check:email-tokens"
+    "check:ds": "npm run check:parity && npm run check:deep-link-parity && npm run check:adherence && npm run check:spec-citations && npm run check:email-tokens",
+    "docs:manifest": "node scripts/gen-ds-manifest.mjs"
   },
   "packageManager": "npm@11.19.0"
 }

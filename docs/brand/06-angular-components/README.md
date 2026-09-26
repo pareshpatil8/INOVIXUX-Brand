@@ -1,3 +1,52 @@
+## Component docs site (H-6 / INO-116)
+
+`index.html` in this directory is the hosted component docs site: it fetches `_ds_manifest.json`
+and renders every `previews/*.html` card, grouped by its `<!-- @dsCard group="…" -->` marker
+(plan revision 9, doc 17 §2 row 10 / §8), with a link to the matching `<name>.md` contract doc.
+Regenerate the manifest after adding or renaming a preview:
+
+```sh
+npm run docs:manifest
+```
+
+Serve this directory (or its `docs/brand/` parent) over HTTP to view it — `index.html` fetches
+`_ds_manifest.json` as a sibling file, which browsers block under `file://`. From `docs/brand/`:
+
+```sh
+python3 -m http.server 8000
+# open http://localhost:8000/06-angular-components/index.html
+```
+
+The same preview files this site renders are the exact artifact the Claude Design import (doc 17
+§8) and the motion specimen (INO-117) consume — this is not a separate build.
+
+## Claude Design importable bundle (S-3 / INO-165)
+
+This directory, plus the two files it links to outside itself, **is** the importable bundle —
+there is no separate packaged copy to maintain. Point Claude Design's GitHub import at this repo
+and hand it these paths:
+
+| Piece | Path | What it is |
+|---|---|---|
+| Docs site | `docs/brand/06-angular-components/index.html` | Renders every card below, grouped |
+| Manifest | `docs/brand/06-angular-components/_ds_manifest.json` | Machine-readable index of every card (id, group, preview, doc) — 34 cards across 11 groups as of this write-up |
+| Component cards | `docs/brand/06-angular-components/previews/*.html` | One `@dsCard`-marked file per component, first line `<!-- @dsCard group="…" -->` |
+| Foundation cards | `docs/brand/06-angular-components/previews/{control-size-scale,elevation-type-rhythm-tokens,form-label-tokens}.html` | Same `@dsCard` convention, `group="Foundations"` |
+| Token contract | `docs/brand/02-design-tokens/tokens.css` | The only source of every colour/space/radius/duration/shadow/font-size a card references — no card hardcodes a value or copies this file |
+| Angular wiring contract | `docs/brand/02-design-tokens/angular-theme-contract.md` | How to wire `tokens.css` and this component source into a real Angular app |
+
+Regenerate `_ds_manifest.json` (`npm run docs:manifest`) after adding a preview; nothing else in
+the bundle needs a build step, so a plain GitHub-repo import sees the same thing `index.html`
+renders locally.
+
+**DesignSync round-trip dropped ([INO-299](/INO/issues/INO-299)):** the `DesignSync` tool that
+would have driven an automated `list_projects` → `list_files` → `finalize_plan` → `write_files`
+sync loop was withdrawn from the harness before it ever became available here, and there is no
+adapter config to provision it into. That capability's requirement is already met by the live
+Figma connector ([INO-166](/INO/issues/INO-166), `done`) — `get_design_context`, `use_figma`, Code
+Connect. This bundle's scope is the static importable artifact set above; it does not attempt a
+tool-driven sync.
+
 # INO-31 — Phase 3: Angular Component Implementation (Workstream B)
 
 **Status:** Component source complete for all 6 contracts + the count-up directive. Not built,
