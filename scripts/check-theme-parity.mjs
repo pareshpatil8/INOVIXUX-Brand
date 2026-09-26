@@ -39,7 +39,8 @@ function rgba(value) {
 }
 const rn = read('mobile/react-native/src/theme/tokens.ts').replace(/\/\/[^\n]*/g, '');
 const dart = read('mobile/flutter/lib/theme/tokens.dart').replace(/\/\/[^\n]*/g, '');
-const camel = key => key.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
+// Digit segments fold too: chart-cat-1 → chartCat1 (INO-113 — the first roles with numbered slots).
+const camel = key => key.replace(/-([a-z0-9])/g, (_, c) => c.toUpperCase());
 const palettes = { dark: ['Dark', 'dark'], light: ['Light', 'light'], 'high-contrast': ['HighContrast', 'highContrast'] };
 const resolved = {};
 let colorChecks = 0;
@@ -86,6 +87,27 @@ for (const name of ['fast','base','slow']) {
   assert.match(rn, new RegExp(`duration${name[0].toUpperCase()+name.slice(1)}: ${n}`));
   assert.match(dart, new RegExp(`${name} = Duration\\(milliseconds: ${n}\\)`));
 }
+
+// Devanagari typography pairing (INO-119) — tokens.css §4/§4b mandatory fallback chain +
+// :lang(hi) vertical-rhythm override, mirrored into RN (full parity) and Flutter (font pairing
+// only — Flutter has no ported line-height scale to mirror the ratios into, see README).
+assert.match(base['--ino-font-display'], /"Noto Sans Devanagari"/, 'canonical font-display fallback chain includes Noto Sans Devanagari');
+const langHi = Object.assign({}, ...blocks.filter(m => m[1].trim() === ':lang(hi)').map(m => declarations(m[2])));
+for (const cssVar of ['--ino-type-display-line', '--ino-type-h2-line', '--ino-type-h3-line']) {
+  assert.ok(langHi[cssVar], `:lang(hi) override for ${cssVar} present`);
+}
+const rnFont = Object.fromEntries([...rnGroup('fontFamily').matchAll(/(\w+):\s*'([^']+)'/g)].map(m => [m[1], m[2]]));
+assert.equal(rnFont.display, 'Geist', 'RN display font name matches canonical chain');
+assert.equal(rnFont.displayDevanagariFallback, 'Noto Sans Devanagari', 'RN Devanagari fallback name matches canonical chain');
+const rnType = rn.match(/export const type = \{([\s\S]*?)\n\};/)?.[1];
+assert.ok(rnType, 'RN type scale present');
+for (const [role, cssVar] of [['displaySmHi', '--ino-type-display-line'], ['h2Hi', '--ino-type-h2-line'], ['h3Hi', '--ino-type-h3-line']]) {
+  const m = rnType.match(new RegExp(`${role}:\\s*\\{\\s*fontSize:\\s*[\\d.]+,\\s*lineHeight:\\s*[\\d.]+\\s*\\*\\s*([\\d.]+)`));
+  assert.ok(m, `RN type.${role} present`);
+  assert.equal(Number(m[1]), parseFloat(langHi[cssVar]), `RN type.${role} line-height ratio matches tokens.css :lang(hi) override`);
+}
+assert.match(dart, /static const String display = 'Geist';/, 'Flutter InoFont.display matches canonical chain');
+assert.match(dart, /static const List<String> displayFallback = \['Noto Sans Devanagari'\];/, 'Flutter InoFont.displayFallback matches canonical chain');
 function luminance(c) {
   const v = c.slice(0,3).map(n => n/255).map(n => n <= .04045 ? n/12.92 : ((n+.055)/1.055)**2.4);
   return v[0]*.2126+v[1]*.7152+v[2]*.0722;
@@ -379,6 +401,75 @@ for (let i = 0; i < ELEVATION_GROUPS.brand.length; i++) {
   assert.ok(pct('light') < pct('dark'), `${key}: light color-mix % (${pct('light')}) must be lower than dark (${pct('dark')})`);
 }
 
+// ── INO-113 / INO-31.1 — data-visualization token layer (tokens.css §13) ───────────────────────
+// Three families, three invariant shapes. The CVD (deuteranopia/protanopia) separation numbers
+// are measured offline with the dataviz skill's validator (Machado–Oliveira–Fernandes 2009,
+// severity 1.0) and recorded in docs/brand/24-data-visualization-tokens.md — this script guards
+// the invariants a later hex edit silently breaks: declaration completeness in every theme, the
+// shared-categorical-identity contract, per-surface contrast floors, ramp direction and
+// monotonicity, and midpoint neutrality. Cross-platform value parity for the 21 chart roles
+// needs no code here: they are first-class palette fields in both mobile ports, so the RN/Flutter
+// role-completeness loop above already byte-checks them across all three themes.
+const CHART = {
+  cat: [1, 2, 3, 4, 5, 6].map(n => `chartCat${n}`),
+  seq: [1, 2, 3, 4, 5, 6, 7, 8].map(n => `chartSeq${n}`),
+  divNeg: ['chartDivNeg1', 'chartDivNeg2', 'chartDivNeg3'],
+  divPos: ['chartDivPos1', 'chartDivPos2', 'chartDivPos3'],
+};
+let vizChecks = 0;
+for (const [theme, palette] of Object.entries(resolved)) {
+  for (const key of [...CHART.cat, ...CHART.seq, ...CHART.divNeg, ...CHART.divPos, 'chartDivMid']) {
+    assert.ok(palette[key], `${theme}: chart role ${key} missing`);
+    vizChecks++;
+  }
+  const vs = key => contrast(palette[key], palette.surface);
+  // Categorical slots are non-text marks — each must clear SC 1.4.11 (3:1) on its own surface.
+  for (const key of CHART.cat) { pair(key, 'surface', 3, palette, `${theme} `); vizChecks++; }
+  // Sequential: contrast vs surface strictly increases 1→8, so step 8 (highest risk) anchors as
+  // the strong-contrast end of THIS surface regardless of which way the theme flips lightness;
+  // the near end may recede but never below the 2:1 ordinal floor, the strong end stays ≥10:1.
+  for (let i = 1; i < CHART.seq.length; i++) {
+    assert.ok(vs(CHART.seq[i]) > vs(CHART.seq[i - 1]),
+      `${theme}: ${CHART.seq[i]} must read stronger against the surface than ${CHART.seq[i - 1]} — the ramp lost its direction`);
+    vizChecks++;
+  }
+  assert.ok(vs('chartSeq1') >= 2, `${theme}: chartSeq1 is ${vs('chartSeq1').toFixed(2)}:1 vs surface — below the 2:1 near-surface floor`);
+  assert.ok(vs('chartSeq8') >= 10, `${theme}: chartSeq8 is ${vs('chartSeq8').toFixed(2)}:1 vs surface — the highest-risk step must anchor ≥10:1`);
+  vizChecks += 2;
+  // Diverging: each arm strengthens strictly outward from the midpoint, and each pole clears 3:1.
+  // The midpoint itself may sit under 3:1 by design — a "no change" cell recedes and never
+  // carries a value alone (tokens.css §13).
+  for (const arm of [CHART.divNeg, CHART.divPos]) {
+    let prev = vs('chartDivMid');
+    for (const key of arm) {
+      assert.ok(vs(key) > prev, `${theme}: ${key} must read stronger against the surface than the step inside it — the arm lost its outward direction`);
+      prev = vs(key);
+      vizChecks++;
+    }
+    pair(arm[2], 'surface', 3, palette, `${theme} `);
+    vizChecks++;
+  }
+  // The midpoint is NEUTRAL — near-gray, so "no change" never leans toward either arm's hue.
+  const mid = palette.chartDivMid;
+  assert.ok(Math.max(...mid.slice(0, 3)) - Math.min(...mid.slice(0, 3)) <= 10,
+    `${theme}: chartDivMid must stay near-neutral (max channel spread 10), got rgb(${mid.slice(0, 3).join(',')})`);
+  vizChecks++;
+}
+// Shared-identity contract: light deliberately does NOT repaint the categorical slots — dark and
+// light share hexes (each slot's OKLCH L clears 3:1 on both surfaces) so series identity survives
+// a theme toggle without repainting. High-contrast deliberately DOES restep, and both ramps
+// re-step per surface — pin all three decisions so none can silently regress.
+for (const key of CHART.cat) {
+  assert.deepEqual(resolved.light[key], resolved.dark[key],
+    `light ${key} must stay hex-identical to dark — the shared categorical identity contract (tokens.css §13)`);
+}
+assert.notDeepEqual(CHART.cat.map(k => resolved['high-contrast'][k]), CHART.cat.map(k => resolved.dark[k]),
+  'high-contrast categorical must be its own restep, not a copy of dark');
+assert.notDeepEqual(CHART.seq.map(k => resolved.light[k]), CHART.seq.map(k => resolved.dark[k]),
+  'light sequential ramp must re-step for its surface, not inherit dark');
+assert.notDeepEqual(CHART.seq.map(k => resolved['high-contrast'][k]), CHART.seq.map(k => resolved.dark[k]),
+  'high-contrast sequential ramp must re-step for its surface, not inherit dark');
+
 // ── Wave 0 / INO-126 (W0-4) — leading/tracking rhythm scale + composite type aliases (§4c) ──────
 // Two independent claims: (1) the --ino-leading-*/--ino-tracking-* primitives form a strictly
 // ascending scale and every type role's -line/-tracking now resolves through one of them, never a
@@ -628,6 +719,24 @@ const COMPONENT_REGISTRY = [
     ],
   },
   {
+    name: 'meter-group',
+    web: 'web/src/app/components/meter-group',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoMeterGroup.tsx',
+        roles: ['accent', 'accentSecondary', 'success', 'warning', 'danger', 'info', 'surfaceSunken', 'onSurface', 'onSurfaceMuted'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_meter_group.dart',
+        roles: ['accent', 'accentSecondary', 'success', 'warning', 'danger', 'info', 'surfaceSunken', 'onSurface', 'onSurfaceMuted'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['borderSoft'], reason: 'web reads border-soft for the loading-state shimmer gradient sweeping across the track; neither mobile port renders a shimmer texture (both simply show an empty track while busy, avoiding a new animation-gradient dependency for a single state), so the role is never reached. Full reasoning: web/src/app/components/meter-group/SPEC.md §7.' },
+      { platform: 'flutter', roles: ['borderSoft'], reason: 'same as the React Native entry above.' },
+    ],
+  },
+  {
     name: 'multiselect',
     web: 'web/src/app/components/multiselect',
     mobile: {
@@ -793,5 +902,5 @@ for (const entry of COMPONENT_REGISTRY) {
   }
 }
 
-console.log(`PASS: CSS mirrors; Capacitor import; ${colorChecks} color roles across 3 themes × 2 mobile ports; space/radius/targets/durations; focus-ring shape; invalid-ring shape, never-flatten rule and SC 1.4.11 budget in 3 themes; pressed-accent contrast in 3 themes; control-size scale across 3 densities + ${controlChecks} mobile port values; form-label tokens across 3 themes × 2 densities; elevation scale (6 neutral + 3 brand + 2 inset) across 3 themes; leading/tracking rhythm scale + composite type aliases across 3 densities; component registry (${COMPONENT_REGISTRY.length} components, ${componentChecks} platform checks).`);
+console.log(`PASS: CSS mirrors; Capacitor import; ${colorChecks} color roles across 3 themes × 2 mobile ports; space/radius/targets/durations; Devanagari font pairing + line-height parity; focus-ring shape; invalid-ring shape, never-flatten rule and SC 1.4.11 budget in 3 themes; pressed-accent contrast in 3 themes; control-size scale across 3 densities + ${controlChecks} mobile port values; form-label tokens across 3 themes × 2 densities; elevation scale (6 neutral + 3 brand + 2 inset) across 3 themes; data-viz layer (6 categorical + 8 sequential + 7 diverging, ${vizChecks} checks) across 3 themes; leading/tracking rhythm scale + composite type aliases across 3 densities; component registry (${COMPONENT_REGISTRY.length} components, ${componentChecks} platform checks).`);
 console.log('High-contrast token pairs (AAA text >=7; non-text borders >=3; excludes disabled/decorative subtle role);\nplus per-theme pressed-accent pairs (INO-123):\n'+measurements.join('\n'));
