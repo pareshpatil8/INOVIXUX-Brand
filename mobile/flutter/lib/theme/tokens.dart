@@ -277,6 +277,25 @@ class InoTarget {
 /// tokens.css §10 [data-density="fluid"] row height — mobile never uses dense.
 const double inoRowMinHeight = 44;
 
+/// tokens.css §4b — form-label type scale (`form-label-tokens.md` §5), FLUID resolution only
+/// (mobile is always fluid, same rule as [inoRowMinHeight]/[InoControlSize]). Mirrors
+/// mobile/react-native/src/theme/tokens.ts's `type.label`/`type.labelSm`/`type.labelLg` 1:1 —
+/// added INO-253 as a follow-up to INO-140/INO-125, since this scale didn't exist here before and
+/// ino_label.dart hand-composed the same literals ungated. `height` is a line-height multiplier
+/// (Dart's `TextStyle.height` unit), matching RN's `lineHeight / fontSize`.
+/// check-theme-parity.mjs asserts this against RN — edit tokens.ts first.
+class InoTypeLabel {
+  const InoTypeLabel({required this.fontSize, required this.height, required this.letterSpacing});
+
+  final double fontSize;
+  final double height;
+  final double letterSpacing;
+
+  static const labelLg = InoTypeLabel(fontSize: 16, height: 1.35, letterSpacing: -0.16);
+  static const label = InoTypeLabel(fontSize: 14.5, height: 1.45, letterSpacing: 0);
+  static const labelSm = InoTypeLabel(fontSize: 12, height: 1.4, letterSpacing: 0.06);
+}
+
 /// Font pairing (INO-119) — tokens.css §4's mandatory fallback chain, ported as data. Unlike
 /// React Native, Flutter's `TextStyle.fontFamilyFallback` genuinely supports an ordered list
 /// like CSS does, so [displayFallback] can be passed there directly once the `.ttf` assets are

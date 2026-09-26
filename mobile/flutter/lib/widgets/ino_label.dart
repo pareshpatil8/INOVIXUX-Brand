@@ -2,23 +2,6 @@ import 'package:flutter/widgets.dart';
 import '../theme/app_theme.dart';
 import '../theme/tokens.dart';
 
-/// Fluid-density form-label type scale (`form-label-tokens.md` §5, `tokens.css` §4b) — mirrors
-/// the values RN's `type.label`/`type.labelSm`/`type.labelLg` (`theme/tokens.ts`) already export.
-/// `tokens.dart` has no form-label type scale of its own yet (only RN got one in W0-3); adding one
-/// there would be a token-registry change outside this issue's merge-hygiene rule (SPEC.md §6), so
-/// these are hand-composed literals, the same idiom `ino_tag.dart` already uses for its eyebrow
-/// font. Edit `form-label-tokens.md` §3/§5 first if these ever need to change.
-class _LabelType {
-  const _LabelType(this.fontSize, this.height, this.letterSpacing);
-  final double fontSize;
-  final double height; // line-height, as a multiple of fontSize (Dart's TextStyle.height unit)
-  final double letterSpacing;
-}
-
-const _labelTypeSm = _LabelType(12, 1.4, 0.06);
-const _labelTypeDefault = _LabelType(14.5, 1.45, 0);
-const _labelTypeLg = _LabelType(16, 1.35, -0.16);
-
 /// `<InoLabel>` — Flutter port of `<ino-label>` (web/src/app/components/label, INO-140 /
 /// INO-31 T-19). Presentational only, matching the web component's non-interactive contract
 /// (SPEC.md §1): no `onTap`, no focus handling. Flutter has no native `<label for>` concept, so
@@ -48,10 +31,10 @@ class InoLabel extends StatelessWidget {
     this.readOnly = false,
   });
 
-  _LabelType get _type {
-    if (size == InoControlSize.sm) return _labelTypeSm;
-    if (size == InoControlSize.lg) return _labelTypeLg;
-    return _labelTypeDefault;
+  InoTypeLabel get _type {
+    if (size == InoControlSize.sm) return InoTypeLabel.labelSm;
+    if (size == InoControlSize.lg) return InoTypeLabel.labelLg;
+    return InoTypeLabel.label;
   }
 
   @override
