@@ -6,7 +6,8 @@ export interface InoToastConfig {
   status?: InoAlertStatus;
   heading?: string;
   message: string;
-  /** ms before auto-dismiss; 0 disables auto-dismiss. Default 5000. Ignored when `sticky` is true. */
+  /** ms before auto-dismiss; 0 disables auto-dismiss. Default 5000 (--ino-dwell-duration-toast,
+   *  matching Flutter's InoDwell.toast, INO-174). Ignored when `sticky` is true. */
   durationMs?: number;
   /**
    * Persistent mode (INO-163 / P-3): no auto-dismiss timer is ever set, regardless of `durationMs`,

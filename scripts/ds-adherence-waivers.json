@@ -114,27 +114,6 @@
       "issue": "INO-174"
     },
     {
-      "rule": "no-raw-color",
-      "file": "web/src/styles/page-sections.scss",
-      "match": "rgba(",
-      "reason": "brand gradient stop / accent glow: needs semantic gradient-stop roles so it re-themes",
-      "issue": "INO-174"
-    },
-    {
-      "rule": "non-token-shadow",
-      "file": "web/src/styles/page-sections.scss",
-      "match": "box-shadow: 0 30px 70px -35px rgba(124, 92, 252, 0.35), var(--ino-elevation-1)",
-      "reason": "hand-rolled accent glow; needs a token so high-contrast can drop it",
-      "issue": "INO-174"
-    },
-    {
-      "rule": "non-token-duration",
-      "file": "mobile/flutter/lib/notifications/notification_center.dart",
-      "match": "Duration(milliseconds: 5000",
-      "reason": "banner dwell timer, matching web ToastService's 5000ms default — a UX read-time, not a CSS motion duration; pending INO-174's toast-dwell re-theme decision",
-      "issue": "INO-174"
-    },
-    {
       "rule": "no-hardcoded-icon-color",
       "file": "web/src/app/app.html",
       "match": "fill=\"#4F46E5\"",
