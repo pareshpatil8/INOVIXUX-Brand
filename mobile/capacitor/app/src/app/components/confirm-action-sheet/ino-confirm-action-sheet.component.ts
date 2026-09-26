@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Haptics, NotificationType } from '@capacitor/haptics';
 
 import { InoModalComponent } from '@web-app/components/modal/ino-modal.component';
 import { InoButtonComponent } from '@web-app/components/button/ino-button.component';
@@ -42,6 +43,11 @@ export class InoConfirmActionSheetComponent {
   }
 
   protected confirm(): void {
+    // Consequential-decision feedback (L-14): perceptible without looking at the screen, so the
+    // moment of commitment doesn't depend on the confirm button's visual state.
+    Haptics.notification({ type: this.destructive ? NotificationType.Warning : NotificationType.Success }).catch(
+      () => {}
+    );
     this.confirmed.emit();
     this.close();
   }

@@ -1,0 +1,201 @@
+/*
+ * <ino-meter-group> — INO-144 / INO-31 T-13.
+ *
+ * No literal colour/space/radius/duration/font-size — every declaration resolves through a
+ * semantic role in tokens.css, logical properties only (RTL-safe: inline-size/block-size,
+ * padding-inline/-block, no left/right/top/bottom anywhere below).
+ */
+
+/*
+ * Size API — DoD row 3. The track is a thin bar, not a control-height element (same reasoning
+ * ino-tag's SPEC.md §3 gives for not reading --ino-control-height): it reuses the Wave 0
+ * control-icon-size alias for its cross-axis thickness instead, the smallest rung the scale
+ * already defines, rather than inventing a new local size value.
+ */
+:host([data-size='sm']) {
+  --ino-meter-group-thickness: var(--ino-control-icon-size-sm);
+}
+
+:host([data-size='lg']) {
+  --ino-meter-group-thickness: var(--ino-control-icon-size-lg);
+}
+
+:host {
+  --ino-meter-group-thickness: var(--ino-control-icon-size-default);
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--ino-space-3);
+  min-block-size: var(--ino-row-min-height, 32px); /* DoD row 4 — row-based density floor, same
+    fallback idiom ino-tag's :host uses. */
+
+  /* State 5 — disabled. No native disabled state on a role="group" host; aria-disabled + dimming,
+     same rationale ino-tag/ino-progress-spinner already document. */
+  &.ino-meter-group--disabled {
+    opacity: 0.5;
+  }
+}
+
+/* ── Track ──────────────────────────────────────────────────────────────────────────────────── */
+
+.ino-meter-group__track {
+  position: relative;
+  display: flex;
+  overflow: hidden;
+  border-radius: var(--ino-radius-pill);
+  background: var(--ino-color-surface-sunken);
+  inline-size: 100%;
+  block-size: var(--ino-meter-group-thickness);
+}
+
+:host([data-orientation='vertical']) .ino-meter-group__track {
+  flex-direction: column-reverse; /* lowest-weighted contribution stacks from the block-start edge
+    upward, matching the visual "fill rising" read a vertical meter is expected to give. */
+  inline-size: var(--ino-meter-group-thickness);
+  block-size: 100%;
+}
+
+/* State 7 — invalid. Non-text 3:1 boundary (SC 1.4.11) around the track; segment colours are left
+   untouched so the underlying data stays legible, only the frame flags the computation as suspect.
+   Announced separately via the host's aria-label suffix (component.ts accessibleLabel).
+   outline, not box-shadow: check-ds-adherence.mjs's non-token-shadow rule requires every
+   box-shadow to be an elevation token, and this ring is a colour separator, not a depth cue —
+   same reasoning ino-timeline's dot ring documents. outline-offset pulls it inset without
+   touching the border-box (a border would eat into the track's already-thin block-size). */
+.ino-meter-group--invalid .ino-meter-group__track {
+  outline: 2px solid var(--ino-color-danger);
+  outline-offset: -2px;
+}
+
+.ino-meter-group__segment {
+  flex-shrink: 0;
+  transition: inline-size var(--ino-motion-duration-base) var(--ino-motion-easing-standard),
+    block-size var(--ino-motion-duration-base) var(--ino-motion-easing-standard),
+    opacity var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  /* State 2 — hover. Purely decorative pointer feedback on the bar itself; the component carries
+     no click/focus behaviour (SPEC.md §1), so this is the same "reveal it responds visually, does
+     nothing functionally" affordance ino-button's ghost variant uses on hover. No lighten/darken
+     token exists for this in tokens.css, so the coefficient is a bare number — the same precedent
+     ino-tag's disabled opacity: 0.5 already sets for a non-token numeric effect. */
+  &:hover {
+    filter: brightness(1.15);
+  }
+
+  &[data-color='accent'] { background: var(--ino-color-accent); }
+  &[data-color='accent-secondary'] { background: var(--ino-color-accent-secondary); }
+  &[data-color='success'] { background: var(--ino-color-success); }
+  &[data-color='warning'] { background: var(--ino-color-warning); }
+  &[data-color='danger'] { background: var(--ino-color-danger); }
+  &[data-color='info'] { background: var(--ino-color-info); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ino-meter-group__segment {
+    transition: none;
+  }
+}
+
+/* State 8 — loading/busy. Segments fade out, the track shimmers in their place — same
+   "no numeric progress to show yet" affordance ino-progress-spinner's indeterminate ring gives. */
+.ino-meter-group--loading .ino-meter-group__segment {
+  opacity: 0;
+}
+
+.ino-meter-group--loading .ino-meter-group__track::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--ino-color-border-soft),
+    transparent
+  );
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: ino-meter-group-shimmer var(--ino-motion-duration-slow) linear infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    background: var(--ino-color-border-soft);
+  }
+}
+
+@keyframes ino-meter-group-shimmer {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}
+
+/* ── Legend ─────────────────────────────────────────────────────────────────────────────────── */
+
+.ino-meter-group__legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ino-space-2) var(--ino-control-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Legend visually hidden (showLegend=false) but still announced — same sr-only clip pattern as
+   ino-tag__label--sr-only / ino-progress-spinner__sr-only, so per-segment text always reaches
+   assistive tech even when the caller only wants the bar on screen. */
+.ino-meter-group__legend--sr-only {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.ino-meter-group__legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ino-space-1);
+  min-block-size: var(--ino-target-min, 24px); /* SC 2.5.8 floor for the hover affordance below */
+
+  /* State 2 — hover, legend half. Dims the row very slightly to read as "inspecting" without
+     implying interactivity (no cursor/focus change — the item is not a control). */
+  &:hover .ino-meter-group__legend-dot {
+    filter: brightness(1.15);
+  }
+}
+
+.ino-meter-group__legend-dot {
+  inline-size: var(--ino-space-2);
+  block-size: var(--ino-space-2);
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: filter var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  &[data-color='accent'] { background: var(--ino-color-accent); }
+  &[data-color='accent-secondary'] { background: var(--ino-color-accent-secondary); }
+  &[data-color='success'] { background: var(--ino-color-success); }
+  &[data-color='warning'] { background: var(--ino-color-warning); }
+  &[data-color='danger'] { background: var(--ino-color-danger); }
+  &[data-color='info'] { background: var(--ino-color-info); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ino-meter-group__legend-dot {
+    transition: none;
+  }
+}
+
+.ino-meter-group__legend-label {
+  font-family: var(--ino-font-display);
+  font-size: var(--ino-control-font-size);
+  color: var(--ino-color-on-surface);
+}
+
+.ino-meter-group__legend-value {
+  font-family: var(--ino-font-mono);
+  font-size: var(--ino-control-font-size);
+  color: var(--ino-color-on-surface-muted);
+}

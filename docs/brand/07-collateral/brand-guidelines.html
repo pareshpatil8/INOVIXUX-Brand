@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>INOVIXUX — Brand Guidelines</title>
+<!--
+  INO-122 · The single distributable brand file a vendor, printer, or partner
+  receives. Source of truth remains the repo docs (tokens.css, docs 05/11/22,
+  print-color-spec.md); this document summarizes them for external hands.
+  Export: headless Chrome print-to-pdf → assets/brand/print/INOVIXUX-Brand-Guidelines.pdf
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Noto+Sans+Devanagari:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { padding: 0; }
+  body { font-family: "Geist", "Noto Sans Devanagari", system-ui, Arial, sans-serif; color: #0A0A0A; }
+  .page { width: 210mm; height: 296mm; padding: 18mm 20mm; page-break-after: always; position: relative; overflow: hidden; background: #FAFAFA; }
+  .page.dark { background: #0A0A0A; color: #F5F5F4; }
+  .eyebrow { font-family: "Geist Mono", monospace; text-transform: uppercase; letter-spacing: 0.14em; font-size: 8.5pt; color: #7C5CFC; margin-bottom: 4mm; }
+  .dark .eyebrow { color: #D8CEFF; }
+  h1 { font-size: 34pt; font-weight: 700; letter-spacing: -0.02em; line-height: 1.08; }
+  h2 { font-size: 19pt; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 6mm; }
+  h3 { font-size: 11pt; font-weight: 600; margin: 6mm 0 2.5mm; }
+  p, li { font-size: 9.5pt; line-height: 1.55; }
+  p.lead { font-size: 11pt; line-height: 1.6; max-width: 150mm; }
+  .muted { color: #5A5A5C; } .dark .muted { color: #8C8C8E; }
+  .footer { position: absolute; bottom: 10mm; left: 20mm; right: 20mm; display: flex; justify-content: space-between; font-family: "Geist Mono", monospace; font-size: 7.5pt; color: #8C8C8E; border-top: 1px solid rgba(10,10,10,0.10); padding-top: 3mm; }
+  .dark .footer { border-top-color: rgba(255,255,255,0.10); }
+  table { border-collapse: collapse; width: 100%; margin: 3mm 0; }
+  th, td { text-align: left; font-size: 8.5pt; padding: 2.2mm 2.5mm; border-bottom: 1px solid rgba(10,10,10,0.10); vertical-align: top; }
+  th { font-family: "Geist Mono", monospace; font-size: 7.5pt; text-transform: uppercase; letter-spacing: 0.08em; color: #5A5A5C; }
+  code, .mono { font-family: "Geist Mono", monospace; font-size: 8.5pt; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6mm; }
+  .tile { border-radius: 3mm; padding: 6mm; display: flex; align-items: center; justify-content: center; }
+  .sw { border-radius: 2.5mm; padding: 4mm 4.5mm; min-height: 26mm; display: flex; flex-direction: column; justify-content: flex-end; }
+  .sw .n { font-weight: 600; font-size: 9pt; } .sw .h { font-family: "Geist Mono", monospace; font-size: 7.5pt; opacity: 0.85; }
+  .rule-list li { margin-bottom: 2mm; }
+  .dont { color: #A6362D; font-weight: 600; } .do { color: #1F7A4F; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<!-- ─────────────────────── 1 · COVER ─────────────────────── -->
+<section class="page dark">
+  <div class="eyebrow">Brand Guidelines · v1.0 · September 2026</div>
+  <div style="margin-top: 60mm;">
+    <svg viewBox="0 0 40 40" width="132" height="132" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect x="5" y="8" width="13" height="24" rx="4" fill="#4F46E5"/>
+      <rect x="22" y="8" width="13" height="24" rx="4" fill="#7C5CFC"/>
+      <path d="M15,11 L25,15 M15,18 L25,22 M15,25 L25,29" stroke="#D8CEFF" stroke-width="3" stroke-linecap="round" fill="none"/>
+    </svg>
+    <h1 style="margin-top: 12mm;">INOVIXUX<br><span style="color:#8C8C8E; font-weight:400;">Brand Guidelines</span></h1>
+    <p class="lead" style="margin-top: 8mm; color:#8C8C8E;">Identity, color, typography, and voice for INOVIXUX — verification infrastructure for India's digital public rails. This is the distributable reference for partners, vendors, and printers.</p>
+  </div>
+  <div class="footer"><span>INOVIXUX</span><span>Border Stitch · Master C</span><span>01</span></div>
+</section>
+
+<!-- ─────────────────────── 2 · THE MARK ─────────────────────── -->
+<section class="page">
+  <div class="eyebrow">01 · The mark</div>
+  <h2>Border Stitch — Master C</h2>
+  <p class="lead">Two territories — complex regulated systems (payments, banking, healthcare) and the human experience layer — sewn together at a narrow border. The <em>-ix / UX</em> reading lives in the seam, not in letterforms. The mark is never redrawn: always place the supplied vector files.</p>
+  <div class="grid2" style="margin-top: 8mm;">
+    <div class="tile" style="background:#0A0A0A;">
+      <svg viewBox="0 0 40 40" width="120" height="120" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="8" width="13" height="24" rx="4" fill="#4F46E5"/><rect x="22" y="8" width="13" height="24" rx="4" fill="#7C5CFC"/><path d="M15,11 L25,15 M15,18 L25,22 M15,25 L25,29" stroke="#D8CEFF" stroke-width="3" stroke-linecap="round" fill="none"/></svg>
+    </div>
+    <div class="tile" style="background:#EFEFED;">
+      <svg viewBox="0 0 40 40" width="120" height="120" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="8" width="13" height="24" rx="4" fill="#4F46E5"/><rect x="22" y="8" width="13" height="24" rx="4" fill="#7C5CFC"/><path d="M15,11 L25,15 M15,18 L25,22 M15,25 L25,29" stroke="#2A1F6E" stroke-width="3" stroke-linecap="round" fill="none"/></svg>
+    </div>
+    <p class="mono muted" style="text-align:center;">On dark — thread #D8CEFF</p>
+    <p class="mono muted" style="text-align:center;">On light — thread #2A1F6E</p>
+  </div>
+  <h3>Primary lockup</h3>
+  <div style="background:#0A0A0A; border-radius:3mm; padding:8mm 10mm; display:flex; align-items:center;">
+    <svg viewBox="0 0 40 40" width="34" height="34" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="8" width="13" height="24" rx="4" fill="#4F46E5"/><rect x="22" y="8" width="13" height="24" rx="4" fill="#7C5CFC"/><path d="M15,11 L25,15 M15,18 L25,22 M15,25 L25,29" stroke="#D8CEFF" stroke-width="3" stroke-linecap="round" fill="none"/></svg>
+    <span style="color:#F5F5F4; font-weight:600; font-size:16pt; letter-spacing:0.06em; margin-left:6mm;">INOVIXUX</span>
+  </div>
+  <p class="muted" style="margin-top:3mm;">Use the supplied lockup files (<code>inovixux-lockup-dark / -light</code>); do not re-set the wordmark.</p>
+  <div class="footer"><span>INOVIXUX Brand Guidelines</span><span>The mark</span><span>02</span></div>
+</section>
+
+<!-- ─────────────────────── 3 · VARIANTS, CLEAR SPACE, SIZES ─────────────────────── -->
+<section class="page">
+  <div class="eyebrow">02 · Using the mark</div>
+  <h2>Variants, clear space, minimum sizes</h2>
+  <h3>One-color (mono) versions</h3>
+  <div class="grid2">
+    <div class="tile" style="background:#FFFFFF; border:1px solid rgba(10,10,10,0.10);">
+      <svg viewBox="0 0 40 40" width="96" height="96" xmlns="http://www.w3.org/2000/svg"><mask id="ko1"><rect width="40" height="40" fill="#fff"/><path d="M15,11 L25,15 M15,18 L25,22 M15,25 L25,29" stroke="#000" stroke-width="3" stroke-linecap="round" fill="none"/></mask><g mask="url(#ko1)"><rect x="5" y="8" width="13" height="24" rx="4" fill="#000"/><rect x="22" y="8" width="13" height="24" rx="4" fill="#000"/></g></svg>
+    </div>
+    <div class="tile" style="background:#0A0A0A;">
+      <svg viewBox="0 0 40 40" width="96" height="96" xmlns="http://www.w3.org/2000/svg"><mask id="ko2"><rect width="40" height="40" fill="#fff"/><path d="M15,11 L25,15 M15,18 L25,22 M15,25 L25,29" stroke="#000" stroke-width="3" stroke-linecap="round" fill="none"/></mask><g mask="url(#ko2)"><rect x="5" y="8" width="13" height="24" rx="4" fill="#F5F5F4"/><rect x="22" y="8" width="13" height="24" rx="4" fill="#F5F5F4"/></g></svg>
+    </div>
+  </div>
+  <p class="muted" style="margin-top:2mm;">In one-color reproduction the stitches are <strong>knocked out</strong> — the substrate shows through. Never print the stitches as a second tint in a one-color job.</p>
+  <h3>Clear space</h3>
+  <p>Keep a margin of at least <strong>the width of one territory</strong> (13/40 of the mark's width) free of other elements on all sides of the mark or lockup.</p>
+  <h3>Minimum sizes &amp; the heavy-thread cut</h3>
+  <table>
+    <tr><th>Context</th><th>Minimum</th><th>Rule</th></tr>
+    <tr><td>Mark, digital</td><td>16 px</td><td>At ≤ 20 px use the heavy-thread cut (stroke 3.4) — favicon / app-glyph masters</td></tr>
+    <tr><td>Mark, print</td><td>5 mm</td><td>At ≤ 7 mm use the heavy-thread cut</td></tr>
+    <tr><td>Lockup, print</td><td>22 mm wide</td><td>Below this, use the mark alone</td></tr>
+  </table>
+  <h3>Don'ts</h3>
+  <ul class="rule-list">
+    <li><span class="dont">Don't</span> rotate, skew, outline, or add effects (shadows, gradients) to the mark.</li>
+    <li><span class="dont">Don't</span> recolor the territories or thread outside the specified palette.</li>
+    <li><span class="dont">Don't</span> place the full-color mark on mid-tone or busy backgrounds — switch to a mono version.</li>
+    <li><span class="dont">Don't</span> rebuild the geometry from this document — <span class="do">do</span> place the supplied SVG/PDF masters.</li>
+  </ul>
+  <div class="footer"><span>INOVIXUX Brand Guidelines</span><span>Using the mark</span><span>03</span></div>
+</section>
+
+<!-- ─────────────────────── 4 · COLOR ─────────────────────── -->
+<section class="page">
+  <div class="eyebrow">03 · Color</div>
+  <h2>Palette</h2>
+  <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:4mm;">
+    <div class="sw" style="background:#4F46E5; color:#fff;"><span class="n">Electric Indigo</span><span class="h">#4F46E5</span></div>
+    <div class="sw" style="background:#7C5CFC; color:#fff;"><span class="n">Deep Tech Violet</span><span class="h">#7C5CFC</span></div>
+    <div class="sw" style="background:#D8CEFF; color:#2A1F6E;"><span class="n">Thread / Dark</span><span class="h">#D8CEFF</span></div>
+    <div class="sw" style="background:#2A1F6E; color:#fff;"><span class="n">Thread / Light</span><span class="h">#2A1F6E</span></div>
+    <div class="sw" style="background:#0A0A0A; color:#fff;"><span class="n">Ink</span><span class="h">#0A0A0A</span></div>
+    <div class="sw" style="background:#14141A; color:#fff;"><span class="n">Charcoal</span><span class="h">#14141A</span></div>
+    <div class="sw" style="background:#F5F5F4; color:#0A0A0A; border:1px solid rgba(10,10,10,0.10);"><span class="n">Paper</span><span class="h">#F5F5F4</span></div>
+    <div class="sw" style="background:#EFEFED; color:#0A0A0A;"><span class="n">Fog</span><span class="h">#EFEFED</span></div>
+  </div>
+  <p class="muted" style="margin-top:3mm;">Functional colors (success #3A9B6B, error #C24C43, warning #B98A3C, info #3D92BD) are product-UI only — they never appear in brand communications.</p>
+  <h3>Print reproduction</h3>
+  <table>
+    <tr><th>Color</th><th>CMYK build</th><th>Pantone (nearest)</th></tr>
+    <tr><td>Electric Indigo #4F46E5</td><td class="mono">66 / 69 / 0 / 10</td><td>2726 C</td></tr>
+    <tr><td>Deep Tech Violet #7C5CFC</td><td class="mono">51 / 63 / 0 / 1</td><td>2665 C</td></tr>
+    <tr><td>Thread on dark #D8CEFF</td><td class="mono">15 / 19 / 0 / 0</td><td>2635 C</td></tr>
+    <tr><td>Thread on light #2A1F6E</td><td class="mono">62 / 72 / 0 / 57</td><td>273 C</td></tr>
+    <tr><td>Ink (large solids)</td><td class="mono">rich black 60 / 40 / 40 / 100</td><td>—</td></tr>
+  </table>
+  <p class="muted">Both accents sit outside the CMYK gamut and print slightly duller than screen. For brand-critical print, specify the Pantone spot. Pantone picks are numeric nearest-matches — <strong>proof against a physical coated fan before the first press run</strong>. Paper #F5F5F4 is unprinted stock, never a 4% tint.</p>
+  <div class="footer"><span>INOVIXUX Brand Guidelines</span><span>Color</span><span>04</span></div>
+</section>
+
+<!-- ─────────────────────── 5 · TYPOGRAPHY ─────────────────────── -->
+<section class="page">
+  <div class="eyebrow">04 · Typography</div>
+  <h2>Type system</h2>
+  <h3>Display &amp; body — Geist</h3>
+  <p style="font-size:24pt; font-weight:600; letter-spacing:-0.02em; line-height:1.15;">Evidence a human acts on.</p>
+  <p style="font-size:13pt; margin-top:2mm;">Aa Bb Cc Dd Ee Ff Gg Hh Ii Jj Kk Ll Mm 0123456789</p>
+  <p class="muted" style="margin-top:1.5mm;">Weights in use: 400 (body), 500, 600 (headings), 700 (display). Fallback stack: <code>system-ui, Arial, Helvetica</code>.</p>
+  <h3>Technical &amp; labels — Geist Mono</h3>
+  <p class="mono" style="font-size:11pt;">VERIFICATION · TRACE ID 0x4F46E5 · 0123456789</p>
+  <p class="muted" style="margin-top:1.5mm;">Used for eyebrows, data, timestamps, and identifiers — always with tracking (+8 to +14%) when uppercase.</p>
+  <h3>Devanagari — Noto Sans Devanagari</h3>
+  <p style="font-size:13pt;" lang="hi">सत्यापन जो मानव निर्णय का समर्थन करता है — इनोविक्सक्स</p>
+  <p class="muted" style="margin-top:1.5mm;">Paired with Geist in the fallback chain for Hindi/Marathi surfaces (INO-119). Match Latin x-height optically; never fake-bold.</p>
+  <h3>Rules</h3>
+  <ul class="rule-list">
+    <li>Headlines are sentence case; never all-caps except Geist Mono eyebrows/labels.</li>
+    <li>Tight letter-spacing (−1 to −2%) on display sizes only; body text is never negative-tracked.</li>
+    <li>Do not substitute look-alike fonts (Inter, Roboto) in partner materials — request the font files instead.</li>
+  </ul>
+  <div class="footer"><span>INOVIXUX Brand Guidelines</span><span>Typography</span><span>05</span></div>
+</section>
+
+<!-- ─────────────────────── 6 · VOICE ─────────────────────── -->
+<section class="page">
+  <div class="eyebrow">05 · Voice</div>
+  <h2>How INOVIXUX speaks</h2>
+  <p class="lead"><strong>We describe a system that surfaces evidence for a human to act on. We never describe a system that decides.</strong> Every sentence must survive the question: <em>does this imply the software made the call, or that a person did?</em> If it implies the software decided, it is factually wrong — human review is a product guarantee, not a caveat.</p>
+  <h3>Anchor vocabulary</h3>
+  <table>
+    <tr><th>Use</th><th>For</th><th>Never substitute</th></tr>
+    <tr><td><strong>Verification</strong></td><td>The core product action — checking, cross-referencing, tracing</td><td>"validation" (approval is the human's job)</td></tr>
+    <tr><td><strong>Augmented Control</strong></td><td>The reviewer ↔ system relationship</td><td>"automation", "AI-powered decisioning"</td></tr>
+    <tr><td><strong>Governance</strong></td><td>Compliance posture, audit-readiness, DPI alignment</td><td>"control" (implies automation)</td></tr>
+    <tr><td><strong>Resilience</strong></td><td>System/infra reliability, uptime, audit trails</td><td>"robust", "bulletproof"</td></tr>
+    <tr><td><strong>Traced / resolved</strong></td><td>A data point moving through the system</td><td>"flagged and closed" (system doesn't close)</td></tr>
+  </table>
+  <h3>In practice</h3>
+  <ul class="rule-list">
+    <li><span class="do">Do</span>: "INOVIXUX traces the discrepancy and surfaces it for your reviewer."</li>
+    <li><span class="dont">Don't</span>: "INOVIXUX automatically approves compliant merchants."</li>
+    <li>Plain, specific, calm. No exclamation marks in product or partner copy.</li>
+  </ul>
+  <div class="footer"><span>INOVIXUX Brand Guidelines</span><span>Voice</span><span>06</span></div>
+</section>
+
+<!-- ─────────────────────── 7 · FILES & CONTACT ─────────────────────── -->
+<section class="page dark">
+  <div class="eyebrow">06 · Assets</div>
+  <h2>Files &amp; formats</h2>
+  <table>
+    <tr><th style="color:#8C8C8E;">Need</th><th style="color:#8C8C8E;">File</th></tr>
+    <tr><td style="border-color:rgba(255,255,255,0.10);">Screen / web</td><td style="border-color:rgba(255,255,255,0.10);" class="mono">assets/brand/logo/*.svg · exports/favicon-{32,512,1024}.png · social-card-1200x630.png</td></tr>
+    <tr><td style="border-color:rgba(255,255,255,0.10);">Print (vector)</td><td style="border-color:rgba(255,255,255,0.10);" class="mono">assets/brand/print/*.pdf</td></tr>
+    <tr><td style="border-color:rgba(255,255,255,0.10);">Press color spec</td><td style="border-color:rgba(255,255,255,0.10);" class="mono">docs/brand/07-collateral/print-color-spec.md</td></tr>
+    <tr><td style="border-color:rgba(255,255,255,0.10);">Design tokens (digital SoT)</td><td style="border-color:rgba(255,255,255,0.10);" class="mono">docs/brand/02-design-tokens/tokens.css</td></tr>
+  </table>
+  <p class="muted" style="margin-top:6mm;">Questions, source files, or anything not covered here: contact the INOVIXUX brand owner. Do not improvise — if a case isn't specified, ask.</p>
+  <div style="position:absolute; bottom:40mm; left:20mm;">
+    <svg viewBox="0 0 40 40" width="56" height="56" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="8" width="13" height="24" rx="4" fill="#4F46E5"/><rect x="22" y="8" width="13" height="24" rx="4" fill="#7C5CFC"/><path d="M15,11 L25,15 M15,18 L25,22 M15,25 L25,29" stroke="#D8CEFF" stroke-width="3" stroke-linecap="round" fill="none"/></svg>
+    <p class="mono" style="margin-top:4mm; color:#8C8C8E;">INOVIXUX · Brand Guidelines v1.0 · September 2026</p>
+  </div>
+  <div class="footer"><span>INOVIXUX Brand Guidelines</span><span>Assets</span><span>07</span></div>
+</section>
+
+</body>
+</html>

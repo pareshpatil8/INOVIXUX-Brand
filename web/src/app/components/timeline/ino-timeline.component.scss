@@ -1,0 +1,433 @@
+/*
+ * <ino-timeline> — INO-134 / INO-31 T-4.
+ *
+ * No literal colour/space/radius/duration/font-size — every declaration resolves through a
+ * semantic role in tokens.css, and logical properties only end to end (RTL is one code path,
+ * see SPEC.md §5). No `[data-theme]` branch anywhere below.
+ *
+ * Layout model: each `.ino-timeline__row` is a 3-part flex triplet — opposite / rail / content —
+ * and `[data-side]` (computed per-row by the component from `align`, ino-timeline.component.ts
+ * `resolveSide()`) reorders the triplet with the `order` property rather than a second DOM
+ * arrangement. `order` follows the FLEX CONTAINER's logical inline/block axis, which itself
+ * flips under `dir="rtl"` — so the alternating zig-zag is one code path for both writing
+ * directions, the same guarantee ino-paginator's SPEC.md §6 records for its own flex row.
+ *
+ * `vertical` and `horizontal` are not the same triplet rotated in CSS alone: per the doc comment
+ * on `InoTimelineAlign` in the .ts, "start" means "content after the marker" on the inline axis
+ * (vertical) but "content before the marker" on the block axis (horizontal) — so the two layouts
+ * assign `order` in mirrored fashion. See the two `[data-layout]` blocks below.
+ */
+
+/* -------------------------------------------------------------------------------------------
+ * Size API — DoD row 3. Four Wave 0 control-size aliases, the ino-tag subset (font-size /
+ * padding-inline / gap) plus `--ino-control-height`: unlike a static label, an `interactive` row
+ * is a real focusable control and needs the height alias for its minimum target size (below).
+ * ------------------------------------------------------------------------------------------- */
+:host([data-size='sm']) {
+  --ino-control-height: var(--ino-control-height-sm);
+  --ino-control-font-size: var(--ino-control-font-size-sm);
+  --ino-control-padding-inline: var(--ino-control-padding-inline-sm);
+  --ino-control-gap: var(--ino-control-gap-sm);
+  --ino-timeline-dot-size: var(--ino-control-icon-size-sm);
+}
+
+:host([data-size='lg']) {
+  --ino-control-height: var(--ino-control-height-lg);
+  --ino-control-font-size: var(--ino-control-font-size-lg);
+  --ino-control-padding-inline: var(--ino-control-padding-inline-lg);
+  --ino-control-gap: var(--ino-control-gap-lg);
+  --ino-timeline-dot-size: var(--ino-control-icon-size-lg);
+}
+
+:host {
+  display: block;
+  --ino-timeline-dot-size: var(--ino-control-icon-size-default, 20px);
+  --ino-timeline-rail-color: var(--ino-color-border);
+  font-family: var(--ino-font-display);
+  font-size: var(--ino-control-font-size);
+  color: var(--ino-color-on-surface);
+
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      transition: none !important;
+      animation: none !important;
+    }
+  }
+}
+
+/* -------------------------------------------------------------------------------------------
+ * Row list — vertical layout (default). Rows stack along the block axis; each row is a flex
+ * triplet along the inline axis.
+ * ------------------------------------------------------------------------------------------- */
+:host([data-layout='vertical']) {
+  .ino-timeline__row {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--ino-control-gap);
+  }
+
+  .ino-timeline__opposite {
+    order: 1;
+    flex: 1 1 0;
+    text-align: end;
+  }
+
+  .ino-timeline__rail {
+    order: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-self: stretch;
+    flex: none;
+  }
+
+  .ino-timeline__content {
+    order: 3;
+    flex: 2 1 0;
+    text-align: start;
+  }
+
+  /* "end": content sits BEFORE the marker on the inline axis (InoTimelineAlign doc comment). */
+  .ino-timeline__row[data-side='end'] {
+    .ino-timeline__opposite {
+      order: 3;
+      text-align: start;
+    }
+
+    .ino-timeline__content {
+      order: 1;
+      text-align: end;
+    }
+  }
+
+  .ino-timeline__connector {
+    flex: 1 1 auto;
+    inline-size: 2px;
+    min-block-size: var(--ino-space-4);
+    margin-block: var(--ino-space-1) 0;
+  }
+}
+
+/* -------------------------------------------------------------------------------------------
+ * Row list — horizontal layout. Rows sit side by side along the inline axis; each row is a flex
+ * triplet along the BLOCK axis instead, and the whole host scrolls on overflow.
+ * ------------------------------------------------------------------------------------------- */
+:host([data-layout='horizontal']) {
+  /* Rows are direct host children (the template's `ng-container` wrappers render no DOM node),
+     so the host itself is the flex container that lays them out side by side. */
+  display: flex;
+  align-items: flex-start;
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  .ino-timeline__row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: none;
+    inline-size: max-content;
+    min-inline-size: calc(var(--ino-control-height) * 3);
+    padding-inline: var(--ino-control-padding-inline);
+    gap: var(--ino-control-gap);
+  }
+
+  .ino-timeline__opposite {
+    order: 3;
+    text-align: center;
+  }
+
+  .ino-timeline__rail {
+    order: 2;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    align-self: stretch;
+    flex: none;
+  }
+
+  .ino-timeline__content {
+    order: 1;
+    text-align: center;
+  }
+
+  /* "end": content sits AFTER the marker on the block axis (InoTimelineAlign doc comment). */
+  .ino-timeline__row[data-side='end'] {
+    .ino-timeline__content {
+      order: 3;
+    }
+
+    .ino-timeline__opposite {
+      order: 1;
+    }
+  }
+
+  .ino-timeline__connector {
+    flex: 1 1 auto;
+    block-size: 2px;
+    min-inline-size: var(--ino-space-6);
+    margin-inline: var(--ino-space-1) 0;
+  }
+}
+
+/* -------------------------------------------------------------------------------------------
+ * Rail — marker + connector, shared by both layouts.
+ * ------------------------------------------------------------------------------------------- */
+.ino-timeline__marker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
+.ino-timeline__dot {
+  box-sizing: content-box; /* the border below is a RING drawn outside the diameter, not eating into it */
+  inline-size: var(--ino-timeline-dot-size);
+  block-size: var(--ino-timeline-dot-size);
+  border-radius: var(--ino-radius-pill);
+  background: var(--ino-timeline-marker, var(--ino-color-on-surface-muted));
+  /* Ring separates the dot from the connector line running behind it — a punched-dot motif. A
+     border, not a box-shadow: check-ds-adherence.mjs's non-token-shadow rule requires every
+     box-shadow to be an elevation token, and this ring is a colour separator, not a depth cue. */
+  border: 2px solid var(--ino-color-surface);
+}
+
+.ino-timeline__connector {
+  background: var(--ino-timeline-rail-color);
+  transform-origin: block-start;
+
+  /* Reduced-motion: connector is simply present, at full length, no draw-in. */
+  @media (prefers-reduced-motion: no-preference) {
+    animation: ino-timeline-draw-in-block var(--ino-motion-duration-slow)
+      var(--ino-motion-easing-decelerate) backwards;
+  }
+}
+
+:host([data-layout='horizontal']) .ino-timeline__connector {
+  transform-origin: inline-start;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation-name: ino-timeline-draw-in-inline;
+  }
+}
+
+@keyframes ino-timeline-draw-in-block {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes ino-timeline-draw-in-inline {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* -------------------------------------------------------------------------------------------
+ * Marker role → token pair (DoD row 6 companion — see `InoTimelineMarkerRole` in the .ts).
+ * Same "resolve once per host" shape ino-tag's SPEC.md §severity block uses, scoped to the row
+ * since role is per-event, not per-timeline.
+ * ------------------------------------------------------------------------------------------- */
+.ino-timeline__row[data-role='info'] {
+  --ino-timeline-marker: var(--ino-color-info);
+}
+
+.ino-timeline__row[data-role='success'] {
+  --ino-timeline-marker: var(--ino-color-success);
+}
+
+.ino-timeline__row[data-role='warning'] {
+  --ino-timeline-marker: var(--ino-color-warning);
+}
+
+.ino-timeline__row[data-role='danger'] {
+  --ino-timeline-marker: var(--ino-color-danger);
+}
+
+.ino-timeline__row[data-role='neutral'] {
+  --ino-timeline-marker: var(--ino-color-on-surface-muted);
+}
+
+/* -------------------------------------------------------------------------------------------
+ * Content slots.
+ * ------------------------------------------------------------------------------------------- */
+.ino-timeline__opposite {
+  color: var(--ino-color-on-surface-muted);
+  font-size: var(--ino-control-font-size);
+  padding-block-start: var(--ino-space-1);
+}
+
+.ino-timeline__content {
+  padding-block-end: var(--ino-space-5);
+}
+
+:host([data-layout='horizontal']) .ino-timeline__content {
+  padding-block-end: 0;
+}
+
+/* Last row needs no trailing gap once its connector is gone. */
+.ino-timeline__row[data-last] .ino-timeline__content {
+  padding-block-end: 0;
+}
+
+/* -------------------------------------------------------------------------------------------
+ * `interactive` — DoD row 8 companion. Rows become a focusable, roving-tabindex listbox option.
+ * `:host(.ino-timeline--interactive)` — never a bare `.ino-timeline--interactive` — because the
+ * class lands on the HOST via the component's `host:` binding, the same lesson recorded at the
+ * top of `ino-button.component.scss` and repeated in `ino-virtual-scroller.component.scss`.
+ * ------------------------------------------------------------------------------------------- */
+:host(.ino-timeline--interactive) .ino-timeline__row {
+  cursor: pointer;
+  border-radius: var(--ino-radius-md);
+  /* SC 2.5.8 target size — 24px floor, 44px comfortable via the control-height alias. */
+  min-block-size: var(--ino-row-min-height, 44px);
+  transition: background var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+}
+
+/* State 2 — hover. */
+:host(.ino-timeline--interactive:not([data-disabled])) .ino-timeline__row:hover {
+  background: var(--ino-color-surface-sunken);
+}
+
+/* State 3 — active/pressed. */
+:host(.ino-timeline--interactive:not([data-disabled])) .ino-timeline__row:active {
+  background: var(--ino-color-surface-sunken);
+}
+
+:host(.ino-timeline--interactive:not([data-disabled]))
+  .ino-timeline__row:active
+  .ino-timeline__dot {
+  background: var(--ino-color-accent-active);
+}
+
+/* State 4 — focus-visible. Wave 0 ring token, never a hand-rolled outline. */
+:host(.ino-timeline--interactive) .ino-timeline__row:focus-visible {
+  outline: var(--ino-focus-ring);
+  outline-offset: var(--ino-focus-ring-offset);
+}
+
+/* Selected/focused option, mirrored via aria-selected in the template. */
+:host(.ino-timeline--interactive) .ino-timeline__row[aria-selected='true'] {
+  background: var(--ino-color-surface-sunken);
+}
+
+/* -------------------------------------------------------------------------------------------
+ * States 5-8, from host data-attributes set by the typed @Inputs — DoD row 5.
+ * ------------------------------------------------------------------------------------------- */
+
+/* State 5 — disabled. Interaction genuinely suppressed, not merely dimmed. */
+:host([data-disabled]) {
+  opacity: 0.5;
+}
+
+:host([data-disabled]) .ino-timeline__row {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* State 6 — readonly. Opposite trade from disabled: an audit trail must stay fully legible, so
+   readonly only withdraws the interactive affordance (hover/press feedback implying an action
+   that won't commit); rows stay full-opacity and keyboard-reachable, same idiom
+   ino-paginator's SPEC.md §3 records for the same state on a different row-based component. */
+:host([data-readonly].ino-timeline--interactive) .ino-timeline__row:hover {
+  background: transparent;
+}
+
+/* State 7 — invalid. An accent bar on each row, not a fill change — the trail's own text/marker
+   colours stay at full contrast against the surface, matching ino-virtual-scroller's "border
+   only" rule for the same state (SPEC.md §… "Border only; the fill stays neutral"). */
+:host([data-invalid]) .ino-timeline__row {
+  border-inline-start: 2px solid var(--ino-color-danger);
+  padding-inline-start: var(--ino-space-2);
+}
+
+:host([data-invalid][data-layout='horizontal']) .ino-timeline__row {
+  border-inline-start: 0;
+  border-block-start: 2px solid var(--ino-color-danger);
+  padding-inline-start: 0;
+  padding-block-start: var(--ino-space-2);
+}
+
+/* State 8 — loading/busy, list non-empty (a refresh, not the first load — the first load renders
+   the skeleton below instead). Lighter dim than disabled: data is in flight, not unavailable. */
+:host([data-busy]) .ino-timeline__row:not(.ino-timeline__row--skeleton) {
+  opacity: 0.75;
+}
+
+:host([data-busy].ino-timeline--interactive) .ino-timeline__row {
+  cursor: progress;
+}
+
+/* -------------------------------------------------------------------------------------------
+ * Skeleton — first load only (DoD row 5 loading companion). Both ends of the shimmer are
+ * semantic roles, so it re-themes for free and never becomes a second place a grey literal
+ * lives, same idiom `ino-virtual-scroller.component.scss`'s `.ino-vs__skeleton` uses.
+ * ------------------------------------------------------------------------------------------- */
+.ino-timeline__row--skeleton {
+  .ino-timeline__dot {
+    background: var(--ino-color-border-soft);
+    box-shadow: none;
+  }
+}
+
+.ino-timeline__skeleton-bar {
+  display: block;
+  border-radius: var(--ino-radius-pill);
+  background: var(--ino-color-border-soft);
+  block-size: var(--ino-space-3);
+}
+
+.ino-timeline__skeleton-bar--opposite {
+  inline-size: 4em;
+  margin-inline-start: auto;
+}
+
+.ino-timeline__skeleton-bar--title {
+  inline-size: 40%;
+  margin-block-end: var(--ino-space-2);
+}
+
+.ino-timeline__skeleton-bar--body {
+  inline-size: 80%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ino-timeline__skeleton-bar {
+    background: linear-gradient(
+      90deg,
+      var(--ino-color-border-soft) 0%,
+      var(--ino-color-border) 50%,
+      var(--ino-color-border-soft) 100%
+    );
+    background-size: 200% 100%;
+    animation: ino-timeline-shimmer var(--ino-motion-duration-slow) var(--ino-motion-easing-standard)
+      infinite;
+  }
+}
+
+@keyframes ino-timeline-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* -------------------------------------------------------------------------------------------
+ * Empty state.
+ * ------------------------------------------------------------------------------------------- */
+.ino-timeline__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: var(--ino-control-height);
+  padding: var(--ino-space-6) var(--ino-control-padding-inline);
+  color: var(--ino-color-on-surface-muted);
+  text-align: center;
+}

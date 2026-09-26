@@ -1,0 +1,388 @@
+/* <ino-file-upload> (INO-145, INO-31 T-5, File group). Every declaration resolves through a
+   semantic role in tokens.css; no `data-theme` branch anywhere in this file. See SPEC.md. */
+
+.ino-fu {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ino-space-2);
+}
+
+.ino-fu--disabled {
+  opacity: 0.72;
+}
+
+/* Hidden but real <input type="file"> — sr-only clip-path idiom (see ino-vs__sr), not
+   display:none, so `change`/the OS picker still work when "Choose" proxies .click() onto it.
+   tabindex="-1" in the template: the button is the documented keyboard entry point, SPEC.md §2. */
+.ino-fu__native-input {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+  padding: 0;
+}
+
+/* Size API (DoD row 3) — same re-pointing idiom as ino-input/ino-select's :host([data-size]). */
+:host([data-size='sm']) {
+  --ino-control-height: var(--ino-control-height-sm);
+  --ino-control-padding-inline: var(--ino-control-padding-inline-sm);
+  --ino-control-padding-inline-roomy: var(--ino-control-padding-inline-roomy-sm);
+  --ino-control-font-size: var(--ino-control-font-size-sm);
+  --ino-control-gap: var(--ino-control-gap-sm);
+}
+
+:host([data-size='lg']) {
+  --ino-control-height: var(--ino-control-height-lg);
+  --ino-control-padding-inline: var(--ino-control-padding-inline-lg);
+  --ino-control-padding-inline-roomy: var(--ino-control-padding-inline-roomy-lg);
+  --ino-control-font-size: var(--ino-control-font-size-lg);
+  --ino-control-gap: var(--ino-control-gap-lg);
+}
+
+/* Choose button — basic mode + dropzone (DoD row 5 states). Reads the control-size scale. */
+.ino-fu__choose {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: var(--ino-control-height, var(--ino-target-comfortable));
+  padding-inline: var(--ino-control-padding-inline-roomy, var(--ino-space-5));
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-md);
+  background: var(--ino-color-surface-raised);
+  color: var(--ino-color-on-surface);
+  font-family: var(--ino-font-display);
+  font-size: var(--ino-control-font-size, var(--ino-type-body-size));
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+    background var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+
+  &:hover:not(:disabled) {
+    border-color: var(--ino-color-on-surface-muted);
+    background: var(--ino-color-surface-sunken);
+  }
+
+  &:active:not(:disabled) {
+    border-color: var(--ino-color-accent-active);
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+    border-color: var(--ino-color-accent);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.ino-fu__spinner {
+  inline-size: 14px;
+  block-size: 14px;
+  margin-inline-start: var(--ino-space-3);
+  border-radius: 50%;
+  border: 2px solid var(--ino-color-on-surface-muted);
+  border-top-color: transparent;
+  display: inline-block;
+  vertical-align: middle;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: ino-fu-spin var(--ino-motion-duration-slow) linear infinite;
+  }
+}
+
+@keyframes ino-fu-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.ino-fu__dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--ino-space-3);
+  padding: var(--ino-space-6);
+  border: 1px dashed var(--ino-color-border);
+  border-radius: var(--ino-radius-lg);
+  background: var(--ino-color-surface-sunken);
+  text-align: center;
+  transition: border-color var(--ino-motion-duration-base) var(--ino-motion-easing-standard),
+    background var(--ino-motion-duration-base) var(--ino-motion-easing-standard);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+.ino-fu__dropzone-icon {
+  color: var(--ino-color-on-surface-muted);
+}
+
+.ino-fu__dropzone-hint {
+  margin: 0;
+  font-size: var(--ino-type-body-sm-size);
+  color: var(--ino-color-on-surface-muted);
+}
+
+/* Dragover — motion enter (DoD row 7), --ino-motion-duration-base pace, not -fast. */
+.ino-fu__dropzone--dragover {
+  border-color: var(--ino-color-accent);
+  border-style: solid;
+  background: var(--ino-color-surface-raised);
+}
+
+.ino-fu__dropzone--error {
+  border-color: var(--ino-color-danger);
+}
+
+.ino-fu__dropzone--disabled {
+  opacity: 0.6;
+}
+
+.ino-fu__basic {
+  display: flex;
+  align-items: center;
+  gap: var(--ino-space-3);
+  flex-wrap: wrap;
+}
+
+.ino-fu__basic-filename {
+  font-size: var(--ino-type-body-sm-size);
+  color: var(--ino-color-on-surface);
+}
+
+.ino-fu__basic-filename--empty {
+  color: var(--ino-color-on-surface-subtle);
+}
+
+/* Row-based (DoD row 4) — --ino-row-min-height floor, falls back to control-height then the
+   WCAG 2.2 SC 2.5.8 floor, same idiom as ino-input's control wrap. */
+.ino-fu__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ino-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ino-fu__item {
+  display: flex;
+  align-items: center;
+  gap: var(--ino-space-3);
+  min-block-size: var(--ino-row-min-height, var(--ino-control-height, var(--ino-target-comfortable)));
+  padding-inline: var(--ino-space-4);
+  padding-block: var(--ino-space-2);
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-md);
+  background: var(--ino-color-surface-raised);
+  /* Enter motion (DoD row 7), block-axis only — RTL-safe. */
+  animation: ino-fu-item-enter var(--ino-motion-duration-base) var(--ino-motion-easing-decelerate);
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@keyframes ino-fu-item-enter {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ino-fu__item--error {
+  border-color: var(--ino-color-danger);
+}
+
+.ino-fu__item-preview {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 36px;
+  block-size: 36px;
+  flex: none;
+  border-radius: var(--ino-radius-sm);
+  background: var(--ino-color-surface-sunken);
+  color: var(--ino-color-on-surface-muted);
+  overflow: hidden;
+}
+
+.ino-fu__item-thumb {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+.ino-fu__item-meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ino-space-1);
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+
+.ino-fu__item-name {
+  font-size: var(--ino-type-body-sm-size);
+  font-weight: 600;
+  color: var(--ino-color-on-surface);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ino-fu__item-size {
+  font-size: var(--ino-type-caption-size);
+  color: var(--ino-color-on-surface-muted);
+}
+
+/* Status always renders as text (WCAG 1.4.1); the error variant adds colour on top, not instead. */
+.ino-fu__item-status {
+  font-size: var(--ino-type-caption-size);
+  color: var(--ino-color-on-surface-muted);
+}
+
+.ino-fu__item-status--error {
+  color: var(--ino-color-danger-text-safe);
+  font-weight: 600;
+}
+
+.ino-fu__item-progress {
+  display: block;
+  inline-size: 100%;
+  block-size: 4px;
+  margin-block-start: var(--ino-space-1);
+  border-radius: var(--ino-radius-pill);
+  background: var(--ino-color-surface-sunken);
+  overflow: hidden;
+}
+
+.ino-fu__item-progress-fill {
+  display: block;
+  block-size: 100%;
+  background: var(--ino-color-accent);
+  transition: inline-size var(--ino-motion-duration-base) var(--ino-motion-easing-standard);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+.ino-fu__item-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--ino-space-2);
+  flex: none;
+}
+
+.ino-fu__item-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-inline-size: var(--ino-target-min);
+  min-block-size: var(--ino-target-min);
+  padding-inline: var(--ino-space-3);
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-sm);
+  background: transparent;
+  color: var(--ino-color-on-surface-muted);
+  font-family: inherit;
+  font-size: var(--ino-type-caption-size);
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+    color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+
+  &:hover:not(:disabled) {
+    border-color: var(--ino-color-on-surface-muted);
+    color: var(--ino-color-on-surface);
+  }
+
+  &:active:not(:disabled) {
+    border-color: var(--ino-color-accent-active);
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.ino-fu__item-btn--remove {
+  color: var(--ino-color-danger-text-safe);
+  border-color: var(--ino-color-danger);
+}
+
+/* Rejections — role="alert" list, DoD row 8. */
+.ino-fu__rejections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ino-space-2);
+  padding: var(--ino-space-4);
+  border: 1px solid var(--ino-color-danger);
+  border-radius: var(--ino-radius-md);
+  background: var(--ino-color-surface-raised);
+}
+
+.ino-fu__rejections-title {
+  margin: 0;
+  font-size: var(--ino-type-body-sm-size);
+  font-weight: 600;
+  color: var(--ino-color-danger-text-safe);
+}
+
+.ino-fu__rejections-list {
+  margin: 0;
+  padding-inline-start: var(--ino-space-5);
+  font-size: var(--ino-type-body-sm-size);
+  color: var(--ino-color-on-surface);
+}
+
+/* Reuses .ino-fu__item-btn's full base/hover/focus-visible ruleset (template applies both
+   classes) — only the layout override differs. */
+.ino-fu__rejections-dismiss {
+  align-self: flex-start;
+}
+
+.ino-fu__hint {
+  margin: 0;
+  font-size: var(--ino-type-body-sm-size);
+  color: var(--ino-color-on-surface-muted);
+}
+
+.ino-fu__error {
+  margin: 0;
+  font-size: var(--ino-type-body-sm-size);
+  color: var(--ino-color-danger);
+  font-weight: 600;
+}
+
+/* loading/busy (DoD row 5) — dims the dropzone+list; readonly leaves rows focusable, disables
+   only the write actions in the template (ino-input's "readonly never means disabled" rule). */
+:host(.ino-file-upload--loading) .ino-fu__dropzone,
+:host(.ino-file-upload--loading) .ino-fu__list {
+  opacity: 0.72;
+}

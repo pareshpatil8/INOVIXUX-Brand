@@ -65,6 +65,17 @@
  * themes, so it cannot regress. Rationale, the size-pairing table and the
  * a11y contract: docs/brand/06-angular-components/form-label-tokens.md.
  *
+ * 2026-09-23 (INO-257, Wave 0 item W0-7): added --ino-invalid-ring (§12), the
+ * danger-coloured state ring, as the box-shadow-channel twin of the existing
+ * --ino-focus-ring. Filed as an amendment rather than a component fix because
+ * `ino-radio` (INO-159) needed a ring that the contract simply did not have:
+ * --ino-focus-ring is accent-only, and the adherence lint's suggested
+ * --ino-elevation-* is the wrong answer here, since elevation flattens to
+ * `none` in high-contrast — precisely the theme where an invalid affordance
+ * must survive. Nothing existing changed. See §12 for the channel argument and
+ * the ring-stacking arithmetic; check-theme-parity.mjs asserts the shape, the
+ * never-flatten rule and the SC 1.4.11 contrast budget in all three themes.
+ *
  * This file is the single source of truth for color, type, space, radius,
  * elevation, and motion. Angular consumes it as-is: drop it into
  * src/styles/tokens.css and import once in angular.json's global styles
@@ -327,8 +338,20 @@
    * 4. TYPOGRAPHY — Geist / Geist Mono (OFL), self-hosted; see README
    *    §Font onboarding. System fallback stack is mandatory per the brief
    *    (locked-down bank/regulator machines must not break layout).
+   *
+   *    2026-09-15 (INO-119): Geist has no Devanagari coverage, and we are an
+   *    India/APAC company aligned to India Stack — Hindi is a floor
+   *    requirement, not a stretch goal. "Noto Sans Devanagari" (OFL-1.1,
+   *    self-hostable, same licensing posture as Geist) is inserted into the
+   *    MANDATORY fallback chain, second position, on both font tokens: the
+   *    browser keeps every Latin glyph on Geist and only pulls Devanagari
+   *    glyphs from the next family in the list — this is standard multi-
+   *    script @font-face fallback behavior, not a font swap. See README
+   *    §Indic/Devanagari typography pairing for the licensing, self-hosting
+   *    plan, vertical-rhythm decision, and the explicit scope-beyond-Hindi
+   *    position (Tamil/Bengali/etc. are a stated deferral, not an omission).
    * ------------------------------------------------------------------- */
-  --ino-font-display: "Geist", system-ui, -apple-system, Arial, Helvetica, sans-serif;
+  --ino-font-display: "Geist", "Noto Sans Devanagari", system-ui, -apple-system, Arial, Helvetica, sans-serif;
   --ino-font-mono: "Geist Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
 
   /* size / line-height / weight / tracking, one token group per role.
@@ -478,6 +501,11 @@
   --ino-type-hint: var(--ino-type-hint-weight) var(--ino-type-hint-size)/var(--ino-type-hint-line) var(--ino-font-display);
   --ino-type-caption: var(--ino-type-caption-weight) var(--ino-type-caption-size)/var(--ino-type-caption-line) var(--ino-font-display);
 
+  /* Devanagari-safe line-height baseline for the mono eyebrow/metric roles is not defined —
+     both are Latin-numeral/all-caps-tracking styles by design (see README §Indic/Devanagari
+     typography pairing, "roles intentionally not overridden"); a Hindi label uses the h3/body
+     roles below instead. */
+
   /* ---------------------------------------------------------------------
    * 5. SPACE — one scale, t-shirt tokens. Values are the real paddings
    *    already in use across the v5 foundation build, named, not invented.
@@ -619,7 +647,9 @@
   --ino-control-gap: var(--ino-control-gap-default);
 
   /* ---------------------------------------------------------------------
-   * 12. FOCUS RING (INO-123, Wave 0). One token pair, consumed as:
+   * 12. STATE RINGS — focus (INO-123) and invalid (INO-257), Wave 0.
+   *
+   *    FOCUS RING. One token pair, consumed as:
    *
    *      &:focus-visible {
    *        outline: var(--ino-focus-ring);
@@ -644,11 +674,85 @@
    *    `outline` is used rather than `box-shadow` on purpose: it follows
    *    border-radius in every current browser, is not clipped by
    *    `overflow: hidden` ancestors, and survives forced-colors mode.
+   *
+   *    INVALID RING (INO-257, W0-7). Same idea — one themeable token instead
+   *    of a ring copy-pasted per component — but deliberately on the OTHER
+   *    channel. Consumed as:
+   *
+   *      &[aria-invalid='true'] {
+   *        box-shadow: var(--ino-invalid-ring);
+   *      }
+   *
+   *    and, on a component that already carries elevation, composed:
+   *    `box-shadow: var(--ino-invalid-ring), var(--ino-elevation-1);`.
+   *
+   *    Why box-shadow and not `outline`: the focus ring above already owns
+   *    `outline`, and a control that is simultaneously focused and invalid has
+   *    to show BOTH affordances — an invalid field is the single most likely
+   *    thing in a form to also hold focus. Two state rings cannot share one
+   *    channel, so the invalid ring takes the only other one that still
+   *    follows border-radius.
+   *
+   *    Why NOT an elevation token, which is what the adherence lint suggests
+   *    for a hardcoded box-shadow: elevation resolves to `none` in
+   *    high-contrast (§2c, and all 11 scale steps with it), which is exactly
+   *    the theme where an invalid affordance must stay visible. This token is
+   *    therefore the one box-shadow in the system that high-contrast KEEPS and
+   *    widens rather than flattens, and check-theme-parity.mjs asserts that.
+   *
+   *    The geometry is spread-only (`0 0 0 Npx`) so the ring hugs the border
+   *    box and lands INSIDE the gap the focus ring's 2px outline-offset leaves:
+   *    border box -> 2px danger ring -> focus outline starting at offset 2px,
+   *    adjacent, neither hiding the other. In high-contrast both go to 3px, so
+   *    the outline overpaints the ring's outer 1px and 2px of danger survives —
+   *    still the dark/light baseline weight.
+   *
+   *    The colour reads --ino-color-danger, not --ino-color-danger-text-safe:
+   *    a ring is a non-text state indicator under WCAG 2.2 SC 1.4.11 (3:1),
+   *    not text under 1.4.3 (4.5:1). The text-safe split exists for the
+   *    invalid LABEL (§4b) and is the wrong, heavier pick for chrome.
+   *    check-theme-parity.mjs measures danger against all three surface roles
+   *    in all three themes at 3:1 so this stays true rather than assumed.
    * ------------------------------------------------------------------- */
   --ino-focus-ring: 2px solid var(--ino-color-accent);
   --ino-focus-ring-offset: 2px; /* the drift-winner: 2px was already the majority spelling, and it
                                    keeps the ring clear of a 1px component border instead of
                                    sitting on top of it */
+  --ino-invalid-ring: 0 0 0 2px var(--ino-color-danger); /* light mode inherits this unchanged: the
+                                                            weight is right on both surfaces and the
+                                                            colour re-themes through the role */
+}
+
+/* ---------------------------------------------------------------------
+ * 4b. INDIC/DEVANAGARI VERTICAL RHYTHM (INO-119) — display/h2/h3 are
+ *     intentionally tight (1.05/1.25/1.4) for Geist's Latin cap-height
+ *     rhythm. Noto Sans Devanagari's vertical metrics (the shirorekha
+ *     headline stroke + matras sitting above/below the baseline) clip at
+ *     those ratios, so any subtree whose language resolves to Hindi gets
+ *     safe ratios instead — :lang(hi) matches an element's OWN or
+ *     INHERITED `lang` attribute per the HTML language-inheritance
+ *     algorithm (e.g. <html lang="hi">, or a single <span lang="hi">
+ *     mid-page), so this needs no JS and no new attribute contract beyond
+ *     the `lang` attribute this repo already sets on <html> (see
+ *     web/src/index.html).
+ *
+ *     body / body-lg / body-sm are deliberately NOT overridden here:
+ *     1.55/1.65 already clears Noto Sans Devanagari's ~1.4 safe minimum,
+ *     and body copy is exactly where a single line legitimately mixes
+ *     Latin and Devanagari (e.g. a KYB field label plus a Hindi customer
+ *     name) — a single line-height has to serve both scripts there, so
+ *     the existing body ratios were already generous enough for both.
+ *     Headline roles are effectively single-script per instance (a Hindi
+ *     headline is not composed mid-line with an English one), which is
+ *     what makes a lang-scoped override safe instead of a global bump
+ *     that would also loosen every existing Latin-only headline.
+ *     See README §Indic/Devanagari typography pairing for the full
+ *     rationale and the ratios' derivation from Noto's font metrics.
+ * ------------------------------------------------------------------- */
+:lang(hi) {
+  --ino-type-display-line: 1.35;
+  --ino-type-h2-line: 1.5;
+  --ino-type-h3-line: 1.6;
 }
 
 /* ---------------------------------------------------------------------
@@ -725,6 +829,30 @@
   --ino-color-risk-low-dot: var(--ino-primitive-green-500);
   --ino-color-risk-low-fill: var(--ino-primitive-green-700);
   --ino-color-risk-low-on-fill: #FFFFFF;                /* 5.31:1 */
+
+  /* §13 data-viz overrides. Categorical -cat-1..6 are deliberately NOT
+     overridden: the shared hexes clear 3:1 on this surface too (see §13),
+     so series identity survives a theme toggle without repainting. The
+     ramps DO re-step: on this light surface the strong-contrast end is
+     the DARK end, so sequential runs light→dark (step 1 = 2.07:1, the
+     ordinal 2:1 near-surface floor; step 8 = 12.05:1) and the diverging
+     arms darken outward (4.64:1 neg / 4.99:1 pos). */
+  --ino-color-chart-seq-1: #B4A8EB;
+  --ino-color-chart-seq-2: #A193DD;
+  --ino-color-chart-seq-3: #8F7ECF;
+  --ino-color-chart-seq-4: #7D6ABF;
+  --ino-color-chart-seq-5: #6B57AC;
+  --ino-color-chart-seq-6: #5A4697;
+  --ino-color-chart-seq-7: #49367F;
+  --ino-color-chart-seq-8: #392866;
+
+  --ino-color-chart-div-neg-3: #2F74BB;
+  --ino-color-chart-div-neg-2: #6193CB;
+  --ino-color-chart-div-neg-1: #8EB1DA;
+  --ino-color-chart-div-mid: #EBEBE9;
+  --ino-color-chart-div-pos-1: #D79E95;
+  --ino-color-chart-div-pos-2: #C97469;
+  --ino-color-chart-div-pos-3: #B9473D;
 }
 
 /* ---------------------------------------------------------------------
@@ -817,6 +945,50 @@
      likely to be tracking focus at low acuity or high magnification, and a 2px ring
      is the first thing to disappear at 200% zoom on a small viewport. */
   --ino-focus-ring: 3px solid var(--ino-color-accent);
+
+  /* Invalid ring (§12) — KEPT, and widened for the same reason the focus ring is.
+     Note what this block does NOT do: every elevation token above flattens to
+     `none` here, and this one deliberately does not follow them. Elevation is
+     decoration and can go; a state ring that vanished in the highest-contrast
+     theme would delete the invalid affordance for exactly the users who depend
+     on it most. The colour re-points at hc-coral for free through
+     --ino-color-danger. At 3px the 3px focus outline (offset 2px) overpaints the
+     ring's outer 1px, leaving 2px of coral — the dark/light baseline. */
+  --ino-invalid-ring: 0 0 0 3px var(--ino-color-danger);
+
+  /* §13 data-viz overrides — this theme's own restep, not a recolor: the
+     same six hue families lifted to the top of the dark lightness band
+     (OKLCH L 0.66) so every slot clears ~6:1 on pure black (5.90-6.70:1)
+     while the set STAYS validator-legal — worst adjacent CVD ΔE 10.9,
+     normal-vision 21.2, and slots 1-3 clear all-pairs (see doc 24). The
+     ramps stretch wider than dark mode's for the same reason the §2c
+     borders go opaque: this theme's job is to not be subtle. */
+  --ino-color-chart-cat-1: #5896D9; /* azure  — 6.39:1 on black */
+  --ino-color-chart-cat-2: #D76797; /* rose   — 5.92:1 */
+  --ino-color-chart-cat-3: #8B9D26; /* lime   — 6.55:1 */
+  --ino-color-chart-cat-4: #BC6ECE; /* orchid — 5.90:1 */
+  --ino-color-chart-cat-5: #D37732; /* orange — 6.09:1 */
+  --ino-color-chart-cat-6: #15A7A5; /* teal   — 6.70:1 */
+
+  --ino-color-chart-seq-1: #5A4A90;
+  --ino-color-chart-seq-2: #6E5CAD;
+  --ino-color-chart-seq-3: #836FC9;
+  --ino-color-chart-seq-4: #9883E3;
+  --ino-color-chart-seq-5: #AC9CF0;
+  --ino-color-chart-seq-6: #C2B7F7;
+  --ino-color-chart-seq-7: #D8D1FD;
+  --ino-color-chart-seq-8: #EEECFB; /* highest risk — 18.03:1 on black */
+
+  --ino-color-chart-div-neg-3: #ADD1FB; /* 13.29:1 */
+  --ino-color-chart-div-neg-2: #64A2E7;
+  --ino-color-chart-div-neg-1: #4374AA;
+  --ino-color-chart-div-mid: #535350;   /* lifted above dark mode's mid — 2.57:1, still sub-3:1 by design (a "no change" cell recedes), never carries a value alone */
+  --ino-color-chart-div-pos-1: #AD5349;
+  --ino-color-chart-div-pos-2: #E8796C;
+  --ino-color-chart-div-pos-3: #F69C8F; /* 10.07:1 — deepened vs the arm's pastel endpoint so the two
+                                           poles stay tellable-apart to FULL-color vision too (pole↔pole
+                                           normal ΔE 18.2, CVD 14.2; at matched lightness it was 12.8,
+                                           under the 15.0 normal-vision hard floor) */
 }
 
 /* Respect the OS preference the FIRST time a visitor arrives, before
@@ -1000,4 +1172,93 @@
   --ino-safe-area-right: env(safe-area-inset-right, 0px);
   --ino-safe-area-bottom: env(safe-area-inset-bottom, 0px);
   --ino-safe-area-left: env(safe-area-inset-left, 0px);
+}
+
+/* ---------------------------------------------------------------------
+ * 13. DATA VISUALIZATION (INO-113 / INO-31.1) — chart series, magnitude,
+ *     and polarity color for the KYB risk tables/matrices and every
+ *     dashboard built from this system. Doc 16 §5.1/§7.1 gap: before this
+ *     section the token set had zero data-viz coverage.
+ *
+ *     Three families, one job each (never mix jobs in one chart):
+ *       -cat-1..6   categorical — series IDENTITY. Assign in fixed slot
+ *                   order 1→N, never cycled, never re-ordered by a filter;
+ *                   color follows the entity, not its rank. A 7th series
+ *                   folds into "Other" or facets. For scatter/bubble/
+ *                   choropleth/small-multiples (where any two marks can
+ *                   touch) the cap is THREE series — slots 1-3 are the
+ *                   only triple that validates all-pairs; see doc 24.
+ *       -seq-1..8   sequential — MAGNITUDE (risk score, volume). One hue
+ *                   (the accent violet family — magnitude reads as brand,
+ *                   and it cannot be mistaken for a categorical slot,
+ *                   none of which is violet). Step 8 = highest value and
+ *                   is re-stepped per theme so it always lands at the
+ *                   strong-contrast end of THAT surface: darkest on
+ *                   light, lightest on dark/HC. Step 1 may recede toward
+ *                   the surface by design (near-zero should whisper).
+ *       -div-*      diverging — POLARITY (risk delta). Cool azure arm =
+ *                   decrease/improvement, warm red arm = increase, neutral
+ *                   gray midpoint = no change. The intuitive green↔red
+ *                   pairing was REJECTED ON MEASUREMENT: under deuteranopia
+ *                   (Machado-Oliveira-Fernandes 2009, severity 1.0) the
+ *                   existing RAG green/red poles collapse to ΔE 5.8 —
+ *                   below even the 6.0 hard floor — while azure↔red
+ *                   measures 20.1. A risk-delta chart whose two directions
+ *                   are indistinguishable to ~5% of male readers is not an
+ *                   option for a KYB product. The warm/danger hue language
+ *                   still marks "risk went up"; -pos-* deliberately does
+ *                   not reuse the danger hexes so a delta arm never
+ *                   impersonates a RAG status chip.
+ *
+ *     RAG/status collision rule: when a series MEANS good/bad (pass/fail,
+ *     flagged/clean) it wears the §3 risk tokens; when it is just "series
+ *     N" it wears -cat-N — never both languages in one chart.
+ *
+ *     Raw hexes are declared here rather than §1 on purpose: every value
+ *     is single-use, generated (OKLCH), theme-stepped, and consumed only
+ *     through its role name — a 1:1 primitive alias per hex would double
+ *     57 lines to zero benefit. Dark and light intentionally SHARE the
+ *     categorical hexes: each slot's OKLCH L (0.49-0.66) clears 3:1 on
+ *     both #0A0A0A and #FAFAFA at once, so a chart survives a theme
+ *     toggle without repainting series identity mid-session.
+ *
+ *     Every number below is validated, not eyeballed — CVD simulation
+ *     (deuteranopia/protanopia, MOF 2009 severity 1.0), lightness band,
+ *     chroma floor, normal-vision floor, and 3:1 surface contrast, per
+ *     theme, via the dataviz skill's validator; ramp monotonicity is
+ *     re-asserted on every run of scripts/check-theme-parity.mjs. Full
+ *     audit tables: docs/brand/24-data-visualization-tokens.md.
+ *
+ *     DARK-MODE values (default, same convention as §2).
+ * ------------------------------------------------------------------- */
+:root {
+  /* categorical — worst adjacent CVD ΔE 9.4 (target ≥8), worst adjacent
+     normal-vision ΔE 21.3 (floor ≥15), all slots ≥3:1 on this surface */
+  --ino-color-chart-cat-1: #4683C5; /* azure  — 5.01:1 dark / 3.79:1 light */
+  --ino-color-chart-cat-2: #C95A8B; /* rose   — 5.01:1 dark / 3.78:1 light */
+  --ino-color-chart-cat-3: #829417; /* lime   — 5.84:1 dark / 3.25:1 light */
+  --ino-color-chart-cat-4: #AF62C1; /* orchid — 5.03:1 dark / 3.77:1 light */
+  --ino-color-chart-cat-5: #C56B23; /* orange — 5.19:1 dark / 3.66:1 light */
+  --ino-color-chart-cat-6: #1E9997; /* teal   — 5.71:1 dark / 3.32:1 light */
+
+  /* sequential (violet, low→high) — on this dark surface the HIGH end is
+     the LIGHT end: step 8 is 15.0:1, step 1 recedes at 2.25:1 by design */
+  --ino-color-chart-seq-1: #4F417E;
+  --ino-color-chart-seq-2: #63529C;
+  --ino-color-chart-seq-3: #7764BA;
+  --ino-color-chart-seq-4: #8C77D6;
+  --ino-color-chart-seq-5: #A18EE8;
+  --ino-color-chart-seq-6: #B5A9EF;
+  --ino-color-chart-seq-7: #CBC2F8;
+  --ino-color-chart-seq-8: #E1DDF9;
+
+  /* diverging (risk delta) — arms brighten OUTWARD from the midpoint on
+     this surface; strongest steps 6.89:1 (neg) / 6.42:1 (pos) */
+  --ino-color-chart-div-neg-3: #589CE6; /* largest decrease */
+  --ino-color-chart-div-neg-2: #467DB9;
+  --ino-color-chart-div-neg-1: #3A6089;
+  --ino-color-chart-div-mid: #383836;   /* no change — recedes by design, never carries a value alone */
+  --ino-color-chart-div-pos-1: #894840;
+  --ino-color-chart-div-pos-2: #BB584D;
+  --ino-color-chart-div-pos-3: #E66F62; /* largest increase */
 }
