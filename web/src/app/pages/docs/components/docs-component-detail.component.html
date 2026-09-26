@@ -1,0 +1,102 @@
+<article class="ino-article docs-component-detail" *ngIf="component() as c; else notFound">
+  <p class="ino-article-eyebrow">Docs / Components</p>
+  <h1><code>{{ c.name }}</code></h1>
+  <p class="ino-article-lead">
+    Source: <code>{{ c.sourcePath }}</code>
+  </p>
+
+  <h2>Props / API</h2>
+  <table class="docs-table" *ngIf="c.inputs.length; else noInputs">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Values</th>
+        <th>Default</th>
+        <th>Optional</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let input of c.inputs">
+        <td><code>{{ input.name }}</code></td>
+        <td><code>{{ input.type }}</code></td>
+        <td>{{ inputValuesLabel(input) }}</td>
+        <td>{{ input.default ?? '—' }}</td>
+        <td>{{ input.optional ? 'yes' : 'no' }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <ng-template #noInputs>
+    <p>This component declares no <code>@Input()</code> properties.</p>
+  </ng-template>
+
+  <h2>Theme</h2>
+  <div class="docs-theme-switcher" role="group" aria-label="Preview theme">
+    <button
+      type="button"
+      *ngFor="let theme of themes"
+      [attr.aria-pressed]="themeService.theme() === theme"
+      [class.is-active]="themeService.theme() === theme"
+      (click)="themeService.set(theme)"
+    >{{ theme }}</button>
+  </div>
+
+  <h2>Live example</h2>
+  <ng-container *ngIf="liveComponentType() as type; else noLiveExample">
+    <p>
+      Generated from the manifest's <code>@Input()</code> values — best-effort, not hand-authored
+      sample data. Components that need collection inputs (<code>columns</code>,
+      <code>options</code>, <code>data</code>, …) render an empty/minimal shell here; that's an
+      honest limitation of this generic renderer, not a bug in the component.
+    </p>
+    <div class="docs-live-grid">
+      <div class="docs-live-box" *ngFor="let example of primaryExamples()">
+        <p class="docs-live-box__label">{{ example.label }}</p>
+        <ng-container *ngComponentOutlet="type; inputs: example.inputs"></ng-container>
+      </div>
+    </div>
+
+    <ng-container *ngIf="sizeExamples().length">
+      <h3>Size axis</h3>
+      <div class="docs-live-grid">
+        <div class="docs-live-box" *ngFor="let example of sizeExamples()">
+          <p class="docs-live-box__label">{{ example.label }}</p>
+          <ng-container *ngComponentOutlet="type; inputs: example.inputs"></ng-container>
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+  <ng-template #noLiveExample>
+    <p>No live example available — this slug isn't in the generated component registry.</p>
+  </ng-template>
+
+  <h2>Accessibility contract</h2>
+  <ng-container *ngIf="docExtract() as extract; else noDoc">
+    <pre class="docs-markdown" *ngIf="extract.a11y; else noA11y">{{ extract.a11y }}</pre>
+    <ng-template #noA11y>
+      <p>No Accessibility contract section found in <code>{{ extract.docPath }}</code>.</p>
+    </ng-template>
+  </ng-container>
+
+  <h2>Notes / deliberate omissions</h2>
+  <ng-container *ngIf="docExtract() as extractNotes; else noDoc">
+    <pre class="docs-markdown" *ngIf="extractNotes.notes; else noNotes">{{ extractNotes.notes }}</pre>
+    <ng-template #noNotes>
+      <p>No Deliberate omissions section found in <code>{{ extractNotes.docPath }}</code>.</p>
+    </ng-template>
+  </ng-container>
+
+  <ng-template #noDoc>
+    <p>No dedicated component doc — this is a marketing-only component with no PrimeNG counterpart.</p>
+  </ng-template>
+</article>
+
+<ng-template #notFound>
+  <article class="ino-article">
+    <p class="ino-article-eyebrow">Docs / Components</p>
+    <h1>Component not found</h1>
+    <p class="ino-article-lead">
+      No shipped component matches this slug. <a routerLink="/docs/components">Back to the component index →</a>
+    </p>
+  </article>
+</ng-template>
