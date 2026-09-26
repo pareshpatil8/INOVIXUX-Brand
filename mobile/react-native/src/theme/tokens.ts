@@ -36,6 +36,31 @@ export const colorsDark = {
   onDanger: '#FFFFFF',
   info: '#3D92BD', // INO-128 — fourth, non-alarming severity register; see tokens.css §2
   onInfo: '#000000',
+  // INO-113 — data-viz layer, tokens.css §13. Categorical = series identity in fixed slot
+  // order; sequential = magnitude (violet, step 8 = highest); diverging = risk delta
+  // (cool azure decrease / warm red increase, neutral midpoint). Full audit tables and the
+  // per-slot CVD/contrast measurements: docs/brand/24-data-visualization-tokens.md.
+  chartCat1: '#4683C5',
+  chartCat2: '#C95A8B',
+  chartCat3: '#829417',
+  chartCat4: '#AF62C1',
+  chartCat5: '#C56B23',
+  chartCat6: '#1E9997',
+  chartSeq1: '#4F417E',
+  chartSeq2: '#63529C',
+  chartSeq3: '#7764BA',
+  chartSeq4: '#8C77D6',
+  chartSeq5: '#A18EE8',
+  chartSeq6: '#B5A9EF',
+  chartSeq7: '#CBC2F8',
+  chartSeq8: '#E1DDF9',
+  chartDivNeg3: '#589CE6',
+  chartDivNeg2: '#467DB9',
+  chartDivNeg1: '#3A6089',
+  chartDivMid: '#383836',
+  chartDivPos1: '#894840',
+  chartDivPos2: '#BB584D',
+  chartDivPos3: '#E66F62',
 } as const;
 
 export const colorsLight = {
@@ -62,6 +87,30 @@ export const colorsLight = {
   onDanger: '#FFFFFF',
   info: '#226587',
   onInfo: '#FFFFFF',
+  // INO-113 — categorical hexes are IDENTICAL to dark on purpose (each slot clears 3:1 on
+  // both surfaces), so series identity survives a theme toggle; the ramps re-step so the
+  // strong-contrast end anchors against THIS surface (sequential runs light→dark here).
+  chartCat1: '#4683C5',
+  chartCat2: '#C95A8B',
+  chartCat3: '#829417',
+  chartCat4: '#AF62C1',
+  chartCat5: '#C56B23',
+  chartCat6: '#1E9997',
+  chartSeq1: '#B4A8EB',
+  chartSeq2: '#A193DD',
+  chartSeq3: '#8F7ECF',
+  chartSeq4: '#7D6ABF',
+  chartSeq5: '#6B57AC',
+  chartSeq6: '#5A4697',
+  chartSeq7: '#49367F',
+  chartSeq8: '#392866',
+  chartDivNeg3: '#2F74BB',
+  chartDivNeg2: '#6193CB',
+  chartDivNeg1: '#8EB1DA',
+  chartDivMid: '#EBEBE9',
+  chartDivPos1: '#D79E95',
+  chartDivPos2: '#C97469',
+  chartDivPos3: '#B9473D',
 } as const;
 
 // Third theme, added INO-92 — WCAG 2.2 AAA target (7:1+), not just the AA floor dark/light hit.
@@ -92,6 +141,29 @@ export const colorsHighContrast = {
   onDanger: '#000000',
   info: '#6BB6FF', // true blue, not a second cyan — accentSecondary already owns #00E5FF here
   onInfo: '#000000',
+  // INO-113 — high-contrast gets its own restep: same six hue families lifted to the top of
+  // the dark lightness band (~6:1 on pure black), ramps stretched wider than dark mode's.
+  chartCat1: '#5896D9',
+  chartCat2: '#D76797',
+  chartCat3: '#8B9D26',
+  chartCat4: '#BC6ECE',
+  chartCat5: '#D37732',
+  chartCat6: '#15A7A5',
+  chartSeq1: '#5A4A90',
+  chartSeq2: '#6E5CAD',
+  chartSeq3: '#836FC9',
+  chartSeq4: '#9883E3',
+  chartSeq5: '#AC9CF0',
+  chartSeq6: '#C2B7F7',
+  chartSeq7: '#D8D1FD',
+  chartSeq8: '#EEECFB',
+  chartDivNeg3: '#ADD1FB',
+  chartDivNeg2: '#64A2E7',
+  chartDivNeg1: '#4374AA',
+  chartDivMid: '#535350',
+  chartDivPos1: '#AD5349',
+  chartDivPos2: '#E8796C',
+  chartDivPos3: '#F69C8F',
 } as const;
 
 // Gradient stops for accent surfaces (LinearGradient colors prop) — same stops as
@@ -144,6 +216,15 @@ export const type = {
   // INO-125: the name now belongs to the form-label set below. Values unchanged.
   eyebrow: { fontSize: 11, letterSpacing: 1.54, fontWeight: '600' as const }, // 0.14em @ 11px
 
+
+  // Devanagari-safe line-height variants (INO-119), mirroring tokens.css §4b's `:lang(hi)`
+  // override 1:1 — same rationale: Noto Sans Devanagari's shirorekha/matra metrics clip at the
+  // Latin-tuned ratios above. Not wired to a locale check yet — see tokens.css README
+  // §Indic/Devanagari typography pairing, "RN locale-aware font/line-height wiring".
+  displaySmHi: { fontSize: 38, lineHeight: 38 * 1.35, fontWeight: '600' as const },
+  h2Hi: { fontSize: 32, lineHeight: 32 * 1.5, fontWeight: '600' as const },
+  h3Hi: { fontSize: 16, lineHeight: 16 * 1.6, fontWeight: '600' as const },
+
   // Form-label set — tokens.css §4b. Mobile is always fluid density
   // (13-mobile-app-patterns.md §3), so these mirror the [data-density="fluid"] column, not the
   // :root defaults — exactly as `body` above already does. letterSpacing is px (RN has no em),
@@ -154,6 +235,18 @@ export const type = {
   hint: { fontSize: 13, lineHeight: 13 * 1.55, fontWeight: '400' as const, letterSpacing: 0 },
   caption: { fontSize: 12, lineHeight: 12 * 1.5, fontWeight: '400' as const, letterSpacing: 0.12 },
 };
+
+// Font pairing (INO-119) — tokens.css §4's mandatory fallback chain, ported as data. RN's
+// `fontFamily` style prop takes exactly one linked font name per <Text> node — there is no
+// CSS-style automatic per-glyph fallback the way web resolves "Geist", "Noto Sans Devanagari" —
+// so a screen rendering lang="hi" content must explicitly select `displayDevanagariFallback`
+// rather than relying on RN to substitute it automatically. Neither name is linked as a native
+// font asset in this repo yet (same "flagged, not fetched" status as Geist itself on this
+// platform) — see tokens.css README §Indic/Devanagari typography pairing.
+export const fontFamily = {
+  display: 'Geist',
+  displayDevanagariFallback: 'Noto Sans Devanagari',
+} as const;
 
 export const motion = {
   durationFast: 120,

@@ -1,0 +1,33 @@
+/* INOVIXUX design tokens — spacing (space scale + mobile safe-area insets). Split from tokens.css (INO-115); imported by styles.css.
+ * Do not hand-edit tokens.css directly for spacing (space scale + mobile safe-area insets) changes — this file is now the source. */
+
+:root {
+  /* ---------------------------------------------------------------------
+   * 5. SPACE — one scale, t-shirt tokens. Values are the real paddings
+   *    already in use across the v5 foundation build, named, not invented.
+   * ------------------------------------------------------------------- */
+  --ino-space-1: 4px;
+  --ino-space-2: 8px;
+  --ino-space-3: 12px;
+  --ino-space-4: 16px;
+  --ino-space-5: 20px;
+  --ino-space-6: 24px;
+  --ino-space-7: 32px;
+  --ino-space-8: 40px;
+  --ino-space-9: 56px;
+  --ino-space-10: 80px;
+  --ino-space-11: 96px;
+}
+
+/* ---------------------------------------------------------------------
+ * 11. MOBILE VIEWPORT — safe-area insets for iOS/Android native shells and
+ *     mobile-web PWA installs (notch/home-indicator/gesture-nav clearance).
+ *     Falls back to 0px on desktop/browsers without env() support, so this
+ *     is always safe to consume unconditionally in component padding.
+ * ------------------------------------------------------------------- */
+:root {
+  --ino-safe-area-top: env(safe-area-inset-top, 0px);
+  --ino-safe-area-right: env(safe-area-inset-right, 0px);
+  --ino-safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --ino-safe-area-left: env(safe-area-inset-left, 0px);
+}

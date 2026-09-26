@@ -54,18 +54,44 @@ No new token was needed for either pair — both reuse tokens already in the fro
 ## 3. Invalid/error state (issue scope)
 
 A non-empty `error` string sets `aria-invalid="true"` + `aria-describedby` on the control, renders
-the message in a `role="alert"` paragraph below, and paints a 2px `--ino-color-danger` outline ring
-on the track (outline paints outside the shape regardless of the track's own background, and
-doesn't compete with the shipped elevation `box-shadow` scale). `:not(:focus-visible)` guards it so
-the invalid ring and the focus ring never fight over the one `outline` property; the danger-coloured
-error text stays the invalid signal either way.
+the message in a `role="alert"` paragraph below, and paints the shared invalid ring on the track:
 
-**No in-tree precedent for this contract on the merge base.** `ino-checkbox` (the component this
-was originally scoped to mirror) has no `error`/invalid state at all on `ino-31-design-system-parity`
-as of this issue — that lands with the separate, unmerged INO-158 uplift. This is therefore a
-forward-reference: if INO-158's `ino-checkbox` error contract lands with a different idiom (e.g. a
-different ring width or a border-based signal instead of outline), reconcile the two after both are
-merged rather than treating this SPEC as the settled precedent.
+```scss
+&[aria-invalid='true'] .ino-toggle__track {
+  box-shadow: var(--ino-invalid-ring);
+}
+```
+
+The ring stays on `.ino-toggle__track` rather than the control, because the track is the shape the
+focus ring already rings and a spread-only shadow there follows the pill radius instead of boxing
+the whole label row. It paints outside the shape regardless of the track's own background or
+gradient fill — the property the original `outline` rule was reaching for. The danger-coloured error
+text stays the invalid signal either way.
+
+**Converged onto `--ino-invalid-ring` by INO-269 — this section supersedes what it first recorded.**
+The ring originally shipped as a hand-rolled `outline: 2px solid var(--ino-color-danger)` guarded by
+`:not(:focus-visible)`, and the forward-reference note that used to sit here — "if INO-158's
+`ino-checkbox` error contract lands with a different idiom, reconcile the two after both are merged"
+— is now discharged. That reconciliation is this change: `ino-checkbox`, `ino-radio` and
+`ino-toggle` all paint one idiom.
+
+The guard was a correct read of the constraint at the time: `outline` was the only ring channel Wave
+0 offered, `box-shadow` was reserved for the elevation scale, and State 4's focus ring already owned
+`outline`, so two rings could not share one property. INO-257 (W0-7) added `--ino-invalid-ring` on
+the box-shadow channel and the constraint disappeared. Two defects close with it:
+
+1. **A focused invalid toggle showed no invalid ring at all** — the chrome affordance was absent for
+   exactly as long as the user was interacting with the failing control.
+2. **The ring stayed 2px in high-contrast** while the focus ring widened to 3px, because the weight
+   was a literal here rather than the token's. High-contrast now widens both.
+
+**The two rings stack.** `--ino-invalid-ring` is spread-only (`0 0 0 Npx`) so it paints from the
+track's border box outward, while the focus outline starts at `--ino-focus-ring-offset` (2px): in
+dark/light they are adjacent (0–2px ring, 2–4px outline); in high-contrast the 3px outline overpaints
+the 3px ring's outer 1px, leaving the 2px of coral that tokens.css §12 documents for that theme.
+`.ino-toggle__track`'s `transition` gained `box-shadow` on the fast duration/easing pair to match —
+the ring fades with the other state changes and collapses under `prefers-reduced-motion: reduce`
+through the existing block at the foot of the stylesheet.
 
 ---
 
@@ -143,7 +169,9 @@ acceptable directly under SC 2.5.8's own text: the *effective* target is the who
 the visual thumb size — no other component's SPEC needs to be cited for this, the DoD row 8 text
 already covers it. Focus ring,
 invalid ring, and the two icon-overlay colour pairs (§2) all resolve through tokens audited across
-all three themes by `node scripts/check-theme-parity.mjs`.
+all three themes by `node scripts/check-theme-parity.mjs` — for the invalid ring that includes its
+shape, the never-flatten/never-thin rules and the SC 1.4.11 3:1 budget against all three surface
+roles.
 
 ---
 

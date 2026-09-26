@@ -1,0 +1,23 @@
+<div class="ino-meter-group__track" aria-hidden="true">
+  <span
+    *ngFor="let seg of segments"
+    class="ino-meter-group__segment"
+    [attr.data-color]="seg.color"
+    [style.inline-size.%]="orientation === 'horizontal' ? seg.percent : null"
+    [style.block-size.%]="orientation === 'vertical' ? seg.percent : null"
+  ></span>
+</div>
+
+<ng-container *ngIf="legendTemplate; else defaultLegend">
+  <ng-container *ngTemplateOutlet="legendTemplate; context: legendContext(segments)"></ng-container>
+</ng-container>
+
+<ng-template #defaultLegend>
+  <ul class="ino-meter-group__legend" [class.ino-meter-group__legend--sr-only]="!showLegend">
+    <li *ngFor="let seg of segments" class="ino-meter-group__legend-item">
+      <span class="ino-meter-group__legend-dot" [attr.data-color]="seg.color" aria-hidden="true"></span>
+      <span class="ino-meter-group__legend-label">{{ seg.label }}</span>
+      <span class="ino-meter-group__legend-value">{{ seg.value }}</span>
+    </li>
+  </ul>
+</ng-template>

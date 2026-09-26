@@ -1,21 +1,11 @@
 <div class="page">
   <ino-nav [links]="navLinks" ctaLabel="Request demo" (ctaClick)="onCta()">
     <a logo routerLink="/" class="ino-logo" aria-label="INOVIXUX — home">
-      <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
-        <defs>
-          <linearGradient id="inoNavGrad" x1="2" y1="16" x2="18" y2="3" gradientUnits="userSpaceOnUse">
-            <stop offset="0" stop-color="#7C5CFC" />
-            <stop offset="1" stop-color="#4F46E5" />
-          </linearGradient>
-        </defs>
-        <path d="M3 3 L3 17 M8 3 L16 17 M16 3 L8 17" stroke="url(#inoNavGrad)" stroke-width="2.3" fill="none" stroke-linecap="round" stroke-linejoin="round" />
-        <circle cx="12" cy="10" r="1.9" fill="url(#inoNavGrad)" />
-        <circle cx="3" cy="3" r="1.1" fill="url(#inoNavGrad)" opacity="0.5" />
-        <circle cx="3" cy="17" r="1.1" fill="url(#inoNavGrad)" opacity="0.5" />
-        <circle cx="8" cy="3" r="1.1" fill="url(#inoNavGrad)" opacity="0.45" />
-        <circle cx="16" cy="3" r="1.1" fill="url(#inoNavGrad)" opacity="0.45" />
-        <circle cx="8" cy="17" r="1.1" fill="url(#inoNavGrad)" opacity="0.45" />
-        <circle cx="16" cy="17" r="1.1" fill="url(#inoNavGrad)" opacity="0.45" />
+      <!-- Border Stitch mark, Master C (INO-82). Heavy-thread cut: rendered at 20px, nav scale. -->
+      <svg width="20" height="20" viewBox="0 0 40 40" aria-hidden="true">
+        <rect x="5" y="8" width="13" height="24" rx="4" fill="#4F46E5" />
+        <rect x="22" y="8" width="13" height="24" rx="4" fill="#7C5CFC" />
+        <path d="M15,11 L25,15 M15,18 L25,22 M15,25 L25,29" stroke="var(--ino-logo-thread, #D8CEFF)" stroke-width="3.4" fill="none" stroke-linecap="round" />
       </svg>
       <span>INOVIXUX</span>
     </a>
@@ -25,21 +15,11 @@
 
   <ino-footer [columns]="footerColumns">
     <span logo class="ino-logo ino-logo--footer">
-      <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
-        <defs>
-          <linearGradient id="inoFootGrad" x1="2" y1="16" x2="18" y2="3" gradientUnits="userSpaceOnUse">
-            <stop offset="0" stop-color="#7C5CFC" />
-            <stop offset="1" stop-color="#4F46E5" />
-          </linearGradient>
-        </defs>
-        <path d="M3 3 L3 17 M8 3 L16 17 M16 3 L8 17" stroke="url(#inoFootGrad)" stroke-width="2.3" fill="none" stroke-linecap="round" stroke-linejoin="round" />
-        <circle cx="12" cy="10" r="1.9" fill="url(#inoFootGrad)" />
-        <circle cx="3" cy="3" r="1.1" fill="url(#inoFootGrad)" opacity="0.5" />
-        <circle cx="3" cy="17" r="1.1" fill="url(#inoFootGrad)" opacity="0.5" />
-        <circle cx="8" cy="3" r="1.1" fill="url(#inoFootGrad)" opacity="0.45" />
-        <circle cx="16" cy="3" r="1.1" fill="url(#inoFootGrad)" opacity="0.45" />
-        <circle cx="8" cy="17" r="1.1" fill="url(#inoFootGrad)" opacity="0.45" />
-        <circle cx="16" cy="17" r="1.1" fill="url(#inoFootGrad)" opacity="0.45" />
+      <!-- Border Stitch mark, Master C (INO-82). Heavy-thread cut: rendered at 20px, footer scale. -->
+      <svg width="20" height="20" viewBox="0 0 40 40" aria-hidden="true">
+        <rect x="5" y="8" width="13" height="24" rx="4" fill="#4F46E5" />
+        <rect x="22" y="8" width="13" height="24" rx="4" fill="#7C5CFC" />
+        <path d="M15,11 L25,15 M15,18 L25,22 M15,25 L25,29" stroke="var(--ino-logo-thread, #D8CEFF)" stroke-width="3.4" fill="none" stroke-linecap="round" />
       </svg>
       <span>INOVIXUX</span>
       <p>KYB vendor underwriting, verified by a human, traced by the system.</p>
