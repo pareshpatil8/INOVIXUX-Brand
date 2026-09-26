@@ -1,0 +1,242 @@
+/* <ino-drawer> — INO-31 T-24. Logical properties only (RTL is one code path, see SPEC.md §5):
+ * panels are positioned with inset-inline-{start,end} / inset-block-{start,end}, never left/right/
+ * top/bottom, and the enter animation drives those same logical inset properties rather than a
+ * physical-axis `transform: translateX(...)`, so a "start"-edge panel slides in from the correct
+ * physical side under both `dir="ltr"` and `dir="rtl"` with one keyframe set, not two.
+ */
+
+.ino-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+}
+
+.ino-drawer__scrim {
+  position: absolute;
+  inset: 0;
+  background: var(--ino-color-overlay-scrim);
+}
+
+.ino-drawer__panel {
+  position: fixed;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--ino-color-surface-raised);
+  box-shadow: var(--ino-elevation-2);
+  padding: var(--ino-space-6);
+
+  &:focus-visible {
+    outline: none;
+  }
+
+  &[data-loading] {
+    opacity: 0.75;
+    cursor: progress;
+  }
+}
+
+/* ── Position + size axis ───────────────────────────────────────────────────────────────────── */
+
+.ino-drawer__panel--start,
+.ino-drawer__panel--end {
+  inset-block: 0;
+  max-width: 100vw;
+  overflow-y: auto;
+}
+
+.ino-drawer__panel--start {
+  inset-inline-start: 0;
+  border-start-end-radius: var(--ino-radius-xl);
+  border-end-end-radius: var(--ino-radius-xl);
+}
+
+.ino-drawer__panel--end {
+  inset-inline-end: 0;
+  border-start-start-radius: var(--ino-radius-xl);
+  border-end-start-radius: var(--ino-radius-xl);
+}
+
+.ino-drawer__panel--top,
+.ino-drawer__panel--bottom {
+  inset-inline: 0;
+  max-height: 100vh;
+  overflow-y: auto;
+}
+
+.ino-drawer__panel--top {
+  inset-block-start: 0;
+  border-end-start-radius: var(--ino-radius-xl);
+  border-end-end-radius: var(--ino-radius-xl);
+}
+
+.ino-drawer__panel--bottom {
+  inset-block-end: 0;
+  border-start-start-radius: var(--ino-radius-xl);
+  border-start-end-radius: var(--ino-radius-xl);
+}
+
+/* Size scale — Wave 0 control-height scale governs form controls, not overlay panel geometry, so
+ * these three rungs are structural dimensions declared directly, the same precedent set by
+ * `<ino-modal>`'s 480px `max-width` (ino-modal.component.scss). */
+.ino-drawer__panel--start,
+.ino-drawer__panel--end {
+  width: 400px;
+
+  &.ino-drawer__panel--sm {
+    width: 320px;
+  }
+
+  &.ino-drawer__panel--lg {
+    width: 480px;
+  }
+}
+
+.ino-drawer__panel--top,
+.ino-drawer__panel--bottom {
+  height: 360px;
+
+  &.ino-drawer__panel--sm {
+    height: 240px;
+  }
+
+  &.ino-drawer__panel--lg {
+    height: 480px;
+  }
+}
+
+/* ── Header / body / footer ─────────────────────────────────────────────────────────────────── */
+
+.ino-drawer__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ino-space-4);
+  margin: calc(var(--ino-space-6) * -1) calc(var(--ino-space-6) * -1) var(--ino-space-4);
+  padding: var(--ino-space-4) var(--ino-space-6);
+  border-block-end: 1px solid var(--ino-color-border-soft);
+}
+
+.ino-drawer__heading {
+  margin: 0;
+  font-size: var(--ino-type-h3-size);
+  line-height: var(--ino-type-h3-line);
+  font-weight: var(--ino-type-h3-weight);
+  letter-spacing: var(--ino-type-h3-tracking);
+  color: var(--ino-color-on-surface);
+}
+
+.ino-drawer__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--ino-target-comfortable);
+  height: var(--ino-target-comfortable);
+  margin-inline-start: auto;
+  background: transparent;
+  border: none;
+  border-radius: var(--ino-radius-md);
+  color: var(--ino-color-on-surface-muted);
+  font-size: 16px;
+  cursor: pointer;
+  transition: background var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+    color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  &:hover {
+    background: var(--ino-color-surface-sunken);
+    color: var(--ino-color-on-surface);
+  }
+
+  &:active {
+    background: var(--ino-color-surface-sunken);
+    color: var(--ino-color-accent-active);
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+}
+
+.ino-drawer__body {
+  flex: 1;
+  font-size: var(--ino-type-body-size);
+  line-height: var(--ino-type-body-line);
+  color: var(--ino-color-on-surface);
+}
+
+.ino-drawer__footer:not(:empty) {
+  margin: var(--ino-space-4) calc(var(--ino-space-6) * -1) calc(var(--ino-space-6) * -1);
+  padding: var(--ino-space-4) var(--ino-space-6);
+  border-block-start: 1px solid var(--ino-color-border-soft);
+}
+
+/* ── Full-screen on mobile (DoD row 9) — same 640px breakpoint as ino-toast-container ──────────── */
+
+@media (max-width: 640px) {
+  .ino-drawer__panel {
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100vw !important;
+    max-height: 100vh !important;
+    border-radius: 0 !important;
+    padding-block-start: calc(var(--ino-space-6) + var(--ino-safe-area-top));
+    padding-block-end: calc(var(--ino-space-6) + var(--ino-safe-area-bottom));
+  }
+}
+
+/* ── Motion (DoD row 7) — animates the same logical inset property each position is placed with,
+ * never `transform`, so the direction is correct under `dir="rtl"` without a second keyframe set. */
+
+@media (prefers-reduced-motion: no-preference) {
+  .ino-drawer__scrim {
+    animation: ino-drawer-fade var(--ino-motion-duration-base) var(--ino-motion-easing-standard);
+  }
+
+  .ino-drawer__panel--start {
+    animation: ino-drawer-slide-start var(--ino-motion-duration-base) var(--ino-motion-easing-decelerate);
+  }
+
+  .ino-drawer__panel--end {
+    animation: ino-drawer-slide-end var(--ino-motion-duration-base) var(--ino-motion-easing-decelerate);
+  }
+
+  .ino-drawer__panel--top {
+    animation: ino-drawer-slide-top var(--ino-motion-duration-base) var(--ino-motion-easing-decelerate);
+  }
+
+  .ino-drawer__panel--bottom {
+    animation: ino-drawer-slide-bottom var(--ino-motion-duration-base) var(--ino-motion-easing-decelerate);
+  }
+}
+
+@keyframes ino-drawer-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes ino-drawer-slide-start {
+  from {
+    inset-inline-start: -100%;
+  }
+}
+
+@keyframes ino-drawer-slide-end {
+  from {
+    inset-inline-end: -100%;
+  }
+}
+
+@keyframes ino-drawer-slide-top {
+  from {
+    inset-block-start: -100%;
+  }
+}
+
+@keyframes ino-drawer-slide-bottom {
+  from {
+    inset-block-end: -100%;
+  }
+}

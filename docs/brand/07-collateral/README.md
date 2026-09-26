@@ -14,6 +14,8 @@ letterhead, business card, and a pitch deck template.
 | Letterhead | [`letterhead.html`](letterhead.html) | Print-CSS HTML, A4 + US Letter, browser "Print to PDF" |
 | Business card | [`business-card-spec.md`](business-card-spec.md) | Written production spec (design intent, not a print file) |
 | Pitch deck template | [`pitch-deck-template.html`](pitch-deck-template.html) | 16:9 slide-master HTML, browser "Print to PDF" for a deck export |
+| Email design system (transactional templates + signature) | [`email/`](email/) | Table-based, inline-styled HTML, generated from `tokens.css` — see `email/README.md` (INO-121) |
+| KYB risk-flag report | [`kyb-risk-flag-report.html`](kyb-risk-flag-report.html) | A4 print-CSS HTML, browser "Print to PDF" (INO-31.8 / INO-120) |
 
 ## Why letterhead is light and everything else in this system is dark
 
@@ -31,6 +33,31 @@ decision for the product; this is a print-substrate decision for a letter).
 
 The pitch deck stays on the dark system as-is — a deck is presented on a screen/projector, not
 printed at scale, so the existing dark tokens apply directly with no exception needed.
+
+The KYB risk-flag report follows the letterhead's light-substrate reasoning, not the deck's: it's
+a document a human reviewer prints, signs, and files, so it uses `tokens.css`'s
+`[data-theme="light"]` risk-fill triad (already re-audited for AA on paper, not assumed from the
+dark on-screen values — see that block's inline ratios) rather than the dark system's risk chips.
+Because office mono printers and offset press both collapse hue, every risk row also encodes
+status by shape (●/▲/■) and text (HIGH/MEDIUM/LOW), not color alone. Measured rather than
+assumed: greyscaled, the three fills land on greys 28/34/38, which are 1.08–1.24:1 against each
+other — the hue signal is *gone*, not just weakened, so that redundancy is load-bearing. Two
+consequences worth knowing before you export:
+
+- **The `@media print` block forces `print-color-adjust:exact` on the chips and legend swatches,
+  and that rule must stay.** Browsers ship "Background graphics" *off* by default, and the
+  shape+word redundancy is printed in white *inside* the fill — so without the rule a default
+  Print-to-PDF drops the fill and the entire status column renders white-on-white. Silently.
+- **Press/CMYK is not fully covered yet.** `print-color-spec.md` (INO-122) color-manages the
+  accent and neutrals but has no entry for the risk triad; an offset run needs those three added
+  there first. The documented browser Print-to-PDF path is unaffected.
+
+The INO-14 disclaimer is
+hardcoded in the report body the same way the pitch deck's disclaimer slide is — see
+`09-design-system-standards.md` §3, "reference implementation of this rule." System-fallback fonts
+(Geist → OS default sans/mono) are baked in per the original brief's "report layouts must not
+break" requirement. Like the deck, this is a spec/template only — no PDF has been generated, and
+the INO-14 hold plus the 2026-09-07 KYB pause both still apply to the underlying product.
 
 ## What's intentionally not here
 

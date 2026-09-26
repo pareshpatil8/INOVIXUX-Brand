@@ -1,0 +1,21 @@
+<fieldset
+  class="ino-checkbox-group"
+  [disabled]="disabled"
+  [attr.aria-describedby]="error ? errorId : null"
+>
+  <legend *ngIf="legend" class="ino-checkbox-group__legend">{{ legend }}</legend>
+
+  <ino-checkbox
+    class="ino-checkbox-group__item"
+    *ngFor="let option of options"
+    [label]="option.label"
+    [name]="name"
+    [size]="size"
+    [checked]="isChecked(option.value)"
+    [disabled]="disabled || !!option.disabled"
+    [readonly]="readonly"
+    (checkedChange)="onToggle(option.value, $event)"
+  ></ino-checkbox>
+
+  <p *ngIf="error" [id]="errorId" class="ino-checkbox-group__error" role="alert">{{ error }}</p>
+</fieldset>

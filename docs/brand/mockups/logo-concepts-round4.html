@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>INOVIXUX — Logo Concepts Round 4 (INO-82)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A0A0A; --bg-raised:#131315; --card:#111113; --ink:#F5F5F4; --sub:#9A9A9C; --sub-dim:#5A5A5C;
+    --line:rgba(255,255,255,.10); --line-soft:rgba(255,255,255,.06);
+    --violet:#7C5CFC; --indigo:#4F46E5;
+    --radius:14px;
+    --f-display:"Geist",system-ui,-apple-system,Arial,sans-serif;
+    --f-mono:"Geist Mono",ui-monospace,"SFMono-Regular",monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-display);-webkit-font-smoothing:antialiased}
+  .banner{background:#000;color:#6B6B6D;font-size:11px;letter-spacing:.08em;
+    padding:10px 32px;border-bottom:1px solid var(--line-soft);text-transform:uppercase;font-family:var(--f-mono)}
+  .wrap{max-width:1180px;margin:0 auto;padding:56px 40px 100px}
+  h1{font-size:32px;letter-spacing:-.02em;margin:0 0 10px}
+  .lede{color:var(--sub);font-size:15px;line-height:1.6;max-width:760px;margin:0 0 8px}
+  .anchors{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 44px}
+  .anchor{font-family:var(--f-mono);font-size:11px;letter-spacing:.03em;color:var(--sub);
+    border:1px solid var(--line);border-radius:999px;padding:6px 12px}
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
+  @media(max-width:860px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:28px;position:relative;overflow:hidden}
+  .num{font-family:var(--f-mono);font-size:11px;color:var(--sub-dim);letter-spacing:.08em}
+  .stage{display:flex;align-items:center;gap:20px;margin:16px 0 20px}
+  .mark-dark, .mark-light{width:96px;height:96px;border-radius:20px;display:flex;align-items:center;justify-content:center;flex:none}
+  .mark-dark{background:#0A0A0A;border:1px solid var(--line)}
+  .mark-light{background:#F5F5F4;border:1px solid var(--line)}
+  .mark-dark svg, .mark-light svg{width:60px;height:60px}
+  .mark-tiny{width:96px;height:96px;border-radius:20px;display:flex;align-items:center;justify-content:center;flex:none;
+    background:var(--bg-raised);border:1px solid var(--line-soft)}
+  .mark-tiny svg{width:16px;height:16px}
+  h2{font-size:19px;margin:0 0 4px;letter-spacing:-.01em}
+  .tag{font-family:var(--f-mono);font-size:11px;color:var(--violet);margin-bottom:14px;letter-spacing:.02em}
+  p.copy{color:var(--sub);font-size:13.5px;line-height:1.65;margin:0 0 12px}
+  .meaning{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 4px}
+  .chip{font-family:var(--f-mono);font-size:10.5px;color:var(--ink);background:var(--bg-raised);
+    border:1px solid var(--line);border-radius:6px;padding:4px 8px}
+  .distinct{margin-top:16px;padding-top:16px;border-top:1px solid var(--line-soft);font-size:12.5px;color:var(--sub-dim);line-height:1.6}
+  .distinct b{color:var(--sub)}
+  footer{margin-top:56px;padding-top:28px;border-top:1px solid var(--line);color:var(--sub-dim);font-size:12px;line-height:1.7;font-family:var(--f-mono)}
+</style>
+</head>
+<body>
+  <div class="banner">INOVIXUX &middot; INO-82 &middot; logo concepts — round 4 (payments-domain marks)</div>
+  <div class="wrap">
+    <h1>Round 4 — four marks built from payments primitives</h1>
+    <p class="lede">Board redirect on 2026-09-24: <em>"can we create the logo for a company which is in payment
+      systems, cross border payments, payment orchestrations, reconciliation etc."</em> Every earlier round drew
+      abstract geometry and mapped meaning onto it afterwards. Round 4 inverts that: each mark <b>is</b> a named
+      payments mechanic — <b>interchange</b> (two flows exchanging), <b>reconciliation</b> (two ledgers closing
+      into one), <b>orchestration</b> (a payment routed across rails), and <b>cross-border settlement</b> (two
+      territories stitched into one system). No coins, globes, arrows, or checkmarks — the domain is expressed
+      structurally, at the Apple / SpaceX register, not with fintech clip-art. Third swatch on each card is the
+      mark at true 16&times;16 favicon scale. Verdict per concept below.</p>
+    <div class="anchors">
+      <span class="anchor">payment systems</span>
+      <span class="anchor">cross-border payments</span>
+      <span class="anchor">payment orchestration</span>
+      <span class="anchor">reconciliation</span>
+      <span class="anchor">-ix suffix</span>
+      <span class="anchor">bar: Apple / SpaceX / 21st.dev</span>
+    </div>
+
+    <div class="grid">
+
+      <!-- Concept 1 — Interchange -->
+      <div class="card">
+        <div class="num">CONCEPT 1 / 4 &middot; ROUND 4</div>
+        <div class="stage">
+          <div class="mark-dark">
+            <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" fill="none">
+              <path d="M32,8 C20,8 20,32 8,32" stroke="#4F46E5" stroke-width="5.5" stroke-linecap="round"/>
+              <path d="M8,8 C20,8 20,32 32,32" stroke="#0A0A0A" stroke-width="10"/>
+              <path d="M8,8 C20,8 20,32 32,32" stroke="#9F8AFF" stroke-width="5.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="mark-light">
+            <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" fill="none">
+              <path d="M32,8 C20,8 20,32 8,32" stroke="#4F46E5" stroke-width="5.5" stroke-linecap="round"/>
+              <path d="M8,8 C20,8 20,32 32,32" stroke="#F5F5F4" stroke-width="10"/>
+              <path d="M8,8 C20,8 20,32 32,32" stroke="#7C5CFC" stroke-width="5.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="mark-tiny" title="16px favicon scale">
+            <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" fill="none">
+              <path d="M32,8 C20,8 20,32 8,32" stroke="#4F46E5" stroke-width="6.5" stroke-linecap="round"/>
+              <path d="M8,8 C20,8 20,32 32,32" stroke="#131315" stroke-width="11"/>
+              <path d="M8,8 C20,8 20,32 32,32" stroke="#9F8AFF" stroke-width="6.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+        <h2>Interchange</h2>
+        <div class="tag">two payment flows exchanging lanes — the X is the transaction</div>
+        <p class="copy">Two value flows enter from opposite sides and swap positions in one smooth motion, one
+          passing over the other. The crossing point <b>is</b> the transaction — "interchange" is the literal
+          industry word for it. The weave forms the X of the -ix suffix without typing a letter: money out,
+          money in, cross-border by construction. One gesture, two colors, no decoration.</p>
+        <div class="meaning">
+          <span class="chip">interchange / exchange</span><span class="chip">cross-border</span><span class="chip">the -ix X</span>
+        </div>
+        <div class="distinct"><b>Why it's apart from earlier rounds:</b> woven over-under flow ribbons — no prior
+          round wove anything; earlier stroke work was a single open line, never two flows exchanging.
+          <b>Risk:</b> crossing-path marks exist in logistics branding; the over-under weave, exact curvature,
+          and two-tone violet are the ownable part. Reads perfectly at 16px.</div>
+      </div>
+
+      <!-- Concept 2 — Ledger Seam -->
+      <div class="card">
+        <div class="num">CONCEPT 2 / 4 &middot; ROUND 4</div>
+        <div class="stage">
+          <div class="mark-dark">
+            <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+              <clipPath id="seamD"><rect x="6" y="6" width="28" height="28" rx="8"/></clipPath>
+              <g clip-path="url(#seamD)">
+                <path d="M6,6 H23 V15 H17 V25 H23 V34 H6 Z" fill="#9F8AFF"/>
+                <path d="M23,6 H34 V34 H23 V25 H17 V15 H23 Z" fill="#7C5CFC"/>
+                <path d="M23,6 V15 H17 V25 H23 V34" fill="none" stroke="#0A0A0A" stroke-width="1.4"/>
+              </g>
+            </svg>
+          </div>
+          <div class="mark-light">
+            <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+              <clipPath id="seamL"><rect x="6" y="6" width="28" height="28" rx="8"/></clipPath>
+              <g clip-path="url(#seamL)">
+                <path d="M6,6 H23 V15 H17 V25 H23 V34 H6 Z" fill="#9F8AFF"/>
+                <path d="M23,6 H34 V34 H23 V25 H17 V15 H23 Z" fill="#4F46E5"/>
+                <path d="M23,6 V15 H17 V25 H23 V34" fill="none" stroke="#F5F5F4" stroke-width="1.4"/>
+              </g>
+            </svg>
+          </div>
+          <div class="mark-tiny" title="16px favicon scale">
+            <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+              <clipPath id="seamT"><rect x="6" y="6" width="28" height="28" rx="8"/></clipPath>
+              <g clip-path="url(#seamT)">
+                <path d="M6,6 H23 V15 H17 V25 H23 V34 H6 Z" fill="#9F8AFF"/>
+                <path d="M23,6 H34 V34 H23 V25 H17 V15 H23 Z" fill="#7C5CFC"/>
+                <path d="M23,6 V15 H17 V25 H23 V34" fill="none" stroke="#131315" stroke-width="2"/>
+              </g>
+            </svg>
+          </div>
+        </div>
+        <h2>Ledger Seam</h2>
+        <div class="tag">two ledgers closing into one solid — reconciliation as a lock</div>
+        <p class="copy">Two ledger halves — ours and theirs, debit and credit — meet on a stepped seam and lock
+          into one flawless block. Nothing is missing, nothing overlaps: the seam only closes when every entry
+          matches. That is reconciliation, drawn. The rectilinear step (not a puzzle knob) keeps it bank-grade;
+          the closed block says the books balanced.</p>
+        <div class="meaning">
+          <span class="chip">reconciliation</span><span class="chip">two parties, one truth</span><span class="chip">core banking solidity</span>
+        </div>
+        <div class="distinct"><b>Why it's apart from earlier rounds:</b> complementary counterform halves locking
+          into a solid — earlier solids were sliced apart (Meridian Shift) or color-blocked; nothing ever
+          <em>joined</em>. <b>Risk:</b> interlock marks can drift toward "puzzle piece"; the hard rectilinear
+          seam and single-object silhouette avoid that genre. Strong at 16px — it is one solid shape.</div>
+      </div>
+
+      <!-- Concept 3 — Orchestra Rails -->
+      <div class="card">
+        <div class="num">CONCEPT 3 / 4 &middot; ROUND 4</div>
+        <div class="stage">
+          <div class="mark-dark">
+            <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" fill="none">
+              <path d="M7,11 H33 M7,20 H33 M7,29 H33" stroke="#4F46E5" stroke-opacity=".38" stroke-width="3.2" stroke-linecap="round"/>
+              <path d="M7,11 H13 C19,11 21,29 27,29 H33" stroke="#9F8AFF" stroke-width="3.2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="mark-light">
+            <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" fill="none">
+              <path d="M7,11 H33 M7,20 H33 M7,29 H33" stroke="#4F46E5" stroke-opacity=".25" stroke-width="3.2" stroke-linecap="round"/>
+              <path d="M7,11 H13 C19,11 21,29 27,29 H33" stroke="#7C5CFC" stroke-width="3.2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="mark-tiny" title="16px favicon scale">
+            <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" fill="none">
+              <path d="M7,11 H33 M7,20 H33 M7,29 H33" stroke="#4F46E5" stroke-opacity=".45" stroke-width="4" stroke-linecap="round"/>
+              <path d="M7,11 H13 C19,11 21,29 27,29 H33" stroke="#9F8AFF" stroke-width="4" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+        <h2>Orchestra Rails</h2>
+        <div class="tag">one payment, three rails, the smart route lit</div>
+        <p class="copy">Three payment rails run in parallel — card, RTGS, wallet, whichever three you like.
+          One live payment enters on the top rail and is routed, mid-flight and without a seam, to the rail
+          that clears it best. That single lit path across dim rails is payment orchestration: the platform
+          chooses the route, the money never notices. The mark is calm, horizontal, infrastructural.</p>
+        <div class="meaning">
+          <span class="chip">payment orchestration</span><span class="chip">smart routing</span><span class="chip">rails / infrastructure</span>
+        </div>
+        <div class="distinct"><b>Why it's apart from earlier rounds:</b> a lit route over dim infrastructure —
+          two visual weights in one mark; every earlier concept was single-weight. No nodes, no arrowheads.
+          <b>Risk:</b> lane-change curves appear in transit and routing iconography; the three-rail cage and
+          weight contrast are the ownable part. Verify legibility of the dim rails on very low-quality
+          displays before finalist.</div>
+      </div>
+
+      <!-- Concept 4 — Border Stitch -->
+      <div class="card">
+        <div class="num">CONCEPT 4 / 4 &middot; ROUND 4</div>
+        <div class="stage">
+          <div class="mark-dark">
+            <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+              <rect x="6" y="8" width="11" height="24" rx="4" fill="#4F46E5"/>
+              <rect x="23" y="8" width="11" height="24" rx="4" fill="#7C5CFC"/>
+              <path d="M14,12 L26,16 M14,19 L26,23 M14,26 L26,30" stroke="#D8CEFF" stroke-width="2.6" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="mark-light">
+            <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+              <rect x="6" y="8" width="11" height="24" rx="4" fill="#4F46E5"/>
+              <rect x="23" y="8" width="11" height="24" rx="4" fill="#7C5CFC"/>
+              <path d="M14,12 L26,16 M14,19 L26,23 M14,26 L26,30" stroke="#2A1F6E" stroke-width="2.6" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="mark-tiny" title="16px favicon scale">
+            <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+              <rect x="6" y="8" width="11" height="24" rx="4" fill="#4F46E5"/>
+              <rect x="23" y="8" width="11" height="24" rx="4" fill="#7C5CFC"/>
+              <path d="M14,12 L26,16 M14,19 L26,23 M14,26 L26,30" stroke="#D8CEFF" stroke-width="3.2" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+        <h2>Border Stitch</h2>
+        <div class="tag">two territories, stitched into one settlement system</div>
+        <p class="copy">Two solid blocks — two countries, two currencies, two banking systems — and three
+          clean stitches binding them across the border. Cross-border payments as structure: not an arrow
+          flying over a gap, but infrastructure that makes two territories behave as one. The stitches lean
+          forward, giving the mark quiet motion without an arrowhead anywhere.</p>
+        <div class="meaning">
+          <span class="chip">cross-border payments</span><span class="chip">settlement corridors</span><span class="chip">two systems, one platform</span>
+        </div>
+        <div class="distinct"><b>Why it's apart from earlier rounds:</b> a thread binding two solids — earlier
+          rounds never combined solid geometry with line work in one mark. <b>Risk:</b> stitching can read as
+          textile/apparel out of context; the rigid twin blocks and diagonal rhythm keep it infrastructural.
+          At 16px the three stitches stay countable.</div>
+      </div>
+
+    </div>
+
+    <footer>
+      Round 4 &middot; INO-82 &middot; built 2026-09-24 in response to the board's payments-domain redirect.
+      Rounds 1–3 are closed: all round-3 concepts rejected 2026-09-24 ("not going with brand value" /
+      payments-domain redirect). The shipped IX monogram remains live in the repo and is untouched by this
+      exploration. Verdicts are per concept: kill / keep exploring (say what to change) / finalist.
+      Cross-concept remixes are fair game (e.g. "Ledger Seam silhouette with Interchange's weave as the seam").
+    </footer>
+  </div>
+</body>
+</html>

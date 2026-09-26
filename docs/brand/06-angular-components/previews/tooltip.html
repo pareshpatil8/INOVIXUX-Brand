@@ -1,0 +1,180 @@
+<!-- @dsCard group="Overlay" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ino-tooltip — Tooltip (INO-149)</title>
+<!-- Canonical token file, linked rather than copied: this preview must repaint with the system,
+     and must never become a second place raw hex values live. -->
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-eyebrow-size);
+    letter-spacing: var(--ino-type-eyebrow-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 60ch; }
+  p.note { color: var(--ino-color-on-surface-muted); margin: var(--ino-space-3) 0 0; max-width: 64ch; }
+
+  .demo {
+    position: relative;
+    padding: var(--ino-space-9) var(--ino-space-6);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-xl);
+    background: var(--ino-color-surface-sunken);
+    display: flex;
+    gap: var(--ino-space-8);
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  button.ino-btn {
+    min-block-size: var(--ino-control-height-default);
+    padding-inline: var(--ino-control-padding-inline-default);
+    border-radius: var(--ino-radius-md);
+    border: 1px solid var(--ino-color-border);
+    background: transparent;
+    color: var(--ino-color-on-surface);
+    font: inherit;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+  }
+  button.ino-btn:focus-visible { outline: var(--ino-focus-ring); outline-offset: var(--ino-focus-ring-offset); }
+
+  /* Mirrors web/src/app/components/tooltip/ino-tooltip.component.scss. `top`/`left` are set by the
+     script below using the same physical-coordinate reasoning as `overlay-position.ts` — see that
+     file's doc comment for why this is RTL-correct, not an exception. */
+  .ino-tooltip {
+    position: absolute;
+    z-index: 10;
+    box-sizing: border-box;
+    max-inline-size: 240px;
+    padding-inline: var(--ino-control-padding-inline-default);
+    padding-block: var(--ino-space-2);
+    background: var(--ino-color-surface-raised);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-md);
+    box-shadow: var(--ino-elevation-neutral-2);
+    color: var(--ino-color-on-surface);
+    font-size: var(--ino-control-font-size-default);
+    display: none;
+  }
+  .ino-tooltip.is-open { display: block; }
+  .ino-tooltip__arrow {
+    position: absolute;
+    inline-size: var(--ino-space-2);
+    block-size: var(--ino-space-2);
+    background: var(--ino-color-surface-raised);
+    border-inline-start: 1px solid var(--ino-color-border);
+    border-block-start: 1px solid var(--ino-color-border);
+    transform: rotate(45deg);
+  }
+  .ino-tooltip--bottom .ino-tooltip__arrow {
+    inset-block-start: calc(var(--ino-space-2) / -2);
+    inset-inline-start: calc(50% - var(--ino-space-2) / 2);
+  }
+  .ino-tooltip--top .ino-tooltip__arrow {
+    inset-block-end: calc(var(--ino-space-2) / -2);
+    inset-inline-start: calc(50% - var(--ino-space-2) / 2);
+    border-inline-start: none; border-block-start: none;
+    border-inline-end: 1px solid var(--ino-color-border);
+    border-block-end: 1px solid var(--ino-color-border);
+  }
+</style>
+</head>
+<body>
+
+<h1>Tooltip</h1>
+<p class="lede">
+  Advisory hint anchored to a trigger element on hover <em>or</em> focus — try hovering a button
+  below, or tabbing to it. It positions itself relative to the trigger and flips to the opposite
+  side if it doesn't fit, the same rule <code>overlay-position.ts</code>'s
+  <code>computeOverlayPlacement</code> implements for the real directive.
+</p>
+
+<h2>Hover or focus a trigger</h2>
+<div class="demo">
+  <button type="button" class="ino-btn" id="trigger-top">Top</button>
+  <button type="button" class="ino-btn" id="trigger-bottom">Bottom</button>
+</div>
+
+<div class="ino-tooltip" id="tooltip" role="tooltip"></div>
+
+<p class="note">
+  <code>Escape</code> dismisses without moving focus; moving the pointer onto the tooltip itself
+  keeps it open (the "hoverable" leg of WCAG SC 1.4.13). This preview reimplements only the
+  placement math and delay timers in a few lines of vanilla JS for demonstration; the shipped
+  directive additionally manages <code>aria-describedby</code> wiring and a document-level
+  <code>Escape</code> guard, described in SPEC.md.
+</p>
+
+<script>
+  const tooltip = document.getElementById('tooltip');
+  const demo = document.querySelector('.demo');
+  let showTimer = null;
+  let hideTimer = null;
+  let anchor = null;
+
+  function place(text, preferredTop) {
+    tooltip.textContent = text;
+    tooltip.classList.toggle('ino-tooltip--top', preferredTop);
+    tooltip.classList.toggle('ino-tooltip--bottom', !preferredTop);
+    tooltip.classList.add('is-open');
+    const a = anchor.getBoundingClientRect();
+    const d = demo.getBoundingClientRect();
+    const p = tooltip.getBoundingClientRect();
+    const gap = 8;
+    const top = preferredTop ? (a.top - d.top - gap - p.height) : (a.bottom - d.top + gap);
+    const left = (a.left - d.left) + a.width / 2 - p.width / 2;
+    tooltip.style.top = Math.max(0, top) + 'px';
+    tooltip.style.left = Math.max(0, left) + 'px';
+  }
+
+  function show(trigger, text, preferredTop) {
+    clearTimeout(hideTimer);
+    showTimer = setTimeout(() => {
+      anchor = trigger;
+      place(text, preferredTop);
+    }, 300);
+  }
+
+  function hide() {
+    clearTimeout(showTimer);
+    hideTimer = setTimeout(() => {
+      tooltip.classList.remove('is-open');
+      anchor = null;
+    }, 100);
+  }
+
+  function wire(id, text, preferredTop) {
+    const el = document.getElementById(id);
+    el.addEventListener('mouseenter', () => show(el, text, preferredTop));
+    el.addEventListener('mouseleave', hide);
+    el.addEventListener('focus', () => show(el, text, preferredTop));
+    el.addEventListener('blur', hide);
+  }
+
+  wire('trigger-top', 'Positioned above the trigger', true);
+  wire('trigger-bottom', 'Positioned below the trigger', false);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') { clearTimeout(showTimer); clearTimeout(hideTimer); tooltip.classList.remove('is-open'); anchor = null; }
+  });
+</script>
+
+</body>
+</html>

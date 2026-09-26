@@ -1,16 +1,31 @@
-<div class="ino-checkbox" [class.ino-checkbox--disabled]="disabled">
+<div
+  class="ino-checkbox"
+  [attr.data-size]="size"
+  [class.ino-checkbox--disabled]="disabled"
+  [class.ino-checkbox--readonly]="readonly && !disabled"
+  [class.ino-checkbox--loading]="loading"
+>
   <label class="ino-checkbox__row" [for]="controlId">
-    <input
-      [id]="controlId"
-      type="checkbox"
-      class="ino-checkbox__input"
-      [checked]="checked"
-      [disabled]="disabled"
-      [attr.aria-invalid]="error ? true : null"
-      [attr.aria-describedby]="error ? errorId : null"
-      (change)="onChange($event)"
-    />
-    <span class="ino-checkbox__label">{{ label }}</span>
+    <span class="ino-checkbox__box">
+      <input
+        [id]="controlId"
+        type="checkbox"
+        class="ino-checkbox__input"
+        [name]="name || null"
+        [checked]="checked"
+        [indeterminate]="indeterminate"
+        [disabled]="disabled || loading"
+        [attr.aria-checked]="indeterminate ? 'mixed' : null"
+        [attr.aria-invalid]="error ? true : null"
+        [attr.aria-describedby]="error ? errorId : null"
+        [attr.aria-readonly]="readonly ? true : null"
+        [attr.aria-busy]="loading ? true : null"
+        (click)="onClick($event)"
+        (change)="onChange($event)"
+      />
+    </span>
+    <span class="ino-checkbox__spinner" *ngIf="loading" aria-hidden="true"></span>
+    <span class="ino-checkbox__label" *ngIf="label">{{ label }}</span>
   </label>
 
   <p *ngIf="error" [id]="errorId" class="ino-checkbox__error" role="alert">{{ error }}</p>

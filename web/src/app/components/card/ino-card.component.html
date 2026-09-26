@@ -3,15 +3,28 @@
   [class.ino-card--sunken]="variant === 'sunken'"
   [class.ino-card--overlay]="variant === 'overlay'"
   [class.ino-card--interactive]="interactive"
+  [class.ino-card--disabled]="disabled"
+  [class.ino-card--loading]="loading"
   [class.ino-card--pad-sm]="padding === 'sm'"
   [class.ino-card--pad-lg]="padding === 'lg'"
+  [class.ino-card--sm]="size === 'sm'"
+  [class.ino-card--lg]="size === 'lg'"
+  [attr.aria-disabled]="disabled ? 'true' : null"
+  [attr.aria-busy]="loading ? 'true' : null"
 >
+  <div class="ino-card__media">
+    <ng-content select="[ino-card-media]"></ng-content>
+  </div>
+
   <header class="ino-card__header">
     <ng-content select="[ino-card-header]"></ng-content>
   </header>
 
   <div class="ino-card__body">
     <ng-content></ng-content>
+    <div class="ino-card__spinner-wrap" *ngIf="loading" aria-hidden="true">
+      <span class="ino-card__spinner"></span>
+    </div>
   </div>
 
   <footer class="ino-card__footer">

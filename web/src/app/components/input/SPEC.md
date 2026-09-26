@@ -156,3 +156,23 @@ Wave 0 — every value this uplift needed already existed) and no change to
 `scripts/check-theme-parity.mjs` (that script audits only tokens, not the per-component registry
 described in the issue template — confirmed by reading it; every previously merged Tier-1
 uplift in this repo, e.g. `ino-tag` T-12, likewise left it untouched).
+
+---
+
+## 10. Label retrofit onto `<ino-label>` (INO-243)
+
+The inline `<label for>` block (`.ino-field__label` + `.ino-field__required`, on
+`--ino-type-body-sm-size`) is replaced with `<ino-label>` (`web/src/app/components/label/ino-label.component.ts`,
+INO-140/T-19), forwarding `size`, `required`, `disabled`, `invalid` (derived as `!!error` — this
+component has no separate `invalid` input), and `readonly` straight through. `label/SPEC.md` §4
+carried this as a known, deliberately deferred gap since INO-140; INO-243 formalized and closed it
+once T-8/T-20 were clear of this file.
+
+**Visual change, called out per INO-243's Do item 3:** the label's type now reads
+`--ino-type-label-*` (`ino-label`'s own size-tiered scale) instead of `--ino-type-body-sm-size` at a
+fixed `font-weight: 600` — intended, not a regression; `--ino-type-label-*` is the audited W0-3
+form-label scale this control's label always should have used. The dead `.ino-field__label` /
+`.ino-field__required` SCSS rules (font-size/weight/colour, danger-coloured asterisk) are removed
+from `ino-input.component.scss` since `<ino-label>` now owns that styling, including the required
+marker and the disabled-label colour (previously `.ino-field--disabled .ino-field__label`, now
+`<ino-label [disabled]>`'s own `--ino-color-label-disabled` rule).

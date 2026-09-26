@@ -1,0 +1,268 @@
+/* INOVIXUX design tokens — color. Split from tokens.css (INO-115); imported by styles.css.
+ * Do not hand-edit tokens.css directly for color changes — this file is now the source. */
+
+:root {
+  /* ---------------------------------------------------------------------
+   * 1. PRIMITIVES — raw values. Nothing outside this file should
+   *    reference these directly; components consume the semantic roles
+   *    in section 2 instead, so a re-theme never touches component code.
+   * ------------------------------------------------------------------- */
+  --ino-primitive-black: #0A0A0A;
+  --ino-primitive-black-raised: #0D0D0E;
+  --ino-primitive-black-sunken: #000000;
+  --ino-primitive-white: #F5F5F4;
+  --ino-primitive-gray-500: #8C8C8E;
+  --ino-primitive-gray-700: #5A5A5C;
+  --ino-primitive-line: rgba(255, 255, 255, 0.10);
+  --ino-primitive-line-soft: rgba(255, 255, 255, 0.06);
+
+  /* Light-mode-only primitives — unused while dark is active, kept here
+     (not inline in section 2b) so every raw value in the system lives in
+     one place. See README §Contrast for the audit behind each. */
+  --ino-primitive-off-white: #FAFAFA;
+  --ino-primitive-fog: #EFEFED;
+  --ino-primitive-charcoal: #14141A;
+  --ino-primitive-charcoal-muted: #55555C;
+  --ino-primitive-line-dark: rgba(10, 10, 10, 0.10);
+  --ino-primitive-line-dark-soft: rgba(10, 10, 10, 0.06);
+
+  --ino-primitive-blue-500: #3B6EF6;   /* retired accent (Signal Blue) — kept only for diffing/rollback, unreferenced below */
+  --ino-primitive-violet-500: #7C5CFC; /* Adaptive Synapse accent — Deep Tech Violet */
+  --ino-primitive-indigo-500: #4F46E5; /* Adaptive Synapse accent — Electric Indigo */
+  --ino-primitive-green-500: #3A9B6B;
+  --ino-primitive-red-500: #C24C43;
+  --ino-primitive-amber-500: #B98A3C;
+
+  /* Light-mode semantic-color primitives — darkened variants of the RAG
+     colors so white text on a filled chip clears 4.5:1 on white/off-white
+     surfaces. Dark mode uses the -500 values above with black text instead;
+     see README §Contrast for why the pairing flips per theme. */
+  --ino-primitive-green-700: #1F7A4F;
+  --ino-primitive-amber-800: #8A5D1E;
+  --ino-primitive-red-600: #A6362D;
+
+  /* High-contrast-only primitives (WCAG 2.2 AAA target, section 2c) — unused
+     while dark/light is active, kept here so every raw value in the system
+     still lives in one place. See README §Contrast (high-contrast) for the
+     audit behind each. Bright, highly saturated hues chosen deliberately —
+     not a recolor of dark mode's palette — because AAA-level luminance
+     separation on a pure-black surface needs colors this brand's usual
+     muted RAG set doesn't carry. */
+  --ino-primitive-hc-black: #000000;
+  --ino-primitive-hc-black-raised: #050505;
+  --ino-primitive-hc-white: #FFFFFF;
+  --ino-primitive-hc-gray-muted: #AAAAAA;
+  --ino-primitive-hc-yellow: #FFD60A;  /* accent */
+  --ino-primitive-hc-cyan: #00E5FF;    /* accent-secondary */
+  --ino-primitive-hc-green: #00E676;   /* success */
+  --ino-primitive-hc-amber: #FFC400;   /* warning */
+  --ino-primitive-hc-coral: #FF6B6B;   /* danger — a standard saturated red fails AAA
+                                           in both directions (text-on-black AND
+                                           chip-text-on-red); this coral is the
+                                           brightest red that still clears 7:1 both
+                                           ways, see README §Contrast (high-contrast) */
+
+  /* ---------------------------------------------------------------------
+   * 2. SEMANTIC ROLES — what components actually bind to. Modeled on
+   *    Material Design 3's role system (surface / on-surface / primary /
+   *    on-primary, not raw color) so the token set is swappable without
+   *    restructuring components. See README §"Why M3 roles".
+   *    These are the DARK-MODE values (default, no attribute required).
+   * ------------------------------------------------------------------- */
+  --ino-color-surface: var(--ino-primitive-black);
+  --ino-color-surface-raised: var(--ino-primitive-black-raised);
+  --ino-color-surface-sunken: var(--ino-primitive-black-sunken); /* inset panels, input fields, code blocks — one step BELOW surface, not above */
+  --ino-color-on-surface: var(--ino-primitive-white);
+  --ino-color-on-surface-muted: var(--ino-primitive-gray-500);
+  --ino-color-on-surface-subtle: var(--ino-primitive-gray-700); /* decorative/disabled only — see README contrast audit, fails AA as text at any size */
+  --ino-color-overlay-scrim: rgba(0, 0, 0, 0.72); /* modal/bottom-sheet backdrop — never used for text */
+
+  --ino-color-border: var(--ino-primitive-line);
+  --ino-color-border-soft: var(--ino-primitive-line-soft);
+
+  --ino-color-accent: var(--ino-primitive-violet-500);    /* swap token */
+  --ino-color-accent-secondary: var(--ino-primitive-indigo-500);
+  --ino-color-accent-text-safe: var(--ino-primitive-violet-500); /* role for filled buttons/links needing 4.5:1 text AA — see README, differs from --ino-color-accent per theme */
+  --ino-color-on-accent: #FFFFFF;                         /* verified 4.79:1 (black also passes at 4.79:1; white chosen to match on-accent-secondary) */
+  --ino-gradient-accent: linear-gradient(135deg, var(--ino-primitive-violet-500), var(--ino-primitive-indigo-500));
+  --ino-glow-accent: radial-gradient(circle, rgba(124, 92, 252, 0.35), transparent 70%);
+
+  --ino-color-success: var(--ino-primitive-green-500);
+  --ino-color-on-success: #000000;                        /* 6.08:1 */
+  --ino-color-warning: var(--ino-primitive-amber-500);
+  --ino-color-on-warning: #000000;                        /* 6.76:1 */
+  --ino-color-danger: var(--ino-primitive-red-500);
+  --ino-color-on-danger: #FFFFFF;                         /* 4.76:1 */
+
+  /* ---------------------------------------------------------------------
+   * 3. RAG SEMANTIC ALERT TOKENS — for the KYB risk-flag matrix named in
+   *    the brief. Two forms per level on purpose:
+   *      -dot   : raw color, for small non-text indicators only (status
+   *               dots, chart strokes) — never for text, see README.
+   *      -fill/-on-fill : solid chip pair, AA-verified for real badge text
+   *               ("HIGH RISK", "3 flags") in dense risk tables.
+   *    Dark-mode values (default).
+   * ------------------------------------------------------------------- */
+  --ino-color-risk-high-dot: var(--ino-primitive-red-500);
+  --ino-color-risk-high-fill: var(--ino-primitive-red-500);
+  --ino-color-risk-high-on-fill: #FFFFFF;
+
+  --ino-color-risk-medium-dot: var(--ino-primitive-amber-500);
+  --ino-color-risk-medium-fill: var(--ino-primitive-amber-500);
+  --ino-color-risk-medium-on-fill: #000000;
+
+  --ino-color-risk-low-dot: var(--ino-primitive-green-500);
+  --ino-color-risk-low-fill: var(--ino-primitive-green-500);
+  --ino-color-risk-low-on-fill: #000000;
+}
+
+/* ---------------------------------------------------------------------
+ * 2b. LIGHT MODE — semantic role overrides only, same role names as
+ *     section 2. Set via [data-theme="light"] on <html>. Every pair below
+ *     is re-audited for this surface, not assumed from the dark-mode
+ *     numbers — light and dark do not share a contrast budget. Full
+ *     ratios: docs/brand/02-design-tokens/README.md §Contrast (light).
+ * ------------------------------------------------------------------- */
+[data-theme="light"] {
+  --ino-color-surface: var(--ino-primitive-off-white);
+  --ino-color-surface-raised: #FFFFFF;
+  --ino-color-surface-sunken: var(--ino-primitive-fog); /* inset panels/inputs — one step below off-white, still >7:1 for on-surface text */
+  --ino-color-on-surface: var(--ino-primitive-charcoal);        /* 17.58:1 on surface */
+  --ino-color-on-surface-muted: var(--ino-primitive-charcoal-muted); /* 7.08:1 on surface */
+  --ino-color-on-surface-subtle: var(--ino-primitive-gray-500); /* decorative/disabled only, same rule as dark mode */
+  --ino-color-overlay-scrim: rgba(20, 20, 26, 0.4); /* lighter than dark-mode scrim — full black on white reads as a harsh cutout */
+
+  --ino-color-border: var(--ino-primitive-line-dark);
+  --ino-color-border-soft: var(--ino-primitive-line-dark-soft);
+
+  --ino-color-accent: var(--ino-primitive-violet-500);          /* gradients/glow/icons/large text only — 4.38:1, non-text AA (3:1 min), NOT body-text safe on light */
+  --ino-color-accent-secondary: var(--ino-primitive-indigo-500);
+  --ino-color-accent-text-safe: var(--ino-primitive-indigo-500); /* 6.29:1 on white/off-white — use for links, filled buttons, any accent TEXT on light surfaces */
+  --ino-color-on-accent: #FFFFFF;                                /* 6.29:1 against accent-text-safe */
+  --ino-gradient-accent: linear-gradient(135deg, var(--ino-primitive-violet-500), var(--ino-primitive-indigo-500));
+  --ino-glow-accent: radial-gradient(circle, rgba(79, 70, 229, 0.14), transparent 70%); /* lower alpha — dark-mode glow opacity reads muddy on white */
+
+  --ino-color-success: var(--ino-primitive-green-700);  /* darkened from -500 for AA on light, see primitives */
+  --ino-color-on-success: #FFFFFF;                      /* 5.31:1 */
+  --ino-color-warning: var(--ino-primitive-amber-800);
+  --ino-color-on-warning: #FFFFFF;                      /* 5.73:1 */
+  --ino-color-danger: var(--ino-primitive-red-600);
+  --ino-color-on-danger: #FFFFFF;                       /* 6.59:1 */
+
+  --ino-elevation-1: 0 20px 48px -24px rgba(20, 20, 26, 0.16); /* dark-mode shadow reads as a black smear on white; lighter + tighter spread */
+  --ino-elevation-2: 0 32px 72px -20px rgba(20, 20, 26, 0.24);
+
+  --ino-color-risk-high-dot: var(--ino-primitive-red-500);
+  --ino-color-risk-high-fill: var(--ino-primitive-red-600);
+  --ino-color-risk-high-on-fill: #FFFFFF;               /* 6.59:1 */
+
+  --ino-color-risk-medium-dot: var(--ino-primitive-amber-500);
+  --ino-color-risk-medium-fill: var(--ino-primitive-amber-800);
+  --ino-color-risk-medium-on-fill: #FFFFFF;             /* 5.73:1 */
+
+  --ino-color-risk-low-dot: var(--ino-primitive-green-500);
+  --ino-color-risk-low-fill: var(--ino-primitive-green-700);
+  --ino-color-risk-low-on-fill: #FFFFFF;                /* 5.31:1 */
+}
+
+/* ---------------------------------------------------------------------
+ * 2c. HIGH-CONTRAST MODE — third theme, WCAG 2.2 AAA target (not just AA).
+ *     Proves the primitive → semantic-role architecture scales past a
+ *     dark/light pair: every override below re-points an existing role name
+ *     at a new primitive, same as 2b did for light — zero new role names,
+ *     zero component changes required. Set via [data-theme="high-contrast"]
+ *     on <html>, same attribute contract as [data-theme="light"]; ThemeService
+ *     just adds a third value to its union type. See
+ *     docs/brand/09-design-system-standards.md §8 "Adding a new theme" for
+ *     the recipe this proves out, and docs/brand/02-design-tokens/README.md
+ *     §Contrast (high-contrast) for the full ratio table.
+ *
+ *     Two departures from dark/light below, both accessibility-motivated,
+ *     not stylistic:
+ *       - No elevation shadows (--ino-elevation-* → none) and no accent glow
+ *         (--ino-glow-accent → none). Soft shadow/glow gradients are a
+ *         luminance-gradient effect that reduces edge clarity for low-vision
+ *         users — exactly who opts into a high-contrast theme. Elevation and
+ *         grouping are communicated by the (now solid, opaque) border only.
+ *       - Borders go from ~6-10% translucent hairlines to fully opaque
+ *         white / 50% white — translucent lines are designed to be subtle;
+ *         a high-contrast theme's entire job is to not be subtle.
+ * ------------------------------------------------------------------- */
+[data-theme="high-contrast"] {
+  --ino-color-surface: var(--ino-primitive-hc-black);
+  --ino-color-surface-raised: var(--ino-primitive-hc-black-raised); /* distinguished by border, not luminance — see note above */
+  --ino-color-surface-sunken: var(--ino-primitive-hc-black); /* already at the black floor — same "sunken==black" pattern as dark mode's own surface-sunken */
+  --ino-color-on-surface: var(--ino-primitive-hc-white);             /* 21:1 on surface */
+  --ino-color-on-surface-muted: var(--ino-primitive-hc-gray-muted);  /* 9.04:1 on surface — AAA body text */
+  --ino-color-on-surface-subtle: var(--ino-primitive-gray-700);      /* decorative/disabled only, same rule as dark/light */
+  --ino-color-overlay-scrim: rgba(0, 0, 0, 0.92); /* darker than dark mode's 0.72 — max separation from the modal surface above it */
+
+  --ino-color-border: var(--ino-primitive-hc-white);       /* solid, opaque — not a hairline */
+  --ino-color-border-soft: rgba(255, 255, 255, 0.5);
+
+  --ino-color-accent: var(--ino-primitive-hc-yellow);            /* 14.88:1 on surface — AAA even as running text, unlike dark/light's accent */
+  --ino-color-accent-secondary: var(--ino-primitive-hc-cyan);    /* 13.65:1 on surface */
+  --ino-color-accent-text-safe: var(--ino-primitive-hc-yellow);  /* 14.88:1 */
+  --ino-color-on-accent: #000000;                                /* white text on this yellow is 1.41:1 — must be black */
+  --ino-gradient-accent: linear-gradient(135deg, var(--ino-primitive-hc-yellow), var(--ino-primitive-hc-cyan));
+  --ino-glow-accent: none; /* decorative glow disabled in high-contrast mode, see note above */
+
+  --ino-color-success: var(--ino-primitive-hc-green);
+  --ino-color-on-success: #000000;                        /* 12.58:1 */
+  --ino-color-warning: var(--ino-primitive-hc-amber);
+  --ino-color-on-warning: #000000;                        /* 13.15:1 */
+  --ino-color-danger: var(--ino-primitive-hc-coral);
+  --ino-color-on-danger: #000000;                         /* 7.57:1 */
+
+  --ino-elevation-1: none; /* see note above — no shadow gradients in high-contrast mode */
+  --ino-elevation-2: none;
+
+  --ino-color-risk-high-dot: var(--ino-primitive-hc-coral);
+  --ino-color-risk-high-fill: var(--ino-primitive-hc-coral);
+  --ino-color-risk-high-on-fill: #000000;                 /* 7.57:1 */
+
+  --ino-color-risk-medium-dot: var(--ino-primitive-hc-amber);
+  --ino-color-risk-medium-fill: var(--ino-primitive-hc-amber);
+  --ino-color-risk-medium-on-fill: #000000;               /* 13.15:1 */
+
+  --ino-color-risk-low-dot: var(--ino-primitive-hc-green);
+  --ino-color-risk-low-fill: var(--ino-primitive-hc-green);
+  --ino-color-risk-low-on-fill: #000000;                  /* 12.58:1 */
+}
+
+/* OS-preference fallback (see header note in styles.css) — duplicates the light theme above
+   for the brief window before ThemeService sets data-theme explicitly. */
+/* Respect the OS preference the FIRST time a visitor arrives, before
+   ThemeService has a chance to write localStorage + data-theme. This block
+   only fires when no data-theme attribute is present yet; ThemeService's
+   inline pre-paint script (see index.html) sets the attribute explicitly on
+   every subsequent load, which always wins over this media query. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    --ino-color-surface: var(--ino-primitive-off-white);
+    --ino-color-surface-raised: #FFFFFF;
+    --ino-color-surface-sunken: var(--ino-primitive-fog);
+    --ino-color-on-surface: var(--ino-primitive-charcoal);
+    --ino-color-on-surface-muted: var(--ino-primitive-charcoal-muted);
+    --ino-color-on-surface-subtle: var(--ino-primitive-gray-500);
+    --ino-color-overlay-scrim: rgba(20, 20, 26, 0.4);
+    --ino-color-border: var(--ino-primitive-line-dark);
+    --ino-color-border-soft: var(--ino-primitive-line-dark-soft);
+    --ino-color-accent-text-safe: var(--ino-primitive-indigo-500);
+    --ino-glow-accent: radial-gradient(circle, rgba(79, 70, 229, 0.14), transparent 70%);
+    --ino-color-success: var(--ino-primitive-green-700);
+    --ino-color-on-success: #FFFFFF;
+    --ino-color-warning: var(--ino-primitive-amber-800);
+    --ino-color-on-warning: #FFFFFF;
+    --ino-color-danger: var(--ino-primitive-red-600);
+    --ino-color-on-danger: #FFFFFF;
+    --ino-elevation-1: 0 20px 48px -24px rgba(20, 20, 26, 0.16);
+    --ino-elevation-2: 0 32px 72px -20px rgba(20, 20, 26, 0.24);
+    --ino-color-risk-high-fill: var(--ino-primitive-red-600);
+    --ino-color-risk-high-on-fill: #FFFFFF;
+    --ino-color-risk-medium-fill: var(--ino-primitive-amber-800);
+    --ino-color-risk-medium-on-fill: #FFFFFF;
+    --ino-color-risk-low-fill: var(--ino-primitive-green-700);
+    --ino-color-risk-low-on-fill: #FFFFFF;
+  }
+}

@@ -11,7 +11,8 @@
     "decision, say so on the owning issue below.",
     "",
     "  INO-172 — adopt the type scale on pages that hardcode font-size",
-    "  INO-173 — decide the sub-4px spacing steps (1px/2px/6px/10px) or restyle off them"
+    "  INO-174 — brand gradient, accent glow and toast dwell do not re-theme",
+    "  INO-82  — Master C logo mark: brand-fixed territory fills and stitch-thread values"
   ],
   "waivers": [
     {
@@ -99,193 +100,53 @@
       "issue": "INO-172"
     },
     {
-      "rule": "non-token-radius",
-      "file": "mobile/flutter/lib/widgets/confirm_action_sheet.dart",
-      "match": "BorderRadius.circular(2",
-      "reason": "2px knob radius — below --ino-radius-sm (6px); pending the micro-step decision",
-      "issue": "INO-173"
+      "rule": "no-raw-color",
+      "file": "web/src/app/app.html",
+      "match": "#4F46E5",
+      "reason": "brand gradient stop / accent glow: needs semantic gradient-stop roles so it re-themes",
+      "issue": "INO-174"
     },
     {
-      "rule": "non-token-radius",
-      "file": "mobile/react-native/src/components/ConfirmActionSheet.tsx",
-      "match": "borderRadius: 2",
-      "reason": "2px knob radius — below --ino-radius-sm (6px); pending the micro-step decision",
-      "issue": "INO-173"
+      "rule": "no-raw-color",
+      "file": "web/src/app/app.html",
+      "match": "#7C5CFC",
+      "reason": "brand gradient stop / accent glow: needs semantic gradient-stop roles so it re-themes",
+      "issue": "INO-174"
     },
     {
-      "rule": "off-scale-spacing",
-      "file": "docs/brand/06-angular-components/src/components/alert/ino-alert.component.scss",
-      "match": "margin: -1px",
-      "reason": "sub-4px / 10px / 48px step the space scale does not define; pending the micro-step decision",
-      "issue": "INO-173"
+      "rule": "no-hardcoded-icon-color",
+      "file": "web/src/app/app.html",
+      "match": "fill=\"#4F46E5\"",
+      "reason": "Master C logo mark territory fill — the mark's two territories are brand-fixed geometry, not theme roles; only the stitch thread re-themes (via --ino-logo-thread)",
+      "issue": "INO-82"
     },
     {
-      "rule": "off-scale-spacing",
-      "file": "mobile/capacitor/app/src/app/components/empty-state/ino-empty-state.component.scss",
-      "match": "padding: 48px 24px",
-      "reason": "sub-4px / 10px / 48px step the space scale does not define; pending the micro-step decision",
-      "issue": "INO-173"
+      "rule": "no-hardcoded-icon-color",
+      "file": "web/src/app/app.html",
+      "match": "fill=\"#7C5CFC\"",
+      "reason": "Master C logo mark territory fill — same rationale as the #4F46E5 territory above",
+      "issue": "INO-82"
     },
     {
-      "rule": "off-scale-spacing",
-      "file": "mobile/capacitor/app/src/app/pages/detail/detail.component.scss",
-      "match": "gap: 10px 16px",
-      "reason": "sub-4px / 10px / 48px step the space scale does not define; pending the micro-step decision",
-      "issue": "INO-173"
+      "rule": "no-raw-color",
+      "file": "web/src/app/app.html",
+      "match": "#D8CEFF",
+      "reason": "var(--ino-logo-thread, #D8CEFF) fallback — the thread colour themes via the variable; the literal is only the no-cascade fallback matching the dark default",
+      "issue": "INO-82"
     },
     {
-      "rule": "off-scale-spacing",
-      "file": "mobile/capacitor/app/src/app/pages/detail/detail.component.scss",
-      "match": "margin-left: -10px",
-      "reason": "sub-4px / 10px / 48px step the space scale does not define; pending the micro-step decision",
-      "issue": "INO-173"
-    },
-    {
-      "rule": "off-scale-spacing",
-      "file": "mobile/capacitor/app/src/app/pages/forgot-password/forgot-password.component.scss",
-      "match": "margin: -10px 0 8px -10px",
-      "reason": "sub-4px / 10px / 48px step the space scale does not define; pending the micro-step decision",
-      "issue": "INO-173"
-    },
-    {
-      "rule": "off-scale-spacing",
-      "file": "mobile/capacitor/app/src/app/pages/home/home.component.scss",
-      "match": "gap: 10px",
-      "reason": "sub-4px / 10px / 48px step the space scale does not define; pending the micro-step decision",
-      "issue": "INO-173"
-    },
-    {
-      "rule": "off-scale-spacing",
-      "file": "mobile/capacitor/app/src/app/pages/home/home.component.scss",
-      "match": "margin-right: -10px",
-      "reason": "sub-4px / 10px / 48px step the space scale does not define; pending the micro-step decision",
-      "issue": "INO-173"
-    },
-    {
-      "rule": "off-scale-spacing",
-      "file": "mobile/capacitor/app/src/app/pages/search/search.component.scss",
-      "match": "gap: 10px",
-      "reason": "sub-4px / 10px / 48px step the space scale does not define; pending the micro-step decision",
-      "issue": "INO-173"
-    },
-    {
-      "rule": "off-scale-spacing",
-      "file": "mobile/capacitor/app/src/app/pages/search/search.component.scss",
-      "match": "margin-left: -10px",
-      "reason": "sub-4px / 10px / 48px step the space scale does not define; pending the micro-step decision",
-      "issue": "INO-173"
-    },
-    {
-      "rule": "off-scale-spacing",
-      "file": "mobile/capacitor/app/src/app/shell/tab-bar/ino-tab-bar.component.scss",
-      "match": "gap: 2px",
-      "reason": "sub-4px / 10px / 48px step the space scale does not define; pending the micro-step decision",
-      "issue": "INO-173"
-    },
-    {
-      "rule": "off-scale-spacing",
-      "file": "mobile/capacitor/app/src/app/shell/tab-bar/ino-tab-bar.component.scss",
-      "match": "padding-bottom: calc(6px + var(--ino-safe-area-bottom, 0px))",
-      "reason": "sub-4px / 10px / 48px step the space scale does not define; pending the micro-step decision",
-      "issue": "INO-173"
-    },
-    {
-      "rule": "off-scale-spacing",
-      "file": "mobile/capacitor/app/src/app/shell/tab-bar/ino-tab-bar.component.scss",
-      "match": "padding-top: 6px",
-      "reason": "sub-4px / 10px / 48px step the space scale does not define; pending the micro-step decision",
-      "issue": "INO-173"
-    },
-    {
-      "rule": "off-scale-spacing",
-      "file": "mobile/capacitor/app/src/app/shell/tab-bar/ino-tab-bar.component.scss",
-      "match": "padding: 4px 10px",
-      "reason": "sub-4px / 10px / 48px step the space scale does not define; pending the micro-step decision",
-      "issue": "INO-173"
-    },
-    {
-      "rule": "off-scale-spacing",
-      "file": "mobile/react-native/src/screens/DetailScreen.tsx",
-      "match": "gap: 2",
-      "reason": "sub-4px / 10px / 48px step the space scale does not define; pending the micro-step decision",
-      "issue": "INO-173"
-    },
-    {
-      "rule": "off-scale-spacing",
-      "file": "mobile/react-native/src/screens/HomeScreen.tsx",
-      "match": "gap: 2",
-      "reason": "sub-4px / 10px / 48px step the space scale does not define; pending the micro-step decision",
-      "issue": "INO-173"
-    },
-    {
-      "rule": "off-scale-spacing",
-      "file": "mobile/react-native/src/screens/SearchScreen.tsx",
-      "match": "gap: 2",
-      "reason": "sub-4px / 10px / 48px step the space scale does not define; pending the micro-step decision",
-      "issue": "INO-173"
-    },
-    {
-      "rule": "off-scale-spacing",
-      "file": "web/src/app/components/alert/ino-alert.component.scss",
-      "match": "margin: -1px",
-      "reason": "sub-4px / 10px / 48px step the space scale does not define; pending the micro-step decision",
-      "issue": "INO-173"
-    },
-    {
-      "rule": "off-scale-spacing",
-      "file": "web/src/app/components/tag/ino-tag.component.scss",
-      "match": "margin: -1px",
-      "reason": "sub-4px / 10px / 48px step the space scale does not define; pending the micro-step decision",
-      "issue": "INO-173"
-    },
-    {
-      "rule": "off-scale-spacing",
-      "file": "web/src/app/components/progress-spinner/ino-progress-spinner.component.scss",
-      "match": "margin: -1px",
-      "reason": "sub-4px / 10px / 48px step the space scale does not define; pending the micro-step decision",
-      "issue": "INO-173"
-    },
-    {
-      "rule": "off-scale-spacing",
-      "file": "web/src/app/pages/not-found/not-found.component.scss",
-      "match": "padding: 1px 6px",
-      "reason": "sub-4px / 10px / 48px step the space scale does not define; pending the micro-step decision",
-      "issue": "INO-173"
-    },
-    {
-      "rule": "off-scale-spacing",
+      "rule": "no-raw-color",
       "file": "web/src/styles/page-sections.scss",
-      "match": "gap: 1px",
-      "reason": "sub-4px / 10px / 48px step the space scale does not define; pending the micro-step decision",
-      "issue": "INO-173"
+      "match": "#D8CEFF",
+      "reason": "--ino-logo-thread definition (dark) — would live in tokens.css but tokens.css is frozen post-Wave 0; a brand-mark-only colour, not a reusable role",
+      "issue": "INO-82"
     },
     {
-      "rule": "off-scale-spacing",
+      "rule": "no-raw-color",
       "file": "web/src/styles/page-sections.scss",
-      "match": "gap: 2px",
-      "reason": "sub-4px / 10px / 48px step the space scale does not define; pending the micro-step decision",
-      "issue": "INO-173"
-    },
-    {
-      "rule": "off-scale-spacing",
-      "file": "web/src/styles/page-sections.scss",
-      "match": "padding: 1px 6px",
-      "reason": "sub-4px / 10px / 48px step the space scale does not define; pending the micro-step decision",
-      "issue": "INO-173"
-    },
-    {
-      "rule": "off-scale-spacing",
-      "file": "web/src/styles/page-sections.scss",
-      "match": "padding: 2px 8px",
-      "reason": "sub-4px / 10px / 48px step the space scale does not define; pending the micro-step decision",
-      "issue": "INO-173"
-    },
-    {
-      "rule": "off-scale-spacing",
-      "file": "mobile/flutter/lib/notifications/notification_widgets.dart",
-      "match": "EdgeInsets.symmetric(horizontal: 4, vertical: 1)",
-      "reason": "sub-4px / 10px / 48px step the space scale does not define; pending the micro-step decision",
-      "issue": "INO-173"
+      "match": "#2A1F6E",
+      "reason": "--ino-logo-thread definition (light) — same rationale as the dark value above",
+      "issue": "INO-82"
     }
   ]
 }

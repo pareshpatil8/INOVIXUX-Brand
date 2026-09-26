@@ -315,9 +315,15 @@ function scanDeclarations(file, src, offset = 0, whole = src) {
     // black smear in light mode and is `none` in high-contrast. A hardcoded one cannot
     // follow that.
     // Token references are already blanked, so any digit left is a real hardcoded offset.
+    // Two remedies, and picking the wrong one is an accessibility bug rather than a style
+    // nit: elevation is decoration and flattens to `none` in high-contrast, so a STATE ring
+    // sent to --ino-elevation-* disappears in the one theme that needs it most. That is why
+    // --ino-invalid-ring exists (INO-257 / W0-7, tokens.css §12) and why it is named here —
+    // this message is the only place most authors will ever meet the distinction.
     if (SHADOW_PROPS.test(prop) && !COLOR_KEYWORDS.test(value.trim()) && /\d/.test(value)) {
       add('non-token-shadow', file, whole, at, where,
-        'hardcoded shadow — use var(--ino-elevation-1|-2); elevation is themed (none in high-contrast)');
+        'hardcoded shadow — for depth use var(--ino-elevation-*), which is themed (none in high-contrast); ' +
+        'for an invalid-state ring use var(--ino-invalid-ring), which high-contrast keeps and widens (tokens.css §12)');
     }
 
     // non-token-duration — motion durations are a 4-step scale tied to the easing set.
@@ -475,20 +481,40 @@ for (const w of waivers) {
   else waiverIndex.set(key(w), { ...w, used: 0 });
 }
 
+// Optical exemptions — INO-173's standing decision that sub-scale spacing/radius values
+// used for hairlines, outdents and glyph-sized chrome are geometry, not a gap in the
+// rhythm scale (see the file's own $comment for the reasoning). Same (rule, file, match)
+// keying and same "unused entry fails the build" discipline as waivers, but this is not a
+// ratchet: there is no cleanup issue that empties it, because these are not pending fixes.
+const exemptionPath = join(root, 'scripts/ds-adherence-optical-exemptions.json');
+const exemptions = existsSync(exemptionPath) ? JSON.parse(readFileSync(exemptionPath, 'utf8')).exemptions ?? [] : [];
+const exemptionIndex = new Map();
+const malformedExemptions = [];
+for (const e of exemptions) {
+  if (!e.rule || !e.file || !e.match || !e.reason || !e.issue) malformedExemptions.push(e);
+  else exemptionIndex.set(key(e), { ...e, used: 0 });
+}
+
 const unwaived = [];
 for (const v of violations) {
-  const hit = waiverIndex.get(key(v));
-  if (hit) hit.used++;
-  else unwaived.push(v);
+  const waived = waiverIndex.get(key(v));
+  if (waived) { waived.used++; continue; }
+  const exempt = exemptionIndex.get(key(v));
+  if (exempt) { exempt.used++; continue; }
+  unwaived.push(v);
 }
 const stale = [...waiverIndex.values()].filter(w => !w.used);
+const staleExemptions = [...exemptionIndex.values()].filter(e => !e.used);
 
 /* ------------------------------------------------------------------ *
  * 7. Report.
  * ------------------------------------------------------------------ */
 
+const allMalformed = [...malformed, ...malformedExemptions];
+const allStale = [...stale, ...staleExemptions];
+
 if (asJson) {
-  console.log(JSON.stringify({ filesLinted, violations: unwaived, waived: violations.length - unwaived.length, stale, malformed }, null, 2));
+  console.log(JSON.stringify({ filesLinted, violations: unwaived, waived: violations.length - unwaived.length, stale, staleExemptions, malformed: allMalformed }, null, 2));
 } else {
   const byRule = new Map();
   for (const v of unwaived) (byRule.get(v.rule) ?? byRule.set(v.rule, []).get(v.rule)).push(v);
@@ -499,12 +525,13 @@ if (asJson) {
       console.log(`    → ${v.message}`);
     }
   }
-  for (const w of malformed) console.log(`\nmalformed waiver (needs rule/file/match/reason/issue): ${JSON.stringify(w)}`);
+  for (const w of allMalformed) console.log(`\nmalformed waiver/exemption (needs rule/file/match/reason/issue): ${JSON.stringify(w)}`);
   for (const w of stale) console.log(`\nstale waiver — the violation is gone, delete the entry: ${w.rule} ${w.file} "${w.match}" (${w.issue})`);
+  for (const e of staleExemptions) console.log(`\nstale exemption — the violation is gone, delete the entry: ${e.rule} ${e.file} "${e.match}" (${e.issue})`);
 
   const waived = violations.length - unwaived.length;
-  const summary = `${filesLinted} files linted · ${unwaived.length} violation${unwaived.length === 1 ? '' : 's'} · ${waived} waived · ${stale.length} stale waiver${stale.length === 1 ? '' : 's'}`;
-  console.log(unwaived.length || stale.length || malformed.length ? `\nFAIL: ${summary}` : `\nPASS: ${summary}`);
+  const summary = `${filesLinted} files linted · ${unwaived.length} violation${unwaived.length === 1 ? '' : 's'} · ${waived} waived/exempt · ${allStale.length} stale entr${allStale.length === 1 ? 'y' : 'ies'}`;
+  console.log(unwaived.length || allStale.length || allMalformed.length ? `\nFAIL: ${summary}` : `\nPASS: ${summary}`);
 }
 
-process.exit(unwaived.length || stale.length || malformed.length ? 1 : 0);
+process.exit(unwaived.length || allStale.length || allMalformed.length ? 1 : 0);
