@@ -1,0 +1,489 @@
+{
+  "generatedFrom": "docs/brand/24-primeng-component-audit-ino-31.md §2 Matrix B",
+  "note": "Tier assignment per finding F-2: every PrimeNG component with no dedicated INOVIXUX build gets an explicit disposition here — Tier-1 (committed, unbuilt), Tier-3 (formally declined per doc 17), or Tier-2 (open — specify before building; the default for anything neither built nor explicitly declined).",
+  "items": [
+    {
+      "component": "IconField",
+      "group": "Form",
+      "tier": "Tier-1",
+      "status": "Unbuilt — committed in doc 17 Wave 2 (T-16), tracked in a separate INO-31 child issue.",
+      "sourceNote": "T1-unbuilt (T-16)"
+    },
+    {
+      "component": "InputGroup",
+      "group": "Form",
+      "tier": "Tier-1",
+      "status": "Unbuilt — committed in doc 17 Wave 2 (T-17), tracked in a separate INO-31 child issue.",
+      "sourceNote": "T1-unbuilt (T-17)"
+    },
+    {
+      "component": "Tabs",
+      "group": "Panel",
+      "tier": "Tier-1",
+      "status": "Unbuilt — committed in doc 17 Wave 2 (T-26), tracked in a separate INO-31 child issue.",
+      "sourceNote": "T1-unbuilt (T-26)"
+    },
+    {
+      "component": "Stepper",
+      "group": "Panel",
+      "tier": "Tier-1",
+      "status": "Unbuilt — committed in doc 17 Wave 2 (T-27), tracked in a separate INO-31 child issue.",
+      "sourceNote": "T1-unbuilt (T-27)"
+    },
+    {
+      "component": "ProgressBar",
+      "group": "Misc",
+      "tier": "Tier-1",
+      "status": "Unbuilt — committed in doc 17 Wave 2 (T-15), tracked in a separate INO-31 child issue.",
+      "sourceNote": "T1-unbuilt (T-15)"
+    },
+    {
+      "component": "Knob",
+      "group": "Form",
+      "tier": "Tier-3",
+      "status": "Declined — see doc 17 \"Tier 2 and Tier 3\".",
+      "sourceNote": "T3-declined (in writing, doc 17)"
+    },
+    {
+      "component": "Rating",
+      "group": "Form",
+      "tier": "Tier-3",
+      "status": "Declined — see doc 17 \"Tier 2 and Tier 3\".",
+      "sourceNote": "T3-declined (in writing, doc 17)"
+    },
+    {
+      "component": "ColorPicker",
+      "group": "Form",
+      "tier": "Tier-3",
+      "status": "Declined — see doc 17 \"Tier 2 and Tier 3\".",
+      "sourceNote": "T3-declined (in writing, doc 17)"
+    },
+    {
+      "component": "Editor",
+      "group": "Form",
+      "tier": "Tier-3",
+      "status": "Declined — see doc 17 \"Tier 2 and Tier 3\".",
+      "sourceNote": "T3-declined (in writing, doc 17)"
+    },
+    {
+      "component": "OrgChart",
+      "group": "Data",
+      "tier": "Tier-3",
+      "status": "Declined — see doc 17 \"Tier 2 and Tier 3\".",
+      "sourceNote": "T3-declined"
+    },
+    {
+      "component": "Dock",
+      "group": "Menu",
+      "tier": "Tier-3",
+      "status": "Declined — see doc 17 \"Tier 2 and Tier 3\".",
+      "sourceNote": "T3-declined"
+    },
+    {
+      "component": "Terminal",
+      "group": "Misc",
+      "tier": "Tier-3",
+      "status": "Declined — see doc 17 \"Tier 2 and Tier 3\".",
+      "sourceNote": "T3-declined"
+    },
+    {
+      "component": "Ripple (directive)",
+      "group": "Misc",
+      "tier": "Tier-3",
+      "status": "Declined — see doc 17 \"Tier 2 and Tier 3\".",
+      "sourceNote": "T3-declined"
+    },
+    {
+      "component": "DragDrop (directive)",
+      "group": "Misc",
+      "tier": "Tier-3",
+      "status": "Declined — see doc 17 \"Tier 2 and Tier 3\".",
+      "sourceNote": "T3-declined"
+    },
+    {
+      "component": "Carousel",
+      "group": "Media",
+      "tier": "Tier-3",
+      "status": "Declined — see doc 17 \"Tier 2 and Tier 3\".",
+      "sourceNote": "T3-declined (\"gallery family\")"
+    },
+    {
+      "component": "Compare",
+      "group": "Media",
+      "tier": "Tier-3",
+      "status": "Declined — see doc 17 \"Tier 2 and Tier 3\".",
+      "sourceNote": "T3-declined (\"gallery family\")"
+    },
+    {
+      "component": "Gallery",
+      "group": "Media",
+      "tier": "Tier-3",
+      "status": "Declined — see doc 17 \"Tier 2 and Tier 3\".",
+      "sourceNote": "T3-declined (\"gallery family\")"
+    },
+    {
+      "component": "Galleria",
+      "group": "Media",
+      "tier": "Tier-3",
+      "status": "Declined — see doc 17 \"Tier 2 and Tier 3\".",
+      "sourceNote": "T3-declined (\"gallery family\")"
+    },
+    {
+      "component": "Image",
+      "group": "Media",
+      "tier": "Tier-3",
+      "status": "Declined — see doc 17 \"Tier 2 and Tier 3\".",
+      "sourceNote": "T3-declined (\"gallery family\")"
+    },
+    {
+      "component": "ImageCompare",
+      "group": "Media",
+      "tier": "Tier-3",
+      "status": "Declined — see doc 17 \"Tier 2 and Tier 3\".",
+      "sourceNote": "T3-declined (\"gallery family\")"
+    },
+    {
+      "component": "AutoComplete",
+      "group": "Form",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (13; * = partial via `ino-input type`)"
+    },
+    {
+      "component": "CascadeSelect",
+      "group": "Form",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (13; * = partial via `ino-input type`)"
+    },
+    {
+      "component": "InputColor",
+      "group": "Form",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (13; * = partial via `ino-input type`)"
+    },
+    {
+      "component": "InputMask",
+      "group": "Form",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (13; * = partial via `ino-input type`)"
+    },
+    {
+      "component": "InputNumber*",
+      "group": "Form",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (13; * = partial via `ino-input type`)"
+    },
+    {
+      "component": "InputPassword*",
+      "group": "Form",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (13; * = partial via `ino-input type`)"
+    },
+    {
+      "component": "InputTags",
+      "group": "Form",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (13; * = partial via `ino-input type`)"
+    },
+    {
+      "component": "KeyFilter",
+      "group": "Form",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (13; * = partial via `ino-input type`)"
+    },
+    {
+      "component": "Listbox",
+      "group": "Form",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (13; * = partial via `ino-input type`)"
+    },
+    {
+      "component": "SelectButton",
+      "group": "Form",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (13; * = partial via `ino-input type`)"
+    },
+    {
+      "component": "Slider",
+      "group": "Form",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (13; * = partial via `ino-input type`)"
+    },
+    {
+      "component": "ToggleButton",
+      "group": "Form",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (13; * = partial via `ino-input type`)"
+    },
+    {
+      "component": "TreeSelect",
+      "group": "Form",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (13; * = partial via `ino-input type`)"
+    },
+    {
+      "component": "SpeedDial",
+      "group": "Button",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (2)"
+    },
+    {
+      "component": "SplitButton",
+      "group": "Button",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (2)"
+    },
+    {
+      "component": "DataView",
+      "group": "Data",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (5)"
+    },
+    {
+      "component": "OrderList",
+      "group": "Data",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (5)"
+    },
+    {
+      "component": "PickList",
+      "group": "Data",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (5)"
+    },
+    {
+      "component": "Tree",
+      "group": "Data",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (5)"
+    },
+    {
+      "component": "TreeTable",
+      "group": "Data",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (5)"
+    },
+    {
+      "component": "Accordion",
+      "group": "Panel",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (8)"
+    },
+    {
+      "component": "Divider",
+      "group": "Panel",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (8)"
+    },
+    {
+      "component": "Fieldset",
+      "group": "Panel",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (8)"
+    },
+    {
+      "component": "Panel",
+      "group": "Panel",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (8)"
+    },
+    {
+      "component": "ScrollArea",
+      "group": "Panel",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (8)"
+    },
+    {
+      "component": "ScrollPanel",
+      "group": "Panel",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (8)"
+    },
+    {
+      "component": "Splitter",
+      "group": "Panel",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (8)"
+    },
+    {
+      "component": "Toolbar",
+      "group": "Panel",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (8)"
+    },
+    {
+      "component": "DynamicDialog",
+      "group": "Overlay",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (1)"
+    },
+    {
+      "component": "Menu",
+      "group": "Menu",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (8)"
+    },
+    {
+      "component": "Breadcrumb",
+      "group": "Menu",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (8)"
+    },
+    {
+      "component": "CommandMenu",
+      "group": "Menu",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (8)"
+    },
+    {
+      "component": "ContextMenu",
+      "group": "Menu",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (8)"
+    },
+    {
+      "component": "MegaMenu",
+      "group": "Menu",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (8)"
+    },
+    {
+      "component": "PanelMenu",
+      "group": "Menu",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (8)"
+    },
+    {
+      "component": "Sidebar",
+      "group": "Menu",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (8)"
+    },
+    {
+      "component": "TieredMenu",
+      "group": "Menu",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (8)"
+    },
+    {
+      "component": "Fluid",
+      "group": "Misc",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (12)"
+    },
+    {
+      "component": "Avatar",
+      "group": "Misc",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (12)"
+    },
+    {
+      "component": "Badge",
+      "group": "Misc",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (12)"
+    },
+    {
+      "component": "BlockUI",
+      "group": "Misc",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (12)"
+    },
+    {
+      "component": "Chip",
+      "group": "Misc",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (12)"
+    },
+    {
+      "component": "Inplace",
+      "group": "Misc",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (12)"
+    },
+    {
+      "component": "ScrollTop",
+      "group": "Misc",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (12)"
+    },
+    {
+      "component": "AnimateOnScroll",
+      "group": "Misc",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (12)"
+    },
+    {
+      "component": "AutoFocus",
+      "group": "Misc",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (12)"
+    },
+    {
+      "component": "Bind",
+      "group": "Misc",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (12)"
+    },
+    {
+      "component": "ClassNames",
+      "group": "Misc",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (12)"
+    },
+    {
+      "component": "StyleClass",
+      "group": "Misc",
+      "tier": "Tier-2",
+      "status": "Open — no build committed, no spec written yet. Itemized here per finding F-2; needs a spec before any implementation work starts.",
+      "sourceNote": "T2/3-open (12)"
+    }
+  ]
+}
