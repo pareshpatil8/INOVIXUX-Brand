@@ -1,0 +1,217 @@
+<!-- @dsCard group="Misc" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ino-progress-bar — linear process-status indicator (INO-132)</title>
+<!-- Canonical token file, linked rather than copied: this preview must repaint with the system,
+     and must never become a second place raw hex values live. -->
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-eyebrow-size);
+    letter-spacing: var(--ino-type-eyebrow-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 60ch; }
+
+  .theme-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); }
+  .theme-pane {
+    flex: 1 1 280px;
+    padding: var(--ino-space-5);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-xl);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+  }
+  .theme-pane > h3 {
+    margin: 0 0 var(--ino-space-4);
+    font-size: var(--ino-type-body-sm-size);
+    color: var(--ino-color-on-surface-muted);
+    font-weight: 600;
+  }
+
+  .col { display: flex; flex-direction: column; gap: var(--ino-space-5); max-width: 24rem; }
+
+  /* Mirrors web/src/app/components/progress-bar/ino-progress-bar.component.scss — same token
+     bindings, so a divergence between this preview and the shipped component is visible as a
+     visual diff. */
+  .ino-progress-bar {
+    display: block;
+    inline-size: 100%;
+  }
+  .ino-progress-bar[data-size="sm"] { --ino-progress-bar-thickness: var(--ino-control-icon-size-sm); }
+  .ino-progress-bar[data-size="lg"] { --ino-progress-bar-thickness: var(--ino-control-icon-size-lg); }
+  .ino-progress-bar {
+    --ino-progress-bar-thickness: var(--ino-control-icon-size-default);
+  }
+  .ino-progress-bar--disabled { opacity: 0.5; }
+
+  .ino-progress-bar__track {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    border-radius: var(--ino-radius-pill);
+    background: var(--ino-color-surface-sunken);
+    inline-size: 100%;
+    block-size: var(--ino-progress-bar-thickness);
+  }
+  .ino-progress-bar__fill {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    display: block;
+    block-size: 100%;
+    border-radius: var(--ino-radius-pill);
+    background: var(--ino-color-accent);
+    transition: inline-size var(--ino-motion-duration-base) var(--ino-motion-easing-standard);
+  }
+  .ino-progress-bar--invalid .ino-progress-bar__fill { background: var(--ino-color-danger); }
+  .ino-progress-bar__fill--indeterminate {
+    inline-size: 40%;
+    animation: ino-progress-bar-sweep var(--ino-motion-duration-slow) var(--ino-motion-easing-standard) infinite;
+  }
+  @keyframes ino-progress-bar-sweep {
+    0% { inset-inline-start: -40%; }
+    100% { inset-inline-start: 100%; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ino-progress-bar__fill { transition: none; }
+    .ino-progress-bar__fill--indeterminate { animation: none; inline-size: 50%; }
+  }
+
+  .ino-progress-bar__value {
+    position: absolute;
+    inset-block: 0;
+    inset-inline: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-sm-size);
+    font-weight: 600;
+    color: var(--ino-color-on-surface);
+    mix-blend-mode: difference;
+  }
+
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  }
+</style>
+</head>
+<body>
+
+<h1>ProgressBar — linear process-status indicator</h1>
+<p class="lede">
+  The horizontal-track counterpart to <code>&lt;ino-progress-spinner&gt;</code>: determinate (known
+  percentage) and indeterminate (unknown duration) modes with the same live-region announcement
+  contract as the spinner.
+</p>
+
+<h2>Determinate × theme</h2>
+<div class="theme-row">
+
+  <div class="theme-pane">
+    <h3>dark — :root (default)</h3>
+    <div class="ino-progress-bar" data-mode="determinate" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="62" aria-label="62% complete">
+      <div class="ino-progress-bar__track">
+        <span class="ino-progress-bar__fill" style="inline-size:62%"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="light">
+    <h3>light — [data-theme="light"]</h3>
+    <div class="ino-progress-bar" data-mode="determinate" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="62" aria-label="62% complete">
+      <div class="ino-progress-bar__track">
+        <span class="ino-progress-bar__fill" style="inline-size:62%"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="high-contrast">
+    <h3>high-contrast — [data-theme="high-contrast"]</h3>
+    <div class="ino-progress-bar" data-mode="determinate" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="62" aria-label="62% complete">
+      <div class="ino-progress-bar__track">
+        <span class="ino-progress-bar__fill" style="inline-size:62%"></span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<h2>Mode</h2>
+<div class="col">
+  <div class="ino-progress-bar" data-mode="determinate" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40" aria-label="40% complete">
+    <div class="ino-progress-bar__track">
+      <span class="ino-progress-bar__fill" style="inline-size:40%"></span>
+    </div>
+  </div>
+  <div class="ino-progress-bar" data-mode="indeterminate" role="progressbar" aria-busy="true" aria-label="Loading">
+    <div class="ino-progress-bar__track">
+      <span class="ino-progress-bar__fill ino-progress-bar__fill--indeterminate"></span>
+    </div>
+  </div>
+</div>
+
+<h2>Size (control-icon-size scale)</h2>
+<div class="col">
+  <div class="ino-progress-bar" data-size="sm" data-mode="determinate" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="55" aria-label="55% complete">
+    <div class="ino-progress-bar__track">
+      <span class="ino-progress-bar__fill" style="inline-size:55%"></span>
+    </div>
+  </div>
+  <div class="ino-progress-bar" data-mode="determinate" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="55" aria-label="55% complete">
+    <div class="ino-progress-bar__track">
+      <span class="ino-progress-bar__fill" style="inline-size:55%"></span>
+    </div>
+  </div>
+  <div class="ino-progress-bar" data-size="lg" data-mode="determinate" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="55" aria-label="55% complete">
+    <div class="ino-progress-bar__track">
+      <span class="ino-progress-bar__fill" style="inline-size:55%"></span>
+    </div>
+  </div>
+</div>
+
+<h2>showValue</h2>
+<div class="col">
+  <div class="ino-progress-bar" data-mode="determinate" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="73" aria-label="73% complete" style="position:relative;">
+    <div class="ino-progress-bar__track" style="block-size: var(--ino-space-7);">
+      <span class="ino-progress-bar__fill" style="inline-size:73%"></span>
+      <span class="ino-progress-bar__value" aria-hidden="true">73%</span>
+    </div>
+  </div>
+</div>
+
+<h2>States — disabled / invalid</h2>
+<div class="col">
+  <div class="ino-progress-bar ino-progress-bar--disabled" data-mode="determinate" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="30" aria-disabled="true" aria-label="30% complete">
+    <div class="ino-progress-bar__track">
+      <span class="ino-progress-bar__fill" style="inline-size:30%"></span>
+    </div>
+  </div>
+  <div class="ino-progress-bar ino-progress-bar--invalid" data-mode="determinate" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="30" aria-label="30% complete (error)">
+    <div class="ino-progress-bar__track">
+      <span class="ino-progress-bar__fill" style="inline-size:30%"></span>
+    </div>
+  </div>
+</div>
+
+<span class="sr-only">Live-region text (visually hidden, not shown in this static preview) mirrors the same string as <code>aria-label</code> above; see progress-bar.md's Accessibility contract.</span>
+
+</body>
+</html>
