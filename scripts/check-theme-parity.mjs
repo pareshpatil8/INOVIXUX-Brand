@@ -842,8 +842,16 @@ const COMPONENT_REGISTRY = [
   {
     name: 'stepper',
     web: 'web/src/app/components/stepper',
-    mobile: { reactNative: 'web-only', flutter: 'web-only' },
-    reason: 'web-only for now (INO-318 / INO-31 F-1) — no React Native or Flutter port has been scheduled for this component yet; mobile parity tracking begins when a port lands.',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoStepper.tsx',
+        roles: ['accent', 'accentSecondary', 'border', 'onAccent', 'onSurface', 'onSurfaceMuted'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_stepper.dart',
+        roles: ['accent', 'accentSecondary', 'border', 'onAccent', 'onSurface', 'onSurfaceMuted'],
+      },
+    },
   },
   {
     name: 'table',
