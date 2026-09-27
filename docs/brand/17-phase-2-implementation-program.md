@@ -83,8 +83,9 @@ Four notes on this contract:
   diff. Two defects in PR #38 and one already-merged, board-approved defect in
   `<ino-confirm-popup>` were invisible to both static sign-offs. Only running the component (`ng
   test` against the harness already in `web/package.json` — `@angular/build:unit-test`, vitest,
-  jsdom) caught them, in one ~30-line spec. Row 12 does not replace the standing QA test → CTO
-  review → board approval sequencing; it adds a DoD row, not a third sign-off.
+  jsdom) caught them, in one ~30-line spec. Row 12 does not replace the QA test → CTO review →
+  board approval sequencing — written down as a ship gate in doc 09 §5c after the board raised it
+  on INO-141 (PR #48); it adds a DoD row, not a third sign-off.
   - **Applies from 2026-09-23 forward, not retroactively.** In-flight and future G-1 components
     owe row 12 from the date this revision lands; the 26 components merged before it are not
     reopened for a spec. The one standing exception is the **overlay family**

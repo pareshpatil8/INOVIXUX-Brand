@@ -147,8 +147,10 @@ for your review, not something being built yet.
 
 See [`09-design-system-standards.md`](09-design-system-standards.md) — brand usage rules, token
 governance (how a color/mark change gets approved and versioned), WCAG 2.2 checklist, INO-14
-disclaimer enforcement rule, and a file-naming convention going forward specifically to prevent
-the v1–v5 sprawl that caused the visibility problem this file is fixing.
+disclaimer enforcement rule, the QA test → CTO review → board approval ship sequencing for
+component PRs (§5c, added 2026-09-23 on your INO-141 flag), and a file-naming convention going
+forward specifically to prevent the v1–v5 sprawl that caused the visibility problem this file is
+fixing.
 
 ## 9. Open decisions (not blocking anything, answer whenever convenient)
 
