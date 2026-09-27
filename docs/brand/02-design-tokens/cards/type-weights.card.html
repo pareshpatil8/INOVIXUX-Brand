@@ -1,0 +1,60 @@
+<!-- @dsCard group="Foundations" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Type — Weights · INOVIXUX Design Tokens</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../tokens.css">
+<style>
+  body { margin: 0; padding: var(--ino-space-7); background: var(--ino-color-surface); color: var(--ino-color-on-surface); font-family: var(--ino-font-display); }
+  h1 { font: var(--ino-type-h3); font-family: var(--ino-font-display); margin: 0 0 var(--ino-space-2); }
+  h2 { font: var(--ino-type-eyebrow); font-family: var(--ino-font-mono); letter-spacing: var(--ino-type-eyebrow-tracking); text-transform: uppercase; color: var(--ino-color-on-surface-muted); margin: var(--ino-space-7) 0 var(--ino-space-3); }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 68ch; }
+
+  .weight-row { display: flex; align-items: baseline; gap: var(--ino-space-4); padding: var(--ino-space-3) 0; border-bottom: 1px solid var(--ino-color-border-soft); }
+  .weight-row:last-child { border-bottom: none; }
+  .weight-row .tag { width: 90px; flex: none; font-family: var(--ino-font-mono); font-size: 11px; color: var(--ino-color-on-surface-muted); }
+  .weight-row .sample { font-size: 20px; }
+
+  table { border-collapse: collapse; width: 100%; font-size: 12px; margin-top: var(--ino-space-4); }
+  th, td { text-align: left; padding: var(--ino-space-2) var(--ino-space-3); border-bottom: 1px solid var(--ino-color-border-soft); }
+  th { color: var(--ino-color-on-surface-muted); font-weight: 600; }
+  td code { font-family: var(--ino-font-mono); font-size: 11px; }
+</style>
+</head>
+<body>
+
+<h1>Type — Weights</h1>
+<p class="lede">
+  Geist ships three weights in this system — 400 (regular body), 500 (labels, metrics), and 600
+  (headings, eyebrows). No role in <code>tokens.css</code> uses 700; it is licensed (OFL) and
+  loaded, but unused, so it is intentionally absent below.
+</p>
+
+<h2>Weight ramp</h2>
+<div class="weight-row"><span class="tag">400 · regular</span><span class="sample" style="font-weight:400">Aa Bb Cc — body text, hints</span></div>
+<div class="weight-row"><span class="tag">500 · medium</span><span class="sample" style="font-weight:500">Aa Bb Cc — labels, metrics</span></div>
+<div class="weight-row"><span class="tag">600 · semibold</span><span class="sample" style="font-weight:600">Aa Bb Cc — headings, eyebrows</span></div>
+
+<h2>Role → weight assignment</h2>
+<table>
+  <thead><tr><th>Role</th><th>Weight token</th><th>Resolved</th></tr></thead>
+  <tbody id="rows"></tbody>
+</table>
+
+<script>
+  const ROLES = ['display','h2','h3','body-lg','body','body-sm','metric','eyebrow','label-lg','label','label-sm','hint','caption'];
+  const rootStyle = getComputedStyle(document.documentElement);
+  document.getElementById('rows').innerHTML = ROLES.map(role => {
+    const token = `--ino-type-${role}-weight`;
+    const v = rootStyle.getPropertyValue(token).trim();
+    return `<tr><td>${role}</td><td><code>${token}</code></td><td>${v}</td></tr>`;
+  }).join('');
+</script>
+
+</body>
+</html>
