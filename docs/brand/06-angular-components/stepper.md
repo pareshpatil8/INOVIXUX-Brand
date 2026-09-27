@@ -100,7 +100,21 @@ None.
 
 ## Mobile parity
 
-**Web-only for now** — no React Native or Flutter port exists for this component as of this issue.
+Both mobile ports ship (INO-334).
+
+- **Capacitor** — not a separate port; the same Angular component/CSS render in the Capacitor
+  WebView (plan rev 9 §5, "Capacitor is not a port").
+- **React Native** — `mobile/react-native/src/components/InoStepper.tsx`.
+- **Flutter** — `mobile/flutter/lib/widgets/ino_stepper.dart`.
+
+Both ports render the step rail only — the parent supplies panel content, since web's
+content-projection `<ino-step>` child has no mobile equivalent worth inventing. Props are
+index-based and controlled-only (`items: {label, disabled, completed}[]`, `activeIndex`,
+`onActiveIndexChanged`, `size`, `orientation`, `linear`), matching web's `@Input` surface. `completed`
+is supplied by the caller rather than re-derived internally: web tracks it via its own
+`furthestIndex` state, and a controlled-only port has no equivalent internal state to derive it
+from — same "parent owns it" rule the container/leaf split already establishes for `activeIndex`.
+No keyboard map or focus ring (no touch equivalent), same omission `InoTabs`' ports make.
 
 ## Behavioral test
 
