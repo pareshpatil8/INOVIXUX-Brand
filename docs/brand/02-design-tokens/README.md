@@ -18,9 +18,34 @@ with no compiled tokens. That gate cleared when you accepted the v5 foundation.
 | File | Purpose |
 |---|---|
 | `tokens.css` | The token contract itself — drop-in `:root` custom properties. This is the file Angular imports. |
-| `style-guide.html` | Rendered preview of every token (color roles, RAG chips, type scale, spacing, radius, elevation) — open it directly, nothing to build. |
+| `style-guide.html` | Combined rendered preview of every token (color roles, RAG chips, type scale, spacing, radius, elevation) — open it directly, nothing to build. |
+| `cards/*.card.html` | The same content, decomposed into 12 standalone, embeddable specimens (INO-117) — each self-contained, rendering live from `tokens.css`, correct in all three themes. Drop any one into a deck, a doc page, or a partner email. See below. |
 | `angular-theme-contract.md` | How an Angular app consumes `tokens.css`, plus component-level contracts (selector/inputs/outputs, not full implementations) for the six components on the v5 checklist. |
 | `README.md` | This file — rationale, decisions, contrast audit. |
+
+### Foundation specimen cards (`cards/`, INO-117)
+
+Closes row 13 of the e-Cheque structural-parity table (`docs/brand/16-design-system-parity-vs-echeque-reference.md`
+§13) — the reference has 12 embeddable `*.card.html` specimens; `style-guide.html` alone was one
+combined page with nothing you could embed on its own. Each card links `../tokens.css` (never copies
+values), and every color/type/space/shadow/motion number rendered is read live from that file:
+
+| Card | Covers |
+|---|---|
+| `colors-primary.card.html` | `--ino-color-accent*`, gradient, glow — the single re-theme swap point |
+| `colors-neutral.card.html` | `on-surface*`, `border*` — text and hairline roles |
+| `colors-semantic.card.html` | success/warning/danger/info + the RAG risk-flag dot/fill pairs |
+| `colors-surface.card.html` | surface/raised/sunken depth ramp + overlay scrim |
+| `type-scale.card.html` | every `--ino-type-*` role, size/line/weight measured live |
+| `type-weights.card.html` | the 400/500/600 weight ramp and its role assignment |
+| `type-mono.card.html` | Geist Mono — eyebrow, metric, code collateral |
+| `spacing.card.html` | the `--ino-space-*` scale + WCAG 2.2 touch-target minimums |
+| `shadows.card.html` | 6 neutral + 3 brand + 2 inset elevation steps, flattened in high-contrast |
+| `borders.card.html` | border roles, the radius scale, and the focus ring |
+| `motion.card.html` | every duration × easing pair as a **re-triggerable, watchable** transition (closes M-10 — durations/easings existed but nothing rendered them until now) |
+| `brand-logo.card.html` | the shipped `/assets/brand/logo/` SVG set, plus a live-theme-repaint row |
+
+All 12 render correctly under `:root` (dark), `[data-theme="light"]`, and `[data-theme="high-contrast"]`.
 
 ---
 

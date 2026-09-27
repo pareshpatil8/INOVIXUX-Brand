@@ -1,0 +1,102 @@
+{
+  "generatedFrom": "previews/*.html @dsCard markers",
+  "cardCount": 16,
+  "cards": [
+    {
+      "id": "button",
+      "group": "Actions",
+      "preview": "previews/button.html",
+      "doc": "button.md"
+    },
+    {
+      "id": "paginator",
+      "group": "Data",
+      "preview": "previews/paginator.html",
+      "doc": "paginator.md"
+    },
+    {
+      "id": "timeline",
+      "group": "Data",
+      "preview": "previews/timeline.html",
+      "doc": "timeline.md"
+    },
+    {
+      "id": "virtual-scroller",
+      "group": "Data",
+      "preview": "previews/virtual-scroller.html",
+      "doc": "virtual-scroller.md"
+    },
+    {
+      "id": "datepicker",
+      "group": "Form",
+      "preview": "previews/datepicker.html",
+      "doc": "datepicker.md"
+    },
+    {
+      "id": "input",
+      "group": "Form",
+      "preview": "previews/input.html",
+      "doc": "input.md"
+    },
+    {
+      "id": "label",
+      "group": "Form",
+      "preview": "previews/label.html",
+      "doc": "label.md"
+    },
+    {
+      "id": "select",
+      "group": "Form",
+      "preview": "previews/select.html",
+      "doc": "select.md"
+    },
+    {
+      "id": "control-size-scale",
+      "group": "Foundations",
+      "preview": "previews/control-size-scale.html",
+      "doc": "control-size-scale.md"
+    },
+    {
+      "id": "elevation-type-rhythm-tokens",
+      "group": "Foundations",
+      "preview": "previews/elevation-type-rhythm-tokens.html",
+      "doc": "elevation-type-rhythm-tokens.md"
+    },
+    {
+      "id": "form-label-tokens",
+      "group": "Foundations",
+      "preview": "previews/form-label-tokens.html",
+      "doc": "form-label-tokens.md"
+    },
+    {
+      "id": "alert",
+      "group": "Messages",
+      "preview": "previews/alert.html",
+      "doc": "alert.md"
+    },
+    {
+      "id": "focus-trap",
+      "group": "Misc",
+      "preview": "previews/focus-trap.html",
+      "doc": "focus-trap.md"
+    },
+    {
+      "id": "progress-spinner",
+      "group": "Misc",
+      "preview": "previews/progress-spinner.html",
+      "doc": "progress-spinner.md"
+    },
+    {
+      "id": "skeleton",
+      "group": "Misc",
+      "preview": "previews/skeleton.html",
+      "doc": "skeleton.md"
+    },
+    {
+      "id": "tag",
+      "group": "Misc",
+      "preview": "previews/tag.html",
+      "doc": "tag.md"
+    }
+  ]
+}

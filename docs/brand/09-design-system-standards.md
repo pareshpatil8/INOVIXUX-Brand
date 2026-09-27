@@ -168,6 +168,61 @@ Running it for the first time found two already-merged dangling citations in
 forward references. Retro-fitting older SPEC files is otherwise not required beyond what the script
 flags.
 
+## 5c. Ship sequencing — QA test → CTO review → board approval
+
+§5a is where you commit, §5b is what you may claim. This one is who has to look at it before the
+board is asked to approve a merge.
+
+The board raised it on INO-141: PR #48 (FloatLabel) went to a board `request_confirmation` with no
+QA test and no CTO review. Checked before writing this rule — **INO-141 carried no execution policy
+at all.** It was one of the ~40 component issues outside the nine that INO-202 gated, so nothing
+was skipped; there was nothing there to skip. The gap was structural, which is why the fix is a
+rule and not a reminder.
+
+As a ship gate, for any PR that changes shipped code under `web/`, `mobile/` or `scripts/`:
+
+1. **Engineer** opens the PR, moves the issue to `in_review`, and comments the twelve-row DoD
+   (doc 17 §2) **row by row with the evidence for each**, plus the output of `npm run check:ds`,
+   `ng build` and `ng test`. A row asserted without evidence is an unverified row, not a pass.
+2. **QA tests it functionally** against that same DoD — running the component, not reading the
+   diff — and records pass/fail with findings.
+3. **CTO reviews the diff**: architecture, merge hygiene (§2 row 11), token purity, and any
+   deviation from doc 16 or the pinned PrimeNG route. PR #48's non-PrimeNG FloatLabel is the case
+   that prompted this rule: deviations are legal, but they get named and argued in the SPEC, not
+   discovered at merge.
+4. **Only then** does the engineer open the board `request_confirmation`, **citing both verdicts by
+   issue identifier.** A confirmation that cites neither is withdrawn, not answered.
+
+Five clarifications, each of which has already cost a cycle:
+
+- **The order is enforced by the platform, not by memory.** Steps 2 and 3 are the two stages of one
+  native Paperclip `executionPolicy` on the issue (Gate 1 + Gate 4 of the review-gates policy,
+  INO-186 v4). The stage is armed by the *transition into* `in_review`, so the policy is attached
+  when the issue is created or picked up — attaching it to an issue that is already in review
+  persists happily and gates nothing.
+- **QA and the CTO catch different defects; neither substitutes for the other.** On PR #38 QA ran
+  every gate script, `tsc --noEmit` and a true-merge-base diff and passed all eleven rows then
+  existing — correctly; CTO review would have passed the same diff. Two defects were invisible to
+  both until the component was actually run (doc 17 §2 row 12). Conversely the CTO review of PR #8
+  (INO-160) found four SPEC citations resolving against nothing on the merge base — a class QA has
+  no reason to go looking for. Dropping either step drops a defect class.
+- **CI is the floor, not the gate.** `design-system.yml` runs three node scripts — parity,
+  adherence, spec citations. `ng build`, `ng test`, React Native `tsc` and `dart analyze` are
+  **not** in CI. Everything outside those three is a local run, so QA re-runs it independently
+  rather than trusting a pasted transcript.
+- **The verdict is recorded where the gate lives — the issue, not the PR.** `gh pr review
+  --approve` is unavailable to this fleet. QA approves with `{"status":"done","comment":…}` and the
+  CTO does the same at the next stage; changes-requested is `{"status":"in_progress"}` naming the
+  specific defects, and Paperclip returns the issue to the engineer automatically.
+- **Nobody clears their own work, and nobody records someone else's verdict.** A CTO-authored
+  component PR takes its second stage from GovernanceComplianceLead or a second engineer, never
+  from its author. The engineer never writes "QA passed" on the engineer's behalf: a verdict counts
+  only in the reviewer's own words, from the reviewer's own run.
+
+Two carve-outs, so the gate does not become ceremony: a **prose-only docs PR** skips step 2 (there
+is nothing to run) and goes CTO review → board; a **revert that unblocks the fleet** may go on CTO
+review alone, said out loud on the issue rather than done quietly.
+
 ## 6. Asset request process (logo, Figma, print files)
 
 1. Final vector artwork (logo `.svg` lockups, favicon crop, monochrome variant) requires either a
