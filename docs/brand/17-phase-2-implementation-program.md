@@ -13,7 +13,7 @@ is correct on every count. This revision is the missing plan.
 | 1 | The plan doesn't say how 101 components get implemented across three web themes with all variants, motion, accessibility, and three mobile styles | **§2** (Definition of Done — the per-component contract) and **§5** (mobile porting rule). §2 is the section that was entirely absent. |
 | 2 | Why are the todos not created per component, so agents work in parallel and merge? | **§4** (per-component manifest) and **§12** (the 49 issues, now created) and **§6** (parallelism + merge model). Correction: 10 child issues exist (INO-113…INO-122) but they are *register-item*-shaped, not *component*-shaped, and two of them are superseded. §7 reconciles them. |
 | 3 | The High / Medium / Low missing items aren't visible in the plan | **§7** — the full 31-item register, each row carrying a wave and an issue number. Previously it lived only in doc 16 §14, which is why you couldn't see it here. |
-| 4 | Missing: importable to Claude Design | **§8** — with a concrete finding: the tooling exists and I tested it this run. It needs one interactive action from you that cannot be done from a heartbeat. |
+| 4 | Missing: importable to Claude Design | **§8** — the importable bundle ships as a by-product of the docs site. *Amended 2026-09-23 (INO-299): the automated `DesignSync` round-trip this section originally promised is dropped — the tool no longer exists in the harness and was never ours to provision. No interactive action is needed from you. See the §8 note.* |
 
 Nothing in doc 16 revisions 1–3 is discarded. This revision is the execution layer on top of it.
 
@@ -322,10 +322,35 @@ found by actually trying it rather than describing it.
 > `DesignSync needs design-system authorization, but /design-login requires an interactive terminal
 > and is not available in this environment.`
 
-So the integration is real and the tooling is present — it is not available from an unattended
-heartbeat. **Unblock action, yours, ~2 minutes:** run `/design-login` once in an interactive Claude
-Code session (or use Claude Design's "Send to Claude Code Web"). After that the round-trip works
-from here.
+> **Superseded 2026-09-23 (INO-299) — the DesignSync round-trip is dropped from Phase 2.** The
+> paragraph that stood here read "the integration is real and the tooling is present… run
+> `/design-login` once and the round-trip works from here." That conclusion was wrong, and it cost
+> INO-165 eight days and six-plus heartbeats of re-discovery. The correction, with evidence:
+>
+> - **`DesignSync` was never an MCP tool, so there is nothing to "provision."** It resolved through
+>   the harness's *deferred-tool* registry (`ToolSearch select:DesignSync` →
+>   `{"type":"tool_reference","tool_name":"DesignSync"}`) and was invoked bare as
+>   `DesignSync{method:"list_projects"}` — not as `mcp__<server>__<tool>`. It is a first-party Claude
+>   Code tool of the same class as `WebFetch` or `TaskCreate`, gated by harness version and account
+>   entitlement.
+> - **There is no per-agent MCP config to add it to.** Every `claude_local` agent on this host shares
+>   one MCP surface: account-level claude.ai connectors plus local plugins. Global `mcpServers` in
+>   `~/.claude.json` is empty, no project `.mcp.json` exists, and the Paperclip agent directories
+>   contain `instructions/` and nothing else.
+> - **The capability was withdrawn between 2026-09-15 and 2026-09-22.** Transcript evidence:
+>   `ToolSearch` resolved `DesignSync` on 09-05, 09-06, 09-14 and 09-15, and it was actually called on
+>   09-14 and 09-15. The same search on 09-22 and 09-23 returns nothing. Verified again this run on
+>   Claude Code 2.1.278 — `No matching deferred tools found`.
+> - **The auth story was therefore a red herring.** The `/design-login` a human ran on 09-22 could not
+>   have worked: by then the tool it was meant to authorize no longer existed in the harness. The
+>   09-14 authorization error was real *at the time*, but it stopped being the live problem a week
+>   before anyone acted on it.
+>
+> This is not a budget, vendor, or provisioning decision INOVIXUX can make — the tool is not ours to
+> install. **Disposition:** the code↔design round-trip requirement moves to the **Figma** connector,
+> which is live and verified on this host (`get_design_context`, `use_figma`, Code Connect) and is
+> already scoped as **S-4 / INO-166**. The import-bundle half of the work below is unaffected and
+> still ships — it is a by-product of the docs site, useful on its own, and re-importable by hand.
 
 **What we ship into it**, and why §2 row 10 is written the way it is:
 
@@ -339,10 +364,13 @@ from here.
 The practical consequence: **the Claude Design bundle is a by-product of the docs site, not a
 separate build.** The same preview files feed H-6 (INO-116), the motion specimen (INO-117), and
 the Claude Design import. That is why H-6 is High priority rather than documentation polish — three
-deliverables collapse into one artifact set. Zero additional Phase 2 cost beyond `/design-login`.
+deliverables collapse into one artifact set. Zero additional Phase 2 cost — and, per the note above,
+no login or tooling dependency at all now that the automated round-trip is out of scope.
 
-Sync discipline, once authorized: incremental, one component at a time, never a wholesale replace —
-`list_files` → structural diff → `finalize_plan` → `write_files`.
+~~Sync discipline, once authorized: incremental, one component at a time, never a wholesale replace —
+`list_files` → structural diff → `finalize_plan` → `write_files`.~~ *Moot as of 2026-09-23: there is
+no `DesignSync` tool to sync with. The equivalent discipline for the Figma round-trip (S-4 / INO-166)
+belongs in that issue, not here.*
 
 ---
 
@@ -461,7 +489,7 @@ to claim now); the rest are `backlog` and will surface as their blockers merge.
 
 | Handle | Issue | Scope |
 |---|---|---|
-| S-3 | **INO-165** | Claude Design importable bundle + DesignSync round-trip *(needs `/design-login`)* |
+| S-3 | **INO-165** | Claude Design importable bundle *(round-trip dropped 2026-09-23 — see §8; tool unavailable, moved to S-4)* |
 | S-4 | **INO-166** | Figma library |
 | S-5 | **INO-167** | Imagery / illustration direction |
 | S-6 | **INO-168** | App store listing assets x 3 tracks |

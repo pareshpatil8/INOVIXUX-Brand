@@ -78,6 +78,22 @@ export const routes: Routes = [
           ),
         title: 'Design system — INOVIXUX Docs',
       },
+      {
+        path: 'components',
+        loadComponent: () =>
+          import('./pages/docs/components/docs-components-index.component').then(
+            (m) => m.DocsComponentsIndexComponent,
+          ),
+        title: 'Components — INOVIXUX Docs',
+      },
+      {
+        path: 'components/:slug',
+        loadComponent: () =>
+          import('./pages/docs/components/docs-component-detail.component').then(
+            (m) => m.DocsComponentDetailComponent,
+          ),
+        title: 'Component — INOVIXUX Docs',
+      },
     ],
   },
   {

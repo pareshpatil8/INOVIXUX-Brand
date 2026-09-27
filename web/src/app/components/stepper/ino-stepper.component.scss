@@ -1,0 +1,158 @@
+/*
+ * <ino-stepper> — INO-31 T-27 / F-1.
+ *
+ * No literal colour/space/radius/duration/font-size below; every declaration resolves through a
+ * semantic role in tokens.css, logical properties only (RTL-safe).
+ */
+:host {
+  display: block;
+}
+
+:host([data-orientation='vertical']) {
+  display: flex;
+  gap: var(--ino-space-6);
+}
+
+/* Size API (DoD row 3) — drives the step index badge's diameter via the control-icon-size alias
+   (same reuse `ino-meter-group`/`ino-progress-bar` make of that Wave 0 rung), not control-height:
+   the badge is a small circular index marker, not a field-height element. */
+:host([data-size='sm']) {
+  --ino-stepper-index-size: var(--ino-control-icon-size-sm);
+}
+
+:host([data-size='lg']) {
+  --ino-stepper-index-size: var(--ino-control-icon-size-lg);
+}
+
+.ino-stepper__list {
+  display: flex;
+  align-items: center;
+}
+
+:host {
+  --ino-stepper-index-size: var(--ino-control-icon-size-default);
+}
+
+:host([data-orientation='vertical']) .ino-stepper__list {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.ino-stepper__header {
+  display: flex;
+  align-items: center;
+  flex: 1 1 auto;
+}
+
+:host([data-orientation='vertical']) .ino-stepper__header {
+  flex-direction: column;
+  align-items: stretch;
+  flex: 0 0 auto;
+}
+
+.ino-stepper__step {
+  display: flex;
+  align-items: center;
+  gap: var(--ino-space-3);
+  padding: var(--ino-space-2);
+  background: transparent;
+  border: none;
+  border-radius: var(--ino-radius-md);
+  color: var(--ino-color-on-surface-muted);
+  font-family: var(--ino-font-display);
+  cursor: pointer;
+  transition: color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+
+  &:hover:not(:disabled) {
+    color: var(--ino-color-on-surface);
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.ino-stepper__index {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  inline-size: var(--ino-stepper-index-size);
+  block-size: var(--ino-stepper-index-size);
+  border-radius: 50%;
+  border: 1px solid var(--ino-color-border);
+  color: var(--ino-color-on-surface-muted);
+  font-size: var(--ino-type-body-sm-size);
+  font-weight: 600;
+  transition: background var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+    border-color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+    color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+.ino-stepper__check {
+  inline-size: 60%;
+  block-size: 60%;
+}
+
+.ino-stepper__step--active .ino-stepper__index {
+  background: var(--ino-color-accent);
+  border-color: var(--ino-color-accent);
+  color: var(--ino-color-on-accent);
+}
+
+.ino-stepper__step--completed .ino-stepper__index {
+  background: var(--ino-color-accent-secondary);
+  border-color: var(--ino-color-accent-secondary);
+  color: var(--ino-color-on-accent);
+}
+
+.ino-stepper__step--active,
+.ino-stepper__step--completed {
+  color: var(--ino-color-on-surface);
+}
+
+.ino-stepper__label {
+  font-size: var(--ino-type-body-size);
+  white-space: nowrap;
+}
+
+.ino-stepper__connector {
+  flex: 1 1 auto;
+  min-inline-size: var(--ino-space-5);
+  block-size: 1px;
+  background: var(--ino-color-border);
+  margin-inline: var(--ino-space-2);
+}
+
+:host([data-orientation='vertical']) .ino-stepper__connector {
+  flex: 0 0 auto;
+  inline-size: 1px;
+  min-block-size: var(--ino-space-6);
+  block-size: auto;
+  margin-inline: calc(var(--ino-stepper-index-size) / 2 + var(--ino-space-2));
+  margin-block: var(--ino-space-1);
+}
+
+.ino-stepper__panels {
+  padding-block-start: var(--ino-space-5);
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+
+:host([data-orientation='vertical']) .ino-stepper__panels {
+  padding-block-start: 0;
+}
