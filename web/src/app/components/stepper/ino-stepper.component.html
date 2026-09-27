@@ -1,0 +1,33 @@
+<div class="ino-stepper__list" role="tablist" [attr.aria-orientation]="orientation">
+  <ng-container *ngFor="let step of steps; let i = index; let last = last">
+    <div class="ino-stepper__header">
+      <button
+        type="button"
+        role="tab"
+        class="ino-stepper__step"
+        [id]="step.headerId"
+        [attr.aria-selected]="isActive(step)"
+        [attr.aria-controls]="step.panelId"
+        [attr.aria-disabled]="!isReachable(step) || null"
+        [attr.tabindex]="isActive(step) ? 0 : -1"
+        [disabled]="!isReachable(step)"
+        [class.ino-stepper__step--active]="isActive(step)"
+        [class.ino-stepper__step--completed]="step.completed"
+        (click)="select(step)"
+        (keydown)="onKeydown($event, step)"
+      >
+        <span class="ino-stepper__index" aria-hidden="true">
+          <svg *ngIf="step.completed && !isActive(step)" class="ino-stepper__check" viewBox="0 0 16 16" aria-hidden="true">
+            <path d="M3 8.5L6.2 11.7L13 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <ng-container *ngIf="!(step.completed && !isActive(step))">{{ i + 1 }}</ng-container>
+        </span>
+        <span class="ino-stepper__label">{{ step.label }}</span>
+      </button>
+      <span *ngIf="!last" class="ino-stepper__connector" aria-hidden="true"></span>
+    </div>
+  </ng-container>
+</div>
+<div class="ino-stepper__panels">
+  <ng-content></ng-content>
+</div>

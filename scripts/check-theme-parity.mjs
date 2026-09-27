@@ -658,6 +658,12 @@ const COMPONENT_REGISTRY = [
     reason: 'web-only by explicit decision — neither platform has the DOM tab-order construct this component exists for (RN: accessibilityViewIsModal; Flutter: FocusScope on the modal route). See docs/brand/06-angular-components/focus-trap.md#mobile and web/src/app/components/focus-trap/SPEC.md §5.',
   },
   {
+    name: 'icon-field',
+    web: 'web/src/app/components/icon-field',
+    mobile: { reactNative: 'web-only', flutter: 'web-only' },
+    reason: 'web-only for now (INO-318 / INO-31 F-1) — no React Native or Flutter port has been scheduled for this component yet; mobile parity tracking begins when a port lands, the same not-yet-ported posture several other entries in this registry already carry.',
+  },
+  {
     name: 'iftalabel',
     web: 'web/src/app/components/iftalabel',
     mobile: {
@@ -699,6 +705,12 @@ const COMPONENT_REGISTRY = [
       // to the input component owner (INO-157) to fix Flutter or confirm the omission is intended.
       { platform: 'flutter', roles: ['onSurfaceSubtle'], reason: 'GAP, not a decision: Flutter InoInput sets no explicit placeholder/hint color (no hintStyle on the InputDecoration), so it never reads onSurfaceSubtle at all, unlike web (::placeholder) and RN (placeholderTextColor). Filed as a follow-up against the input component owner rather than fixed here — see INO-171 handoff comment.' },
     ],
+  },
+  {
+    name: 'input-group',
+    web: 'web/src/app/components/input-group',
+    mobile: { reactNative: 'web-only', flutter: 'web-only' },
+    reason: 'web-only for now (INO-318 / INO-31 F-1) — no React Native or Flutter port has been scheduled for this component yet; mobile parity tracking begins when a port lands.',
   },
   {
     name: 'input-otp',
@@ -763,6 +775,12 @@ const COMPONENT_REGISTRY = [
     reason: 'web-only by explicit decision (INO-31 plan rev 9 §5 desktop-idiom porting rule) — an anchor-positioned floating panel keyed to getBoundingClientRect() and mouse/keyboard dismiss gestures is a desktop pointer-and-keyboard idiom. The mobile counterpart is a different component and gets its own issue in a later wave. See web/src/app/components/popover/SPEC.md §5 and docs/brand/06-angular-components/popover.md#mobile-parity.',
   },
   {
+    name: 'progress-bar',
+    web: 'web/src/app/components/progress-bar',
+    mobile: { reactNative: 'web-only', flutter: 'web-only' },
+    reason: 'web-only for now (INO-318 / INO-31 F-1) — no React Native or Flutter port has been scheduled for this component yet; mobile parity tracking begins when a port lands.',
+  },
+  {
     name: 'select',
     web: 'web/src/app/components/select',
     mobile: {
@@ -783,10 +801,22 @@ const COMPONENT_REGISTRY = [
     ],
   },
   {
+    name: 'stepper',
+    web: 'web/src/app/components/stepper',
+    mobile: { reactNative: 'web-only', flutter: 'web-only' },
+    reason: 'web-only for now (INO-318 / INO-31 F-1) — no React Native or Flutter port has been scheduled for this component yet; mobile parity tracking begins when a port lands.',
+  },
+  {
     name: 'table',
     web: 'web/src/app/components/table',
     mobile: { reactNative: 'web-only', flutter: 'web-only' },
     reason: 'web-only by explicit decision (INO-155, plan rev 9 §5 desktop-idiom porting rule) — a dense grid with column resize/reorder/frozen columns and roving-tabindex keyboard nav is a desktop pointer-and-keyboard idiom. The mobile counterpart is a different component and gets its own issue in a later wave. See web/src/app/components/table/SPEC.md §1 and docs/brand/06-angular-components/table.md#mobile-parity.',
+  },
+  {
+    name: 'tabs',
+    web: 'web/src/app/components/tabs',
+    mobile: { reactNative: 'web-only', flutter: 'web-only' },
+    reason: 'web-only for now (INO-318 / INO-31 F-1) — no React Native or Flutter port has been scheduled for this component yet; mobile parity tracking begins when a port lands.',
   },
   {
     name: 'tag',
