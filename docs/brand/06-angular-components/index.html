@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>INOVIXUX design system — component docs</title>
+<!-- Canonical token file, linked rather than copied, per the same convention every preview/*.html
+     in this directory already follows. -->
+<link rel="stylesheet" href="../02-design-tokens/tokens.css">
+<style>
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  body {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    grid-template-rows: auto 1fr;
+    grid-template-areas: "header header" "nav main";
+    height: 100vh;
+  }
+  header {
+    grid-area: header;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--ino-space-4);
+    padding: var(--ino-space-4) var(--ino-space-6);
+    border-block-end: 1px solid var(--ino-color-border);
+  }
+  header h1 { font-size: var(--ino-type-h3-size); margin: 0; }
+  header p { margin: 0; color: var(--ino-color-on-surface-muted); font-size: var(--ino-type-body-sm-size); }
+  #theme-select {
+    background: var(--ino-color-surface-raised);
+    color: var(--ino-color-on-surface);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-md);
+    padding: var(--ino-space-2) var(--ino-space-3);
+    font: inherit;
+  }
+  nav {
+    grid-area: nav;
+    overflow-y: auto;
+    border-inline-end: 1px solid var(--ino-color-border);
+    padding: var(--ino-space-4);
+  }
+  nav h2 {
+    font-size: var(--ino-type-eyebrow-size);
+    letter-spacing: var(--ino-type-eyebrow-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-5) 0 var(--ino-space-2);
+  }
+  nav h2:first-child { margin-block-start: 0; }
+  nav ul { list-style: none; margin: 0; padding: 0; }
+  nav li { margin: 0; }
+  nav button {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--ino-space-2);
+    text-align: start;
+    background: none;
+    border: none;
+    border-radius: var(--ino-radius-md);
+    color: var(--ino-color-on-surface);
+    font: inherit;
+    padding: var(--ino-space-2) var(--ino-space-3);
+    cursor: pointer;
+    min-block-size: var(--ino-target-comfortable, 44px);
+  }
+  nav button:hover { background: var(--ino-color-surface-raised); }
+  nav button[aria-current="true"] {
+    background: var(--ino-color-accent-soft, var(--ino-color-surface-raised));
+    color: var(--ino-color-accent-text-safe, var(--ino-color-on-surface));
+    font-weight: 600;
+  }
+  nav button .doc-missing { color: var(--ino-color-warning, #b45309); font-size: var(--ino-type-body-sm-size); }
+  main { grid-area: main; overflow: hidden; display: flex; flex-direction: column; }
+  .card-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--ino-space-4);
+    padding: var(--ino-space-3) var(--ino-space-5);
+    border-block-end: 1px solid var(--ino-color-border);
+  }
+  .card-toolbar a {
+    color: var(--ino-color-accent-text-safe, var(--ino-color-on-surface));
+    font-size: var(--ino-type-body-sm-size);
+  }
+  iframe { flex: 1; border: 0; width: 100%; background: var(--ino-color-surface); }
+  .empty-state {
+    padding: var(--ino-space-7);
+    color: var(--ino-color-on-surface-muted);
+    max-width: 60ch;
+  }
+</style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>INOVIXUX design system</h1>
+      <p>Component docs, generated from <code>previews/*.html</code> <code>@dsCard</code> markers (doc 17 §2 row 10 / §8, INO-116/H-6).</p>
+    </div>
+    <label>
+      Theme
+      <select id="theme-select">
+        <option value="">Dark (default)</option>
+        <option value="light">Light</option>
+        <option value="high-contrast">High contrast</option>
+      </select>
+    </label>
+  </header>
+  <nav id="nav" aria-label="Component groups"></nav>
+  <main>
+    <div class="card-toolbar">
+      <strong id="card-title">Select a component</strong>
+      <a id="doc-link" href="#" target="_blank" rel="noopener" hidden>Contract doc ↗</a>
+    </div>
+    <div id="viewport">
+      <p class="empty-state">Choose a card from the left to load its preview. Each preview links back to
+      its <code>&lt;name&gt;.md</code> contract doc when one exists.</p>
+    </div>
+  </main>
+  <script>
+    const nav = document.getElementById('nav');
+    const viewport = document.getElementById('viewport');
+    const cardTitle = document.getElementById('card-title');
+    const docLink = document.getElementById('doc-link');
+    const themeSelect = document.getElementById('theme-select');
+
+    themeSelect.addEventListener('change', () => {
+      if (themeSelect.value) document.documentElement.setAttribute('data-theme', themeSelect.value);
+      else document.documentElement.removeAttribute('data-theme');
+    });
+
+    function selectCard(card, button) {
+      for (const b of nav.querySelectorAll('button[aria-current="true"]')) b.removeAttribute('aria-current');
+      button.setAttribute('aria-current', 'true');
+      cardTitle.textContent = card.id;
+      if (card.doc) {
+        docLink.href = card.doc;
+        docLink.hidden = false;
+      } else {
+        docLink.hidden = true;
+      }
+      viewport.innerHTML = '';
+      const iframe = document.createElement('iframe');
+      iframe.title = card.id + ' preview';
+      iframe.src = card.preview;
+      viewport.appendChild(iframe);
+      location.hash = card.id;
+    }
+
+    fetch('_ds_manifest.json')
+      .then(r => {
+        if (!r.ok) throw new Error('manifest fetch failed: ' + r.status);
+        return r.json();
+      })
+      .then(manifest => {
+        const byGroup = new Map();
+        for (const card of manifest.cards) {
+          if (!byGroup.has(card.group)) byGroup.set(card.group, []);
+          byGroup.get(card.group).push(card);
+        }
+        let firstButton = null;
+        let targetButton = null;
+        const wanted = decodeURIComponent(location.hash.slice(1));
+        for (const [group, cards] of [...byGroup.entries()].sort((a, b) => a[0].localeCompare(b[0]))) {
+          const h2 = document.createElement('h2');
+          h2.textContent = group;
+          nav.appendChild(h2);
+          const ul = document.createElement('ul');
+          for (const card of cards) {
+            const li = document.createElement('li');
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.append(card.id);
+            if (!card.doc) {
+              const span = document.createElement('span');
+              span.className = 'doc-missing';
+              span.textContent = 'no doc';
+              button.appendChild(span);
+            }
+            button.addEventListener('click', () => selectCard(card, button));
+            li.appendChild(button);
+            ul.appendChild(li);
+            if (!firstButton) firstButton = { card, button };
+            if (card.id === wanted) targetButton = { card, button };
+          }
+          nav.appendChild(ul);
+        }
+        const initial = targetButton || firstButton;
+        if (initial) selectCard(initial.card, initial.button);
+      })
+      .catch(err => {
+        viewport.innerHTML = '<p class="empty-state">Could not load _ds_manifest.json — run <code>node scripts/gen-ds-manifest.mjs</code>, and serve this directory over HTTP rather than opening it as a local file (fetch of a sibling JSON file is blocked under file://). Error: ' + err.message + '</p>';
+      });
+  </script>
+</body>
+</html>
