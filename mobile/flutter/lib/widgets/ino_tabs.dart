@@ -52,7 +52,7 @@ class InoTabs extends StatelessWidget {
     final isActive = index == _clampedIndex;
     final isVertical = orientation == InoTabsOrientation.vertical;
     final labelColor = isActive ? colors.onSurface : colors.onSurfaceMuted;
-    final indicator = BorderSide(width: 2, color: isActive ? colors.accent : Colors.transparent);
+    final indicator = BorderSide(width: 2, color: isActive ? colors.accent : colors.surface.withValues(alpha: 0));
 
     return Semantics(
       selected: isActive,
