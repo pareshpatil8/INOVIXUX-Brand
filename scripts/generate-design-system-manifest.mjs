@@ -67,6 +67,7 @@ for (const dirName of readdirSync(componentsDir).sort()) {
   const variantInput = inputs.find(i => i.name === 'variant' || i.name === 'status');
   components.push({
     name: selectorMatch?.[1] ?? `ino-${dirName}`,
+    slug: dirName,
     className: classMatch?.[1] ?? null,
     sourcePath: `web/src/app/components/${dirName}/ino-${dirName}.component.ts`,
     previewPath: null, // no docs/brand/06-angular-components/previews/*.html exist yet — tracked by H-6 (docs/brand/16-design-system-parity-vs-echeque-reference.md §6)
@@ -86,5 +87,10 @@ const manifest = {
   components,
 };
 
-writeFileSync(new URL('docs/brand/design-system.manifest.json', root), JSON.stringify(manifest, null, 2) + '\n');
-console.log(`wrote docs/brand/design-system.manifest.json (${components.length} components)`);
+const manifestJson = JSON.stringify(manifest, null, 2) + '\n';
+writeFileSync(new URL('docs/brand/design-system.manifest.json', root), manifestJson);
+// Also publish a runtime-fetchable copy under web/public/ — anything under public/ is served
+// as-is by Angular (web/angular.json assets glob), so the docs portal can `HttpClient.get` this
+// at `/design-system/manifest.json` without bundling the manifest into the JS build.
+writeFileSync(new URL('web/public/design-system/manifest.json', root), manifestJson);
+console.log(`wrote docs/brand/design-system.manifest.json and web/public/design-system/manifest.json (${components.length} components)`);
