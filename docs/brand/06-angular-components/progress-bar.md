@@ -85,5 +85,19 @@ None.
 
 ## Mobile parity
 
-**Web-only for now** — no React Native or Flutter port exists for this component as of this issue.
-Recorded in `scripts/check-theme-parity.mjs`'s `COMPONENT_REGISTRY` with a `web-only` reason.
+Both mobile ports ship (INO-334).
+
+- **Capacitor** — not a separate port; the same Angular component/CSS render in the Capacitor
+  WebView (plan rev 9 §5, "Capacitor is not a port").
+- **React Native** — `mobile/react-native/src/components/InoProgressBar.tsx`.
+- **Flutter** — `mobile/flutter/lib/widgets/ino_progress_bar.dart`.
+
+Both ports carry the full web `@Input` surface (`size`, `mode`, `value`, `showValue`, `disabled`,
+`invalid`, `label`) and reuse the shared `size.iconSize` rung for track thickness, same as
+`InoMeterGroup`. Neither has a CSS `transition`/`@keyframes` equivalent: the determinate fill
+animates via a native `Animated.Value`/`TweenAnimationBuilder` width tween instead of the web's
+`inline-size` transition, and the indeterminate sweep is a looping translate animation gated behind
+the platform's reduce-motion signal (`AccessibilityInfo.isReduceMotionEnabled()` /
+`MediaQuery.disableAnimations`) rather than a CSS media query — both freeze to the same static
+40%-wide resting bar under reduced motion that the web fallback uses. Recorded in
+`scripts/check-theme-parity.mjs`'s `COMPONENT_REGISTRY`.

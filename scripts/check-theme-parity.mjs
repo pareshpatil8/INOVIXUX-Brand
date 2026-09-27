@@ -793,8 +793,16 @@ const COMPONENT_REGISTRY = [
   {
     name: 'progress-bar',
     web: 'web/src/app/components/progress-bar',
-    mobile: { reactNative: 'web-only', flutter: 'web-only' },
-    reason: 'web-only for now (INO-318 / INO-31 F-1) — no React Native or Flutter port has been scheduled for this component yet; mobile parity tracking begins when a port lands.',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoProgressBar.tsx',
+        roles: ['accent', 'danger', 'onSurface', 'surfaceSunken'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_progress_bar.dart',
+        roles: ['accent', 'danger', 'onSurface', 'surfaceSunken'],
+      },
+    },
   },
   {
     name: 'select',
