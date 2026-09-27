@@ -79,15 +79,15 @@ export class ComponentDocsDataService {
   private readonly http = inject(HttpClient);
 
   private readonly manifest$ = this.http
-    .get<DesignSystemManifest>('/design-system/manifest.json')
+    .get<DesignSystemManifest>('design-system/manifest.json')
     .pipe(shareReplay(1));
 
   private readonly disposition$ = this.http
-    .get<ComponentDisposition>('/design-system/component-disposition.json')
+    .get<ComponentDisposition>('design-system/component-disposition.json')
     .pipe(shareReplay(1));
 
   private readonly docsExtract$ = this.http
-    .get<ComponentDocsExtract>('/design-system/component-docs-extract.json')
+    .get<ComponentDocsExtract>('design-system/component-docs-extract.json')
     .pipe(shareReplay(1));
 
   getManifest(): Observable<DesignSystemManifest> {
