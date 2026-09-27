@@ -20,8 +20,13 @@ access or Node 22.
 
 ## Contents of the snapshot
 
-132 lines — 18 guide routes plus **103 component/API routes** (101 components and directives, plus
-`FilterService` and the `Overlay` API). This is the 101-component baseline used in doc 16 §3.
+132 lines — 18 guide routes plus **105 component/API routes** (103 components and directives, plus
+`FilterService` and the `Overlay` API).
+
+> **Note:** doc 16 §3 states this as "101 components and directives" — that figure predates a recount
+> against this exact pinned file and is off by 2. Tracked as a doc 16 follow-up rather than corrected
+> here, since doc 16's component-by-component tables would need re-auditing line by line, which is out
+> of scope for the tooling/CI work this file supports.
 
 ## Refreshing
 
