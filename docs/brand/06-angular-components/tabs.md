@@ -88,7 +88,19 @@ indicator renders on the correct trailing edge under `dir="rtl"`.
 
 ## Mobile parity
 
-**Web-only for now** — no React Native or Flutter port exists for this component as of this issue.
+Both mobile ports ship (INO-334).
+
+- **Capacitor** — not a separate port; the same Angular component/CSS render in the Capacitor
+  WebView (plan rev 9 §5, "Capacitor is not a port").
+- **React Native** — `mobile/react-native/src/components/InoTabs.tsx`.
+- **Flutter** — `mobile/flutter/lib/widgets/ino_tabs.dart`.
+
+Both ports render the tab strip only — the parent supplies panel content (a `switch`/`IndexedStack`/
+navigator), since web's content-projection `<ino-tab>` child has no mobile equivalent worth
+inventing. Props are index-based and controlled-only (`items: {label, disabled}[]`, `activeIndex`,
+`onActiveIndexChanged`, `size`, `orientation`), matching web's `@Input` surface exactly — no
+uncontrolled mode, no arrow-key/focus-ring handling (no touch equivalent, same omission
+`InoButton`'s port already makes for `hover`).
 
 ## Behavioral test
 

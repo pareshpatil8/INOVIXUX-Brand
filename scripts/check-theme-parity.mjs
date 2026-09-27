@@ -846,8 +846,16 @@ const COMPONENT_REGISTRY = [
   {
     name: 'tabs',
     web: 'web/src/app/components/tabs',
-    mobile: { reactNative: 'web-only', flutter: 'web-only' },
-    reason: 'web-only for now (INO-318 / INO-31 F-1) — no React Native or Flutter port has been scheduled for this component yet; mobile parity tracking begins when a port lands.',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoTabs.tsx',
+        roles: ['accent', 'border', 'onSurface', 'onSurfaceMuted'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_tabs.dart',
+        roles: ['accent', 'border', 'onSurface', 'onSurfaceMuted'],
+      },
+    },
   },
   {
     name: 'tag',
