@@ -64,12 +64,15 @@ class InoStepper extends StatelessWidget {
     final colors = context.inoColors;
     final vertical = orientation == InoStepperOrientation.vertical;
     final children = <Widget>[];
+    // Centers the vertical connector under the round badge above it — half the badge
+    // diameter, minus half the connector's own width so the line itself is centered too.
+    final connectorInset = size.iconSize / 2 - 0.5;
 
     for (var i = 0; i < items.length; i++) {
       if (i > 0) {
         children.add(vertical
             ? Padding(
-                padding: EdgeInsets.only(left: size.iconSize / 2 - 0.5),
+                padding: EdgeInsets.only(left: connectorInset),
                 child: Container(width: 1, height: InoSpace.s6, color: colors.border),
               )
             : Flexible(
