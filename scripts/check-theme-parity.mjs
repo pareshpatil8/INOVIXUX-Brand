@@ -801,6 +801,21 @@ const COMPONENT_REGISTRY = [
     ],
   },
   {
+    name: 'skeleton',
+    web: 'web/src/app/components/skeleton',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoSkeleton.tsx',
+        roles: ['border', 'borderSoft'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_skeleton.dart',
+        roles: ['border', 'borderSoft'],
+      },
+    },
+    divergences: [],
+  },
+  {
     name: 'stepper',
     web: 'web/src/app/components/stepper',
     mobile: { reactNative: 'web-only', flutter: 'web-only' },

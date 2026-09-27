@@ -224,6 +224,8 @@
   --ino-color-accent-active: var(--ino-primitive-violet-600); /* pressed/:active fill, INO-123. A filled accent control swaps its gradient for this FLAT colour while held — flat-vs-gradient is itself part of the press signal, and it guarantees --ino-color-on-accent stays legible (5.83:1) which a moving gradient stop cannot. */
   --ino-color-on-accent: #FFFFFF;                         /* verified 4.79:1 (black also passes at 4.79:1; white chosen to match on-accent-secondary) */
   --ino-gradient-accent: linear-gradient(135deg, var(--ino-primitive-violet-500), var(--ino-primitive-indigo-500));
+  --ino-gradient-accent-from: var(--ino-primitive-violet-500); /* same two stops as --ino-gradient-accent, split into roles an SVG <stop stop-color="var(...)"> can read (a gradient stop cannot consume a CSS linear-gradient()), INO-174 */
+  --ino-gradient-accent-to: var(--ino-primitive-indigo-500);
   --ino-glow-accent: radial-gradient(circle, rgba(124, 92, 252, 0.35), transparent 70%);
 
   --ino-color-success: var(--ino-primitive-green-500);
@@ -569,6 +571,18 @@
      components rely on for state (focus rings, etc). */
 
   /* ---------------------------------------------------------------------
+   * 9b. DWELL — read-time for transient, self-dismissing surfaces (toast/
+   *     banner auto-dismiss). Deliberately its own scale, not a 5th MOTION
+   *     step: a motion duration times a UI transition and is paired with an
+   *     easing curve; a dwell duration times how long a human needs to read
+   *     a message, which operates an order of magnitude above the 900ms
+   *     motion ceiling. Shared by web ToastService (durationMs default) and
+   *     Flutter InoDwell.toast / InoNotificationCenter.bannerDwell so the
+   *     two platforms' transient surfaces read as one system (INO-174).
+   * ------------------------------------------------------------------- */
+  --ino-dwell-duration-toast: 5000ms;
+
+  /* ---------------------------------------------------------------------
    * 12. CONTROL SIZE SCALE — the values behind every component's
    *     `size="sm" | "default" | "lg"` @Input (INO-124, Wave 0).
    *
@@ -780,6 +794,8 @@
   --ino-color-accent-active: var(--ino-primitive-indigo-600);    /* pressed fill — darkens the INDIGO, not the violet, because light mode's filled-accent role is accent-text-safe. 8.07:1 with white; 7.73:1 against surface. */
   --ino-color-on-accent: #FFFFFF;                                /* 6.29:1 against accent-text-safe */
   --ino-gradient-accent: linear-gradient(135deg, var(--ino-primitive-violet-500), var(--ino-primitive-indigo-500));
+  --ino-gradient-accent-from: var(--ino-primitive-violet-500);
+  --ino-gradient-accent-to: var(--ino-primitive-indigo-500);
   --ino-glow-accent: radial-gradient(circle, rgba(79, 70, 229, 0.14), transparent 70%); /* lower alpha — dark-mode glow opacity reads muddy on white */
 
   --ino-color-success: var(--ino-primitive-green-700);  /* darkened from -500 for AA on light, see primitives */
@@ -896,6 +912,8 @@
   --ino-color-accent-active: var(--ino-primitive-hc-yellow-deep); /* 11.56:1 with black — the pressed state keeps AAA, it does not spend the high-contrast budget to buy a press affordance */
   --ino-color-on-accent: #000000;                                /* white text on this yellow is 1.41:1 — must be black */
   --ino-gradient-accent: linear-gradient(135deg, var(--ino-primitive-hc-yellow), var(--ino-primitive-hc-cyan));
+  --ino-gradient-accent-from: var(--ino-primitive-hc-yellow);
+  --ino-gradient-accent-to: var(--ino-primitive-hc-cyan);
   --ino-glow-accent: none; /* decorative glow disabled in high-contrast mode, see note above */
 
   --ino-color-success: var(--ino-primitive-hc-green);
