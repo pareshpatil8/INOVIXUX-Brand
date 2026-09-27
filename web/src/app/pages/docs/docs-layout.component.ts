@@ -25,5 +25,6 @@ export class DocsLayoutComponent {
     { label: 'Getting started', href: '/docs/getting-started' },
     { label: 'API reference', href: '/docs/api-reference' },
     { label: 'Design system', href: '/docs/design-system' },
+    { label: 'Components', href: '/docs/components' },
   ];
 }

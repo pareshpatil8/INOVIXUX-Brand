@@ -7,7 +7,10 @@ installs it.
 **Gap analysis:** `docs/brand/16-design-system-parity-vs-echeque-reference.md` §7 "InputText —
 `<ino-input>`".
 **Depended on:** W0-2 (INO-124, control-size scale), T-16 (INO-138, `ino-icon-field`), T-17
-(INO-139, `ino-input-group`) — all `done` before this issue started.
+(INO-139, `ino-input-group`) — all recorded `done` before this issue started, but neither T-16 nor
+T-17 actually had source under `web/src` until INO-318 built them (audit finding F-1). The
+citations below now resolve for real; see `web/src/app/components/icon-field/SPEC.md` and
+`web/src/app/components/input-group/SPEC.md`.
 
 This file records the decisions the DoD requires to be written down rather than silently made.
 
