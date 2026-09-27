@@ -342,6 +342,22 @@ for (const [density, decls] of [['dense', rawDense], ['fluid', rawFluid]]) {
     assert.ok(decls[`--ino-type-${role}-line`], `[data-density="${density}"] must re-declare --ino-type-${role}-line`);
   }
 }
+// INO-253 follow-up — tokens.dart previously had no form-label type scale at all, so
+// ino_label.dart hand-composed the fluid-tier literals RN's `type.label`/`labelSm`/`labelLg`
+// already exported, ungated against drift. Assert Flutter's new `InoTypeLabel` tiers match RN's
+// numerically — the same RN-vs-Flutter parity idiom the colour-role check above already uses.
+for (const [rnKey, dartKey] of [['label', 'label'], ['labelSm', 'labelSm'], ['labelLg', 'labelLg']]) {
+  const rnMatch = rn.match(new RegExp(`\\b${rnKey}:\\s*\\{\\s*fontSize:\\s*([\\d.]+),\\s*lineHeight:\\s*([\\d.]+)\\s*\\*\\s*([\\d.]+),\\s*fontWeight:\\s*'500' as const,\\s*letterSpacing:\\s*(-?[\\d.]+)\\s*\\}`));
+  assert.ok(rnMatch, `RN type.${rnKey} not found or shape changed`);
+  const [, rnSize, rnLineBase, rnLineMult, rnTracking] = rnMatch;
+  assert.equal(rnLineBase, rnSize, `RN type.${rnKey}: lineHeight base must equal fontSize`);
+  const dartMatch = dart.match(new RegExp(`static const ${dartKey} = InoTypeLabel\\(fontSize:\\s*([\\d.]+),\\s*height:\\s*([\\d.]+),\\s*letterSpacing:\\s*(-?[\\d.]+)\\);`));
+  assert.ok(dartMatch, `Flutter InoTypeLabel.${dartKey} not found or shape changed`);
+  const [, dartSize, dartHeight, dartTracking] = dartMatch;
+  assert.equal(dartSize, rnSize, `InoTypeLabel.${dartKey}: Flutter fontSize must match RN type.${rnKey}`);
+  assert.equal(dartHeight, rnLineMult, `InoTypeLabel.${dartKey}: Flutter height multiplier must match RN type.${rnKey}'s lineHeight multiplier`);
+  assert.equal(dartTracking, rnTracking, `InoTypeLabel.${dartKey}: Flutter letterSpacing must match RN type.${rnKey}`);
+}
 
 // ── Wave 0 / INO-126 (W0-4) — elevation scale expansion (tokens.css §2) ─────────────────────────
 // 6 neutral + 3 brand + 2 inset, on top of the untouched --ino-elevation-0/-1/-2. Three shapes,
@@ -658,6 +674,12 @@ const COMPONENT_REGISTRY = [
     reason: 'web-only by explicit decision — neither platform has the DOM tab-order construct this component exists for (RN: accessibilityViewIsModal; Flutter: FocusScope on the modal route). See docs/brand/06-angular-components/focus-trap.md#mobile and web/src/app/components/focus-trap/SPEC.md §5.',
   },
   {
+    name: 'icon-field',
+    web: 'web/src/app/components/icon-field',
+    mobile: { reactNative: 'web-only', flutter: 'web-only' },
+    reason: 'web-only for now (INO-318 / INO-31 F-1) — no React Native or Flutter port has been scheduled for this component yet; mobile parity tracking begins when a port lands, the same not-yet-ported posture several other entries in this registry already carry.',
+  },
+  {
     name: 'iftalabel',
     web: 'web/src/app/components/iftalabel',
     mobile: {
@@ -699,6 +721,12 @@ const COMPONENT_REGISTRY = [
       // to the input component owner (INO-157) to fix Flutter or confirm the omission is intended.
       { platform: 'flutter', roles: ['onSurfaceSubtle'], reason: 'GAP, not a decision: Flutter InoInput sets no explicit placeholder/hint color (no hintStyle on the InputDecoration), so it never reads onSurfaceSubtle at all, unlike web (::placeholder) and RN (placeholderTextColor). Filed as a follow-up against the input component owner rather than fixed here — see INO-171 handoff comment.' },
     ],
+  },
+  {
+    name: 'input-group',
+    web: 'web/src/app/components/input-group',
+    mobile: { reactNative: 'web-only', flutter: 'web-only' },
+    reason: 'web-only for now (INO-318 / INO-31 F-1) — no React Native or Flutter port has been scheduled for this component yet; mobile parity tracking begins when a port lands.',
   },
   {
     name: 'input-otp',
@@ -763,6 +791,12 @@ const COMPONENT_REGISTRY = [
     reason: 'web-only by explicit decision (INO-31 plan rev 9 §5 desktop-idiom porting rule) — an anchor-positioned floating panel keyed to getBoundingClientRect() and mouse/keyboard dismiss gestures is a desktop pointer-and-keyboard idiom. The mobile counterpart is a different component and gets its own issue in a later wave. See web/src/app/components/popover/SPEC.md §5 and docs/brand/06-angular-components/popover.md#mobile-parity.',
   },
   {
+    name: 'progress-bar',
+    web: 'web/src/app/components/progress-bar',
+    mobile: { reactNative: 'web-only', flutter: 'web-only' },
+    reason: 'web-only for now (INO-318 / INO-31 F-1) — no React Native or Flutter port has been scheduled for this component yet; mobile parity tracking begins when a port lands.',
+  },
+  {
     name: 'select',
     web: 'web/src/app/components/select',
     mobile: {
@@ -783,10 +817,37 @@ const COMPONENT_REGISTRY = [
     ],
   },
   {
+    name: 'skeleton',
+    web: 'web/src/app/components/skeleton',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoSkeleton.tsx',
+        roles: ['border', 'borderSoft'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_skeleton.dart',
+        roles: ['border', 'borderSoft'],
+      },
+    },
+    divergences: [],
+  },
+  {
+    name: 'stepper',
+    web: 'web/src/app/components/stepper',
+    mobile: { reactNative: 'web-only', flutter: 'web-only' },
+    reason: 'web-only for now (INO-318 / INO-31 F-1) — no React Native or Flutter port has been scheduled for this component yet; mobile parity tracking begins when a port lands.',
+  },
+  {
     name: 'table',
     web: 'web/src/app/components/table',
     mobile: { reactNative: 'web-only', flutter: 'web-only' },
     reason: 'web-only by explicit decision (INO-155, plan rev 9 §5 desktop-idiom porting rule) — a dense grid with column resize/reorder/frozen columns and roving-tabindex keyboard nav is a desktop pointer-and-keyboard idiom. The mobile counterpart is a different component and gets its own issue in a later wave. See web/src/app/components/table/SPEC.md §1 and docs/brand/06-angular-components/table.md#mobile-parity.',
+  },
+  {
+    name: 'tabs',
+    web: 'web/src/app/components/tabs',
+    mobile: { reactNative: 'web-only', flutter: 'web-only' },
+    reason: 'web-only for now (INO-318 / INO-31 F-1) — no React Native or Flutter port has been scheduled for this component yet; mobile parity tracking begins when a port lands.',
   },
   {
     name: 'tag',
@@ -902,5 +963,5 @@ for (const entry of COMPONENT_REGISTRY) {
   }
 }
 
-console.log(`PASS: CSS mirrors; Capacitor import; ${colorChecks} color roles across 3 themes × 2 mobile ports; space/radius/targets/durations; Devanagari font pairing + line-height parity; focus-ring shape; invalid-ring shape, never-flatten rule and SC 1.4.11 budget in 3 themes; pressed-accent contrast in 3 themes; control-size scale across 3 densities + ${controlChecks} mobile port values; form-label tokens across 3 themes × 2 densities; elevation scale (6 neutral + 3 brand + 2 inset) across 3 themes; data-viz layer (6 categorical + 8 sequential + 7 diverging, ${vizChecks} checks) across 3 themes; leading/tracking rhythm scale + composite type aliases across 3 densities; component registry (${COMPONENT_REGISTRY.length} components, ${componentChecks} platform checks).`);
+console.log(`PASS: CSS mirrors; Capacitor import; ${colorChecks} color roles across 3 themes × 2 mobile ports; space/radius/targets/durations; Devanagari font pairing + line-height parity; focus-ring shape; invalid-ring shape, never-flatten rule and SC 1.4.11 budget in 3 themes; pressed-accent contrast in 3 themes; control-size scale across 3 densities + ${controlChecks} mobile port values; form-label tokens across 3 themes × 2 densities + RN/Flutter label type-scale parity; elevation scale (6 neutral + 3 brand + 2 inset) across 3 themes; data-viz layer (6 categorical + 8 sequential + 7 diverging, ${vizChecks} checks) across 3 themes; leading/tracking rhythm scale + composite type aliases across 3 densities; component registry (${COMPONENT_REGISTRY.length} components, ${componentChecks} platform checks).`);
 console.log('High-contrast token pairs (AAA text >=7; non-text borders >=3; excludes disabled/decorative subtle role);\nplus per-theme pressed-accent pairs (INO-123):\n'+measurements.join('\n'));

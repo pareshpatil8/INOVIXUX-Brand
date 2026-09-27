@@ -105,28 +105,39 @@ sufficient, verified in the preview.
   `form-label-tokens.md` §7 documents (`onSurface`/`onSurfaceMuted`/`onSurfaceSubtle`/
   `dangerTextSafe`; the RN palette has no dedicated `label*` colour fields, by design, since those
   are pure web-side aliases of roles the mobile ports already mirror).
-- **Flutter** — `mobile/flutter/lib/widgets/ino_label.dart`. `tokens.dart` has no form-label type
-  scale yet (only RN's `tokens.ts` got one in W0-3); adding one there would be a token-registry
-  change outside this issue's merge-hygiene rule (row 11), the same reasoning `ino-tag`'s SPEC.md §8
-  gives for not inventing a `check-theme-parity.mjs` registry. The Flutter port instead hand-composes
-  the same fluid-tier values RN's `type.label`/`labelSm`/`labelLg` already carry (13.5→14.5px fluid
-  per `form-label-tokens.md` §5, i.e. the values RN literally exports), with a comment pointing back
-  here — the same hand-specified-literal idiom `ino_tag.dart`/`InoTag.tsx` already use for their
-  eyebrow-role font. Colour aliases are `onSurface`/`onSurfaceMuted`/`onSurfaceSubtle`/
-  `dangerTextSafe`, matching RN.
+- **Flutter** — `mobile/flutter/lib/widgets/ino_label.dart`, reading `InoTypeLabel.label`/
+  `labelSm`/`labelLg` (`mobile/flutter/lib/theme/tokens.dart`). `tokens.dart` originally had no
+  form-label type scale (only RN's `tokens.ts` got one in W0-3) and `ino_label.dart` hand-composed
+  the same fluid-tier values RN's `type.label`/`labelSm`/`labelLg` carry, ungated against drift —
+  closed out as a follow-up under [INO-253](/INO/issues/INO-253), which added `InoTypeLabel` to
+  `tokens.dart` and gated the two ports' numeric values against each other in
+  `check-theme-parity.mjs` (§7). `ino_tag.dart`'s eyebrow-role font was checked against the same
+  follow-up and found **not** to read this scale (different size/tracking, no `size` input to key
+  off), so it was left as its own pre-existing hand-literal, out of scope here. Colour aliases are
+  `onSurface`/`onSurfaceMuted`/`onSurfaceSubtle`/`dangerTextSafe`, matching RN.
 
 ---
 
-## 7. `check-theme-parity.mjs` — not modified (DoD row 11 deviation)
+## 7. `check-theme-parity.mjs` — modified under INO-253 (form-label type-scale parity)
 
-Same finding as `tag/SPEC.md` §8 and `virtual-scroller/SPEC.md` §6, re-verified for this issue: DoD
-row 11 describes "one appended line in the `check-theme-parity.mjs` component registry", but no such
-registry exists in the file (confirmed by reading it in full). All five label-related colour roles
-and all five size-tier tokens this component consumes were already asserted by W0-3's addition to
-that script (`check-theme-parity.mjs`'s "Wave 0 / INO-125 — form-label colour roles" block); this
-issue introduces no new token, so nothing new needs auditing there.
+At the time this component shipped, DoD row 11 found nothing new to assert (no such component
+registry exists in the file, and this component's five colour roles and five size-tier tokens were
+already covered by W0-3's block). [INO-253](/INO/issues/INO-253) later closed the one real gap that
+finding missed: `tokens.dart` had no form-label type scale at all, so the Flutter port's tier
+literals (§6 above) were hand-composed and ungated — nothing would have caught them drifting from
+RN's `type.label`/`labelSm`/`labelLg` if the web tokens ever moved.
 
-- **Nothing appended.** `node scripts/check-theme-parity.mjs` passes unchanged.
+- Added `InoTypeLabel` (`mobile/flutter/lib/theme/tokens.dart`) — `label`/`labelSm`/`labelLg`,
+  fluid-density only, mirroring RN's `type.label`/`labelSm`/`labelLg` naming.
+- `ino_label.dart` now reads `InoTypeLabel.*` instead of a private hand-composed `_LabelType` class.
+- `check-theme-parity.mjs`'s "Wave 0 / INO-125 — form-label" block gained a Flutter-vs-RN numeric
+  parity check for the three tiers (fontSize, line-height multiplier, letterSpacing) — the same
+  RN-vs-Flutter idiom the colour-role check already used, extended to this scale.
+- `ino_tag.dart`'s eyebrow-role font was checked and does **not** read this scale (§6), so it was
+  left untouched — no corresponding `tag/SPEC.md` change.
+
+- **Verified:** `node scripts/check-theme-parity.mjs` passes with the new assertion, and fails
+  (confirmed by a throwaway edit, reverted) when a Flutter tier value is changed without updating RN.
 
 ---
 
@@ -134,7 +145,7 @@ issue introduces no new token, so nothing new needs auditing there.
 
 | Check | Result |
 |---|---|
-| `node scripts/check-theme-parity.mjs` | ✅ passes (unmodified) |
+| `node scripts/check-theme-parity.mjs` | ✅ passes (modified under INO-253, §7) |
 | `node scripts/check-ds-adherence.mjs` | ✅ passes |
 | `node scripts/check-spec-citations.mjs` | ✅ passes |
 | `ng build` (`web/`) | ✅ passes |

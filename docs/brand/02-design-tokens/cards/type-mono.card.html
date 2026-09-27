@@ -1,0 +1,49 @@
+<!-- @dsCard group="Foundations" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Type — Mono (Geist Mono) · INOVIXUX Design Tokens</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../tokens.css">
+<style>
+  body { margin: 0; padding: var(--ino-space-7); background: var(--ino-color-surface); color: var(--ino-color-on-surface); font-family: var(--ino-font-display); }
+  h1 { font: var(--ino-type-h3); font-family: var(--ino-font-display); margin: 0 0 var(--ino-space-2); }
+  h2 { font: var(--ino-type-eyebrow); font-family: var(--ino-font-mono); letter-spacing: var(--ino-type-eyebrow-tracking); text-transform: uppercase; color: var(--ino-color-on-surface-muted); margin: var(--ino-space-7) 0 var(--ino-space-3); }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 68ch; }
+
+  .mono-row { display: flex; align-items: baseline; gap: var(--ino-space-4); padding: var(--ino-space-3) 0; border-bottom: 1px solid var(--ino-color-border-soft); }
+  .mono-row:last-child { border-bottom: none; }
+  .mono-row .tag { width: 100px; flex: none; font-family: var(--ino-font-mono); font-size: 11px; color: var(--ino-color-on-surface-muted); }
+  .mono-row .sample { font-family: var(--ino-font-mono); }
+
+  .code-block { margin-top: var(--ino-space-4); padding: var(--ino-space-4); background: var(--ino-color-surface-sunken); border: 1px solid var(--ino-color-border); border-radius: var(--ino-radius-lg); box-shadow: var(--ino-elevation-inset-1); font-family: var(--ino-font-mono); font-size: 12.5px; line-height: 1.6; color: var(--ino-color-on-surface); white-space: pre; overflow-x: auto; }
+  .code-block .k { color: var(--ino-color-accent-text-safe); }
+  .code-block .c { color: var(--ino-color-on-surface-muted); }
+</style>
+</head>
+<body>
+
+<h1>Type — Mono</h1>
+<p class="lede">
+  <code>--ino-font-mono</code> — Geist Mono (OFL), self-hosted, with the system monospace fallback
+  stack. Used for eyebrows, metrics, tabular/count-up numerals, and code collateral — never for
+  running body text.
+</p>
+
+<h2>Roles that use mono</h2>
+<div class="mono-row"><span class="tag">eyebrow</span><span class="sample" style="font:var(--ino-type-eyebrow);letter-spacing:var(--ino-type-eyebrow-tracking);text-transform:uppercase;color:var(--ino-color-on-surface-muted)">Section kicker</span></div>
+<div class="mono-row"><span class="tag">metric</span><span class="sample" style="font:var(--ino-type-metric)">2,481</span></div>
+<div class="mono-row"><span class="tag">400 · regular</span><span class="sample" style="font-weight:400">0123456789 ABCDEFGHIJ</span></div>
+<div class="mono-row"><span class="tag">500 · medium</span><span class="sample" style="font-weight:500">0123456789 ABCDEFGHIJ</span></div>
+
+<h2>Code collateral</h2>
+<div class="code-block"><span class="c">/* tokens.css §9 */</span>
+<span class="k">--ino-motion-duration-base</span>: 200ms;
+<span class="k">--ino-motion-easing-standard</span>: cubic-bezier(0.2, 0, 0, 1);</div>
+
+</body>
+</html>
