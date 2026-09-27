@@ -1,21 +1,61 @@
-<article class="docs-article">
-  <p class="docs-eyebrow">Docs / Design system</p>
-  <h1>Core interactive components</h1>
-  <p class="docs-lead">
-    Buttons, form controls, modal, and toast/alert/banner — the two component groups everything
-    else (forms, mobile screens, KYB review flows) is built on (INO-83). Every state below is the
-    real Angular component from <code>web/src/app/components/</code>, token-bound only
-    (<code>09-design-system-standards.md</code> §5). Structural components — nav, hero, cards,
-    deployment tiers — are demonstrated on the <a routerLink="/">homepage</a> instead of repeated
-    here.
+<article class="ino-article">
+  <p class="ino-article-eyebrow">Docs / Design system</p>
+  <h1>Design system</h1>
+  <p class="ino-article-lead">
+    Verified Line is the shared visual and interaction language for INOVIXUX.
+    Start with the foundations below, try the working controls, then open the
+    <a routerLink="/docs/components">component library</a> for inputs, defaults and accessibility contracts.
+  </p>
+
+  <h2>Foundations</h2>
+  <h3>Typography</h3>
+  <p>
+    Geist is the website's heading, body and control font, through <code>--ino-font-display</code>.
+    Noto Sans Devanagari and system sans-serif faces provide fallbacks. Geist Mono
+    (<code>--ino-font-mono</code>) is reserved for code, metrics and compact metadata.
+    Use the type roles rather than selecting a new font or size for each screen.
+  </p>
+  <ul>
+    <li><code>--ino-type-display</code>, <code>--ino-type-h2</code> and <code>--ino-type-h3</code>: heading hierarchy.</li>
+    <li><code>--ino-type-body</code> and <code>--ino-type-body-lg</code>: reading text and introductions.</li>
+    <li><code>--ino-type-label</code>, <code>--ino-type-hint</code> and <code>--ino-type-caption</code>: control labels and supporting text.</li>
+  </ul>
+  <h3>Color and themes</h3>
+  <p>
+    Use semantic pairs: <code>--ino-color-surface</code> with <code>--ino-color-on-surface</code>,
+    and status tokens for success, warning and danger. Avoid raw hex colors in components.
+    The site theme control switches between dark, light and high contrast; check every state
+    in all three. Always pair status color with a readable label or icon meaning.
+  </p>
+  <h3>Spacing, density and motion</h3>
+  <p>
+    Layout uses <code>--ino-space-*</code>, corners use <code>--ino-radius-*</code>, and transitions
+    use <code>--ino-motion-duration-*</code>. Dense layouts compact information without removing
+    labels or keyboard focus. Controls use the shared <code>sm | default | lg</code> size axis
+    where supported; use the individual component's API to check availability.
+    Honor reduced-motion preferences and keep feedback understandable without animation.
+  </p>
+  <h2>Use the components</h2>
+  <p>
+    Import the standalone Angular component into the consuming component's <code>imports</code>,
+    load the shared token stylesheet once, and bind state in your application. For example,
+    import <code>InoButtonComponent</code> from <code>web/src/app/components/button/ino-button.component.ts</code>
+    when working in this repository, then use its attribute on a native button:
+  </p>
+  <pre><code>&lt;button ino-button variant="primary" type="button"&gt;Save changes&lt;/button&gt;</code></pre>
+  <p>
+    The examples below run locally in this page; they do not save data or send notifications.
+    Structural components such as navigation, hero and cards can also be seen on the
+    <a routerLink="/">homepage</a>.
   </p>
 
   <h2>Buttons</h2>
-  <p>Four variants; every state is a real interaction, not a screenshot.</p>
+  <p>Use primary for the main action, secondary for alternatives, ghost for low emphasis and danger for destructive actions. Icon-only buttons need an accessible name. Loading and disabled states block activation.</p>
   <div class="ds-row">
     <button ino-button variant="primary">Primary</button>
     <button ino-button variant="secondary">Secondary</button>
     <button ino-button variant="ghost">Ghost</button>
+    <button ino-button variant="danger">Danger</button>
     <button ino-button variant="icon" aria-label="Settings">⚙</button>
     <button ino-button variant="primary" [disabled]="true">Disabled</button>
     <button ino-button variant="primary" [loading]="buttonLoading" (click)="simulateLoading()">
@@ -28,6 +68,7 @@
     Labeled, with WCAG 2.2 label/error/focus-visible states and
     <code>--ino-target-comfortable</code> on every control.
   </p>
+  <p>Use a select for a list of choices, radios for one visible choice, a checkbox for an independent option, and a toggle for an on/off setting. Keep labels visible. This demo checks only whether the email field is empty; application validation must also check format and server responses.</p>
   <div class="ds-form">
     <ino-input
       label="Work email"
@@ -70,7 +111,7 @@
   </div>
 
   <h2>Modal</h2>
-  <p>Focus-trapped, closes on <kbd>Escape</kbd> or backdrop click, restores focus to the trigger button on close.</p>
+  <p>Use a modal for a focused decision that interrupts the current task. Give it a clear heading and an explicit cancel action. Focus-trapped, closes on <kbd>Escape</kbd> or backdrop click, restores focus to the trigger button on close.</p>
   <button ino-button variant="secondary" (click)="openModal()">Open modal</button>
 
   <ino-modal heading="Confirm escalation" [open]="modalOpen" (openChange)="onModalOpenChange($event)">
@@ -90,6 +131,7 @@
     anything needs fixing, so real warnings keep their weight.
   </p>
 
+  <p>Use an inline alert next to the affected content, a banner for page-wide conditions, and a toast for brief feedback. Keep actionable errors visible near the control instead of relying on a transient toast.</p>
   <div class="ds-stack">
     <ino-alert status="info" heading="Scheduled">Sanctions screening re-runs nightly at 02:00 IST.</ino-alert>
     <ino-alert status="success" heading="Verified">Meridian Freight cleared ABDM + UPI reconciliation.</ino-alert>
@@ -103,6 +145,13 @@
     <button ino-button variant="secondary" (click)="showToast('warning')">Trigger warning toast</button>
     <button ino-button variant="secondary" (click)="showToast('danger')">Trigger danger toast</button>
   </div>
+  <h2>Accessibility and implementation checklist</h2>
+  <ul>
+    <li>Tab through controls; check visible focus, readable labels and associated error text.</li>
+    <li>Open the modal with the keyboard, close with Escape, and confirm focus returns to its trigger.</li>
+    <li>Check narrow viewports, zoom, all three themes and reduced motion.</li>
+    <li>Consult each <a routerLink="/docs/components">component's API and accessibility contract</a> before integrating it. A demo is not a substitute for testing the complete application.</li>
+  </ul>
 </article>
 
 <ino-toast-container></ino-toast-container>

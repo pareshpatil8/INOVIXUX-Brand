@@ -2,11 +2,29 @@
   <p class="ino-article-eyebrow">Docs / Components</p>
   <h1>Component library</h1>
   <p class="ino-article-lead">
-    Every shipped INOVIXUX component, generated straight from
-    <code>docs/brand/design-system.manifest.json</code> — plus the explicit, in-writing
-    Tier-1/Tier-2/Tier-3 disposition for every PrimeNG component with no dedicated build
-    (<code>docs/brand/24-primeng-component-audit-ino-31.md</code> §2, finding F-2). Nothing on
-    this page is hand-claimed.
+    Browse the implemented Angular components, inspect their inputs and defaults, and try their
+    live previews. Start with the <a routerLink="/docs/design-system">design-system foundations</a>
+    for typography, themes and interaction guidance.
+  </p>
+
+  <h2>Choose a component</h2>
+  <ul>
+    <li><strong>Actions and forms:</strong> buttons, inputs, selects, checkboxes, radio groups and toggles collect decisions and data.</li>
+    <li><strong>Feedback:</strong> alerts, toasts, progress bars and skeletons communicate status and loading.</li>
+    <li><strong>Navigation and structure:</strong> tabs, steppers, cards and layout components organize a page or flow.</li>
+  </ul>
+  <h2>Read and integrate</h2>
+  <p>
+    Open a component below for its API, theme previews, accessibility contract and limitations.
+    Import its standalone class into your Angular component, bind the listed inputs, and handle
+    emitted events in your application. The native button uses <code>button[ino-button]</code>;
+    most other controls use an <code>ino-*</code> element. Check the source selector before use.
+  </p>
+  <p>
+    API tables are generated from source inputs. Live previews are minimal: collection-based
+    components may need application-supplied options, rows or columns to show useful content.
+    Check the source and component contract for event outputs and integration behavior.
+    Inclusion here describes the web implementation, not automatic availability on every mobile platform.
   </p>
 
   <h2>Shipped components ({{ components().length }})</h2>
@@ -16,7 +34,7 @@
         <th>Name</th>
         <th>Slug</th>
         <th>Variants</th>
-        <th></th>
+        <th>Documentation</th>
       </tr>
     </thead>
     <tbody>
@@ -24,17 +42,16 @@
         <td><code>{{ component.name }}</code></td>
         <td>{{ component.slug }}</td>
         <td>{{ variantsLabel(component) }}</td>
-        <td><a [routerLink]="['/docs/components', component.slug]">View →</a></td>
+        <td><a [routerLink]="['/docs/components', component.slug]">View {{ component.slug }} →</a></td>
       </tr>
     </tbody>
   </table>
 
-  <h2>Not implemented — Tier disposition (finding F-2)</h2>
+  <h2>Coverage and planned components</h2>
   <p>
     Every PrimeNG component with no dedicated INOVIXUX build gets an explicit disposition here:
     <strong>Tier-1</strong> (committed, unbuilt), <strong>Tier-2</strong> (open — no build
-    committed, no spec written; specify before building), or <strong>Tier-3</strong> (formally
-    declined in doc 17). None of these are built, so there are no links.
+    committed, no spec written; specify before building), or <strong>Tier-3</strong> (out of scope). None of these are built, so there are no links.
   </p>
 
   <ng-container *ngFor="let group of tierGroups()">
