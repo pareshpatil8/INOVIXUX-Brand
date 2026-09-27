@@ -1,0 +1,73 @@
+/*
+ * <ino-input-group> — INO-31 T-17 / F-1.
+ *
+ * No literal colour/space/radius/duration/font-size below; every declaration resolves through a
+ * semantic role in tokens.css, logical properties only (RTL-safe).
+ */
+/* Size API (DoD row 3) — this component owns the visual box outright (§ constructor comment in the
+   .ts), so it re-points the same three Wave 0 aliases `ino-input`'s own :host([data-size]) blocks
+   use, rather than declining the API the way `ino-icon-field` does. */
+:host([data-size='sm']) {
+  --ino-control-height: var(--ino-control-height-sm);
+  --ino-control-padding-inline: var(--ino-control-padding-inline-sm);
+  --ino-control-font-size: var(--ino-control-font-size-sm);
+}
+
+:host([data-size='lg']) {
+  --ino-control-height: var(--ino-control-height-lg);
+  --ino-control-padding-inline: var(--ino-control-padding-inline-lg);
+  --ino-control-font-size: var(--ino-control-font-size-lg);
+}
+
+:host {
+  display: flex;
+  align-items: stretch;
+  inline-size: 100%;
+  min-block-size: var(--ino-row-min-height, var(--ino-control-height, var(--ino-target-comfortable)));
+  background: var(--ino-color-surface-sunken);
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-md);
+  transition: border-color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+
+  &:has(:focus-visible) {
+    border-color: var(--ino-color-accent);
+  }
+
+  &.ino-input-group--disabled {
+    opacity: 0.5;
+  }
+}
+
+.ino-input-group__control {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  display: block;
+}
+
+.ino-input-group__addon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ino-space-2);
+  padding-inline: var(--ino-space-3);
+  color: var(--ino-color-on-surface-muted);
+  font-family: var(--ino-font-display);
+  font-size: var(--ino-control-font-size, var(--ino-type-body-size));
+  white-space: nowrap;
+
+  &:empty {
+    display: none;
+  }
+}
+
+.ino-input-group__addon--start {
+  border-inline-end: 1px solid var(--ino-color-border);
+}
+
+.ino-input-group__addon--end {
+  border-inline-start: 1px solid var(--ino-color-border);
+}
