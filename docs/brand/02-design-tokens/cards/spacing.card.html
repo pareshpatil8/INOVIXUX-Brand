@@ -1,0 +1,63 @@
+<!-- @dsCard group="Foundations" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spacing · INOVIXUX Design Tokens</title>
+<link rel="stylesheet" href="../tokens.css">
+<style>
+  body { margin: 0; padding: var(--ino-space-7); background: var(--ino-color-surface); color: var(--ino-color-on-surface); font-family: var(--ino-font-display); }
+  h1 { font: var(--ino-type-h3); font-family: var(--ino-font-display); margin: 0 0 var(--ino-space-2); }
+  h2 { font: var(--ino-type-eyebrow); font-family: var(--ino-font-mono); letter-spacing: var(--ino-type-eyebrow-tracking); text-transform: uppercase; color: var(--ino-color-on-surface-muted); margin: var(--ino-space-7) 0 var(--ino-space-3); }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 68ch; }
+
+  .space-row { display: flex; align-items: center; gap: var(--ino-space-4); padding: var(--ino-space-2) 0; }
+  .space-row .tag { width: 110px; flex: none; font-family: var(--ino-font-mono); font-size: 11.5px; color: var(--ino-color-on-surface-muted); }
+  .space-bar { height: 14px; background: var(--ino-color-accent-text-safe); border-radius: 3px; }
+  .space-row .val { font-family: var(--ino-font-mono); font-size: 11.5px; color: var(--ino-color-on-surface-muted); }
+
+  .target-row { display: flex; align-items: center; gap: var(--ino-space-5); margin-top: var(--ino-space-3); }
+  .target-box { display: flex; align-items: center; justify-content: center; border-radius: var(--ino-radius-md); border: 1px dashed var(--ino-color-border); font-family: var(--ino-font-mono); font-size: 10px; color: var(--ino-color-on-surface-muted); }
+</style>
+</head>
+<body>
+
+<h1>Spacing</h1>
+<p class="lede">
+  One scale, t-shirt tokens (<code>tokens.css</code> §5) — the real paddings already in use across
+  the foundation build, named rather than invented — plus the WCAG 2.2 §2.5.8 touch-target minimums
+  (§7) that ride the same scale.
+</p>
+
+<h2>Space scale</h2>
+<div id="space-scale"></div>
+
+<h2>Touch targets</h2>
+<div class="target-row">
+  <div class="target-box" id="target-min" style="width:var(--ino-target-min);height:var(--ino-target-min)"></div>
+  <span style="font-size:12.5px;color:var(--ino-color-on-surface-muted)">target-min — 24×24 WCAG 2.2 SC 2.5.8 floor</span>
+</div>
+<div class="target-row">
+  <div class="target-box" id="target-comfortable" style="width:var(--ino-target-comfortable);height:var(--ino-target-comfortable)"></div>
+  <span style="font-size:12.5px;color:var(--ino-color-on-surface-muted)">target-comfortable — 44×44 platform HIG default</span>
+</div>
+
+<script>
+  const spaceTokens = ['ino-space-1','ino-space-2','ino-space-3','ino-space-4','ino-space-5',
+    'ino-space-6','ino-space-7','ino-space-8','ino-space-9','ino-space-10','ino-space-11'];
+  const root = getComputedStyle(document.documentElement);
+  const holder = document.getElementById('space-scale');
+  spaceTokens.forEach(name => {
+    const value = root.getPropertyValue('--' + name).trim();
+    const row = document.createElement('div');
+    row.className = 'space-row';
+    row.innerHTML = `<span class="tag">--${name}</span><span class="space-bar" style="width:${value}"></span><span class="val">${value}</span>`;
+    holder.appendChild(row);
+  });
+  document.getElementById('target-min').textContent = root.getPropertyValue('--ino-target-min').trim();
+  document.getElementById('target-comfortable').textContent = root.getPropertyValue('--ino-target-comfortable').trim();
+</script>
+
+</body>
+</html>

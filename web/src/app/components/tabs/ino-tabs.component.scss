@@ -1,0 +1,108 @@
+/*
+ * <ino-tabs> — INO-31 T-26 / F-1.
+ *
+ * No literal colour/space/radius/duration/font-size below; every declaration resolves through a
+ * semantic role in tokens.css, logical properties only (RTL-safe).
+ */
+:host {
+  display: block;
+}
+
+:host([data-orientation='vertical']) {
+  display: flex;
+  gap: var(--ino-space-5);
+}
+
+.ino-tabs__list {
+  display: flex;
+  gap: var(--ino-space-2);
+  border-block-end: 1px solid var(--ino-color-border);
+}
+
+:host([data-orientation='vertical']) .ino-tabs__list {
+  flex-direction: column;
+  border-block-end: none;
+  border-inline-end: 1px solid var(--ino-color-border);
+  padding-inline-end: var(--ino-space-2);
+}
+
+/* Size API (DoD row 3) — re-points the control-height/padding/font-size triad, same idiom
+   ino-input's :host([data-size]) blocks use, driving the tab button's own min-block-size/padding
+   below rather than a bespoke local scale. */
+:host([data-size='sm']) {
+  --ino-control-height: var(--ino-control-height-sm);
+  --ino-control-padding-inline: var(--ino-control-padding-inline-sm);
+  --ino-control-font-size: var(--ino-control-font-size-sm);
+}
+
+:host([data-size='lg']) {
+  --ino-control-height: var(--ino-control-height-lg);
+  --ino-control-padding-inline: var(--ino-control-padding-inline-lg);
+  --ino-control-font-size: var(--ino-control-font-size-lg);
+}
+
+.ino-tabs__tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: var(--ino-row-min-height, var(--ino-control-height, var(--ino-target-comfortable)));
+  padding-inline: var(--ino-control-padding-inline, var(--ino-space-4));
+  background: transparent;
+  border: none;
+  border-block-end: 2px solid transparent;
+  color: var(--ino-color-on-surface-muted);
+  font-family: var(--ino-font-display);
+  font-size: var(--ino-control-font-size, var(--ino-type-body-size));
+  font-weight: 600;
+  cursor: pointer;
+  transition: color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+    border-color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+
+  &:hover:not(:disabled) {
+    color: var(--ino-color-on-surface);
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+:host([data-orientation='vertical']) .ino-tabs__tab {
+  justify-content: flex-start;
+  border-block-end: none;
+  border-inline-end: 2px solid transparent;
+}
+
+.ino-tabs__tab--active {
+  color: var(--ino-color-on-surface);
+  border-block-end-color: var(--ino-color-accent);
+}
+
+:host([data-orientation='vertical']) .ino-tabs__tab--active {
+  border-block-end: none;
+  border-inline-end-color: var(--ino-color-accent);
+}
+
+.ino-tabs__panels {
+  padding-block-start: var(--ino-space-5);
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+
+:host([data-orientation='horizontal']) .ino-tabs__panels {
+  padding-block-start: var(--ino-space-5);
+}
+
+:host([data-orientation='vertical']) .ino-tabs__panels {
+  padding-block-start: 0;
+}
