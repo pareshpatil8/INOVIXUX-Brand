@@ -73,6 +73,11 @@ Composes `<ino-radio>` internally (INO-159 uplift) rather than re-implementing n
 — every state/size `<ino-radio>` carries above applies per-item inside a group for free. Full
 reasoning: `SPEC.md` §5.
 
+A non-empty group `error` also sets `[invalid]="true"` on every item, so each radio's dot paints the
+invalid ring — the group's `error` string still owns the single rendered message (INO-366; the
+per-item wiring was previously missing, so a group's own `error` painted only the shared message with
+no per-dot visual signal).
+
 ---
 
 ## Roving tabindex

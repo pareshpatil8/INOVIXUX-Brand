@@ -296,6 +296,20 @@
           "optional": true
         },
         {
+          "name": "minTime",
+          "type": "Date | null",
+          "values": null,
+          "default": "null",
+          "optional": true
+        },
+        {
+          "name": "maxTime",
+          "type": "Date | null",
+          "values": null,
+          "default": "null",
+          "optional": true
+        },
+        {
           "name": "disabledDates",
           "type": "Date[]",
           "values": null,
@@ -307,6 +321,16 @@
           "type": "number[]",
           "values": null,
           "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "appendTo",
+          "type": "'self' | 'body'",
+          "values": [
+            "self",
+            "body"
+          ],
+          "default": "'self'",
           "optional": true
         }
       ],

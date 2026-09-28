@@ -45,6 +45,10 @@ export class InoCheckboxComponent {
   @Input({ transform: booleanAttribute }) readonly = false;
   @Input({ transform: booleanAttribute }) loading = false;
   @Input() error = '';
+  /** Visual/ARIA invalid ring with no message of its own — for `<ino-checkbox-group>`, whose
+   *  shared `error` already renders once at the group level (§ino-checkbox-group.component.html);
+   *  binding `error` itself to every item would duplicate that message under each checkbox. */
+  @Input({ transform: booleanAttribute }) invalid = false;
 
   @Output() checkedChange = new EventEmitter<boolean>();
   @Output() indeterminateChange = new EventEmitter<boolean>();

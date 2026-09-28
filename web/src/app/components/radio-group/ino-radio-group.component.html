@@ -11,6 +11,7 @@
     [checked]="option.value === value"
     [disabled]="disabled || !!option.disabled"
     [readonly]="readonly"
+    [invalid]="!!error"
     (checkedChange)="onChange(option.value, $event)"
   ></ino-radio>
 

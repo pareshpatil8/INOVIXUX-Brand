@@ -1,0 +1,98 @@
+// Shared styling for the hand-authored §2 Component Publish Contract demos
+// (`radio-presentability-demo`, `checkbox-presentability-demo`, INO-366). Token-bound only, no raw
+// hex/px values — same rule the static docs/brand previews already follow.
+:host {
+  display: block;
+}
+
+.demo-section {
+  margin: 0 0 var(--ino-space-7);
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.demo-section__title {
+  font-family: var(--ino-font-mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ino-color-on-surface-subtle);
+  margin: 0 0 var(--ino-space-3);
+}
+
+.demo-section__note {
+  color: var(--ino-color-on-surface-muted);
+  font-size: var(--ino-type-body-sm-size, 12.5px);
+  margin: 0 0 var(--ino-space-4);
+  max-width: 62ch;
+}
+
+.demo-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ino-space-6);
+}
+
+.demo-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ino-space-3);
+}
+
+.demo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--ino-space-4);
+}
+
+.demo-pane {
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-md);
+  padding: var(--ino-space-4);
+  background: var(--ino-color-surface-raised);
+}
+
+.demo-pane__label {
+  font-family: var(--ino-font-mono);
+  font-size: 11px;
+  color: var(--ino-color-on-surface-subtle);
+  margin: 0 0 var(--ino-space-3);
+}
+
+// Density override panes (dense/fluid) — the docs layout itself is fixed to
+// [data-density="dense"] (`docs-layout.component.ts`), so the "fluid" pane needs an explicit
+// override to show the contrast the §2 contract requires.
+.demo-pane[data-density] {
+  --ino-row-min-height: var(--ino-target-comfortable);
+}
+
+.demo-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--ino-type-body-sm-size, 12.5px);
+
+  th,
+  td {
+    text-align: left;
+    padding: var(--ino-space-2) var(--ino-space-3);
+    border-bottom: 1px solid var(--ino-color-border);
+    vertical-align: middle;
+  }
+
+  th {
+    font-family: var(--ino-font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--ino-color-on-surface-subtle);
+  }
+}
+
+.demo-rtl {
+  border: 1px dashed var(--ino-color-border);
+  border-radius: var(--ino-radius-md);
+  padding: var(--ino-space-4);
+}
