@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ino-tabs / ino-tab — tablist container (INO-135)</title>
+<title>ino-tabs / ino-tab-panel — tablist container (INO-135, recovered by INO-361)</title>
 <!-- Canonical token file, linked rather than copied: this preview must repaint with the system,
      and must never become a second place raw hex values live. -->
 <link rel="stylesheet" href="../../02-design-tokens/tokens.css">
@@ -46,59 +46,63 @@
 
   .col { display: flex; flex-direction: column; gap: var(--ino-space-6); }
 
-  /* Mirrors web/src/app/components/tabs/ino-tabs.component.scss — same token bindings, so a
-     divergence between this preview and the shipped component is visible as a visual diff. */
-  .ino-tabs { display: block; }
+  /* Mirrors web/src/app/components/tabs/ino-tabs.component.scss — same class names and token
+     bindings, so a divergence between this preview and the shipped component is visible as a
+     visual diff. */
+  .ino-tabs {
+    display: block;
+    --ino-control-height: var(--ino-control-height-default);
+    --ino-control-padding-inline-roomy: var(--ino-control-padding-inline-roomy-default);
+    --ino-control-font-size: var(--ino-control-font-size-default);
+    --ino-control-gap: var(--ino-control-gap-default);
+    --ino-control-icon-size: var(--ino-control-icon-size-default);
+  }
   .ino-tabs[data-orientation="vertical"] { display: flex; gap: var(--ino-space-5); }
+  .ino-tabs[data-size="sm"] { --ino-control-height: var(--ino-control-height-sm); --ino-control-padding-inline-roomy: var(--ino-control-padding-inline-roomy-sm); --ino-control-font-size: var(--ino-control-font-size-sm); --ino-control-gap: var(--ino-control-gap-sm); --ino-control-icon-size: var(--ino-control-icon-size-sm); }
+  .ino-tabs[data-size="lg"] { --ino-control-height: var(--ino-control-height-lg); --ino-control-padding-inline-roomy: var(--ino-control-padding-inline-roomy-lg); --ino-control-font-size: var(--ino-control-font-size-lg); --ino-control-gap: var(--ino-control-gap-lg); --ino-control-icon-size: var(--ino-control-icon-size-lg); }
 
-  .ino-tabs__list {
-    display: flex;
-    gap: var(--ino-space-2);
-    border-block-end: 1px solid var(--ino-color-border);
-  }
-  .ino-tabs[data-orientation="vertical"] .ino-tabs__list {
-    flex-direction: column;
-    border-block-end: none;
-    border-inline-end: 1px solid var(--ino-color-border);
-    padding-inline-end: var(--ino-space-2);
-  }
+  .ino-tabs__strip { display: flex; align-items: stretch; border-block-end: 1px solid var(--ino-color-border); }
+  .ino-tabs[data-orientation="vertical"] .ino-tabs__strip { flex-direction: column; border-block-end: none; border-inline-end: 1px solid var(--ino-color-border); padding-inline-end: var(--ino-space-2); }
 
-  .ino-tabs[data-size="sm"] { --ino-control-height: var(--ino-control-height-sm); --ino-control-padding-inline: var(--ino-control-padding-inline-sm); --ino-control-font-size: var(--ino-control-font-size-sm); }
-  .ino-tabs[data-size="lg"] { --ino-control-height: var(--ino-control-height-lg); --ino-control-padding-inline: var(--ino-control-padding-inline-lg); --ino-control-font-size: var(--ino-control-font-size-lg); }
+  .ino-tabs__track { display: flex; flex-wrap: wrap; }
+  .ino-tabs[data-orientation="vertical"] .ino-tabs__track { flex-direction: column; }
 
   .ino-tabs__tab {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    min-block-size: var(--ino-control-height, var(--ino-target-comfortable));
-    padding-inline: var(--ino-control-padding-inline, var(--ino-space-4));
+    gap: var(--ino-control-gap);
+    min-block-size: var(--ino-control-height);
+    padding-inline: var(--ino-control-padding-inline-roomy);
     background: transparent;
     border: none;
     border-block-end: 2px solid transparent;
     color: var(--ino-color-on-surface-muted);
     font-family: var(--ino-font-display);
-    font-size: var(--ino-control-font-size, var(--ino-type-body-size));
+    font-size: var(--ino-control-font-size);
     font-weight: 600;
     cursor: pointer;
   }
-  .ino-tabs[data-orientation="vertical"] .ino-tabs__tab {
-    justify-content: flex-start;
-    border-block-end: none;
-    border-inline-end: 2px solid transparent;
-  }
-  .ino-tabs__tab:disabled { opacity: 0.5; cursor: not-allowed; }
+  .ino-tabs[data-orientation="vertical"] .ino-tabs__tab { justify-content: flex-start; border-block-end: none; border-inline-start: 2px solid transparent; }
+  .ino-tabs__tab:disabled { color: var(--ino-color-on-surface-subtle); cursor: not-allowed; }
   .ino-tabs__tab--active { color: var(--ino-color-on-surface); border-block-end-color: var(--ino-color-accent); }
-  .ino-tabs[data-orientation="vertical"] .ino-tabs__tab--active { border-block-end: none; border-inline-end-color: var(--ino-color-accent); }
+  .ino-tabs[data-orientation="vertical"] .ino-tabs__tab--active { border-block-end: none; border-inline-start-color: var(--ino-color-accent); }
+  .ino-tabs__tab--invalid { color: var(--ino-color-danger-text-safe); }
+  .ino-tabs__track[data-readonly] .ino-tabs__tab:not(.ino-tabs__tab--active) { cursor: default; }
+
+  .ino-tabs__tab-invalid-dot { inline-size: 6px; block-size: 6px; border-radius: var(--ino-radius-pill); background: var(--ino-color-danger-text-safe); }
+  .ino-tabs__tab-close { display: inline-flex; align-items: center; justify-content: center; inline-size: max(var(--ino-control-icon-size), var(--ino-target-min)); block-size: max(var(--ino-control-icon-size), var(--ino-target-min)); border-radius: var(--ino-radius-sm); color: var(--ino-color-on-surface-muted); font-size: var(--ino-type-eyebrow-size); }
 
   .ino-tabs__panels { padding-block-start: var(--ino-space-5); color: var(--ino-color-on-surface-muted); }
+  .ino-tabs[data-orientation="vertical"] .ino-tabs__panels { padding-block-start: 0; }
 </style>
 </head>
 <body>
 
 <h1>Tabs — tablist container</h1>
 <p class="lede">
-  <code>&lt;ino-tabs&gt;</code> is the container; <code>&lt;ino-tab&gt;</code> is one projected
-  panel with its own <code>label</code>/<code>disabled</code> metadata.
+  <code>&lt;ino-tabs&gt;</code> is the container; <code>&lt;ino-tab-panel&gt;</code> is one projected
+  panel with its own <code>label</code>/<code>disabled</code>/<code>closable</code>/<code>invalid</code>/<code>loading</code>
+  metadata. Selection is index-based (SPEC.md §2).
 </p>
 
 <h2>Selection × theme</h2>
@@ -107,10 +111,12 @@
   <div class="theme-pane">
     <h3>dark — :root (default)</h3>
     <div class="ino-tabs" data-orientation="horizontal">
-      <div class="ino-tabs__list" role="tablist" aria-orientation="horizontal">
-        <button type="button" role="tab" class="ino-tabs__tab ino-tabs__tab--active" aria-selected="true" tabindex="0">Details</button>
-        <button type="button" role="tab" class="ino-tabs__tab" aria-selected="false" tabindex="-1">History</button>
-        <button type="button" role="tab" class="ino-tabs__tab" aria-selected="false" aria-disabled="true" disabled tabindex="-1">Audit trail</button>
+      <div class="ino-tabs__strip">
+        <div class="ino-tabs__track" role="tablist" aria-orientation="horizontal">
+          <button type="button" role="tab" class="ino-tabs__tab ino-tabs__tab--active" aria-selected="true" tabindex="0">Details</button>
+          <button type="button" role="tab" class="ino-tabs__tab" aria-selected="false" tabindex="-1">History</button>
+          <button type="button" role="tab" class="ino-tabs__tab" aria-selected="false" aria-disabled="true" disabled tabindex="-1">Audit trail</button>
+        </div>
       </div>
       <div class="ino-tabs__panels">Panel content for "Details".</div>
     </div>
@@ -119,10 +125,12 @@
   <div class="theme-pane" data-theme="light">
     <h3>light — [data-theme="light"]</h3>
     <div class="ino-tabs" data-orientation="horizontal">
-      <div class="ino-tabs__list" role="tablist" aria-orientation="horizontal">
-        <button type="button" role="tab" class="ino-tabs__tab ino-tabs__tab--active" aria-selected="true" tabindex="0">Details</button>
-        <button type="button" role="tab" class="ino-tabs__tab" aria-selected="false" tabindex="-1">History</button>
-        <button type="button" role="tab" class="ino-tabs__tab" aria-selected="false" aria-disabled="true" disabled tabindex="-1">Audit trail</button>
+      <div class="ino-tabs__strip">
+        <div class="ino-tabs__track" role="tablist" aria-orientation="horizontal">
+          <button type="button" role="tab" class="ino-tabs__tab ino-tabs__tab--active" aria-selected="true" tabindex="0">Details</button>
+          <button type="button" role="tab" class="ino-tabs__tab" aria-selected="false" tabindex="-1">History</button>
+          <button type="button" role="tab" class="ino-tabs__tab" aria-selected="false" aria-disabled="true" disabled tabindex="-1">Audit trail</button>
+        </div>
       </div>
       <div class="ino-tabs__panels">Panel content for "Details".</div>
     </div>
@@ -131,10 +139,12 @@
   <div class="theme-pane" data-theme="high-contrast">
     <h3>high-contrast — [data-theme="high-contrast"]</h3>
     <div class="ino-tabs" data-orientation="horizontal">
-      <div class="ino-tabs__list" role="tablist" aria-orientation="horizontal">
-        <button type="button" role="tab" class="ino-tabs__tab ino-tabs__tab--active" aria-selected="true" tabindex="0">Details</button>
-        <button type="button" role="tab" class="ino-tabs__tab" aria-selected="false" tabindex="-1">History</button>
-        <button type="button" role="tab" class="ino-tabs__tab" aria-selected="false" aria-disabled="true" disabled tabindex="-1">Audit trail</button>
+      <div class="ino-tabs__strip">
+        <div class="ino-tabs__track" role="tablist" aria-orientation="horizontal">
+          <button type="button" role="tab" class="ino-tabs__tab ino-tabs__tab--active" aria-selected="true" tabindex="0">Details</button>
+          <button type="button" role="tab" class="ino-tabs__tab" aria-selected="false" tabindex="-1">History</button>
+          <button type="button" role="tab" class="ino-tabs__tab" aria-selected="false" aria-disabled="true" disabled tabindex="-1">Audit trail</button>
+        </div>
       </div>
       <div class="ino-tabs__panels">Panel content for "Details".</div>
     </div>
@@ -145,17 +155,21 @@
 <h2>Orientation</h2>
 <div class="col">
   <div class="ino-tabs" data-orientation="horizontal">
-    <div class="ino-tabs__list" role="tablist" aria-orientation="horizontal">
-      <button type="button" role="tab" class="ino-tabs__tab ino-tabs__tab--active" aria-selected="true" tabindex="0">Overview</button>
-      <button type="button" role="tab" class="ino-tabs__tab" aria-selected="false" tabindex="-1">Screening</button>
+    <div class="ino-tabs__strip">
+      <div class="ino-tabs__track" role="tablist" aria-orientation="horizontal">
+        <button type="button" role="tab" class="ino-tabs__tab ino-tabs__tab--active" aria-selected="true" tabindex="0">Overview</button>
+        <button type="button" role="tab" class="ino-tabs__tab" aria-selected="false" tabindex="-1">Screening</button>
+      </div>
     </div>
     <div class="ino-tabs__panels">Panel content for "Overview".</div>
   </div>
 
   <div class="ino-tabs" data-orientation="vertical" style="max-inline-size: 420px;">
-    <div class="ino-tabs__list" role="tablist" aria-orientation="vertical">
-      <button type="button" role="tab" class="ino-tabs__tab ino-tabs__tab--active" aria-selected="true" tabindex="0">Overview</button>
-      <button type="button" role="tab" class="ino-tabs__tab" aria-selected="false" tabindex="-1">Screening</button>
+    <div class="ino-tabs__strip">
+      <div class="ino-tabs__track" role="tablist" aria-orientation="vertical">
+        <button type="button" role="tab" class="ino-tabs__tab ino-tabs__tab--active" aria-selected="true" tabindex="0">Overview</button>
+        <button type="button" role="tab" class="ino-tabs__tab" aria-selected="false" tabindex="-1">Screening</button>
+      </div>
     </div>
     <div class="ino-tabs__panels">Panel content for "Overview".</div>
   </div>
@@ -164,22 +178,57 @@
 <h2>Size</h2>
 <div class="col">
   <div class="ino-tabs" data-size="sm">
-    <div class="ino-tabs__list" role="tablist">
-      <button type="button" role="tab" class="ino-tabs__tab ino-tabs__tab--active" aria-selected="true">Small</button>
-      <button type="button" role="tab" class="ino-tabs__tab" aria-selected="false">Second</button>
+    <div class="ino-tabs__strip">
+      <div class="ino-tabs__track" role="tablist">
+        <button type="button" role="tab" class="ino-tabs__tab ino-tabs__tab--active" aria-selected="true">Small</button>
+        <button type="button" role="tab" class="ino-tabs__tab" aria-selected="false">Second</button>
+      </div>
     </div>
   </div>
   <div class="ino-tabs">
-    <div class="ino-tabs__list" role="tablist">
-      <button type="button" role="tab" class="ino-tabs__tab ino-tabs__tab--active" aria-selected="true">Default</button>
-      <button type="button" role="tab" class="ino-tabs__tab" aria-selected="false">Second</button>
+    <div class="ino-tabs__strip">
+      <div class="ino-tabs__track" role="tablist">
+        <button type="button" role="tab" class="ino-tabs__tab ino-tabs__tab--active" aria-selected="true">Default</button>
+        <button type="button" role="tab" class="ino-tabs__tab" aria-selected="false">Second</button>
+      </div>
     </div>
   </div>
   <div class="ino-tabs" data-size="lg">
-    <div class="ino-tabs__list" role="tablist">
-      <button type="button" role="tab" class="ino-tabs__tab ino-tabs__tab--active" aria-selected="true">Large</button>
-      <button type="button" role="tab" class="ino-tabs__tab" aria-selected="false">Second</button>
+    <div class="ino-tabs__strip">
+      <div class="ino-tabs__track" role="tablist">
+        <button type="button" role="tab" class="ino-tabs__tab ino-tabs__tab--active" aria-selected="true">Large</button>
+        <button type="button" role="tab" class="ino-tabs__tab" aria-selected="false">Second</button>
+      </div>
     </div>
+  </div>
+</div>
+
+<h2>Recovered states (INO-361) — invalid, loading, closable, readonly</h2>
+<div class="col">
+  <div class="ino-tabs">
+    <div class="ino-tabs__strip">
+      <div class="ino-tabs__track" role="tablist">
+        <button type="button" role="tab" class="ino-tabs__tab ino-tabs__tab--active" aria-selected="true">Details</button>
+        <button type="button" role="tab" class="ino-tabs__tab ino-tabs__tab--invalid" aria-selected="false" aria-invalid="true">
+          <span class="ino-tabs__tab-invalid-dot" aria-hidden="true"></span>
+          Payment
+        </button>
+        <button type="button" role="tab" class="ino-tabs__tab" aria-selected="false">
+          Reports
+          <span class="ino-tabs__tab-close" aria-hidden="true">✕</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ino-tabs">
+    <div class="ino-tabs__strip">
+      <div class="ino-tabs__track" role="tablist" data-readonly="true">
+        <button type="button" role="tab" class="ino-tabs__tab ino-tabs__tab--active" aria-selected="true">Submitted</button>
+        <button type="button" role="tab" class="ino-tabs__tab" aria-selected="false" aria-disabled="true">Reviewed</button>
+      </div>
+    </div>
+    <div class="ino-tabs__panels">Readonly audit view — activation refused, focus navigation still works.</div>
   </div>
 </div>
 

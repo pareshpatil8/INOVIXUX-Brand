@@ -150,7 +150,10 @@ governance (how a color/mark change gets approved and versioned), WCAG 2.2 check
 disclaimer enforcement rule, the QA test → CTO review → board approval ship sequencing for
 component PRs (§5c, added 2026-09-23 on your INO-141 flag), and a file-naming convention going
 forward specifically to prevent the v1–v5 sprawl that caused the visibility problem this file is
-fixing.
+fixing. See also [`27-qa-validation-gate-and-publish-contract-process-ino-31.md`](27-qa-validation-gate-and-publish-contract-process-ino-31.md)
+— QALead's operating process for the Component Publish Contract (doc 26 §2) and the blocking
+Spec → Build → Docs → QA → publish flow every component issue now carries (doc 26 §7 D-gates 1-2,
+INO-369).
 
 ## 9. Open decisions (not blocking anything, answer whenever convenient)
 

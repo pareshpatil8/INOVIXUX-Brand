@@ -8,9 +8,10 @@ export type InoStepperOrientation = 'horizontal' | 'vertical';
 /**
  * One step's header metadata in an `InoStepper` rail. Mirrors web's `<ino-step>` `@Input`s minus
  * its projected panel content — the RN port renders the rail only (see `InoStepper` doc comment).
- * `completed` mirrors the internal flag web's `<ino-stepper>` derives from its own `furthestIndex`
- * tracking; since this port is controlled-only, the parent (which already owns `activeIndex`)
- * supplies it directly instead of the port re-deriving a second source of truth.
+ * `completed` mirrors web's `<ino-step completed>` — a **consumer-owned** flag the caller sets once
+ * that step's own validation passes (web's `<ino-stepper>` never derives it internally; see
+ * `web/src/app/components/stepper/SPEC.md` §1). Since this port is controlled-only, the parent
+ * (which already owns `activeIndex`) supplies it directly, same as on web.
  */
 export type InoStepperItem = {
   label: string;
@@ -33,7 +34,8 @@ export type InoStepperItem = {
  *   RN caller already has a state hook, so an internal fallback would be a second source of truth
  *   for the active step. `linear` only gates header taps here (`onActiveIndexChange` is never
  *   called for an unreachable step); the caller's own `next()`/`previous()` equivalent is just
- *   incrementing `activeIndex`, same as web's `next()`/`previous()` bypass `isReachable()`.
+ *   incrementing `activeIndex` after confirming the current step's `completed` flag is set, same
+ *   as web's `next()` — which also goes through its own reachability gate rather than bypassing it.
  * - **No keyboard map / focus ring.** No arrow keys on a touch surface, and external-keyboard focus
  *   is an OS-level highlight.
  */

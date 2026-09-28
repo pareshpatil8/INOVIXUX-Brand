@@ -4,7 +4,7 @@ import '../theme/tokens.dart';
 
 enum InoTabsOrientation { horizontal, vertical }
 
-/// One tab's label metadata in an [InoTabs] strip. Mirrors web's `<ino-tab>` `@Input`s minus its
+/// One tab's label metadata in an [InoTabs] strip. Mirrors web's `<ino-tab-panel>` `@Input`s minus its
 /// projected panel content: the Flutter port renders the strip only (see the [InoTabs] doc
 /// comment) — the panel body is markup a Flutter caller already owns via `IndexedStack`/`switch`.
 class InoTabItem {
@@ -15,14 +15,14 @@ class InoTabItem {
 }
 
 /// `InoTabs` — Flutter port of `web/src/app/components/tabs/ino-tabs.component.ts` +
-/// `ino-tab.component.ts` (INO-135 / INO-31 T-26). Re-authored, not shared: Flutter has no CSS
+/// `ino-tab-panel.component.ts` (INO-135 / INO-31 T-26). Re-authored, not shared: Flutter has no CSS
 /// custom properties, so every value below reads the same [InoControlSize] / [InoSpace] /
 /// palette-role names the web component reads, never a literal.
 ///
 /// Scope differences from web, all deliberate:
 /// - **Strip only.** This renders the tab strip and reports the active index; the parent renders
 ///   the content (an `IndexedStack`, a `switch`, a navigator). Web uses content projection
-///   (`<ino-tab>` as a real child component), which has no Flutter equivalent worth inventing.
+///   (`<ino-tab-panel>` as a real child component), which has no Flutter equivalent worth inventing.
 /// - **Controlled only, index-based.** Matches web's `[(activeIndex)]` two-way binding exactly —
 ///   a Flutter caller already holds `State`, so an internal fallback would be a second source of
 ///   truth for the active tab.

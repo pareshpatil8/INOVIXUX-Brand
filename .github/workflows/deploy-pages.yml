@@ -73,6 +73,13 @@ jobs:
           mkdir -p web/dist/web/browser/mobile-preview/react-native
           cp -R mobile/react-native/dist-web/. web/dist/web/browser/mobile-preview/react-native/
 
+      # GitHub Pages has no rewrite rules, so direct links to Angular routes
+      # (/docs, /docs/components/…) 404 without this fallback copy.
+      - name: SPA fallback for deep links
+        working-directory: web/dist/web/browser
+        run: |
+          if [ -f index.csr.html ]; then cp index.csr.html 404.html; else cp index.html 404.html; fi
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: web/dist/web/browser

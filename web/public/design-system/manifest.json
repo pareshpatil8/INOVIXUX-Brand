@@ -1085,6 +1085,13 @@
       "previewPath": null,
       "inputs": [
         {
+          "name": "size",
+          "type": "InoControlSize",
+          "values": null,
+          "default": "'default'",
+          "optional": true
+        },
+        {
           "name": "orientation",
           "type": "InoStepperOrientation",
           "values": [
@@ -1092,13 +1099,6 @@
             "vertical"
           ],
           "default": "'horizontal'",
-          "optional": true
-        },
-        {
-          "name": "size",
-          "type": "InoControlSize",
-          "values": null,
-          "default": "'default'",
           "optional": true
         }
       ],
