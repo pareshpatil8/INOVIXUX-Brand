@@ -40,6 +40,7 @@ Dialog" pattern — see [Accessibility contract](#accessibility-contract).
 | `loading` | `boolean` | `false` | Inert spinner + `aria-busy` on the host |
 | `closeOnEscape` | `boolean` | `true` | Overlay mode only |
 | `closeOnBackdrop` | `boolean` | `true` | Overlay mode only |
+| `appendTo` | `'self' \| 'body'` | `'self'` | `'body'` reparents the overlay to `document.body` as a `position: fixed` panel — escapes an `overflow:hidden`/scrolling trigger container. See SPEC.md §3a |
 
 `valueChange: EventEmitter<Date | Date[] | null>` fires on every selection/time edit.
 `openChange: EventEmitter<boolean>` fires when the overlay panel opens/closes (no-op inline).

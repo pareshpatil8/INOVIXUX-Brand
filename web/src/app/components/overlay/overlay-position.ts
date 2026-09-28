@@ -74,6 +74,14 @@ export function computeOverlayPlacement(
   viewport: InoOverlaySize,
   gap: number,
   margin = 8,
+  /**
+   * Cross-axis alignment against the anchor. `'center'` (the original, unchanged default —
+   * every pre-existing consumer keeps its exact behavior) centers the overlay on the anchor's
+   * cross axis, as a popover/tooltip arrow-based overlay wants. `'start'` aligns the overlay's
+   * inline-start/block-start edge with the anchor's, the flush-left-under-the-trigger convention
+   * a dropdown-style overlay (e.g. `<ino-datepicker>`'s `appendTo="body"` portal) wants instead.
+   */
+  align: 'center' | 'start' = 'center',
 ): InoOverlayPlacement {
   const position = fitsOnSide(preferred, anchor, overlay, viewport, gap)
     ? preferred
@@ -87,18 +95,18 @@ export function computeOverlayPlacement(
   switch (position) {
     case 'top':
       top = anchor.top - gap - overlay.height;
-      left = anchor.left + anchor.width / 2 - overlay.width / 2;
+      left = align === 'start' ? anchor.left : anchor.left + anchor.width / 2 - overlay.width / 2;
       break;
     case 'bottom':
       top = anchor.bottom + gap;
-      left = anchor.left + anchor.width / 2 - overlay.width / 2;
+      left = align === 'start' ? anchor.left : anchor.left + anchor.width / 2 - overlay.width / 2;
       break;
     case 'left':
-      top = anchor.top + anchor.height / 2 - overlay.height / 2;
+      top = align === 'start' ? anchor.top : anchor.top + anchor.height / 2 - overlay.height / 2;
       left = anchor.left - gap - overlay.width;
       break;
     case 'right':
-      top = anchor.top + anchor.height / 2 - overlay.height / 2;
+      top = align === 'start' ? anchor.top : anchor.top + anchor.height / 2 - overlay.height / 2;
       left = anchor.right + gap;
       break;
   }
