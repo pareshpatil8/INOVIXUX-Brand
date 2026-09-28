@@ -72,7 +72,7 @@
 
   <h2>Accessibility contract</h2>
   <ng-container *ngIf="docExtract() as extract; else noDoc">
-    <pre class="docs-markdown" *ngIf="extract.a11y; else noA11y">{{ extract.a11y }}</pre>
+    <div class="docs-markdown" *ngIf="extract.a11y; else noA11y" [innerHTML]="extract.a11y"></div>
     <ng-template #noA11y>
       <p>No Accessibility contract section found in <code>{{ extract.docPath }}</code>.</p>
     </ng-template>
@@ -80,7 +80,7 @@
 
   <h2>Notes / deliberate omissions</h2>
   <ng-container *ngIf="docExtract() as extractNotes; else noDoc">
-    <pre class="docs-markdown" *ngIf="extractNotes.notes; else noNotes">{{ extractNotes.notes }}</pre>
+    <div class="docs-markdown" *ngIf="extractNotes.notes; else noNotes" [innerHTML]="extractNotes.notes"></div>
     <ng-template #noNotes>
       <p>No Deliberate omissions section found in <code>{{ extractNotes.docPath }}</code>.</p>
     </ng-template>

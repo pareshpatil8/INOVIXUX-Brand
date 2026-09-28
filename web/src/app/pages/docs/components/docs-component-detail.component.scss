@@ -78,10 +78,10 @@
   }
 }
 
+// INO-367: renders the sanitized HTML produced from each component doc's "Accessibility
+// contract" / "Deliberate omissions" markdown (scripts/generate-component-docs-extract.mjs).
 .docs-markdown {
-  white-space: pre-wrap;
-  font-family: var(--ino-font-mono);
-  font-size: 12.5px;
+  font-size: 13.5px;
   line-height: 1.6;
   color: var(--ino-color-on-surface);
   background: var(--ino-color-surface-sunken);
@@ -90,4 +90,112 @@
   padding: var(--ino-space-4) var(--ino-space-5);
   overflow-x: auto;
   margin-bottom: var(--ino-space-6);
+
+  > :first-child {
+    margin-top: 0;
+  }
+
+  > :last-child {
+    margin-bottom: 0;
+  }
+
+  p,
+  ul,
+  ol,
+  table,
+  blockquote {
+    margin: 0 0 var(--ino-space-3);
+  }
+
+  ul,
+  ol {
+    padding-left: var(--ino-space-5);
+  }
+
+  li {
+    margin-bottom: var(--ino-space-1);
+  }
+
+  li > ul,
+  li > ol {
+    margin-top: var(--ino-space-1);
+    margin-bottom: 0;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--ino-font-mono);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--ino-color-on-surface-subtle);
+    margin: var(--ino-space-4) 0 var(--ino-space-2);
+  }
+
+  code {
+    font-family: var(--ino-font-mono);
+    font-size: 0.92em;
+    background: var(--ino-color-surface-raised);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-sm);
+    padding: 0.1em 0.35em;
+  }
+
+  pre {
+    font-family: var(--ino-font-mono);
+    font-size: 12.5px;
+    line-height: 1.6;
+    background: var(--ino-color-surface-raised);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-sm);
+    padding: var(--ino-space-3) var(--ino-space-4);
+    overflow-x: auto;
+    margin: 0 0 var(--ino-space-3);
+
+    code {
+      background: none;
+      border: none;
+      padding: 0;
+    }
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95em;
+  }
+
+  th,
+  td {
+    text-align: left;
+    padding: var(--ino-space-2) var(--ino-space-3);
+    border-bottom: 1px solid var(--ino-color-border);
+    vertical-align: top;
+  }
+
+  th {
+    font-family: var(--ino-font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--ino-color-on-surface-subtle);
+  }
+
+  td {
+    color: var(--ino-color-on-surface-muted);
+  }
+
+  blockquote {
+    border-left: 2px solid var(--ino-color-border);
+    padding-left: var(--ino-space-3);
+    color: var(--ino-color-on-surface-muted);
+  }
+
+  a {
+    color: var(--ino-color-accent, var(--ino-color-on-surface));
+  }
 }

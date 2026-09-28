@@ -49,9 +49,12 @@ export interface ComponentDisposition {
   items: DispositionItem[];
 }
 
-/** Extracted "Accessibility contract" / "Deliberate omissions" markdown for one shipped
- * component, keyed by slug. `docPath`/`a11y`/`notes` are all null for components with no
- * narrative doc (5 marketing-only components, plus any not-yet-documented new component). */
+/** Extracted "Accessibility contract" / "Deliberate omissions" sections for one shipped
+ * component, keyed by slug. `a11y`/`notes` are sanitized HTML (rendered from markdown by
+ * `scripts/generate-component-docs-extract.mjs` at generation time — see `format` on
+ * {@link ComponentDocsExtract}), safe to bind via `[innerHTML]`. All three are null for
+ * components with no narrative doc (5 marketing-only components, plus any not-yet-documented
+ * new component). */
 export interface ComponentDocExtract {
   name: string;
   docPath: string | null;
@@ -63,6 +66,7 @@ export interface ComponentDocsExtract {
   generatedBy: string;
   generatedFrom: string;
   note: string;
+  format: 'html';
   components: Record<string, ComponentDocExtract>;
 }
 
