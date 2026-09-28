@@ -2,6 +2,7 @@ import { Type } from '@angular/core';
 
 import { CheckboxPresentabilityDemoComponent } from './demos/checkbox-presentability-demo.component';
 import { RadioPresentabilityDemoComponent } from './demos/radio-presentability-demo.component';
+import { DatepickerTimeDemoComponent } from './demos/datepicker-time-demo.component';
 
 /**
  * Slug -> hand-authored demo component, for components whose §2 Component Publish Contract
@@ -17,4 +18,5 @@ import { RadioPresentabilityDemoComponent } from './demos/radio-presentability-d
 export const CUSTOM_DEMOS: Record<string, Type<unknown>> = {
   'radio-group': RadioPresentabilityDemoComponent,
   'checkbox': CheckboxPresentabilityDemoComponent,
+  'datepicker': DatepickerTimeDemoComponent,
 };

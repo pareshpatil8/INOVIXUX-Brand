@@ -1,0 +1,245 @@
+<div class="demo-grid">
+  <!-- showTime — Date + Time -->
+  <section class="demo-section">
+    <h3 class="demo-section__title">Date + Time Selection (<code>showTime</code>)</h3>
+    <p class="demo-section__desc">
+      Calendar with additional hour/minute spinners. Select a date, then adjust the time before confirming.
+    </p>
+    <div class="demo-row">
+      <ino-datepicker
+        label="Appointment date & time"
+        hint="Select both date and time"
+        [showTime]="true"
+        [(value)]="dateTimeValue"
+        placeholder="Choose date and time"
+      ></ino-datepicker>
+    </div>
+    <div class="demo-row">
+      <span class="demo-value">Selected: {{ dateTimeValue | date: 'medium' }}</span>
+    </div>
+  </section>
+
+  <!-- timeOnly — Time Picker Only -->
+  <section class="demo-section">
+    <h3 class="demo-section__title">Time Only (<code>timeOnly</code>)</h3>
+    <p class="demo-section__desc">
+      No date grid — spinner-based time selection only. Date portion is ignored in the UI.
+    </p>
+    <div class="demo-row">
+      <ino-datepicker
+        label="Alarm time"
+        hint="Choose time without date"
+        [timeOnly]="true"
+        [(value)]="timeOnlyValue"
+        placeholder="Set time"
+      ></ino-datepicker>
+    </div>
+    <div class="demo-row">
+      <span class="demo-value">Selected: {{ timeOnlyValue | date: 'shortTime' }}</span>
+    </div>
+  </section>
+
+  <!-- showSeconds — Hour:Minute:Second -->
+  <section class="demo-section">
+    <h3 class="demo-section__title">With Seconds (<code>showSeconds</code>)</h3>
+    <p class="demo-section__desc">
+      Hour, minute, and second spinners. Useful for precise timestamps.
+    </p>
+    <div class="demo-row">
+      <ino-datepicker
+        label="Event timestamp"
+        hint="Precise to the second"
+        [showTime]="true"
+        [showSeconds]="true"
+        [(value)]="timeWithSecondsValue"
+        placeholder="Select date and time"
+      ></ino-datepicker>
+    </div>
+    <div class="demo-row">
+      <span class="demo-value">Selected: {{ timeWithSecondsValue | date: 'medium' }}</span>
+    </div>
+  </section>
+
+  <!-- 12-hour Format with AM/PM -->
+  <section class="demo-section">
+    <h3 class="demo-section__title">12-Hour Format (<code>hourFormat="12"</code>)</h3>
+    <p class="demo-section__desc">
+      Time picker with AM/PM toggle button instead of 24-hour format.
+    </p>
+    <div class="demo-row">
+      <ino-datepicker
+        label="Meeting time"
+        hint="12-hour clock with AM/PM"
+        [showTime]="true"
+        hourFormat="12"
+        [(value)]="time12hValue"
+        placeholder="Select time"
+      ></ino-datepicker>
+    </div>
+    <div class="demo-row">
+      <span class="demo-value">Selected: {{ time12hValue | date: 'short' }}</span>
+    </div>
+  </section>
+
+  <!-- manualEntry — Typed Input -->
+  <section class="demo-section">
+    <h3 class="demo-section__title">Manual Entry (<code>manualEntry</code>)</h3>
+    <p class="demo-section__desc">
+      Typed input with locale-aware parsing and input mask. Type dates/times directly instead of clicking.
+    </p>
+    <div class="demo-row">
+      <ino-datepicker
+        label="Enter date manually"
+        hint="Type a date (DD/MM/YYYY) or use the picker"
+        [manualEntry]="true"
+        [(value)]="manualEntryValue"
+        placeholder="DD/MM/YYYY"
+      ></ino-datepicker>
+    </div>
+    <div class="demo-row">
+      <ino-datepicker
+        label="Enter date & time manually"
+        hint="Type date and time (DD/MM/YYYY HH:MM)"
+        [manualEntry]="true"
+        [showTime]="true"
+        [(value)]="manualEntryValue"
+        placeholder="DD/MM/YYYY HH:MM"
+      ></ino-datepicker>
+    </div>
+    <div class="demo-row">
+      <span class="demo-value">Parsed: {{ manualEntryValue | date: 'medium' }}</span>
+    </div>
+  </section>
+
+  <!-- minTime/maxTime Constraints -->
+  <section class="demo-section">
+    <h3 class="demo-section__title">Time Constraints (<code>minTime</code> / <code>maxTime</code>)</h3>
+    <p class="demo-section__desc">
+      Restrict selectable time range (e.g., business hours 9 AM – 5 PM). Times outside range are disabled.
+    </p>
+    <div class="demo-row">
+      <ino-datepicker
+        label="Business hours appointment"
+        hint="Available 9:00 AM – 5:00 PM"
+        [showTime]="true"
+        [minTime]="minBusinessTime"
+        [maxTime]="maxBusinessTime"
+        [(value)]="businessHoursValue"
+        placeholder="Select within business hours"
+      ></ino-datepicker>
+    </div>
+    <div class="demo-row">
+      <span class="demo-value">Selected: {{ businessHoursValue | date: 'short' }}</span>
+    </div>
+  </section>
+
+  <!-- Range Selection with Time -->
+  <section class="demo-section">
+    <h3 class="demo-section__title">Date+Time Range (<code>selectionMode="range"</code> + <code>showTime</code>)</h3>
+    <p class="demo-section__desc">
+      Pick a start and end date/time pair. Combines range selection with time pickers.
+    </p>
+    <div class="demo-row">
+      <ino-datepicker
+        label="Event duration"
+        hint="Select start and end date/time"
+        selectionMode="range"
+        [showTime]="true"
+        [(value)]="dateTimeRangeValue"
+        placeholder="Pick date range with times"
+      ></ino-datepicker>
+    </div>
+    <div class="demo-row" *ngIf="dateTimeRangeValue.length === 2">
+      <span class="demo-value">
+        Start: {{ dateTimeRangeValue[0] | date: 'medium' }}<br>
+        End: {{ dateTimeRangeValue[1] | date: 'medium' }}
+      </span>
+    </div>
+  </section>
+
+  <!-- States: Disabled -->
+  <section class="demo-section">
+    <h3 class="demo-section__title">State: Disabled</h3>
+    <div class="demo-row">
+      <ino-datepicker
+        label="Disabled date+time picker"
+        [showTime]="true"
+        [disabled]="true"
+        [(value)]="disabledValue"
+      ></ino-datepicker>
+    </div>
+  </section>
+
+  <!-- States: Loading -->
+  <section class="demo-section">
+    <h3 class="demo-section__title">State: Loading</h3>
+    <div class="demo-row">
+      <ino-datepicker
+        label="Loading availability"
+        hint="Checking available time slots..."
+        [showTime]="true"
+        [loading]="true"
+        [(value)]="loadingValue"
+      ></ino-datepicker>
+    </div>
+  </section>
+
+  <!-- States: Error -->
+  <section class="demo-section">
+    <h3 class="demo-section__title">State: Error</h3>
+    <div class="demo-row">
+      <ino-datepicker
+        label="Appointment time (required)"
+        [error]="errorMessage"
+        [showTime]="true"
+        [(value)]="errorValue"
+        placeholder="Select a valid time"
+      ></ino-datepicker>
+    </div>
+  </section>
+
+  <!-- Sizing -->
+  <section class="demo-section">
+    <h3 class="demo-section__title">Sizing (<code>sm</code> / <code>default</code> / <code>lg</code>)</h3>
+    <p class="demo-section__desc">
+      All control sizes work with time variants.
+    </p>
+    <div class="demo-row">
+      <ino-datepicker
+        label="Small"
+        size="sm"
+        [showTime]="true"
+        [(value)]="dateTimeValue"
+      ></ino-datepicker>
+    </div>
+    <div class="demo-row">
+      <ino-datepicker
+        label="Default"
+        size="default"
+        [showTime]="true"
+        [(value)]="dateTimeValue"
+      ></ino-datepicker>
+    </div>
+    <div class="demo-row">
+      <ino-datepicker
+        label="Large"
+        size="lg"
+        [showTime]="true"
+        [(value)]="dateTimeValue"
+      ></ino-datepicker>
+    </div>
+  </section>
+
+  <!-- Mobile Disposition Note -->
+  <section class="demo-section demo-section--note">
+    <h3 class="demo-section__title">Mobile Parity</h3>
+    <p class="demo-section__desc">
+      <strong>Mobile disposition (SPEC.md §9):</strong> The time picker is deliberately <strong>not</strong>
+      ported to React Native or Flutter. Native datepickers are scoped to single-date selection only
+      (touch grid + prev/next month navigation). Rationale: no native spinner/AM-PM UI has been designed
+      for either platform; adding one mid-port would be inventing a second, unaudited control. This keeps
+      both native ports at the documented ~40% cost target. Time selection on mobile apps uses the
+      platform's native time picker widgets instead.
+    </p>
+  </section>
+</div>
