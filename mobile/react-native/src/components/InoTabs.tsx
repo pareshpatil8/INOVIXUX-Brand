@@ -6,7 +6,7 @@ import { control, ControlSize, space } from '../theme/tokens';
 export type InoTabsOrientation = 'horizontal' | 'vertical';
 
 /**
- * One tab's label metadata in an `InoTabs` strip. Mirrors web's `<ino-tab>` `@Input`s minus its
+ * One tab's label metadata in an `InoTabs` strip. Mirrors web's `<ino-tab-panel>` `@Input`s minus its
  * projected panel content: the RN port renders the strip only (see `InoTabs` doc comment) — the
  * panel body is markup an RN caller already owns via a `switch`/navigator.
  */
@@ -17,13 +17,13 @@ export type InoTabItem = {
 
 /**
  * `InoTabs` — React Native port of `web/src/app/components/tabs/ino-tabs.component.ts` +
- * `ino-tab.component.ts` (INO-135 / INO-31 T-26). Re-authored, not shared: RN has no CSS custom
+ * `ino-tab-panel.component.ts` (INO-135 / INO-31 T-26). Re-authored, not shared: RN has no CSS custom
  * properties, so every value below reads the same `control`/`space`/theme-role names the web
  * component reads, never a literal.
  *
  * Scope differences from web, all deliberate:
  * - **Strip only.** This renders the tab strip and reports the active index; the parent renders
- *   the content. Web uses content projection (`<ino-tab>` as a real child component), which has no
+ *   the content. Web uses content projection (`<ino-tab-panel>` as a real child component), which has no
  *   RN equivalent worth inventing — an RN caller already renders content via a `switch`/navigator.
  * - **Controlled only, index-based.** Matches web's `[(activeIndex)]` two-way binding exactly — an
  *   RN caller always has a state hook already, so an internal fallback would be a second source of

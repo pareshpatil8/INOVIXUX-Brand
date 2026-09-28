@@ -852,6 +852,24 @@ const COMPONENT_REGISTRY = [
         roles: ['accent', 'accentSecondary', 'border', 'onAccent', 'onSurface', 'onSurfaceMuted'],
       },
     },
+    // INO-361 recovery: web folded the active/completed distinction into shape (a checkmark glyph)
+    // rather than two colour roles, so it dropped accentSecondary and added accentActive (the
+    // :active/mousedown state, recovered from the closed #20 branch), dangerTextSafe (invalid,
+    // recovered) and onSurfaceSubtle (disabled, recovered) — see SPEC.md §3. The mobile ports were
+    // not touched by this issue (SPEC.md §9) and keep their pre-existing two-tone treatment and
+    // press/invalid/disabled omissions.
+    divergences: [
+      {
+        platform: 'reactNative',
+        roles: ['accentSecondary', 'accentActive', 'dangerTextSafe', 'onSurfaceSubtle'],
+        reason: 'web reads accentSecondary no more (folded into shape, see the component-level comment above); accentActive is the transient mousedown press state (same rationale the input/datepicker/select entries in this file record for their own accentActive omission — touch has no pointer-down-before-focus phase); dangerTextSafe/onSurfaceSubtle (invalid/disabled) are new web-only states this issue recovered and deliberately did not port (SPEC.md §9).',
+      },
+      {
+        platform: 'flutter',
+        roles: ['accentSecondary', 'accentActive', 'dangerTextSafe', 'onSurfaceSubtle'],
+        reason: 'same as the React Native entry above.',
+      },
+    ],
   },
   {
     name: 'table',
@@ -872,6 +890,21 @@ const COMPONENT_REGISTRY = [
         roles: ['accent', 'border', 'onSurface', 'onSurfaceMuted'],
       },
     },
+    // INO-361 recovery: accentActive (pressed), dangerTextSafe (invalid), onSurfaceSubtle
+    // (disabled) and surfaceRaised (scroll-button/close-affordance hover fill) are all recovered
+    // states/affordances the mobile ports were not touched by this issue to add — see SPEC.md §9.
+    divergences: [
+      {
+        platform: 'reactNative',
+        roles: ['accentActive', 'dangerTextSafe', 'onSurfaceSubtle', 'surfaceRaised'],
+        reason: 'accentActive is the transient mousedown press state (same rationale the input/datepicker/select entries in this file record for their own accentActive omission — touch has no pointer-down-before-focus phase); dangerTextSafe/onSurfaceSubtle back the invalid/disabled states; surfaceRaised backs the scroll-button and close-affordance hover fill. All are new web-only surfaces this issue recovered (scrollable, invalid, loading, closable) and deliberately did not port (SPEC.md §9).',
+      },
+      {
+        platform: 'flutter',
+        roles: ['accentActive', 'dangerTextSafe', 'onSurfaceSubtle', 'surfaceRaised'],
+        reason: 'same as the React Native entry above.',
+      },
+    ],
   },
   {
     name: 'tag',
