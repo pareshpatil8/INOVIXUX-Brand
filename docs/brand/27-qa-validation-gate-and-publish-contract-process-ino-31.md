@@ -161,7 +161,7 @@ an already-published page is a remediation, not a gate.
 | D-gate 1 (role) | QALead | **Stood up.** This document is QALead's operating contract; §2's checklist is adopted verbatim. |
 | D-gate 2 (process) | QALead + issue authors | **Stood up.** §4 above is the flow; issue authors are responsible for embedding the blocking QA subtask per component issue going forward. |
 | D-gate 3 (CI: smoke tests, visual snapshots, docs-completeness lint) | CTO | Not in scope here — tracked separately per doc 26 §7/§8 (P1). This document's checklist is the spec CI should eventually encode; QA remains the human(-equivalent) gate until then. |
-| D-gate 4 (deploy: tag-gated Pages) | CTO | Not in scope here — until it lands, §4 step 5's enforcement is process-only (QA-APPROVED before the shipping merge), not automated. |
+| D-gate 4 (deploy: tag-gated Pages) | CTO | **Landed 2026-09-28** (INO-376) — see [`28-pages-deploy-gate-ino-31.md`](28-pages-deploy-gate-ino-31.md). Pages now publishes only from annotated `qa-approved-YYYYMMDD[-N]` tags on `main` whose message names the QA issues carrying QALead's `QA-APPROVED` disposition; a merge to `main` no longer publishes. §4 step 5 is therefore enforced mechanically at the *publish* step. The tag is a pointer to QALead's sign-off, not a substitute for it — CI checks the pointer's shape, not the sign-off's truth. |
 
 ---
 

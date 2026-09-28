@@ -1,16 +1,20 @@
 name: Deploy design-system app to GitHub Pages
 
+# INO-31 D-gate 4 (doc 26 §7, doc 28): Pages publishes only from QA-approved
+# tags, never from a plain merge to main. Publishing on every merge is what let
+# a half-remediated component catalog go live; the tag is the explicit "QA said
+# yes" step between merging and publishing.
+#
+# To publish:  see docs/brand/28-pages-deploy-gate-ino-31.md
+#   git tag -a qa-approved-YYYYMMDD-N   # annotated, with the qa-issues: trailer
+#   git push origin qa-approved-YYYYMMDD-N
 on:
   push:
-    branches: [main]
-    paths:
-      - "web/**"
-      - "package.json"
-      - "package-lock.json"
-      - "assets/brand/**"
-      - "docs/brand/mockups/**"
-      - "mobile/react-native/**"
-      - ".github/workflows/deploy-pages.yml"
+    tags:
+      - "qa-approved-*"
+  # Dispatch must be run AT a QA-approved tag ref, not at a branch:
+  #   gh workflow run deploy-pages.yml --ref qa-approved-YYYYMMDD-N
+  # The gate job below fails any non-tag ref.
   workflow_dispatch: {}
 
 permissions:
@@ -23,7 +27,84 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # ---------------------------------------------------------------------------
+  # D-gate 4: nothing builds or publishes until the ref is proven to be a
+  # well-formed QA-approved tag pointing at a commit already on main.
+  # ---------------------------------------------------------------------------
+  gate:
+    name: QA-approved tag gate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Refuse non-tag refs
+        if: github.ref_type != 'tag'
+        run: |
+          echo "::error::Pages publishes only from QA-approved tags. This run is on ${{ github.ref }} (${{ github.ref_type }})."
+          echo "Cut a tag instead — see docs/brand/28-pages-deploy-gate-ino-31.md:"
+          echo "  git tag -a qa-approved-\$(date +%Y%m%d)-1 -m ... && git push origin <tag>"
+          exit 1
+
+      - uses: actions/checkout@v4
+        with:
+          # Full history + the tag object itself, so we can read the annotation
+          # and prove containment in main.
+          fetch-depth: 0
+
+      - name: Validate tag name, annotation, and containment in main
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          fail() { echo "::error::$*"; exit 1; }
+
+          # 1. Naming convention — qa-approved-YYYYMMDD[-N].
+          if ! printf '%s' "$TAG" | grep -Eq '^qa-approved-[0-9]{8}(-[0-9]+)?$'; then
+            fail "Tag '$TAG' does not match qa-approved-YYYYMMDD[-N]."
+          fi
+
+          # 2. Must be an annotated tag — a lightweight tag carries no message,
+          #    so it cannot reference the QA sign-offs it claims.
+          type=$(git cat-file -t "refs/tags/$TAG")
+          if [ "$type" != "tag" ]; then
+            fail "Tag '$TAG' is a $type (lightweight) tag. Publish tags must be annotated (git tag -a) so they can carry the qa-issues: trailer."
+          fi
+
+          msg=$(git for-each-ref --format='%(contents)' "refs/tags/$TAG")
+
+          # 3. The annotation must POINT AT the QA sign-offs. The tag is not
+          #    itself a QA approval — per INO-295 only QALead authors those, on
+          #    the component's QA issue. The trailer is the pointer to that
+          #    evidence, and CI enforces the pointer is present and well-formed.
+          if ! printf '%s' "$msg" | grep -Eq '^qa-issues:[[:space:]]*INO-[0-9]+'; then
+            fail "Tag '$TAG' annotation has no 'qa-issues: INO-<n>[, INO-<n>...]' line naming the issues whose QA subtasks carry QALead's QA-APPROVED disposition."
+          fi
+          if ! printf '%s' "$msg" | grep -Eq '^components:[[:space:]]*[^[:space:]]'; then
+            fail "Tag '$TAG' annotation has no 'components:' line listing what this publish covers (use 'components: all' for a full-catalog republish)."
+          fi
+
+          # 4. Must be an ancestor of main. main is protected with strict
+          #    required checks (INO-262/303), so containment in main is also the
+          #    proof that the compile/theme-parity gates passed on this commit —
+          #    no need to re-query check runs here.
+          git fetch --no-tags --quiet origin +refs/heads/main:refs/remotes/origin/main
+          sha=$(git rev-parse "refs/tags/$TAG^{commit}")
+          if ! git merge-base --is-ancestor "$sha" refs/remotes/origin/main; then
+            fail "Tag '$TAG' ($sha) is not an ancestor of origin/main. Publish only from states that are on main and have passed its required checks."
+          fi
+
+          {
+            echo "### D-gate 4 — QA-approved tag accepted"
+            echo
+            echo "- tag: \`$TAG\`"
+            echo "- commit: \`$sha\`"
+            echo "- contained in \`main\`: yes"
+            echo
+            echo '```'
+            printf '%s\n' "$msg"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
   build:
+    needs: gate
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

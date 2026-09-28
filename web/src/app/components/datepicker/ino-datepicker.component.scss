@@ -183,6 +183,17 @@
   z-index: 1000;
 }
 
+/* `appendTo="body"` — reparented to `document.body` (INO-364); `top`/`left` come from JS
+   (`portalTop`/`portalLeft`, `getBoundingClientRect()`-derived — physical, not logical
+   properties, same reasoning as `../overlay/overlay-position.ts`'s doc comment) rather than the
+   `inset-*` rule above, which assumes the in-flow position:relative ancestor this element no
+   longer has once moved. */
+.ino-datepicker__overlay--portal {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+}
+
 .ino-datepicker__panel {
   position: relative;
   z-index: 1;
