@@ -1,9 +1,38 @@
-// INO-317: extracts the "Accessibility contract" and "Deliberate omissions" sections out of each
-// component's narrative doc (docs/brand/06-angular-components/<file>.md) and publishes them as a
-// runtime-fetchable JSON blob for the /docs/components portal. Generated — do not hand-edit.
+// INO-317/INO-367: extracts the "Accessibility contract" and "Deliberate omissions" sections out
+// of each component's narrative doc (docs/brand/06-angular-components/<file>.md), renders them
+// from markdown to sanitized HTML at generation time (so the portal has zero runtime markdown
+// dependency), and publishes them as a runtime-fetchable JSON blob for the /docs/components
+// portal. Generated — do not hand-edit.
 // Re-run after editing any component doc's a11y/omissions text or after the manifest changes:
 // `node scripts/generate-component-docs-extract.mjs`.
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { marked } from 'marked';
+import sanitizeHtml from 'sanitize-html';
+
+marked.setOptions({ gfm: true });
+
+/** Markdown -> sanitized HTML for one extracted section body. Allows the tags/attributes needed
+ * for tables, lists, code blocks and links; strips everything else (scripts, inline event
+ * handlers, style attributes, arbitrary URLs schemes). */
+function renderSection(markdown) {
+  if (!markdown) return null;
+  const html = marked.parse(markdown);
+  return sanitizeHtml(html, {
+    allowedTags: [
+      'p', 'br', 'hr',
+      'strong', 'em', 'del', 'code', 'pre',
+      'ul', 'ol', 'li',
+      'table', 'thead', 'tbody', 'tr', 'th', 'td',
+      'a', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote',
+    ],
+    allowedAttributes: {
+      a: ['href'],
+      th: ['align'],
+      td: ['align'],
+    },
+    allowedSchemes: ['http', 'https', 'mailto'],
+  });
+}
 
 const root = new URL('../', import.meta.url);
 const manifestPath = new URL('docs/brand/design-system.manifest.json', root);
@@ -66,8 +95,8 @@ for (const component of manifest.components) {
   components[slug] = {
     name: component.name,
     docPath,
-    a11y: extractSection(markdown, 'Accessibility contract'),
-    notes: extractSection(markdown, 'Deliberate omissions'),
+    a11y: renderSection(extractSection(markdown, 'Accessibility contract')),
+    notes: renderSection(extractSection(markdown, 'Deliberate omissions')),
   };
 }
 
@@ -75,6 +104,7 @@ const output = {
   generatedBy: 'scripts/generate-component-docs-extract.mjs',
   generatedFrom: 'docs/brand/06-angular-components/*.md via docs/brand/design-system.manifest.json',
   note: 'generated — do not hand-edit',
+  format: 'html', // a11y/notes are sanitized HTML (marked + sanitize-html at generation time), not raw markdown
   components,
 };
 

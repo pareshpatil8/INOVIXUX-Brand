@@ -25,6 +25,7 @@ box + SVG checkmark) with a tri-state indeterminate visual, a full eight-state c
 | `readonly` | `boolean` | `false` | Value is locked but the control stays focusable and fully legible — see [Readonly](#readonly) |
 | `loading` | `boolean` | `false` | `aria-busy` + disabled interaction + adjacent spinner; the box keeps its last committed value on screen |
 | `error` | `string` | `''` | Non-empty sets `aria-invalid` + renders the message; also paints a ring on the box itself |
+| `invalid` | `boolean` | `false` | Paints the same invalid ring/`aria-invalid` as `error`, with no message of its own — for `<ino-checkbox-group>`, whose shared `error` already renders once at the group level (INO-366) |
 
 | Output | Payload | Fires |
 |---|---|---|
@@ -78,6 +79,11 @@ reasoning: `SPEC.md` §4.
 Composes `<ino-checkbox>` internally rather than re-implementing native inputs — every state/size
 this document describes above applies per-item inside a group for free. Full reasoning: `SPEC.md`
 §6.
+
+A non-empty group `error` also sets `[invalid]="true"` on every item, so each checkbox's box paints
+the invalid ring — the group's `error` string still owns the single rendered message (INO-366; the
+per-item wiring was previously missing, so a group's own `error` painted only the shared message with
+no per-box visual signal).
 
 ---
 

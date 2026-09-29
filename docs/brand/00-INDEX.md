@@ -153,7 +153,10 @@ forward specifically to prevent the v1–v5 sprawl that caused the visibility pr
 fixing. See also [`27-qa-validation-gate-and-publish-contract-process-ino-31.md`](27-qa-validation-gate-and-publish-contract-process-ino-31.md)
 — QALead's operating process for the Component Publish Contract (doc 26 §2) and the blocking
 Spec → Build → Docs → QA → publish flow every component issue now carries (doc 26 §7 D-gates 1-2,
-INO-369).
+INO-369). And [`28-pages-deploy-gate-ino-31.md`](28-pages-deploy-gate-ino-31.md) — the deploy side
+of that gate (doc 26 §7 D-gate 4, INO-376): the public docs site now publishes only from an
+annotated `qa-approved-*` tag naming the QA sign-offs it rests on, so **a merge to `main` no longer
+changes the live site**. How to cut a publish tag is in that doc §4.
 
 ## 9. Open decisions (not blocking anything, answer whenever convenient)
 

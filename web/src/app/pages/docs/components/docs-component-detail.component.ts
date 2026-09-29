@@ -10,6 +10,7 @@ import {
 } from './component-docs-data.service';
 import { ThemeService, InoTheme } from '../../../services/theme.service';
 import { COMPONENT_REGISTRY } from './generated/component-registry';
+import { CUSTOM_DEMOS } from './custom-demos';
 
 /** One rendered live-example instance: a human label plus the resolved `[ngComponentOutletInputs]`
  * bag passed to the real component. */
@@ -74,6 +75,14 @@ export class DocsComponentDetailComponent {
     const component = this.component();
     if (!component) return null;
     return COMPONENT_REGISTRY[component.slug] ?? null;
+  });
+
+  /** Hand-authored §2-contract demo for this slug, if one exists (`./custom-demos.ts`) — takes
+   *  over the "Live example" section from the generic per-`@Input` grid below. */
+  protected readonly customDemoType = computed<Type<unknown> | null>(() => {
+    const component = this.component();
+    if (!component) return null;
+    return CUSTOM_DEMOS[component.slug] ?? null;
   });
 
   protected readonly primaryExamples = computed<LiveExample[]>(() => this.examples().primary);

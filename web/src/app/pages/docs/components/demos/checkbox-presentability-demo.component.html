@@ -1,0 +1,130 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Standalone</h3>
+  <div class="demo-row">
+    <ino-checkbox label="Subscribe to newsletter"></ino-checkbox>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States</h3>
+  <p class="demo-section__note">
+    Default, checked, indeterminate, disabled, readonly, loading and invalid below are static
+    per-state snapshots; hover / focus-visible / active are live on every enabled control on this
+    page — hover or tab onto any checkbox above or below to see them.
+  </p>
+  <div class="demo-row">
+    <ino-checkbox label="Default"></ino-checkbox>
+    <ino-checkbox label="Checked" [checked]="true"></ino-checkbox>
+    <ino-checkbox label="Indeterminate" [indeterminate]="true"></ino-checkbox>
+    <ino-checkbox label="Disabled" [disabled]="true"></ino-checkbox>
+    <ino-checkbox label="Disabled checked" [disabled]="true" [checked]="true"></ino-checkbox>
+    <ino-checkbox label="Readonly (locked)" [readonly]="true" [checked]="true"></ino-checkbox>
+    <ino-checkbox label="Loading" [loading]="true" [checked]="true"></ino-checkbox>
+    <ino-checkbox label="Invalid" [invalid]="true"></ino-checkbox>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Sizing</h3>
+  <p class="demo-section__note">The three-rung control-size scale — <code>sm</code> / <code>default</code> / <code>lg</code>.</p>
+  <div class="demo-row">
+    <ino-checkbox *ngFor="let size of sizes" [label]="size" [size]="size" [checked]="true"></ino-checkbox>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Density — dense vs. fluid</h3>
+  <p class="demo-section__note">
+    This docs page renders in the dense register by default (<code>[data-density="dense"]</code> on
+    the layout host); the pane on the right overrides to the fluid row-height floor to show the
+    contrast.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane" data-density="dense">
+      <p class="demo-pane__label">dense</p>
+      <ino-checkbox label="Dense row" [checked]="true"></ino-checkbox>
+    </div>
+    <div class="demo-pane" data-density="fluid">
+      <p class="demo-pane__label">fluid</p>
+      <ino-checkbox label="Fluid row" [checked]="true"></ino-checkbox>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Labels — wrapping &amp; RTL</h3>
+  <div class="demo-col" style="max-width: 360px;">
+    <ino-checkbox-group
+      legend="Notification preference (long label)"
+      [options]="longLabelOptions"
+      [value]="longLabelValue"
+      (valueChange)="longLabelValue = $event"
+      name="long-label-demo"
+    ></ino-checkbox-group>
+  </div>
+  <div class="demo-rtl" dir="rtl" style="margin-top: var(--ino-space-4);">
+    <ino-checkbox label="أوافق على الشروط" [checked]="true"></ino-checkbox>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Checkbox group</h3>
+  <p class="demo-section__note">
+    Shared <code>name</code>, one validation message, <code>value</code> as a <code>string[]</code>
+    — composes N standalone <code>&lt;ino-checkbox&gt;</code> rows.
+  </p>
+  <ino-checkbox-group
+    legend="Notify me about"
+    [options]="notifyOptions"
+    [value]="notifyValue"
+    (valueChange)="notifyValue = $event"
+    name="notify-demo"
+  ></ino-checkbox-group>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Group validation — invalid state</h3>
+  <p class="demo-section__note">
+    A non-empty group <code>error</code> renders the shared message on the <code>&lt;fieldset&gt;</code>
+    <em>and</em> paints the invalid ring on every item (<code>[invalid]="!!error"</code>, INO-366 —
+    this per-item wiring was previously missing).
+  </p>
+  <ino-checkbox-group
+    legend="Agreements"
+    [options]="termsOptions"
+    [value]="termsValue"
+    (valueChange)="termsValue = $event"
+    error="Both agreements are required to continue"
+    name="terms-demo"
+  ></ino-checkbox-group>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Dense-table usage</h3>
+  <p class="demo-section__note">
+    A multi-select column inside a dense data table — the row's own min-height comes from the
+    table row, not <code>ino-checkbox</code>'s row wrapper, so the control never inflates row
+    height.
+  </p>
+  <div data-density="dense">
+    <table class="demo-table">
+      <thead>
+        <tr>
+          <th scope="col">Select</th>
+          <th scope="col">Invoice</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of tableRows">
+          <td>
+            <ino-checkbox
+              [checked]="selectedRows.has(row.id)"
+              (checkedChange)="toggleRow(row.id, $event)"
+            ></ino-checkbox>
+          </td>
+          <td>{{ row.name }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>

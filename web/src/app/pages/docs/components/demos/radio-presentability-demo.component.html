@@ -1,0 +1,133 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Standalone (PrimeNG <code>RadioButton</code> shape)</h3>
+  <p class="demo-section__note">
+    A lone <code>&lt;ino-radio&gt;</code>, usable outside any group — each gets its own
+    auto-generated <code>name</code> so it never joins another radio's native group.
+  </p>
+  <div class="demo-row">
+    <ino-radio label="Email me updates"></ino-radio>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States</h3>
+  <p class="demo-section__note">
+    Default, checked, disabled, readonly, loading and invalid below are static per-state
+    snapshots; hover / focus-visible / active are live on every enabled control on this page —
+    hover or tab onto any radio above or below to see them.
+  </p>
+  <div class="demo-row">
+    <ino-radio label="Default" name="state-default"></ino-radio>
+    <ino-radio label="Checked" name="state-checked" [checked]="true"></ino-radio>
+    <ino-radio label="Disabled" name="state-disabled" [disabled]="true"></ino-radio>
+    <ino-radio label="Disabled checked" name="state-disabled-checked" [disabled]="true" [checked]="true"></ino-radio>
+    <ino-radio label="Readonly (locked)" name="state-readonly" [readonly]="true" [checked]="true"></ino-radio>
+    <ino-radio label="Loading" name="state-loading" [loading]="true" [checked]="true"></ino-radio>
+    <ino-radio label="Invalid" name="state-invalid" [invalid]="true"></ino-radio>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Sizing</h3>
+  <p class="demo-section__note">The three-rung control-size scale — <code>sm</code> / <code>default</code> / <code>lg</code>.</p>
+  <div class="demo-row">
+    <ino-radio *ngFor="let size of sizes" [label]="size" [name]="'size-' + size" [size]="size" [checked]="true"></ino-radio>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Density — dense vs. fluid</h3>
+  <p class="demo-section__note">
+    This docs page renders in the dense register by default (<code>[data-density="dense"]</code> on
+    the layout host); the pane on the right overrides to the fluid row-height floor to show the
+    contrast.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane" data-density="dense">
+      <p class="demo-pane__label">dense</p>
+      <ino-radio label="Dense row" name="density-dense" [checked]="true"></ino-radio>
+    </div>
+    <div class="demo-pane" data-density="fluid">
+      <p class="demo-pane__label">fluid</p>
+      <ino-radio label="Fluid row" name="density-fluid" [checked]="true"></ino-radio>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Labels — wrapping &amp; RTL</h3>
+  <div class="demo-col" style="max-width: 360px;">
+    <ino-radio-group
+      legend="Notification preference (long label)"
+      [options]="longLabelOptions"
+      [value]="longLabelValue"
+      name="long-label-demo"
+    ></ino-radio-group>
+  </div>
+  <div class="demo-rtl" dir="rtl" style="margin-top: var(--ino-space-4);">
+    <ino-radio label="أفضّل هذا الخيار" name="rtl-demo" [checked]="true"></ino-radio>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Radio group</h3>
+  <p class="demo-section__note">
+    Shared <code>name</code>, one validation message, <code>value</code> as a single string —
+    composes N standalone <code>&lt;ino-radio&gt;</code> rows.
+  </p>
+  <ino-radio-group
+    legend="Notification frequency"
+    [options]="frequencyOptions"
+    [value]="frequencyValue"
+    (valueChange)="frequencyValue = $event"
+    name="frequency-demo"
+  ></ino-radio-group>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Group validation — invalid state</h3>
+  <p class="demo-section__note">
+    A non-empty group <code>error</code> renders the shared message on the <code>&lt;fieldset&gt;</code>
+    <em>and</em> paints the invalid ring on every item (<code>[invalid]="!!error"</code>, INO-366 —
+    this per-item wiring was previously missing).
+  </p>
+  <ino-radio-group
+    legend="Choose a plan"
+    [options]="planOptions"
+    [value]="planValue"
+    (valueChange)="planValue = $event"
+    error="Please choose a plan"
+    name="plan-demo"
+  ></ino-radio-group>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Dense-table usage</h3>
+  <p class="demo-section__note">
+    A single-select column inside a dense data table — the row's own min-height comes from the
+    table row, not <code>ino-radio</code>'s row wrapper, so the control never inflates row height.
+  </p>
+  <div data-density="dense">
+    <table class="demo-table">
+      <thead>
+        <tr>
+          <th scope="col">Default</th>
+          <th scope="col">Contact</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of tableRows">
+          <td>
+            <ino-radio
+              [name]="'table-default-contact'"
+              [value]="row.value"
+              [checked]="defaultContact === row.value"
+              (checkedChange)="defaultContact = row.value"
+            ></ino-radio>
+          </td>
+          <td>{{ row.name }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>

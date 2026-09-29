@@ -35,6 +35,7 @@ import { InoProgressSpinnerComponent } from '../../../../components/progress-spi
 import { InoRadioGroupComponent } from '../../../../components/radio-group/ino-radio-group.component';
 import { InoSelectComponent } from '../../../../components/select/ino-select.component';
 import { InoSkeletonComponent } from '../../../../components/skeleton/ino-skeleton.component';
+import { InoStepperComponent } from '../../../../components/stepper/ino-stepper.component';
 import { InoTableComponent } from '../../../../components/table/ino-table.component';
 import { InoTabsComponent } from '../../../../components/tabs/ino-tabs.component';
 import { InoTagComponent } from '../../../../components/tag/ino-tag.component';
@@ -79,6 +80,7 @@ export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'radio-group': InoRadioGroupComponent,
   'select': InoSelectComponent,
   'skeleton': InoSkeletonComponent,
+  'stepper': InoStepperComponent,
   'table': InoTableComponent,
   'tabs': InoTabsComponent,
   'tag': InoTagComponent,

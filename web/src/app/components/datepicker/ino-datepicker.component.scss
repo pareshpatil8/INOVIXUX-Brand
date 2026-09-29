@@ -1,11 +1,7 @@
 /* <ino-datepicker> — INO-154/T-8. No literal colour/space/radius/duration/font-size; RTL via
-   logical properties only (SPEC.md §6). Full design rationale lives in SPEC.md, not here, to
-   keep this file inside the anyComponentStyle budget. */
-/* Local aliases for the handful of tokens.css roles this file references many times over (hover
-   fill, muted text, pressed accent, fast transition pair, the 24px tap-target floor) — pure
-   indirection, not a new value: each still resolves through its named tokens.css role, so DoD
-   row 1 ("every declaration resolves through a semantic role") still holds. Exists to keep this
-   component's stylesheet inside Angular's anyComponentStyle budget. */
+   logical properties only (SPEC.md §6). Full rationale in SPEC.md, not here (budget). */
+/* Local aliases for tokens.css roles referenced repeatedly — pure indirection, not a new value
+   (DoD row 1 still holds); keeps this file inside Angular's anyComponentStyle budget. */
 :host(.ino-datepicker) {
   --_muted: var(--ino-color-on-surface-muted);
   --_sunk: var(--ino-color-surface-sunken);
@@ -183,6 +179,15 @@
   z-index: 1000;
 }
 
+/* `appendTo="body"` (INO-364) — reparented to document.body; top/left come from JS
+   (physical px, see overlay-position.ts) instead of the inset-* rule above, which assumes the
+   in-flow position:relative ancestor this element no longer has once moved. */
+.ino-datepicker__overlay--portal {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+}
+
 .ino-datepicker__panel {
   position: relative;
   z-index: 1;
@@ -210,15 +215,9 @@
   }
 }
 
-/* ------------------------------------------------------------------ *
- * Shared button chrome (DoD rows 5/8) — one base class carries the parts
- * every clickable piece of the panel needs in common: reset, radius,
- * fast background transition, hover fill, Wave-0 focus ring, disabled
- * cursor. Every button-like element in the template (nav arrows,
- * drill-up heading, gridcells, time spinners, am/pm, confirm) also
- * carries `.ino-datepicker__btn`; the element-specific classes below
- * hold only what differs (sizing, color, font, extra hover/active).
- * ------------------------------------------------------------------ */
+/* Shared button chrome (DoD rows 5/8) — reset, radius, background transition, hover fill,
+ * focus ring, disabled cursor, carried by `.ino-datepicker__btn` on every button-like template
+ * element; element-specific classes below hold only what differs. */
 
 .ino-datepicker__btn {
   border: none;

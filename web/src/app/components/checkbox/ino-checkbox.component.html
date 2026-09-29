@@ -16,7 +16,7 @@
         [indeterminate]="indeterminate"
         [disabled]="disabled || loading"
         [attr.aria-checked]="indeterminate ? 'mixed' : null"
-        [attr.aria-invalid]="error ? true : null"
+        [attr.aria-invalid]="error || invalid ? true : null"
         [attr.aria-describedby]="error ? errorId : null"
         [attr.aria-readonly]="readonly ? true : null"
         [attr.aria-busy]="loading ? true : null"

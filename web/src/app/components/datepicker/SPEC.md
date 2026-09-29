@@ -50,6 +50,27 @@ a page-level interruption. `inline=true` renders the calendar grid directly with
 popup/backdrop/focus-trap at all — the grid's own buttons carry the component's full keyboard
 contract regardless of display mode.
 
+**3a. Overlay anchoring and `appendTo` (INO-364).** The `position: absolute` overlay above only
+resolves correctly because its markup lives *inside* the trigger's own `position: relative`
+wrapper (`.ino-field__control-wrap`) — not as a sibling of it. A sibling would resolve against
+whatever positioned ancestor happens to exist on the *host page*, which is exactly the bug this
+fixed: on the docs portal the panel opened somewhere else on the page entirely, because nothing in
+the component itself was a positioned ancestor. `appendTo="body"` (default `"self"`) is the escape
+hatch for the remaining case that fix doesn't cover — a trigger inside an `overflow:hidden` or
+scrolling ancestor, which clips the in-flow overlay regardless of its `position` value, since it
+never leaves that ancestor's DOM subtree. `appendTo="body"` reparents the overlay element to
+`document.body` at runtime (plain DOM `appendChild`, no CDK Portal dependency) and switches it from
+`position: absolute` to `position: fixed`, with `top`/`left` computed by the same
+`computeOverlayPlacement` (`overlay/overlay-position.ts`, INO-271) `<ino-popover>` /
+`<ino-confirm-popup>` / `[inoTooltip]` already share — `align: 'start'` so the panel stays flush
+with the trigger's inline-start edge (the dropdown convention this component's default anchoring
+already used) rather than `overlay-position.ts`'s original centered default, and the same single
+opposite-side-flip-then-viewport-clamp algorithm those three consumers get, so the panel flips
+above the trigger near the bottom edge and never overhangs the viewport. `resize`/`scroll`
+listeners reposition it live while open, same two-line pattern `<ino-popover>` uses (see
+`overlay/SPEC.md` §3 for why that isn't promoted into a shared primitive) — removed on close/
+destroy along with the reparented node itself.
+
 ## 4. Time picker stops at hour/minute — no seconds
 
 The issue's scope is "a time picker," not full `HH:mm:ss` precision. Every consumer scenario named
