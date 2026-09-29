@@ -8,7 +8,7 @@
   <section class="docs-import-section">
     <h2>Import</h2>
     <div class="docs-code-block">
-      <code>import &#123; {{ componentClassName() }} &#125; from '{{ componentImportPath() }}';</code>
+      <code>{{ importStatement() }}</code>
       <button type="button" class="docs-copy-button" (click)="copyImport()" [attr.aria-label]="'Copy import statement for ' + c.name">
         📋
       </button>

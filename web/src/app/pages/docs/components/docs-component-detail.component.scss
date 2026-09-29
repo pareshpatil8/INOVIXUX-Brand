@@ -238,7 +238,7 @@
   border: 1px solid var(--ino-color-border);
   border-radius: var(--ino-radius-sm);
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color var(--ino-motion-duration-base);
   font-size: 16px;
   line-height: 1;
 

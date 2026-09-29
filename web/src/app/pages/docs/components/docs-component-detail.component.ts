@@ -142,12 +142,16 @@ export class DocsComponentDetailComponent {
     return match ? `@app/${match[1]}` : '';
   });
 
-  /** Copy the import statement to clipboard. */
-  protected copyImport(): void {
+  /** Full import statement for display and copying. */
+  protected readonly importStatement = computed<string>(() => {
     const className = this.componentClassName();
     const importPath = this.componentImportPath();
-    const importStatement = `import { ${className} } from '${importPath}';`;
-    navigator.clipboard.writeText(importStatement).catch((err) => {
+    return `import { ${className} } from '${importPath}';`;
+  });
+
+  /** Copy the import statement to clipboard. */
+  protected copyImport(): void {
+    navigator.clipboard.writeText(this.importStatement()).catch((err) => {
       console.error('Failed to copy import statement:', err);
     });
   }
