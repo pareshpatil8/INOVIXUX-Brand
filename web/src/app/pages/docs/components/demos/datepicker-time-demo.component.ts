@@ -38,6 +38,9 @@ import { INO_CONTROL_SIZES } from '../../../../components/control-size';
 export class DatepickerTimeDemoComponent {
   protected readonly sizes = INO_CONTROL_SIZES;
 
+  // Baseline variant — date-only, single selection (INO-386 §2 item 1)
+  protected baselineDateValue: Date | null = new Date(2026, 8, 28);
+
   // Positioning regression (INO-364) — positioned ancestor / scrolling ancestor / body portal
   protected positionedAncestorValue: Date | null = null;
   protected scrollSelfValue: Date | null = null;
@@ -78,4 +81,13 @@ export class DatepickerTimeDemoComponent {
   // Error state
   protected errorValue: Date | null = null;
   protected readonly errorMessage = 'Appointment time must be during business hours';
+
+  // Readonly state (INO-386 §2 item 2)
+  protected readonlyValue: Date | null = new Date(2026, 8, 28);
+
+  // Required state (INO-386 §2 item 2)
+  protected requiredValue: Date | null = null;
+
+  // Empty state (INO-386 §2 item 2)
+  protected emptyValue: Date | null = null;
 }

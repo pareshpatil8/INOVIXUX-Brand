@@ -1,4 +1,25 @@
 <div class="demo-grid">
+  <!-- Baseline variant — date-only, single selection (INO-386) -->
+  <section class="demo-section">
+    <h3 class="demo-section__title">Baseline: Date Selection (Default)</h3>
+    <p class="demo-section__desc">
+      The component's fundamental variant — single date selection with no time picker. Calendar grid
+      with prev/next month navigation and optional typed input. This is the base behavior when no
+      <code>showTime</code>, <code>timeOnly</code>, or <code>manualEntry</code> flags are set.
+    </p>
+    <div class="demo-row">
+      <ino-datepicker
+        label="Event date"
+        hint="Select a date"
+        [(value)]="baselineDateValue"
+        placeholder="Choose a date"
+      ></ino-datepicker>
+    </div>
+    <div class="demo-row">
+      <span class="demo-value">Selected: {{ baselineDateValue | date: 'mediumDate' }}</span>
+    </div>
+  </section>
+
   <!-- Positioning regression (INO-364) -->
   <section class="demo-section">
     <h3 class="demo-section__title">Overlay Positioning Regression (INO-364)</h3>
@@ -239,6 +260,55 @@
         [showTime]="true"
         [(value)]="errorValue"
         placeholder="Select a valid time"
+      ></ino-datepicker>
+    </div>
+  </section>
+
+  <!-- States: Readonly (INO-386) -->
+  <section class="demo-section">
+    <h3 class="demo-section__title">State: Readonly</h3>
+    <p class="demo-section__desc">
+      Read-only datepicker — value is visible but not editable. The picker overlay does not open.
+    </p>
+    <div class="demo-row">
+      <ino-datepicker
+        label="Readonly date"
+        hint="This date cannot be changed"
+        [readonly]="true"
+        [(value)]="readonlyValue"
+      ></ino-datepicker>
+    </div>
+  </section>
+
+  <!-- States: Required (INO-386) -->
+  <section class="demo-section">
+    <h3 class="demo-section__title">State: Required</h3>
+    <p class="demo-section__desc">
+      Required field — typically triggers validation when submitted without a value.
+    </p>
+    <div class="demo-row">
+      <ino-datepicker
+        label="Required date"
+        hint="This field is required"
+        [required]="true"
+        [(value)]="requiredValue"
+        placeholder="Select a date (required)"
+      ></ino-datepicker>
+    </div>
+  </section>
+
+  <!-- States: Empty (INO-386) -->
+  <section class="demo-section">
+    <h3 class="demo-section__title">State: Empty</h3>
+    <p class="demo-section__desc">
+      Explicit empty state — no value selected, showing placeholder only.
+    </p>
+    <div class="demo-row">
+      <ino-datepicker
+        label="Empty datepicker"
+        hint="No value selected yet"
+        [(value)]="emptyValue"
+        placeholder="Choose a date"
       ></ino-datepicker>
     </div>
   </section>
