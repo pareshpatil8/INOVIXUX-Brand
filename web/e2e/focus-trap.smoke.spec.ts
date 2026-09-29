@@ -23,15 +23,10 @@ import { activeElement, focusIsInside, gotoDocs } from './support/portal';
  *   - the datepicker's `role="dialog"` panel on /docs/components/datepicker, which carries
  *     `inoFocusTrap` with an `initialFocus` selector
  *
- * ── On the quarantined test at the bottom of this file ───────────────────────────────────
- * The CONTAINMENT half of the trap contract passes and lands armed. The RESTORE half does
- * not: this gate's first run found that closing a trapped overlay drops focus on `<body>`
- * instead of returning it to the trigger, on both surfaces. That is INO-392, a real defect
- * with a located cause, filed rather than fixed here because a component fix belongs on its
- * own issue with a QA subtask (doc 26 §7 D-gate 1/2) and not inside a CI-plumbing PR.
- * `test.fail()` is the honest way to land that: CI stays green, the defect is recorded in
- * executable form, and the moment someone fixes it Playwright reports the unexpectedly-passing
- * test as a FAILURE — which is what tells the fixer to delete the annotation.
+ * The RESTORE half of the trap contract (focus returns to the trigger on close) was the
+ * INO-392 defect: the directive read `host.contains(activeElement())` after `*ngIf` teardown
+ * had already moved focus off the host, so the restore was skipped in the common case. Fixed
+ * in ino-focus-trap.directive.ts by also treating `null`/`<body>` as "focus was ours".
  */
 
 const TAB_CYCLES = 12; // comfortably more than the focusable count in either surface
@@ -117,15 +112,7 @@ test.describe('D-gate 3a — focus trap (APG modal dialog pattern)', () => {
     // gates get switched off.
   });
 
-  // ── Quarantined: INO-392 ────────────────────────────────────────────────────────────────
   test('ino-modal: Escape restores focus to the trigger', async ({ page }) => {
-    test.fail(
-      true,
-      'INO-392 — focus is dropped on <body> instead of being restored to the trigger. The ' +
-        'restore is skipped because the directive checks `host.contains(activeElement())` ' +
-        'after teardown has already moved focus off the host. Delete this test.fail() with the fix.',
-    );
-
     await gotoDocs(page, '/docs/design-system');
     const trigger = page.getByRole('button', { name: 'Open modal' });
     await trigger.scrollIntoViewIfNeeded();

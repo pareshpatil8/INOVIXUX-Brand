@@ -19,13 +19,9 @@ import { activeElement, gotoDocs } from './support/portal';
  *
  * ── Quarantined tests in this file ───────────────────────────────────────────────────────
  * The three INO-390 grid-navigation defects are fixed; their `test.fail()` annotations are
- * removed below. One datepicker grid test still carries `test.fail()`, for INO-392 (focus
- * dropped to <body> on dismiss instead of returning to the trigger) — that is a REAL DEFECT
- * this gate found, not a flaky test or an aspirational spec; see its annotation for the
- * located cause. It is filed rather than fixed here because that component fix belongs on
- * its own issue with a QA subtask (doc 26 §7 D-gate 1/2), not inside this PR. Playwright
- * reports an unexpectedly-PASSING `test.fail()` test as a failure, so CI is what tells the
- * fixer to delete the annotation — the quarantine cannot rot into a permanent exemption.
+ * removed below. The INO-392 datepicker restore-focus test's `test.fail()` is also removed:
+ * that defect (focus dropped to <body> on dismiss instead of returning to the trigger) is
+ * fixed in ino-focus-trap.directive.ts.
  *
  * The INO-390 fix has three parts: (1) `cdr.detectChanges()` in place of `queueMicrotask` in
  * both `openPanel` and `onGridKeydown`; (2) a `trackBy` on both grid `*ngFor`s in the template,
@@ -166,16 +162,7 @@ test.describe('D-gate 3a — APG "Date Picker Dialog" keyboard map (ino-datepick
     expect(valueAfter, 'Escape committed a value — it must cancel, not select').toBe(valueBefore);
   });
 
-  // ── Quarantined: INO-392 ────────────────────────────────────────────────────────────────
   test('dismissing the dialog returns focus to the trigger', async ({ page }) => {
-    test.fail(
-      true,
-      'INO-392 — focus is dropped on <body> instead of the trigger, on both Escape-dismiss and ' +
-        'Enter-select. Same cause as the modal: the focus-trap directive skips its restore ' +
-        'because it reads `host.contains(activeElement())` after teardown. ' +
-        'Delete this test.fail() with the fix.',
-    );
-
     const { trigger } = await openDatepickerGrid(page);
     await page.keyboard.press('Escape');
     await expect(page.locator('.ino-datepicker__panel[role="dialog"]')).toHaveCount(0);
