@@ -152,7 +152,13 @@ jobs:
       - name: Are the baselines seeded?
         id: baselines
         run: |
-          count=$(find web/e2e/__screenshots__ -name '*.png' 2>/dev/null | wc -l | tr -d ' ')
+          # `mkdir -p` rather than `find ... 2>/dev/null` (INO-393). Git does not track empty
+          # directories, so on a seed run this path does not exist, and `find` on a missing
+          # directory exits 1 — which under `-o pipefail` fails the step. Redirecting stderr
+          # hides the message but not the status. The catch-22: the step whose whole job is to
+          # detect "no baselines yet" crashed in exactly the case it exists to detect.
+          mkdir -p web/e2e/__screenshots__
+          count=$(find web/e2e/__screenshots__ -name '*.png' | wc -l | tr -d ' ')
           echo "count=$count" >> "$GITHUB_OUTPUT"
           echo "committed baselines: $count"
 
@@ -169,8 +175,20 @@ jobs:
         if: steps.baselines.outputs.count == '0' || github.event.inputs.update_baselines == 'true'
         run: |
           set -euo pipefail
-          npm run e2e:visual:update
+          # Playwright reports a snapshot it had to WRITE as a failed test ("A snapshot doesn't
+          # exist at ..., writing actual"), so a seed run legitimately exits non-zero on the very
+          # run whose job is to produce the baselines. Letting `-e` abort here would skip the
+          # upload step and throw away the images we came for. Capture the status and judge on
+          # what was actually produced instead — which is the real question, and still fails
+          # loudly if the run produced nothing (a broken build, a portal that 500s).
+          status=0
+          npm run e2e:visual:update || status=$?
           produced=$(find web/e2e/__screenshots__ -name '*.png' | wc -l | tr -d ' ')
+          echo "playwright exited $status; produced $produced baselines"
+          if [ "$produced" -eq 0 ]; then
+            echo "::error::Seed run produced no baselines at all (playwright exit $status). This is a real failure, not the expected write-new-snapshot exit code."
+            exit 1
+          fi
           {
             echo "### D-gate 3b — BASELINES NOT YET ARMED"
             echo
