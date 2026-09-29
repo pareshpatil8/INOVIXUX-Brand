@@ -1,0 +1,34 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Structure — name, description, feature list</h3>
+  <div class="demo-row">
+    <ino-tier-card
+      name="Standard"
+      description="Illustrative deployment tier for a single workspace."
+      [features]="standardFeatures"
+    ></ino-tier-card>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States — highlighted</h3>
+  <p class="demo-section__note">
+    <code>highlighted</code> renders a visible border/accent treatment <em>and</em> the mandatory
+    "illustrative, not commercial" disclaimer (INO-14 hold) — the disclaimer is not optional copy,
+    it is tied to this state on purpose.
+  </p>
+  <div class="demo-row">
+    <ino-tier-card
+      name="Scale"
+      description="Illustrative deployment tier for multi-workspace rollouts."
+      [features]="scaleFeatures"
+      [highlighted]="true"
+    ></ino-tier-card>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States — no features</h3>
+  <div class="demo-row">
+    <ino-tier-card name="Pilot" description="No feature list supplied." [features]="[]"></ino-tier-card>
+  </div>
+</section>

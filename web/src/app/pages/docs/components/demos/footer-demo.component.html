@@ -1,0 +1,20 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Structure — mark + 4 link columns</h3>
+  <p class="demo-section__note">
+    The <code>[logo]</code> slot is projected content (caller-supplied mark/wordmark); columns are
+    data-driven via the <code>columns</code> input, each link rendered with <code>routerLink</code>.
+  </p>
+  <ino-footer [columns]="columns">
+    <span logo style="font-family: var(--ino-font-mono); font-weight: 600;">INOVIXUX</span>
+  </ino-footer>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States — no columns</h3>
+  <p class="demo-section__note">
+    With an empty <code>columns</code> array only the mark column renders — no placeholder columns.
+  </p>
+  <ino-footer [columns]="noColumns">
+    <span logo style="font-family: var(--ino-font-mono); font-weight: 600;">INOVIXUX</span>
+  </ino-footer>
+</section>

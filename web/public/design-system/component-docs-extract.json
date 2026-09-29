@@ -936,9 +936,9 @@
     },
     "feature-grid": {
       "name": "ino-feature-grid",
-      "docPath": null,
-      "a11y": null,
-      "notes": null,
+      "docPath": "docs/brand/06-angular-components/feature-grid.md",
+      "a11y": "<p><strong>Role / ARIA</strong> — no explicit role or landmark; the grid is a sequence of <code>&lt;article&gt;</code> elements in\nnormal reading order. The icon glyph is <code>aria-hidden=\"true\"</code> on every card — it is decorative\nalongside the title, not an independent piece of content — so only the title and description are\nexposed to assistive tech.</p>\n<p><strong>Keyboard</strong> — none owned by this component. No item is focusable or activatable; if a caller needs\na clickable feature card, it wraps the content in its own <code>&lt;a&gt;</code>/<code>&lt;button&gt;</code> and owns that contract\n(same pattern as <code>ino-card</code>'s <code>interactive</code> input, which this component does not have).</p>\n<p><strong>Contrast</strong> — card background/border/text token pairs are pre-existing tokens, audited across all\nthree themes by <code>node scripts/check-theme-parity.mjs</code>.</p>\n<p><strong>RTL</strong> — the grid uses <code>gap</code>/<code>grid-template-columns</code> and logical padding; no <code>left</code>/<code>right</code> values\nin the stylesheet.</p>\n<hr />\n",
+      "notes": "<ul>\n<li><strong>Interactivity.</strong> No <code>interactive</code>/clickable variant, unlike <code>ino-card</code>. A feature grid item\nthat needs to be a link is out of this component's scope — compose <code>ino-card</code> instead.</li>\n<li><strong>Icon slot.</strong> <code>icon</code> is a plain string rendered as text, not a projected <code>&lt;ng-content&gt;</code> slot for\nan <code>&lt;svg&gt;</code> — every current call site uses an emoji glyph. Revisit if a call site needs a real\nicon component.</li>\n<li><strong>Readonly / invalid states.</strong> Not carried — the grid has no value of its own to lock or fail\nvalidation.</li>\n</ul>\n",
       "api": {
         "props": [
           {
@@ -1260,9 +1260,9 @@
     },
     "footer": {
       "name": "ino-footer",
-      "docPath": null,
-      "a11y": null,
-      "notes": null,
+      "docPath": "docs/brand/06-angular-components/footer.md",
+      "a11y": "<p><strong>Role / ARIA</strong> — <code>&lt;footer&gt;</code>'s implicit <code>contentinfo</code> landmark role is unchanged; each link list is\na plain <code>&lt;ul&gt;</code>/<code>&lt;li&gt;</code> with no additional ARIA. No <code>aria-label</code> is added to disambiguate multiple\n<code>&lt;nav&gt;</code>-like lists because the lists are not marked up as <code>&lt;nav&gt;</code> — they are footer link groups,\nmatching the v5 HTML structure exactly.</p>\n<p><strong>Keyboard</strong> — none owned by the component beyond the browser-native link focus/activation that\n<code>routerLink</code> anchors already provide; there is no roving-tabindex or custom key handling.</p>\n<p><strong>Contrast</strong> — heading/link/hover-underline token pairs are pre-existing tokens, audited across all\nthree themes by <code>node scripts/check-theme-parity.mjs</code>.</p>\n<p><strong>RTL</strong> — the grid uses <code>gap</code>/logical <code>grid-template-columns</code> flow; no <code>left</code>/<code>right</code> positioning in\nthe stylesheet, so the column order mirrors correctly under <code>dir=\"rtl\"</code>.</p>\n<hr />\n",
+      "notes": "<ul>\n<li><strong>Social/legal link row.</strong> Not carried — the v5 marketing HTML's footer only ever used the mark +\n4 link-column shape; a bottom legal/social bar is a separate concern this component does not own.</li>\n<li><strong>Column count enforcement.</strong> No minimum/maximum on <code>columns.length</code> — a caller passing 1 or 6\ncolumns gets exactly that many; the 5-column layout is a CSS default, not a clamp.</li>\n<li><strong>Readonly / invalid states.</strong> Not carried — the footer has no value of its own to lock or fail\nvalidation.</li>\n</ul>\n",
       "api": {
         "props": [
           {
@@ -1286,9 +1286,9 @@
     },
     "hero": {
       "name": "ino-hero",
-      "docPath": null,
-      "a11y": null,
-      "notes": null,
+      "docPath": "docs/brand/06-angular-components/hero.md",
+      "a11y": "<p><strong>Role / ARIA</strong> — <code>&lt;section&gt;</code>'s implicit generic-section role is unchanged; no <code>aria-label</code> is added\nbecause the visible <code>headline</code> (an <code>&lt;h1&gt;</code>) already gives the section an accessible name via the\nstandard heading-labels-section pattern. <strong>Callers must not project their own <code>&lt;h1&gt;</code></strong> inside the\ndefault slot — this component already renders the page's one <code>&lt;h1&gt;</code> from <code>headline</code>.</p>\n<p><strong>Keyboard</strong> — none owned by this component. Any interactive projected content (a CTA button, a\nform) owns its own keyboard contract independently.</p>\n<p><strong>Contrast</strong> — eyebrow/headline/lead text-color tokens are pre-existing tokens, audited across all\nthree themes by <code>node scripts/check-theme-parity.mjs</code>.</p>\n<p><strong>RTL</strong> — logical properties only (<code>padding-inline</code>/<code>padding-block</code>, flow-relative flex direction);\nno <code>left</code>/<code>right</code>/<code>top</code>/<code>bottom</code> in the stylesheet.</p>\n<hr />\n",
+      "notes": "<ul>\n<li><strong>Background media (image/video).</strong> Not carried — a hero needing a background image/video\ncomposes it into the projected-content region or wraps <code>&lt;ino-hero&gt;</code> itself; the shell owns no\n<code>background</code>/<code>media</code> input.</li>\n<li><strong>Built-in CTA button(s).</strong> Not carried — CTAs are always caller-supplied projected content\n(typically <code>ino-button</code>), so the hero never hard-codes button copy, variant, or <code>href</code>/<code>routerLink</code>.</li>\n<li><strong>Readonly / invalid states.</strong> Not carried — the hero has no value of its own to lock or fail\nvalidation.</li>\n</ul>\n",
       "api": {
         "props": [
           {
@@ -1889,9 +1889,9 @@
     },
     "metric-panel": {
       "name": "ino-metric-panel",
-      "docPath": null,
-      "a11y": null,
-      "notes": null,
+      "docPath": "docs/brand/06-angular-components/metric-panel.md",
+      "a11y": "<p><strong>Role / ARIA</strong> — no explicit role; <code>&lt;section&gt;</code>'s implicit generic-section role is unchanged. The\ncount-up animation is purely visual (no <code>aria-live</code> region) — the final <code>value</code> is present in the\nDOM text content immediately, so a screen reader reading the panel on its own schedule always gets\nthe settled number, not an in-progress one.</p>\n<p><strong>Status dot</strong> — each row's leading dot (<code>&lt;span class=\"dot\" aria-hidden=\"true\"&gt;</code>) is decorative;\nthe status is conveyed to assistive tech via the row's text content and the <code>[data-status]</code>\nattribute is presentation-only, not exposed as ARIA. Status is never color-only: the chip also\ncarries the row's <code>value</code> text.</p>\n<p><strong>Keyboard</strong> — none owned by this component. No row is focusable or activatable; a caller needing a\nclickable risk row composes its own interactive wrapper.</p>\n<p><strong>Contrast</strong> — the three RAG fill/on-fill token pairs are the same AA-verified pairs <code>ino-tag</code>\nextracted and reuses, audited across all three themes by <code>node scripts/check-theme-parity.mjs</code>.</p>\n<p><strong>RTL</strong> — logical properties throughout (<code>padding-inline</code>/<code>padding-block</code>, flex gap); no\n<code>left</code>/<code>right</code>/<code>top</code>/<code>bottom</code> in the stylesheet.</p>\n<hr />\n",
+      "notes": "<ul>\n<li><strong>Interactivity / drill-down.</strong> Not carried — rows are static display data; a clickable\ndrill-down into a risk row is caller-composed, not a component input/output.</li>\n<li><strong>Trend chart / sparkline.</strong> Not carried — <code>delta</code> is caption text only, no inline chart\nrendering; a caller wanting a chart composes one alongside this component.</li>\n<li><strong>Readonly / invalid states.</strong> Not carried — the panel has no editable value of its own to lock or\nfail validation; <code>value</code> is a display number, not a form control value.</li>\n</ul>\n",
       "api": {
         "props": [
           {
@@ -3737,9 +3737,9 @@
     },
     "tier-card": {
       "name": "ino-tier-card",
-      "docPath": null,
-      "a11y": null,
-      "notes": null,
+      "docPath": "docs/brand/06-angular-components/tier-card.md",
+      "a11y": "<p><strong>Role / ARIA</strong> — no explicit role; <code>&lt;article&gt;</code>'s implicit role is unchanged. No ARIA is added to\nmark <code>highlighted</code> — the visual highlight is a styling affordance, and the disclaimer paragraph\nthat accompanies it is plain readable text, already exposed to assistive tech in document order.</p>\n<p><strong>Keyboard</strong> — none owned by this component. The card is never focusable or activatable on its own;\na caller making a tier card a click/tap target (e.g. \"select this tier\") wraps it in its own\ninteractive element and owns that contract, the same pattern <code>ino-card</code>'s <code>interactive</code> input\ndocuments.</p>\n<p><strong>Contrast</strong> — surface/border/highlight-accent token pairs are pre-existing tokens, audited across\nall three themes by <code>node scripts/check-theme-parity.mjs</code>. The disclaimer text uses the same body\ntext-color token as <code>description</code>, not a lower-contrast \"fine print\" treatment — the note is meant\nto be read, not hidden.</p>\n<p><strong>RTL</strong> — logical properties throughout (<code>padding-inline</code>/<code>padding-block</code>, <code>border-inline-start</code>);\nno <code>left</code>/<code>right</code>/<code>top</code>/<code>bottom</code> in the stylesheet.</p>\n<hr />\n",
+      "notes": "<ul>\n<li><strong>Price / billing-period fields.</strong> Not carried — this is explicitly a deployment-tier card, not a\npricing card; adding a <code>price</code>/<code>period</code> <code>@Input</code> would misrepresent it as a commercial offer,\nwhich is exactly what the INO-14 hold and the <code>highlighted</code> disclaimer exist to prevent. Do not\nadd these fields without a signed-off commercial-pricing decision superseding INO-14.</li>\n<li><strong>Per-feature included/excluded state.</strong> Not carried — <code>features</code> is a flat bullet list; a\ncheckmark/cross comparison matrix is a different, not-yet-built component.</li>\n<li><strong>Disclaimer text as an <code>@Input</code>.</strong> Not carried on purpose — making the non-commercial framing\neditable per call site would let a caller quietly drop or soften it. The text is fixed in the\ncomponent so it cannot be accidentally removed \"to make the card look more finished\" (the\ncomponent's own class-level doc comment calls this out explicitly as a non-goal).</li>\n<li><strong>Readonly / invalid states.</strong> Not carried — the card has no value of its own to lock or fail\nvalidation.</li>\n</ul>\n",
       "api": {
         "props": [
           {

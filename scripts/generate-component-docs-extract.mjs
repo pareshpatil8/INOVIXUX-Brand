@@ -226,18 +226,15 @@ function parseComponentApi(sourcePath) {
 
 // Filenames under docs/brand/06-angular-components/ are `${slug}.md` by default; these are the
 // documented exceptions (see docs/brand/24-primeng-component-audit-ino-31.md and the INO-317
-// ticket) plus the 5 marketing-only components that have no PrimeNG counterpart and no doc at all.
+// ticket).
 // (float-label / ifta-label's actual source directories are named `floatlabel` / `iftalabel`
 // without a hyphen, so the default `${slug}.md` rule already resolves them correctly — no
-// override entry needed for those two.)
+// override entry needed for those two. The 5 marketing-only components with no PrimeNG
+// counterpart — feature-grid, footer, hero, metric-panel, tier-card — got docs in INO-374 and
+// also resolve via the default rule now; no override entry needed for those either.)
 const DOC_FILE_OVERRIDES = {
   nav: 'ino-nav.md',
   'toast-container': 'alert.md', // Toast shares the Message/alert doc
-  'feature-grid': null,
-  footer: null,
-  hero: null,
-  'metric-panel': null,
-  'tier-card': null,
 };
 
 function docFileFor(slug) {
