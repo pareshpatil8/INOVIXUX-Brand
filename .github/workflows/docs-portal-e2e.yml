@@ -111,6 +111,15 @@ jobs:
     # hostage to, and the runner image updates them without telling us. The container is
     # also what makes the baselines reproducible on a laptop (docker run, same tag).
     container: mcr.microsoft.com/playwright:v1.63.0-noble
+    # REQUIRED for a container job, not cosmetic (INO-393). Actions resolves the default shell
+    # for `run:` steps inside a container to `sh -e {0}`, and on noble /bin/sh is dash, which
+    # has no `set -o pipefail` — every step below that opens with `set -euo pipefail` dies with
+    # "Illegal option -o pipefail" and exit 2 before running a single line of its body. That is
+    # what happened on this workflow's first real execution: the version guard "failed" while
+    # the versions in fact matched, and seed mode was never reached. The image has bash; say so.
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@v4
 
