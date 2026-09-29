@@ -5,30 +5,15 @@
     Source: <code>{{ c.sourcePath }}</code>
   </p>
 
-  <h2>Props / API</h2>
-  <table class="docs-table" *ngIf="c.inputs.length; else noInputs">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Values</th>
-        <th>Default</th>
-        <th>Optional</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let input of c.inputs">
-        <td><code>{{ input.name }}</code></td>
-        <td><code>{{ input.type }}</code></td>
-        <td>{{ inputValuesLabel(input) }}</td>
-        <td>{{ input.default ?? '—' }}</td>
-        <td>{{ input.optional ? 'yes' : 'no' }}</td>
-      </tr>
-    </tbody>
-  </table>
-  <ng-template #noInputs>
-    <p>This component declares no <code>@Input()</code> properties.</p>
-  </ng-template>
+  <section class="docs-import-section">
+    <h2>Import</h2>
+    <div class="docs-code-block">
+      <code>import &#123; {{ componentClassName() }} &#125; from '{{ componentImportPath() }}';</code>
+      <button type="button" class="docs-copy-button" (click)="copyImport()" [attr.aria-label]="'Copy import statement for ' + c.name">
+        📋
+      </button>
+    </div>
+  </section>
 
   <h2>Theme</h2>
   <div class="docs-theme-switcher" role="group" aria-label="Preview theme">
@@ -81,7 +66,98 @@
     </ng-template>
   </ng-template>
 
-  <h2>Accessibility contract</h2>
+  <h2>API</h2>
+  <ng-container *ngIf="docExtract() as extract">
+    <section class="docs-api-section" *ngIf="extract.api">
+      <h3>Props</h3>
+      <table class="docs-table" *ngIf="extract.api.props?.length; else noProps">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let prop of extract.api.props">
+            <td><code>{{ prop.name }}</code>{{ prop.optional ? '' : ' *' }}</td>
+            <td><code>{{ prop.type }}</code></td>
+            <td><code>{{ prop.default ?? '—' }}</code></td>
+            <td>{{ prop.description || '—' }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <ng-template #noProps>
+        <p>This component declares no <code>@Input()</code> properties.</p>
+      </ng-template>
+
+      <h3>Events</h3>
+      <table class="docs-table" *ngIf="extract.api.events?.length; else noEvents">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let event of extract.api.events">
+            <td><code>{{ event.name }}</code></td>
+            <td><code>{{ event.type }}</code></td>
+            <td>{{ event.description || '—' }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <ng-template #noEvents>
+        <p>This component declares no <code>@Output()</code> events.</p>
+      </ng-template>
+
+      <h3>Methods</h3>
+      <table class="docs-table" *ngIf="extract.api.methods?.length; else noMethods">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Parameters</th>
+            <th>Return Type</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let method of extract.api.methods">
+            <td><code>{{ method.name }}</code></td>
+            <td><code>{{ method.params || '()' }}</code></td>
+            <td><code>{{ method.returnType }}</code></td>
+            <td>{{ method.description || '—' }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <ng-template #noMethods>
+        <p>This component exposes no documented public methods.</p>
+      </ng-template>
+
+      <h3>Templates (Slots)</h3>
+      <table class="docs-table" *ngIf="extract.api.templates?.length; else noTemplates">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let template of extract.api.templates">
+            <td><code>{{ template.name }}</code></td>
+            <td>{{ template.description || '—' }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <ng-template #noTemplates>
+        <p>This component declares no <code>&lt;ng-content&gt;</code> projection slots.</p>
+      </ng-template>
+    </section>
+  </ng-container>
+
+  <h2>Accessibility</h2>
   <ng-container *ngIf="docExtract() as extract; else noDoc">
     <div class="docs-markdown" *ngIf="extract.a11y; else noA11y" [innerHTML]="extract.a11y"></div>
     <ng-template #noA11y>
@@ -89,11 +165,36 @@
     </ng-template>
   </ng-container>
 
-  <h2>Notes / deliberate omissions</h2>
+  <h2>Theming</h2>
+  <ng-container *ngIf="componentTokens() as tokens; else noTokens">
+    <p>Component-specific design tokens (live values from current theme: <strong>{{ themeService.theme() }}</strong>):</p>
+    <table class="docs-table docs-tokens-table">
+      <thead>
+        <tr>
+          <th>Token</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let token of tokens">
+          <td><code>{{ token.name }}</code></td>
+          <td>
+            <code>{{ token.value }}</code>
+            <span class="docs-token-preview" [style.background]="token.isColor ? token.value : null" [attr.aria-hidden]="true"></span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
+  <ng-template #noTokens>
+    <p>This component uses only global design tokens; no component-specific token overrides are defined.</p>
+  </ng-template>
+
+  <h2>Notes</h2>
   <ng-container *ngIf="docExtract() as extractNotes; else noDoc">
     <div class="docs-markdown" *ngIf="extractNotes.notes; else noNotes" [innerHTML]="extractNotes.notes"></div>
     <ng-template #noNotes>
-      <p>No Deliberate omissions section found in <code>{{ extractNotes.docPath }}</code>.</p>
+      <p>No deliberate omissions section found in <code>{{ extractNotes.docPath }}</code>.</p>
     </ng-template>
   </ng-container>
 

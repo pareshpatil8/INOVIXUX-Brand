@@ -205,3 +205,72 @@
     color: var(--ino-color-accent, var(--ino-color-on-surface));
   }
 }
+
+/* INO-373 §6 C4: PrimeNG-anatomy template additions */
+
+/* Import statement section with copy button */
+.docs-import-section {
+  margin-bottom: var(--ino-space-6);
+}
+
+.docs-code-block {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--ino-space-3);
+  padding: var(--ino-space-4);
+  background: var(--ino-color-surface-sunken);
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-md);
+  font-family: var(--ino-font-mono);
+  font-size: 13px;
+  overflow-x: auto;
+
+  code {
+    flex: 1;
+  }
+}
+
+.docs-copy-button {
+  flex-shrink: 0;
+  padding: var(--ino-space-2) var(--ino-space-3);
+  background: var(--ino-color-surface);
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-sm);
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 16px;
+  line-height: 1;
+
+  &:hover {
+    background: var(--ino-color-surface-overlay);
+  }
+
+  &:active {
+    background: var(--ino-color-surface-sunken);
+  }
+}
+
+/* API section subsections (Props/Events/Methods/Templates) */
+.docs-api-section {
+  h3 {
+    margin-top: var(--ino-space-6);
+    margin-bottom: var(--ino-space-4);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ino-color-on-surface);
+  }
+}
+
+/* Theming section token preview */
+.docs-tokens-table {
+  .docs-token-preview {
+    display: inline-block;
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-left: var(--ino-space-3);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-sm);
+    vertical-align: middle;
+  }
+}

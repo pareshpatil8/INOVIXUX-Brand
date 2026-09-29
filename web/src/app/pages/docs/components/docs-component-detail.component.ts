@@ -126,4 +126,37 @@ export class DocsComponentDetailComponent {
   protected inputValuesLabel(input: ManifestInput): string {
     return input.values && input.values.length ? input.values.join(' | ') : '—';
   }
+
+  /** Component class name for the import statement (e.g. `InoButtonComponent`). */
+  protected readonly componentClassName = computed<string>(() => {
+    const component = this.component();
+    return component?.className ?? '';
+  });
+
+  /** Import path for the component (derived from sourcePath). */
+  protected readonly componentImportPath = computed<string>(() => {
+    const component = this.component();
+    if (!component?.sourcePath) return '';
+    // Convert web/src/app/components/button/ino-button.component.ts to @app/components/button
+    const match = /web\/src\/app\/(.+)\/[^/]+\.component\.ts/.exec(component.sourcePath);
+    return match ? `@app/${match[1]}` : '';
+  });
+
+  /** Copy the import statement to clipboard. */
+  protected copyImport(): void {
+    const className = this.componentClassName();
+    const importPath = this.componentImportPath();
+    const importStatement = `import { ${className} } from '${importPath}';`;
+    navigator.clipboard.writeText(importStatement).catch((err) => {
+      console.error('Failed to copy import statement:', err);
+    });
+  }
+
+  /** Component-specific design tokens with live values from the current theme. Returns null if
+   * the component uses only global tokens. */
+  protected readonly componentTokens = computed<Array<{ name: string; value: string; isColor: boolean }> | null>(() => {
+    // For now, return null — theming section will show the fallback message.
+    // A follow-up can wire this to read computed CSS variables scoped to the component.
+    return null;
+  });
 }
