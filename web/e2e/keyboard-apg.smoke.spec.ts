@@ -27,16 +27,21 @@ import { activeElement, gotoDocs } from './support/portal';
  * reports an unexpectedly-PASSING `test.fail()` test as a failure, so CI is what tells the
  * fixer to delete the annotation — the quarantine cannot rot into a permanent exemption.
  *
- * The INO-390 fix is `cdr.detectChanges()` in place of `queueMicrotask` in both `openPanel`
- * and `onGridKeydown`, plus a second, independent fix in `onGridKeydown`'s repagination
- * logic: the grid always renders a fixed 6-week window including leading/trailing days from
- * adjacent months (see the `weeks` getter), so Home/End/arrow moves that land in that
- * overflow region must NOT re-point `viewDate` (it reflows every cell's row index and breaks
- * "same week" comparisons), while PageUp/PageDown must ALWAYS re-point `viewDate` since they
- * explicitly page the displayed month. Verified locally: all three grid tests pass, and the
- * appendTo="body" portal anchoring and focus-trap Tab-escape tests remain green (the
- * `appendTo="body"` scrolling-ancestor smoke failure that may still show in this file's suite
- * predates this fix — reproduces identically on the pre-fix component, see INO-390).
+ * The INO-390 fix has three parts: (1) `cdr.detectChanges()` in place of `queueMicrotask` in
+ * both `openPanel` and `onGridKeydown`; (2) a `trackBy` on both grid `*ngFor`s in the template,
+ * because the `weeks` getter returns fresh object literals on every read and without `trackBy`
+ * Angular tears down and rebuilds every cell on the render scheduler's OWN follow-up tick —
+ * which intermittently destroyed the very cell `focusGrid()` had just focused, one frame after
+ * (2) landed, dropping focus to <body>; and (3) a fix to `onGridKeydown`'s repagination logic:
+ * the grid always renders a fixed 6-week window including leading/trailing days from adjacent
+ * months (see the `weeks` getter), so Home/End/arrow moves that land in that overflow region
+ * must NOT re-point `viewDate` (it reflows every cell's row index and breaks "same week"
+ * comparisons), while PageUp/PageDown must ALWAYS re-point `viewDate` since they explicitly
+ * page the displayed month. Verified locally, including a 10x --workers=1 repeat: all three
+ * grid tests pass, and the appendTo="body" portal anchoring and focus-trap Tab-escape tests
+ * remain green (the `appendTo="body"` scrolling-ancestor smoke failure that may still show in
+ * this file's suite predates this fix — reproduces identically on the pre-fix component, see
+ * INO-390).
  */
 
 /** Identity of the currently-focused date cell, in terms that survive a re-render: which
@@ -118,9 +123,7 @@ test.describe('D-gate 3a — APG "Date Picker Dialog" keyboard map (ino-datepick
     expect(end.row, 'End must stay in the same week row as Home').toBe(home.row);
   });
 
-  // ── Quarantined: INO-390 ────────────────────────────────────────────────────────────────
   test('PageUp and PageDown page the month, Shift pages the year', async ({ page }) => {
-    test.fail(true, GRID_NAV_DEFECT);
     await openDatepickerGrid(page);
     const start = await gridFocus(page);
 
