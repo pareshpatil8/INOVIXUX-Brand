@@ -49,17 +49,63 @@ export interface ComponentDisposition {
   items: DispositionItem[];
 }
 
-/** Extracted "Accessibility contract" / "Deliberate omissions" sections for one shipped
- * component, keyed by slug. `a11y`/`notes` are sanitized HTML (rendered from markdown by
- * `scripts/generate-component-docs-extract.mjs` at generation time — see `format` on
- * {@link ComponentDocsExtract}), safe to bind via `[innerHTML]`. All three are null for
- * components with no narrative doc (5 marketing-only components, plus any not-yet-documented
- * new component). */
+/** One `@Input()` on a component, as extracted from source by
+ * `scripts/generate-component-docs-extract.mjs` (doc 26 §6 C3) — unlike {@link ManifestInput},
+ * `description` carries the property's JSDoc (flattened to one line), when present. */
+export interface ApiProp {
+  name: string;
+  type: string;
+  values: string[] | null;
+  default: string | null;
+  optional: boolean;
+  description: string | null;
+}
+
+/** One `@Output() name = new EventEmitter<T>()` on a component. */
+export interface ApiEvent {
+  name: string;
+  type: string;
+  description: string | null;
+}
+
+/** One documented public method (undocumented public methods are treated as template-internal
+ * wiring and excluded; Angular lifecycle/CVA hooks are always excluded — see
+ * `scripts/generate-component-docs-extract.mjs`). */
+export interface ApiMethod {
+  name: string;
+  params: string | null;
+  returnType: string;
+  description: string | null;
+}
+
+/** One `<ng-content>` projection slot, named by its `select` attribute or `"default"`. */
+export interface ApiTemplate {
+  name: string;
+  description: string | null;
+}
+
+/** Props/Events/Methods/Templates(Slots) tables for one component, generated from its
+ * `.component.ts`/`.html` source — never hand-written. */
+export interface ComponentApi {
+  props: ApiProp[];
+  events: ApiEvent[];
+  methods: ApiMethod[];
+  templates: ApiTemplate[];
+}
+
+/** Extracted "Accessibility contract" / "Deliberate omissions" sections plus the generated API
+ * tables for one shipped component, keyed by slug. `a11y`/`notes` are sanitized HTML (rendered
+ * from markdown by `scripts/generate-component-docs-extract.mjs` at generation time — see
+ * `format` on {@link ComponentDocsExtract}), safe to bind via `[innerHTML]`; `api` is structured
+ * JSON, not HTML. `docPath`/`a11y`/`notes` are null for components with no narrative doc (5
+ * marketing-only components, plus any not-yet-documented new component); `api` is still
+ * populated from source in that case. */
 export interface ComponentDocExtract {
   name: string;
   docPath: string | null;
   a11y: string | null;
   notes: string | null;
+  api: ComponentApi;
 }
 
 export interface ComponentDocsExtract {
