@@ -21,6 +21,11 @@ import { INO_CONTROL_SIZES } from '../../../../components/control-size';
  * Mobile parity note (per SPEC.md §9): the time picker is deliberately NOT ported to RN/Flutter —
  * native ports are scoped to single-date selection only, per the documented mobile disposition.
  * No additional mobile work is required for this issue.
+ *
+ * Also carries the INO-364 overlay-positioning regression demos (positioned ancestor, scrolling
+ * ancestor with `appendTo="self"` vs `appendTo="body"`) — same slug, same `CUSTOM_DEMOS` mount
+ * point, so both issues' §2 contract coverage lives in one file rather than two competing demo
+ * components for `datepicker`.
  */
 @Component({
   selector: 'app-datepicker-time-demo',
@@ -32,6 +37,11 @@ import { INO_CONTROL_SIZES } from '../../../../components/control-size';
 })
 export class DatepickerTimeDemoComponent {
   protected readonly sizes = INO_CONTROL_SIZES;
+
+  // Positioning regression (INO-364) — positioned ancestor / scrolling ancestor / body portal
+  protected positionedAncestorValue: Date | null = null;
+  protected scrollSelfValue: Date | null = null;
+  protected scrollBodyValue: Date | null = null;
 
   // showTime — date + time
   protected dateTimeValue: Date | null = new Date(2026, 8, 28, 14, 30);

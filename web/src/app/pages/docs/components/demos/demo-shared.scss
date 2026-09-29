@@ -96,3 +96,31 @@
   border-radius: var(--ino-radius-md);
   padding: var(--ino-space-4);
 }
+
+// Overlay-anchoring regression panes (INO-364) — reproduce the two ancestor shapes that broke the
+// datepicker popup before the fix: a positioned ancestor elsewhere on the page (the actual bug —
+// the overlay used to resolve `position:absolute` against this instead of the trigger) and a
+// scrolling/clipping ancestor (the case `appendTo="body"` exists for, not fixed by the anchoring
+// change alone). Token-bound, same rule as the rest of this file.
+.demo-positioned-ancestor {
+  position: relative;
+  left: var(--ino-space-7);
+  border: 1px dashed var(--ino-color-border);
+  border-radius: var(--ino-radius-md);
+  padding: var(--ino-space-5);
+  background: var(--ino-color-surface-sunken);
+}
+
+.demo-scroll-ancestor {
+  position: relative;
+  overflow: auto;
+  max-height: 96px;
+  border: 1px dashed var(--ino-color-border);
+  border-radius: var(--ino-radius-md);
+  padding: var(--ino-space-4);
+  background: var(--ino-color-surface-sunken);
+}
+
+.demo-scroll-ancestor__spacer {
+  height: var(--ino-space-7);
+}
