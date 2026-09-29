@@ -64,6 +64,12 @@
 }
 
 .docs-live-box {
+  // Positioned ancestor by design (doc 26 §6 C2) — every generic live example (popover, tooltip,
+  // confirm-popup, select, and any future overlay-based component without a hand-authored
+  // `CUSTOM_DEMOS` entry) mounts inside a `position: relative` box, so a D1-class overlay
+  // anchoring bug (INO-364: `position: absolute` resolving against a foreign ancestor instead of
+  // the trigger) surfaces here in dev instead of on a published docs page.
+  position: relative;
   border: 1px solid var(--ino-color-border);
   border-radius: var(--ino-radius-md);
   padding: var(--ino-space-4);

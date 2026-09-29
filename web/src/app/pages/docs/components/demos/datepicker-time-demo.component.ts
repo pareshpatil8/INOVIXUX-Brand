@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { InoDatePickerComponent } from '../../../../components/datepicker/ino-datepicker.component';
 import { INO_CONTROL_SIZES } from '../../../../components/control-size';
+import { DemoConstrainedContainerComponent } from './demo-constrained-container.component';
 
 /**
  * Hand-authored §2 Component Publish Contract demo for `ino-datepicker` time + typed-entry
@@ -23,14 +24,15 @@ import { INO_CONTROL_SIZES } from '../../../../components/control-size';
  * No additional mobile work is required for this issue.
  *
  * Also carries the INO-364 overlay-positioning regression demos (positioned ancestor, scrolling
- * ancestor with `appendTo="self"` vs `appendTo="body"`) — same slug, same `CUSTOM_DEMOS` mount
- * point, so both issues' §2 contract coverage lives in one file rather than two competing demo
- * components for `datepicker`.
+ * ancestor with `appendTo="self"` vs `appendTo="body"`, and — INO-368, doc 26 §6 C2 — a narrow
+ * ancestor near a viewport edge) via `<app-demo-constrained-container>` — same slug, same
+ * `CUSTOM_DEMOS` mount point, so all three issues' §2 contract coverage lives in one file rather
+ * than competing demo components for `datepicker`.
  */
 @Component({
   selector: 'app-datepicker-time-demo',
   standalone: true,
-  imports: [CommonModule, InoDatePickerComponent],
+  imports: [CommonModule, InoDatePickerComponent, DemoConstrainedContainerComponent],
   templateUrl: './datepicker-time-demo.component.html',
   styleUrl: './demo-shared.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -45,6 +47,9 @@ export class DatepickerTimeDemoComponent {
   protected positionedAncestorValue: Date | null = null;
   protected scrollSelfValue: Date | null = null;
   protected scrollBodyValue: Date | null = null;
+
+  // Constrained-container harness (INO-368, doc 26 §6 C2) — narrow ancestor near a viewport edge
+  protected narrowAncestorValue: Date | null = null;
 
   // showTime — date + time
   protected dateTimeValue: Date | null = new Date(2026, 8, 28, 14, 30);

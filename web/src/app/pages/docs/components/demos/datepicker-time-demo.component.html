@@ -20,40 +20,38 @@
     </div>
   </section>
 
-  <!-- Positioning regression (INO-364) -->
+  <!-- Positioning regression (INO-364) + constrained-container harness (INO-368) -->
   <section class="demo-section">
-    <h3 class="demo-section__title">Overlay Positioning Regression (INO-364)</h3>
+    <h3 class="demo-section__title">Overlay Positioning Regression (INO-364 / INO-368)</h3>
     <p class="demo-section__desc">
       The popup used to anchor against whatever positioned ancestor happened to exist on the host
-      page instead of its own trigger. These reproduce the two ancestor shapes that broke it —
-      cycle the theme switcher above to confirm all three themes.
+      page instead of its own trigger. These reproduce the constrained-container ancestor shapes
+      (<code>&lt;app-demo-constrained-container&gt;</code>, doc 26 §6 C2) that broke it — cycle the
+      theme switcher above to confirm all three themes.
     </p>
 
     <p class="demo-section__note">Positioned ancestor (<code>appendTo="self"</code>, default) — the panel stays anchored under the trigger, not offset by the surrounding <code>position: relative</code> wrapper.</p>
-    <div class="demo-positioned-ancestor">
+    <app-demo-constrained-container variant="positioned">
       <ino-datepicker
         label="Date inside a positioned ancestor"
         hint="Overlay anchors to this field, not the wrapper"
         [(value)]="positionedAncestorValue"
         placeholder="Pick a date"
       ></ino-datepicker>
-    </div>
+    </app-demo-constrained-container>
 
     <p class="demo-section__note">Scrolling/clipping ancestor, <code>appendTo="self"</code> — the overlay never leaves this ancestor's DOM subtree, so it can be clipped.</p>
-    <div class="demo-scroll-ancestor">
-      <div class="demo-scroll-ancestor__spacer"></div>
+    <app-demo-constrained-container variant="scroll">
       <ino-datepicker
         label="Date inside a scrolling container"
         hint="appendTo=self stays inside this box"
         [(value)]="scrollSelfValue"
         placeholder="Pick a date"
       ></ino-datepicker>
-      <div class="demo-scroll-ancestor__spacer"></div>
-    </div>
+    </app-demo-constrained-container>
 
     <p class="demo-section__note">Same scrolling ancestor, <code>appendTo="body"</code> — the panel is reparented to <code>document.body</code> and escapes the clip.</p>
-    <div class="demo-scroll-ancestor">
-      <div class="demo-scroll-ancestor__spacer"></div>
+    <app-demo-constrained-container variant="scroll">
       <ino-datepicker
         label="Date inside a scrolling container (body portal)"
         hint="appendTo=body escapes the clip"
@@ -61,8 +59,17 @@
         [(value)]="scrollBodyValue"
         placeholder="Pick a date"
       ></ino-datepicker>
-      <div class="demo-scroll-ancestor__spacer"></div>
-    </div>
+    </app-demo-constrained-container>
+
+    <p class="demo-section__note">Narrow ancestor (INO-368) — width-constrained container near a viewport edge, for flip/clamp behavior when the panel's default side has no room.</p>
+    <app-demo-constrained-container variant="narrow">
+      <ino-datepicker
+        label="Date inside a narrow container"
+        hint="Panel flips/clamps to stay in view"
+        [(value)]="narrowAncestorValue"
+        placeholder="Pick a date"
+      ></ino-datepicker>
+    </app-demo-constrained-container>
   </section>
 
   <!-- showTime — Date + Time -->
