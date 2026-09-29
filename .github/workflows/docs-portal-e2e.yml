@@ -175,12 +175,16 @@ jobs:
         if: steps.baselines.outputs.count == '0' || github.event.inputs.update_baselines == 'true'
         run: |
           set -euo pipefail
-          # Playwright reports a snapshot it had to WRITE as a failed test ("A snapshot doesn't
-          # exist at ..., writing actual"), so a seed run legitimately exits non-zero on the very
-          # run whose job is to produce the baselines. Letting `-e` abort here would skip the
-          # upload step and throw away the images we came for. Capture the status and judge on
-          # what was actually produced instead — which is the real question, and still fails
-          # loudly if the run produced nothing (a broken build, a portal that 500s).
+          # Judge the seed run on what it PRODUCED, not on its exit status. Under
+          # `--update-snapshots` Playwright 1.63 treats writing a new snapshot as a pass (the
+          # seed run that armed this gate exited 0 with 144 passed), but that is a convention,
+          # not a contract — without `-u` a missing snapshot is a *failure* ("A snapshot doesn't
+          # exist at ..., writing actual"), and the two behaviours have swapped around across
+          # releases. If a future version exits non-zero here, `set -e` would abort the step,
+          # skip "Upload generated baselines", and silently discard the images the run exists to
+          # create. Counting the output is the check that survives that. The count is also a
+          # stronger assertion than the exit code: it still fails loudly, with its own message,
+          # when a broken build or a 500ing portal produces nothing.
           status=0
           npm run e2e:visual:update || status=$?
           produced=$(find web/e2e/__screenshots__ -name '*.png' | wc -l | tr -d ' ')

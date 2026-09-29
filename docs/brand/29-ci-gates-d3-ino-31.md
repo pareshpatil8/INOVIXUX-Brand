@@ -187,17 +187,23 @@ and `snapshotPathTemplate` carries **no `{platform}`/`{arch}` segment on purpose
 committed baseline set, owned by that container, so nobody can accidentally commit a second,
 un-diffable set from their own machine.
 
-### 4.1 Current status: NOT YET ARMED
+### 4.1 Current status: ARMED
 
-`web/e2e/__screenshots__/` is **empty as of this commit.** The baselines could not be produced
-here: they must come out of that container, and there is no Docker in the authoring
-environment. Until they are committed the `visual-snapshots` job runs in **seed mode** — it
-generates the 144 images, uploads them as the `visual-baselines` artifact, and says so loudly
-in a `::warning::` and in the step summary (*"this run generated N baselines and compared
-nothing"*). It proves nothing about the current diff and does not pretend to.
+`web/e2e/__screenshots__/` holds **144 committed baselines** (43 components + 5 portal shell
+pages, × 3 themes), seeded by INO-393 from run
+[36520964305](https://github.com/pareshpatil8/INOVIXUX-Brand/actions/runs/36520964305) in the
+pinned container — `144 passed (2.7m)`, `produced 144 baselines`. The job is in **diff mode**
+and is fully blocking: a pixel change on any docs page fails `visual-snapshots`.
 
-**Seeding is tracked by its own issue.** Do not mark D-gate 3(b) complete until the baselines
-are in the tree; a green seed-mode run is not evidence.
+Seed mode still exists and still fires automatically if the directory is ever empty, but a
+green run of it is not evidence of anything and it says so itself (`::warning::` plus a step
+summary reading *"this run generated N baselines and compared nothing"*).
+
+**The baselines are a photograph of the pages as they were on 2026-09-29.** INO-371 (full
+catalog presentability audit + fixes) had not landed when they were taken, so it will change
+how a number of components look and *is expected to fail this gate*. That is the gate working
+— refresh the baselines in the same PR that changes the look (§4.2), so the diff is reviewed
+rather than assumed.
 
 ### 4.2 Seeding or refreshing
 
@@ -209,6 +215,22 @@ git add web/e2e/__screenshots__ && git commit
 ```
 
 Once any `.png` is present the job flips to diff mode automatically and is fully blocking.
+
+> **`workflow_dispatch` only works once this workflow is on the default branch.** GitHub
+> requires the workflow file to exist on `main` before it can be dispatched against *any* ref;
+> until then the command above returns
+> `HTTP 404: workflow docs-portal-e2e.yml not found on the default branch`. This is what
+> blocked INO-393, and the way round it is the `pull_request` trigger: push the branch, open a
+> PR, and take the `visual-baselines` artifact from that run. Seed mode fires on an empty
+> baseline directory with no input needed; to *refresh* from a PR rather than seed, delete the
+> baselines in the same commit so `count` is 0 again.
+
+### 4.2a Cost of a reseed
+
+Each full set is **~37 MB** across 144 full-page PNGs (median ~250 KB; the components index is
+~800 KB in each theme). Every reseed writes a new copy into git history, so refreshing on a
+whim is not free — a handful of reseeds is a few hundred MB of clone weight. Refresh when the
+look genuinely changed; do not reseed to make a red gate go away.
 
 ### 4.3 Reproducing a diff locally
 
@@ -294,12 +316,13 @@ Stated plainly so nobody reads a green tick as more than it is.
   layer, which is not the same as auditing the rendered page. Worth adding; not in this scope.
 - **Only 3 components have hand-authored demos** (radio-group, checkbox, datepicker). The other
   40 render the generic per-`@Input` grid, so their snapshots photograph a best-effort shell —
-  an honest limitation of the generic renderer, and what INO-373's page-anatomy migration
-  changes. Their snapshots will need reseeding when it lands.
+  an honest limitation of the generic renderer. INO-373's page-anatomy migration has landed and
+  the committed baselines already include it; **INO-371** (A4 catalog audit) has not, and will
+  change how a number of these pages look — expect it to fail this gate and to refresh the
+  baselines in its own PR (§4.1, §4.2).
 - **Interaction coverage is three components deep**, not 43: datepicker (overlay, trap,
   keyboard), modal (trap), radio-group (keyboard). Those are the APG patterns with live demos to
   drive. Each new hand-authored demo should bring its own smoke test.
-- **Gate 3(b) is not armed until §4.1 is done.**
 - **A gate is not QA.** Doc 26 §2.8 still requires QALead's sign-off, authored by QALead
   (INO-295), before a component publishes. These three checks make that review cheaper; they do
   not replace it.
