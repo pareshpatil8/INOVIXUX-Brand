@@ -69,6 +69,184 @@
         ]
       }
     },
+    "autocomplete": {
+      "name": "ino-autocomplete",
+      "docPath": null,
+      "a11y": null,
+      "notes": null,
+      "api": {
+        "props": [
+          {
+            "name": "options",
+            "type": "InoAutocompleteOption[]",
+            "values": null,
+            "default": "[]",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "value",
+            "type": "string | string[]",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": "`string` when `multiple` is `false` (default), `string[]` when `true`. See SPEC.md §2."
+          },
+          {
+            "name": "placeholder",
+            "type": "string",
+            "values": null,
+            "default": "'Type to search…'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "hint",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "error",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "size",
+            "type": "InoControlSize",
+            "values": null,
+            "default": "'default'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "required",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "readonly",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "loading",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": "Suppresses selection (click/Enter on a row) while an async fetch triggered by `search` is in flight. Typing and the panel itself stay live — only committing a row is blocked. See SPEC.md §7 (states)."
+          },
+          {
+            "name": "clearable",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "multiple",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": "`true` renders a checkbox-style multi-value listbox with chip display on the trigger (reuses `ino-multiselect`'s toggle-and-stay-open model); `false` (default) is single-selection with select-and-close, mirroring `ino-select`. See SPEC.md §2."
+          },
+          {
+            "name": "mode",
+            "type": "'dropdown' | 'inline'",
+            "values": [
+              "dropdown",
+              "inline"
+            ],
+            "default": "'dropdown'",
+            "optional": true,
+            "description": "`'dropdown'` (default) is the standard anchored overlay panel, matching `ino-select`. `'inline'` renders the same listbox directly below the input, in flow, with no absolute positioning or overlay chrome (border/shadow/z-index) — a minimal \"always in the layout\" variant. See SPEC.md §6."
+          },
+          {
+            "name": "forceSelection",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": "When `true`, committing (Enter, blur-via-outside-click, `Tab`) with typed text that matches no option's label discards the text and clears the value — a real option must be picked. When `false` (default), unmatched text becomes the committed value verbatim, same as `ino-select`'s `editable` commit behavior. Single-selection only — see SPEC.md §5 for why `multiple` never has a free-text commit path to force in the first place."
+          },
+          {
+            "name": "maxSelected",
+            "type": "number | null",
+            "values": null,
+            "default": "null",
+            "optional": true,
+            "description": "`multiple` only. Hard cap on `value.length`; once reached, unselected rows dim and become non-interactive (never disables removing an existing chip) — same \"dim, don't lock in\" rule `ino-multiselect`'s `selectionLimit` uses. `null` (default) means no limit. See SPEC.md §7."
+          },
+          {
+            "name": "virtualScrollThreshold",
+            "type": "number",
+            "values": null,
+            "default": "100",
+            "optional": true,
+            "description": "Rows at or above this count render through `<ino-virtual-scroller>` (reuses T-3) instead of a plain `*ngFor`, same mechanism as `ino-select`/`ino-multiselect`."
+          }
+        ],
+        "events": [
+          {
+            "name": "valueChange",
+            "type": "string | string[]",
+            "description": null
+          },
+          {
+            "name": "search",
+            "type": "string",
+            "description": "Fires `SEARCH_DEBOUNCE_MS` after the last keystroke in the query text — the async-datasource hook (SPEC.md §4). Does not fire on selection, only on text changes."
+          },
+          {
+            "name": "openChange",
+            "type": "boolean",
+            "description": null
+          },
+          {
+            "name": "clear",
+            "type": "void",
+            "description": null
+          }
+        ],
+        "methods": [
+          {
+            "name": "close",
+            "params": "restoreFocus: boolean",
+            "returnType": "void",
+            "description": "Closes the panel. Never reverts `queryText`/`value` itself — commit (Enter, see `selectActive`/`commitQueryText`) is the only path that changes `value`, matching `ino-select`'s own \"Escape/outside-click close without changing value\" contract."
+          },
+          {
+            "name": "removeChip",
+            "params": "option: InoAutocompleteOption, event: Event",
+            "returnType": "void",
+            "description": "Removes one chip (`multiple` only). `stopPropagation` keeps the click from also focusing/ reopening the trigger as a side effect, same idiom as `ino-multiselect`'s `removeChip`."
+          }
+        ],
+        "templates": []
+      }
+    },
     "button": {
       "name": "button[ino-button], a[ino-button]",
       "docPath": "docs/brand/06-angular-components/button.md",
@@ -1721,6 +1899,320 @@
         "templates": []
       }
     },
+    "inputmask": {
+      "name": "ino-inputmask",
+      "docPath": null,
+      "a11y": null,
+      "notes": null,
+      "api": {
+        "props": [
+          {
+            "name": "label",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "mask",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": "Explicit mask pattern (`./mask-tokens.ts` grammar). Ignored when `preset` is set."
+          },
+          {
+            "name": "preset",
+            "type": "InoInputMaskPreset | ''",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": "India-stack preset (`./mask-presets.ts`) — takes precedence over `mask`/`placeholderChar`."
+          },
+          {
+            "name": "placeholderChar",
+            "type": "string",
+            "values": null,
+            "default": "'_'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "hint",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "error",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "size",
+            "type": "InoControlSize",
+            "values": null,
+            "default": "'default'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "required",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "readonly",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "loading",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          }
+        ],
+        "events": [
+          {
+            "name": "valueChange",
+            "type": "string",
+            "description": null
+          },
+          {
+            "name": "maskComplete",
+            "type": "string",
+            "description": "Fires once, the moment every required slot holds a character."
+          }
+        ],
+        "methods": [],
+        "templates": []
+      }
+    },
+    "inputnumber": {
+      "name": "ino-inputnumber",
+      "docPath": null,
+      "a11y": null,
+      "notes": null,
+      "api": {
+        "props": [
+          {
+            "name": "label",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "value",
+            "type": "number | null",
+            "values": null,
+            "default": "null",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "placeholder",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "hint",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "error",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "size",
+            "type": "InoControlSize",
+            "values": null,
+            "default": "'default'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "variant",
+            "type": "InoInputNumberVariant",
+            "values": [
+              "outline",
+              "filled"
+            ],
+            "default": "'outline'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "mode",
+            "type": "InoInputNumberMode",
+            "values": [
+              "decimal",
+              "currency",
+              "percent"
+            ],
+            "default": "'decimal'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "prefix",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "suffix",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "locale",
+            "type": "string",
+            "values": null,
+            "default": "'en-US'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "currency",
+            "type": "string",
+            "values": null,
+            "default": "'USD'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "min",
+            "type": "number | null",
+            "values": null,
+            "default": "null",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "max",
+            "type": "number | null",
+            "values": null,
+            "default": "null",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "step",
+            "type": "number",
+            "values": null,
+            "default": "1",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "minFractionDigits",
+            "type": "number",
+            "values": null,
+            "default": "0",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "maxFractionDigits",
+            "type": "number",
+            "values": null,
+            "default": "3",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "useGrouping",
+            "type": "boolean",
+            "values": null,
+            "default": "true",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "showButtons",
+            "type": "boolean",
+            "values": null,
+            "default": "true",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "required",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "readonly",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          }
+        ],
+        "events": [
+          {
+            "name": "valueChange",
+            "type": "number | null",
+            "description": null
+          }
+        ],
+        "methods": [],
+        "templates": []
+      }
+    },
     "label": {
       "name": "ino-label",
       "docPath": "docs/brand/06-angular-components/label.md",
@@ -2429,6 +2921,113 @@
           {
             "name": "rowsChange",
             "type": "number",
+            "description": null
+          }
+        ],
+        "methods": [],
+        "templates": []
+      }
+    },
+    "password": {
+      "name": "ino-password",
+      "docPath": "docs/brand/06-angular-components/password.md",
+      "a11y": "<p><strong>Role / ARIA</strong> — a real <code>&lt;label for&gt;</code> gives the accessible name. <code>aria-invalid</code> reflects <code>error</code>;\n<code>aria-describedby</code> points at the error message (<code>role=\"alert\"</code>) when present, else the hint text.\nThe reveal toggle is a real <code>&lt;button&gt;</code> with <code>aria-label</code>/<code>aria-pressed</code> — never an icon-only\nelement with no accessible name. The strength meter sits in <code>aria-live=\"polite\"</code> so its label\nchange is announced without interrupting typing. The Caps Lock warning uses <code>role=\"status\"</code>\n(implicit polite live region), announced once on appearance.</p>\n<p><strong>Keyboard</strong> — standard text-field keyboard model: <code>Tab</code>/<code>Shift+Tab</code> moves focus between the field\nand the reveal toggle; <code>Enter</code>/<code>Space</code> activates the toggle while it has focus; native caret\nnavigation while the field is focused and not <code>readonly</code>.</p>\n<p><strong>Contrast</strong> — text/placeholder/border pairs are the existing audited roles shared with\n<code>ino-input</code>. The strength meter's danger/warning/success segment colors and the Caps Lock\nwarning's <code>--ino-color-warning</code> text are all pre-existing audited roles (<code>check-theme-parity.mjs</code>),\nnot new values.</p>\n<p><strong>Target size</strong> — the reveal toggle button is <code>28×28px</code>; the control itself clears\n<code>min-block-size: var(--ino-control-height)</code> at every size rung same as <code>ino-input</code>.</p>\n<p><strong>RTL</strong> — logical properties only (<code>inline-size</code>, <code>padding-inline-end</code>, <code>inset-inline-end</code> for the\ntoggle); no <code>left</code>/<code>right</code>/<code>top</code>/<code>bottom</code> anywhere in the stylesheet.</p>\n<hr />\n",
+      "notes": "<ul>\n<li><strong>Loading/busy state.</strong> Not applicable — a password field has no async-fetch state comparable to\n<code>ino-input</code>'s remote-validation <code>loading</code>. See SPEC.md §6.</li>\n<li><strong>Pluggable strength scoring.</strong> The meter's heuristic is fixed, not a caller-supplied function —\nsee SPEC.md §2 for why that's kept separate from <code>policyRules</code>.</li>\n</ul>\n",
+      "api": {
+        "props": [
+          {
+            "name": "label",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "placeholder",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "value",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "hint",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "error",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "size",
+            "type": "InoControlSize",
+            "values": null,
+            "default": "'default'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "required",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "readonly",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "showStrengthMeter",
+            "type": "boolean",
+            "values": null,
+            "default": "true",
+            "optional": true,
+            "description": "Strength meter on/off (doc 26 §5 Variants/Structure). Defaults on — the row names it as the component's headline structural variant, not an opt-in extra."
+          },
+          {
+            "name": "policyRules",
+            "type": "InoPasswordPolicyRule[]",
+            "values": null,
+            "default": "[]",
+            "optional": true,
+            "description": "Policy hint panel rows. Empty (default) hides the panel — same opt-in shape as `ino-input`'s icon slots; pass `INO_PASSWORD_DEFAULT_POLICY_RULES` or a caller-defined list to show it."
+          }
+        ],
+        "events": [
+          {
+            "name": "valueChange",
+            "type": "string",
             "description": null
           }
         ],
