@@ -223,12 +223,19 @@ export class InoDatePickerComponent implements OnChanges, OnDestroy {
     // Zoneless: CD runs via the render scheduler, not a microtask, so a queued microtask would
     // fire before the *ngIf-gated grid renders and find nothing. Force the render synchronously.
     this.cdr.detectChanges();
-    this.focusGrid();
+    // The detectChanges() call above already attached the *ngIf-gated overlay and resolved
+    // `overlayRef` synchronously (same guarantee focusGrid() below relies on for `gridRef`), so
+    // reparenting + positioning can happen here, still inside this task, before the browser
+    // paints. activatePortal() -> updatePortalPosition() writes portalTop/portalLeft and calls
+    // markForCheck(), which only *schedules* the next render on the zoneless scheduler — it does
+    // not flush the [style.top.px]/[style.left.px] bindings synchronously. Left alone, the
+    // portal-fixed overlay would still paint once at its 0,0 default before that scheduled render
+    // lands. The second detectChanges() below forces that flush inside the same task (INO-398).
     if (this.appendTo === 'body') {
-      // *ngIf hasn't attached the overlay's view yet on this tick — deferred one macrotask past
-      // the pending render, same reasoning as <ino-popover>'s reposition() doc comment.
-      setTimeout(() => this.activatePortal());
+      this.activatePortal();
+      this.cdr.detectChanges();
     }
+    this.focusGrid();
   }
 
   requestClose(): void {
