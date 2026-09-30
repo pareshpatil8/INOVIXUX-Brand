@@ -1,0 +1,19 @@
+<label [for]="controlId" class="ino-select-button-option__label">
+  <input
+    [id]="controlId"
+    [type]="type"
+    [name]="name"
+    [value]="value"
+    [checked]="selected"
+    [disabled]="disabled"
+    [attr.aria-pressed]="type === 'checkbox' ? selected : null"
+    (click)="onClick($event)"
+    (change)="onChange($event)"
+    class="ino-select-button-option__input"
+  />
+  <span class="ino-select-button-option__content">
+    <span *ngIf="icon && !iconOnly" class="ino-select-button-option__icon">{{ icon }}</span>
+    <span *ngIf="icon && iconOnly" class="ino-select-button-option__icon" [attr.aria-hidden]="true">{{ icon }}</span>
+    <span *ngIf="!iconOnly" class="ino-select-button-option__text">{{ label }}</span>
+  </span>
+</label>
