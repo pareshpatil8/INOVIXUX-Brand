@@ -144,8 +144,15 @@ mode, file-upload. *Audit 1 day; fixes est. 8-10 agent-days across the catalog.*
 
 Doc 24's 102-row baseline minus 38 implemented (33 audit rows + 5 INO-318) minus 15 declined
 Tier-3 leaves **49 open rows**. The Tier-2/Tier-3 split for these was promised (doc 17) but
-never assigned — that gap is itself one of the board's "plenty of stuff missed." Proposed
-split, itemized: **33 build (Tier-2)**, **16 decline (Tier-3 additions)**.
+never assigned — that gap is itself one of the board's "plenty of stuff missed." ~~Proposed
+split, itemized: **33 build (Tier-2)**, **16 decline (Tier-3 additions)**.~~
+
+> **Superseded by the rev-2 amendment (2026-09-30).** The board directed the full catalog, so
+> there is no decline list: the split is now **52 build** (B1 12 · B2 12 · B3 5 · B4 5 ·
+> **B5 18**) and **12 alias rows** closed in the covered-by ledger at the end of this section,
+> plus the 5 already shipped. Nothing is left open. The per-component ledger is published at
+> `web/public/design-system/component-disposition.json` and reconciled to the 102-row baseline
+> in doc 24 §2.1 (INO-503).
 
 Column key — **V** Variants/Structure · **St** States (beyond the §2 standard set, which all
 rows get) · **Sz** Sizing · **L** Labels · **A11y** pattern/keyboard contract · **N** Notes /
@@ -233,6 +240,19 @@ and §2 contract as every other phase.
 | ino-inputcolor | styled native color input; hex text twin; preset swatches | invalid-hex | sm/md/lg | full label set | native `input[type=color]` + text alternative documented | Web-only (token-first guidance stays in Notes) |
 | ino-animateonscroll | directive: enter/leave animation classes; threshold; once vs repeat | n/a (directive) | n/a | n/a | `prefers-reduced-motion` disables; content never hidden pre-animation (CLS/SR) | Web-only |
 
+#### B5 addendum (rev 2.1, INO-503) — one baseline row the amendment left unplaced
+
+Closing doc 24's ledger row-by-row surfaced **SplitButton**: it appears in neither the 17-row table
+above nor the covered-by ledger below, so it was the single baseline row with no disposition at all.
+It is recorded as a build rather than a 12th alias row, because declining a row is a board call and
+the standing directive is the full catalog. **The board may re-dispose it** — a composition of
+`button[ino-button]` + `ino-menu` (B2) is the plausible alternative, in which case it moves to the
+covered-by ledger and B5 returns to 17. Flagged for acknowledgement on INO-503.
+
+| Component | V — Variants/Structure | St — States | Sz | L — Labels | A11y | N — Notes / mobile |
+|---|---|---|---|---|---|---|
+| ino-split-button | default action + toggle opening a menu of secondary actions; icon-only toggle; severity inherited from `ino-button` | open, disabled, disabled-action, loading (primary action) | sm/md/lg (the INO-124 control-size scale) | primary action = native content; toggle requires its own `aria-label` | button + menubutton pair: `aria-haspopup`/`aria-expanded` on the toggle only, Esc closes and returns focus, Arrow keys in the menu | Web-only (mobile uses a primary button + action sheet); reuses `ino-menu` (B2) — build after it |
+
 ### Covered-by ledger — alias rows, capability already shipped (rev 2 amendment)
 
 These rows are PrimeNG names for capability INOVIXUX already ships under another name.
@@ -248,6 +268,14 @@ Nothing separate exists to build; each row closes in doc 24's disposition ledger
 | Bind / ClassNames / StyleClass | built-in Angular syntax (`[class]`/`[style]`) |
 | Ripple-style utilities | pressed-state tokens + Angular animations |
 | Gallery / Compare duplicate rows | `ino-galleria` / `ino-imagecompare` (built in B5) |
+| TieredMenu | `ino-menu` (B2) — absorbed as its nested-submenu variant, per that row's own spec above. **Added by INO-503**, not in the board-approved list; same "say the row" escape hatch applies |
+
+**Closed in the ledger (INO-503, 2026-09-30).** Each row above now carries its one-line "covered by
+X" entry in `web/public/design-system/component-disposition.json` and renders as `Covered` on
+`/docs/components`, so doc 24's disposition record closes at **100% — 0 rows open**
+(52 Committed · 12 Covered · 5 Shipped, reconciled to the 102-row baseline in doc 24 §2.1).
+`scripts/generate-component-disposition.mjs` throws if a baseline row ever lacks a disposition,
+so the closure cannot silently regress.
 
 ---
 
@@ -343,7 +371,10 @@ seed, assignee, and a blocking QA subtask.
 
 ## 10. Decision points for the board (defaults apply on plain approval)
 
-1. **Tier-2/Tier-3 split (§5)** — default: build 33 as listed, decline 16 in writing.
+1. ~~**Tier-2/Tier-3 split (§5)** — default: build 33 as listed, decline 16 in writing.~~
+   **Decided, rev 2:** the board directed the full catalog (`f55baa72`) — 52 build, 12 alias rows,
+   no decline list. The only open question left on this axis is the SplitButton addendum (§5
+   rev 2.1) and the two INO-503-added alias rows; say the row to re-dispose any of them.
 2. **Mobile scope** — default: per-row dispositions in §5 tables.
 3. **QA Validator** — default: new dedicated agent with blocking sign-off authority.
 4. **Deploy gate** — default: Pages publishes only QA-approved tags (no more publish-on-merge).

@@ -9,7 +9,7 @@ import {
   ManifestComponent,
 } from './component-docs-data.service';
 
-const TIER_ORDER: DispositionItem['tier'][] = ['Tier-1', 'Tier-2', 'Tier-3'];
+const DISPOSITION_ORDER: DispositionItem['disposition'][] = ['Committed', 'Covered', 'Shipped'];
 
 /** "IconField" -> "icon-field", matching manifest `slug` naming (kebab-case source dir name). */
 function toSlug(componentName: string): string {
@@ -18,8 +18,8 @@ function toSlug(componentName: string): string {
     .toLowerCase();
 }
 
-interface TierGroup {
-  tier: DispositionItem['tier'];
+interface DispositionGroup {
+  disposition: DispositionItem['disposition'];
   items: DispositionItem[];
 }
 
@@ -31,15 +31,17 @@ interface TierGroup {
  * 1. The 38(+) shipped INOVIXUX components (manifest.json) — one row per component, linking to
  *    its `/docs/components/:slug` detail page.
  * 2. Every PrimeNG component with no dedicated build (component-disposition.json), grouped by
- *    tier — this is the F-2 itemization made explicit and in writing.
+ *    disposition — this is the F-2 itemization made explicit and in writing, closed at 100% by
+ *    doc 26 §5 rev 2 (INO-503): `Committed` to a build phase, `Covered` by capability we already
+ *    ship, or `Shipped` since the audit snapshot. Nothing is left "open, unassigned".
  *
  * `component-disposition.json` is transcribed from doc 24's Matrix B, a point-in-time audit
  * snapshot. This is a shared build worktree: components can ship (landing a manifest entry)
  * after that snapshot was written but before this page next regenerates the disposition data.
- * `tierGroups` cross-checks disposition rows against the live manifest and drops any row whose
- * component has since shipped, rather than showing a component simultaneously as "shipped,
- * linked" and "Tier-1 unbuilt" — see INO-31 finding about `done` status / stale docs not being
- * evidence on their own.
+ * `dispositionGroups` cross-checks disposition rows against the live manifest and drops any row
+ * whose component has since shipped, rather than showing a component simultaneously as "shipped,
+ * linked" and "not built" — see INO-31 finding about `done` status / stale docs not being
+ * evidence on their own. That check is why the `Shipped` group is normally empty on the page.
  */
 @Component({
   selector: 'app-docs-components-index',
@@ -63,13 +65,15 @@ export class DocsComponentsIndexComponent {
     () => new Set(this.components().map((c) => c.slug)),
   );
 
-  protected readonly tierGroups = computed<TierGroup[]>(() => {
+  protected readonly summary = computed(() => this.disposition()?.summary ?? null);
+
+  protected readonly dispositionGroups = computed<DispositionGroup[]>(() => {
     const items = this.disposition()?.items ?? [];
     const shipped = this.shippedSlugs();
-    const stillOpen = items.filter((item) => !shipped.has(toSlug(item.component)));
-    return TIER_ORDER.map((tier) => ({
-      tier,
-      items: stillOpen.filter((item) => item.tier === tier),
+    const notYetShipped = items.filter((item) => !shipped.has(toSlug(item.component)));
+    return DISPOSITION_ORDER.map((disposition) => ({
+      disposition,
+      items: notYetShipped.filter((item) => item.disposition === disposition),
     })).filter((group) => group.items.length > 0);
   });
 

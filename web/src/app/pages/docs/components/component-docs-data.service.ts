@@ -33,19 +33,47 @@ export interface DesignSystemManifest {
   components: ManifestComponent[];
 }
 
-/** Tier assignment for one of the 67 PrimeNG components with no dedicated INOVIXUX build
- * (`docs/brand/24-primeng-component-audit-ino-31.md` §2 Matrix B, finding F-2). */
+/** The settled disposition of one of the 67 PrimeNG components with no dedicated INOVIXUX build
+ * (`docs/brand/24-primeng-component-audit-ino-31.md` §2 Matrix B, finding F-2), as amended by doc
+ * 26 §5 rev 2 (INO-503). The rev-1 tier axis is retired: no row is `open` any more, so each is
+ * `Shipped` (built since the audit snapshot), `Committed` (a doc 26 §5 build phase, spec row
+ * written) or `Covered` (an alias row closed with a one-line "covered by X"). `sourceNote` keeps
+ * the pre-amendment `T1-unbuilt`/`T2/3-open`/`T3-declined` label for provenance. */
 export interface DispositionItem {
   component: string;
   group: string;
-  tier: 'Tier-1' | 'Tier-2' | 'Tier-3';
+  disposition: 'Shipped' | 'Committed' | 'Covered';
+  /** Doc 26 §5 build phase (`B1`…`B5`) for `Committed` rows; null otherwise. */
+  phase: string | null;
+  /** The INOVIXUX component that covers this row — built, planned, or aliased; null for rows we
+   * cover without a component at all (density tokens, native scroll, Angular `[class]`/`[style]`). */
+  target: string | null;
+  /** The one-line "covered by X" entry for `Covered` rows; null otherwise. */
+  coveredBy: string | null;
   status: string;
   sourceNote: string;
 }
 
+/** Ledger-closure counts (doc 24 §0 headline reconciled to the 102-row baseline). `openUnassigned`
+ * is 0 by construction — the generator throws if any Matrix B row lacks a disposition. */
+export interface DispositionSummary {
+  baselineRows: number;
+  implemented: number;
+  servicesNotComponents: number;
+  notImplemented: number;
+  ledgerRows: number;
+  ledgerRowNote: string;
+  byDisposition: Record<string, number>;
+  openUnassigned: number;
+  closedPercent: number;
+}
+
 export interface ComponentDisposition {
   generatedFrom: string;
+  amendedBy: string;
+  rev: number;
   note: string;
+  summary: DispositionSummary;
   items: DispositionItem[];
 }
 

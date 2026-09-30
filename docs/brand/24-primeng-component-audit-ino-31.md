@@ -23,8 +23,8 @@
 | PrimeNG components **partially reachable** through another component (no dedicated build) | 2 (InputNumber, InputPassword via `<ino-input type>`) |
 | PrimeNG components **not implemented** | **67** |
 | — of which **Tier-1 committed in doc 17 but never built** | **5** (ProgressBar, IconField, InputGroup, Tabs, Stepper) |
-| — of which **Tier-3, formally declined** (doc 17 §"Tier 2 and Tier 3") | Knob, Rating, ColorPicker, Editor, OrgChart, Terminal, Dock, media/gallery family (×6), Ripple, DragDrop |
-| — remainder (Tier-2 "specify, don't build" / un-itemized) | ~46 — **the per-component Tier-2/Tier-3 itemization was never written down** (finding F-2 below) |
+| — of which **Tier-3, formally declined** (doc 17 §"Tier 2 and Tier 3") | Knob, Rating, ColorPicker, Editor, OrgChart, Terminal, Dock, media/gallery family (×6), Ripple, DragDrop — **all reinstated as builds by the rev-2 amendment except Ripple; see §2.1** |
+| — remainder (Tier-2 "specify, don't build" / un-itemized) | ~46 — the per-component itemization was missing when this audit was written (finding F-2); **written and closed at 100% in §2.1** (INO-503) |
 | INOVIXUX components with **no PrimeNG counterpart** (marketing/site) | 5 (`ino-feature-grid`, `ino-footer`, `ino-hero`, `ino-metric-panel`, `ino-tier-card`) |
 
 **Three findings the board should see before the tables:**
@@ -39,10 +39,15 @@
   a11y contract, a `COMPONENT_REGISTRY` entry in `check-theme-parity.mjs` (web-only for now — no
   mobile port scheduled), and the manifest regenerated (43 components, was 38). `ino-input`'s doc
   comment now names both dependencies as built rather than future work.
-- **F-2 — Tier-2 stub specs were never written.** Doc 17 promised each Tier-2 component "a stub
-  spec file and a row in the docs site" (~8 d). Zero stub files exist. Consequently there is no
-  written per-component Tier-2 vs Tier-3 assignment beyond the named Tier-3 examples — the "~35 /
-  ~40" split is an estimate, not a list.
+- **F-2 — Tier-2 stub specs were never written; the itemization debt is now closed.** Doc 17
+  promised each Tier-2 component "a stub spec file and a row in the docs site" (~8 d). Zero stub
+  files existed, so there was no written per-component Tier-2 vs Tier-3 assignment beyond the named
+  Tier-3 examples — the "~35 / ~40" split was an estimate, not a list. **Closed (INO-503,
+  2026-09-30):** every one of the rows below now carries a settled disposition — 52 committed to a
+  doc 26 §5 build phase with a written spec row, 12 closed as alias rows against capability we
+  already ship, 5 shipped, **0 open** — published per-component and enforced by an assertion in the
+  generator. See **§2.1**. The remaining stub-*page* work (a portal row per unbuilt component) is
+  doc 25 §3.2, not this finding.
 - **F-3 — The portal is registered but not built.** Doc 16 §6 specifies a hosted per-component
   docs site "like primeng.org" as register item **H-6 (High)**. What exists today: the deployed
   GitHub Pages site with four generic `/docs` routes, 33 per-component markdown files, and static
@@ -165,11 +170,11 @@ components on the same token/a11y contract; not part of the parity count.
 
 ## 2. Matrix B — the 67 PrimeNG components NOT implemented, with disposition
 
-Legend: **T1-unbuilt** = committed in doc 17 Wave 2, never built (F-1). **T3-declined** = named in
-doc 17's written decline list. **T2/3-open** = neither built nor explicitly assigned (F-2) —
-disposition owed by the itemization task in §4.
+Legend (as first written, 2026-09-26): **T1-unbuilt** = committed in doc 17 Wave 2, never built
+(F-1). **T3-declined** = named in doc 17's written decline list. **T2/3-open** = neither built nor
+explicitly assigned (F-2) — disposition owed by the itemization task in §4.
 
-| Group | Component | Disposition |
+| Group | Component | Disposition (rev 1) |
 |---|---|---|
 | Form | IconField | **T1-unbuilt (T-16)** — `ino-input` doc still routes icon slots here |
 | Form | InputGroup | **T1-unbuilt (T-17)** — prefix/suffix addon mechanism |
@@ -191,6 +196,47 @@ disposition owed by the itemization task in §4.
 
 Count check: 5 T1-unbuilt + 16 T3-declined + 49 T2/3-open − 3 double-listed partials/directive
 overlaps = 67 not-implemented rows; 67 + 33 implemented + 2 services = the doc-16 §3.2 tabulation.
+
+### 2.1 Rev 2 — the ledger closed at 100% (INO-503, 2026-09-30)
+
+The rev-1 table above is a **point-in-time audit**, kept verbatim for provenance. Its two open
+buckets are now closed and are empty: doc 26 §5 rev 2 (board directive on INO-377 card `9fd2d7c2`,
+approval `f55baa72`) commits every genuinely-distinct row to a build phase and records the rest as
+alias rows in its covered-by ledger. Every row above carries one of three settled dispositions,
+published per-component in `web/public/design-system/component-disposition.json` (rev 2) and on
+`/docs/components`:
+
+| Disposition | Rows | Meaning |
+|---|---|---|
+| **Shipped** | 5 | Built since the snapshot — the five doc-17 Tier-1 commitments (F-1, INO-318). |
+| **Committed** | 52 | A doc 26 §5 build phase with its spec row written: B1 12, B2 12, B3 5, B4 5, B5 18. |
+| **Covered** | 12 | An alias row — PrimeNG's name for capability we already ship; closed with a one-line "covered by X". |
+| **Open, unassigned** | **0** | The rev-1 Tier-2/Tier-3 buckets are retired. Finding F-2 is closed. |
+
+The 12 covered-by rows, in full:
+
+| PrimeNG row | Covered by |
+|---|---|
+| Sidebar | `ino-drawer` — same component under our name (4 edge positions, modal and non-modal) |
+| ScrollArea, ScrollPanel | native scroll + scrollbar tokens — overflow is CSS, the scrollbar is themed by token |
+| BlockUI | loading states + `ino-skeleton` — per-component loading state replaces a blocking overlay |
+| Fluid | density tokens — dense/fluid ships on every component, not as a wrapper |
+| Bind, ClassNames, StyleClass | built-in Angular syntax (`[class]`/`[style]`) — framework idiom, not a component |
+| Ripple (directive) | pressed-state tokens + Angular animations — our pressed state is token-driven |
+| Gallery | `ino-galleria` (B5) — duplicate baseline row for the same capability |
+| Compare | `ino-imagecompare` (B5) — duplicate baseline row for the same capability |
+| TieredMenu | `ino-menu` (B2) — absorbed as its nested-submenu variant, per that row's own spec |
+
+Two of these twelve are **not** in doc 26 §5's board-approved alias list and are recorded here by
+INO-503, flagged on that issue for board acknowledgement: **TieredMenu** (absorbed by `ino-menu`
+per the wording of its own B2 spec row) and — inversely — **SplitButton**, which the rev-2
+amendment left in neither its B5 table nor its alias ledger and which is recorded as a *build*
+(`ino-split-button`, B5 addendum, hence 18 not 17), because declining a row is a board call.
+
+`scripts/generate-component-disposition.mjs` **throws** if any row above has no rev-2 disposition,
+so "100% closed" is enforced mechanically rather than asserted in prose. That is also the guard
+against this table and the published ledger drifting apart: add a row here and the generator fails
+until the row is disposed.
 
 Services (`FilterService`, `Overlay` API): our equivalents are internal — `ino-table` carries its
 own `filterPredicate`/`filters` inputs; overlay positioning is a shared internal service used by
