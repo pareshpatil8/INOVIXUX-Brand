@@ -1,0 +1,38 @@
+<div class="ino-field">
+  <ino-label
+    *ngIf="label"
+    [for]="inputId"
+    [size]="size"
+    [required]="required"
+    [disabled]="disabled"
+    [invalid]="!!error"
+    [readonly]="readonly"
+  >{{ label }}</ino-label>
+
+  <span class="ino-field__control-wrap">
+    <input
+      [id]="inputId"
+      class="ino-field__control"
+      [class.ino-field__control--error]="!!error"
+      type="text"
+      inputmode="text"
+      autocomplete="off"
+      spellcheck="false"
+      [value]="displayValue"
+      [disabled]="disabled"
+      [readOnly]="readonly || loading"
+      [required]="required"
+      [attr.aria-invalid]="error ? true : null"
+      [attr.aria-describedby]="describedBy"
+      (keydown)="onKeydown($event)"
+      (input)="onInput($event)"
+      (paste)="onPaste($event)"
+      (focus)="onFocus($event)"
+    />
+    <span class="ino-field__spinner" *ngIf="loading" aria-hidden="true"></span>
+  </span>
+
+  <p *ngIf="hint && !error" [id]="hintId" class="ino-field__hint">{{ hint }}</p>
+  <p *ngIf="error" [id]="errorId" class="ino-field__error" role="alert">{{ error }}</p>
+  <p [id]="formatId" class="ino-field__format-description">{{ formatDescription }}</p>
+</div>
