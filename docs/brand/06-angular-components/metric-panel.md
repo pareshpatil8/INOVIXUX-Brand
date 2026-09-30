@@ -50,6 +50,16 @@ component-level animation is the `value` count-up on mount.
 
 ---
 
+## Labels and fields
+
+`label` is a plain visible caption above the headline value (`<p class="ino-metric-panel__label">`)
+— not a `<label for>` association, since the panel has no input control to name. There is no
+`required`/hint/error/float-label concept here; the closest analogue is each `rows[].label`, which
+names a risk-status row next to its own `chip` value. Long `label`/row-label text wraps normally
+within the card's fixed padding rather than truncating.
+
+---
+
 ## Accessibility contract
 
 **Role / ARIA** — no explicit role; `<section>`'s implicit generic-section role is unchanged. The

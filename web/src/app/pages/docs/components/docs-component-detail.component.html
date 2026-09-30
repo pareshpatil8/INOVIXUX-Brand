@@ -60,6 +60,16 @@
           </div>
         </div>
       </ng-container>
+
+      <ng-container *ngIf="stateExamples().length">
+        <h3>States</h3>
+        <div class="docs-live-grid">
+          <div class="docs-live-box" *ngFor="let example of stateExamples()">
+            <p class="docs-live-box__label">{{ example.label }}</p>
+            <ng-container *ngComponentOutlet="type; inputs: example.inputs"></ng-container>
+          </div>
+        </div>
+      </ng-container>
     </ng-container>
     <ng-template #noLiveExample>
       <p>No live example available — this slug isn't in the generated component registry.</p>

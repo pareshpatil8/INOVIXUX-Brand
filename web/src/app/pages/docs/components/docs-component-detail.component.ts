@@ -21,6 +21,24 @@ interface LiveExample {
 
 const MAX_EXAMPLES = 8;
 
+/** Boolean `@Input()` names treated as §2.2 "States" (docs 26 §2) rather than ordinary flags —
+ * demoed individually, flipped to `true`, so disabled/invalid/loading/etc. aren't silently
+ * absent from the generic renderer just because they're not enum-valued. */
+const STATE_INPUT_NAMES = [
+  'disabled',
+  'invalid',
+  'readonly',
+  'loading',
+  'required',
+  'checked',
+  'indeterminate',
+  'expanded',
+  'active',
+  'open',
+  'selected',
+  'error',
+];
+
 /** Best-effort default for any manifest input not already pinned by the example generator below —
  * intentionally generic (INO-317 scope: a props-table-driven renderer, not hand-authored sample
  * data for all 38+ components). */
@@ -87,10 +105,11 @@ export class DocsComponentDetailComponent {
 
   protected readonly primaryExamples = computed<LiveExample[]>(() => this.examples().primary);
   protected readonly sizeExamples = computed<LiveExample[]>(() => this.examples().sizeRow);
+  protected readonly stateExamples = computed<LiveExample[]>(() => this.examples().stateRow);
 
-  private readonly examples = computed<{ primary: LiveExample[]; sizeRow: LiveExample[] }>(() => {
+  private readonly examples = computed<{ primary: LiveExample[]; sizeRow: LiveExample[]; stateRow: LiveExample[] }>(() => {
     const component = this.component();
-    if (!component) return { primary: [], sizeRow: [] };
+    if (!component) return { primary: [], sizeRow: [], stateRow: [] };
 
     const inputs = component.inputs;
     const baseInputs: Record<string, unknown> = {};
@@ -98,9 +117,17 @@ export class DocsComponentDetailComponent {
       baseInputs[input.name] = defaultValueFor(input);
     }
 
+    const stateInputs = inputs.filter(
+      (i) => i.type === 'boolean' && STATE_INPUT_NAMES.includes(i.name),
+    );
+    const stateRow: LiveExample[] = stateInputs.map((stateInput) => ({
+      label: `${stateInput.name}="true"`,
+      inputs: { ...baseInputs, [stateInput.name]: true },
+    }));
+
     const primaryInput = inputs.find((i) => i.values && i.values.length > 0);
     if (!primaryInput) {
-      return { primary: [{ label: 'default', inputs: baseInputs }], sizeRow: [] };
+      return { primary: [{ label: 'default', inputs: baseInputs }], sizeRow: [], stateRow };
     }
 
     const primaryValues = primaryInput.values!.slice(0, MAX_EXAMPLES);
@@ -120,7 +147,7 @@ export class DocsComponentDetailComponent {
       }));
     }
 
-    return { primary, sizeRow };
+    return { primary, sizeRow, stateRow };
   });
 
   protected inputValuesLabel(input: ManifestInput): string {

@@ -131,6 +131,19 @@ guard. The loading spinner uses `--ino-motion-duration-slow` linear rotation.
 
 ---
 
+## Labels and fields
+
+`label` renders through the shared `ino-label` leaf (`[required]` for the decorative `*`,
+`[invalid]="!!error"` for the danger treatment) and doubles as the fallback `aria-label` for the
+popup listbox (`label || placeholder`) when no options are selected yet. `placeholder` shows in
+the closed field until a selection exists; `filterPlaceholder` is the separate placeholder for the
+in-popup filter input, not a label. `hint`/`error` render as a paragraph under the field —
+`error` taking priority, both wired via `aria-describedby` — and `error` also sets `aria-invalid`
+and the field's danger border. Selected-option chips carry their own per-chip
+`aria-label="Remove <label>"` on the remove button, independent of the field-level label.
+
+---
+
 ## Accessibility contract
 
 **Role / ARIA** — WAI-ARIA APG multi-selectable listbox (SPEC.md §2). The trigger (a `<div
