@@ -27,11 +27,84 @@ function findLocalTypeAliases(source) {
   return aliases;
 }
 
+// Blanks out `//` and `/* */` comments (preserving length/newlines so later offsets still make
+// sense) so a `@Input()` mentioned in a JSDoc example — e.g. multiselect's class-doc comment —
+// is never mistaken for a real decorator. Doesn't special-case `//` inside string literals;
+// none of today's component sources put one there.
+function stripComments(source) {
+  return source
+    .replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, ' '))
+    .replace(/\/\/[^\n]*/g, (m) => ' '.repeat(m.length));
+}
+
+// Finds the index of `ch` in `text` starting at `from`, but only where bracket depth is 0 —
+// i.e. not inside `()`, `[]`, or `{}` — so an arrow-function type's own `=>`/`;` never gets
+// mistaken for the end of the enclosing `@Input` statement.
+function findAtDepthZero(text, from, predicate) {
+  let depth = 0;
+  for (let i = from; i < text.length; i++) {
+    const c = text[i];
+    if (c === '(' || c === '[' || c === '{') depth++;
+    else if (c === ')' || c === ']' || c === '}') depth--;
+    else if (depth === 0 && predicate(text, i)) return i;
+  }
+  return -1;
+}
+
+// Most `@Input()`s in this codebase — especially the `booleanAttribute`/`numberAttribute`
+// coercion form — skip the `: Type` annotation and let TS infer it from the default literal
+// (`@Input({ transform: booleanAttribute }) disabled = false;`). Recover a manifest type from
+// that literal so those inputs aren't silently dropped.
+function inferTypeFromDefault(defaultValue) {
+  if (defaultValue === null) return 'unknown';
+  const v = defaultValue.trim();
+  if (v === 'true' || v === 'false') return 'boolean';
+  if (v === 'null') return 'null';
+  if (/^-?\d+(\.\d+)?$/.test(v)) return 'number';
+  if (/^(['"]).*\1$/.test(v)) return 'string';
+  if (v.startsWith('[')) return 'unknown[]';
+  return 'unknown';
+}
+
 function parseInputs(source, aliases) {
+  const clean = stripComments(source);
   const inputs = [];
-  for (const m of source.matchAll(/@Input\(\)\s+(\w+)(\??):\s*([^=;]+?)\s*(?:=\s*([^;]+))?;/g)) {
-    const [, name, optional, type, defaultValue] = m;
-    const trimmedType = type.trim();
+  // Bare `@Input()` or the coercion form `@Input({ transform: booleanAttribute | numberAttribute })`.
+  const decoratorRe = /@Input\(\s*(?:\{\s*transform:\s*(booleanAttribute|numberAttribute)\s*\})?\s*\)\s*(\w+)(\??)\s*(?=[:=;])/g;
+  let m;
+  while ((m = decoratorRe.exec(clean))) {
+    const [, transform, name, optional] = m;
+    const afterName = m.index + m[0].length;
+
+    let rawType = null;
+    let cursor = afterName;
+    if (clean[cursor] === ':') {
+      const typeStart = cursor + 1;
+      // Type ends at the first depth-0 `=` that isn't part of `=>`, or the first depth-0 `;`.
+      const typeEnd = findAtDepthZero(
+        clean,
+        typeStart,
+        (text, i) => text[i] === ';' || (text[i] === '=' && text[i + 1] !== '>'),
+      );
+      if (typeEnd === -1) continue; // malformed/unterminated — skip rather than swallow the rest of the file
+      rawType = clean.slice(typeStart, typeEnd).trim();
+      cursor = typeEnd;
+    }
+
+    let defaultValue = null;
+    if (clean[cursor] === '=') {
+      const defaultStart = cursor + 1;
+      const defaultEnd = findAtDepthZero(clean, defaultStart, (text, i) => text[i] === ';');
+      if (defaultEnd === -1) continue;
+      defaultValue = clean.slice(defaultStart, defaultEnd).trim();
+      cursor = defaultEnd;
+    }
+    if (clean[cursor] !== ';') continue; // malformed — skip rather than misparse
+    decoratorRe.lastIndex = cursor;
+
+    const trimmedType = transform
+      ? (transform === 'booleanAttribute' ? 'boolean' : 'number')
+      : (rawType ?? inferTypeFromDefault(defaultValue));
     let values = null;
     if (aliases[trimmedType]) values = aliases[trimmedType];
     else {
@@ -42,8 +115,8 @@ function parseInputs(source, aliases) {
       name,
       type: trimmedType,
       values,
-      default: defaultValue?.trim() ?? null,
-      optional: Boolean(optional) || defaultValue !== undefined,
+      default: defaultValue,
+      optional: Boolean(optional) || defaultValue !== null,
     });
   }
   return inputs;

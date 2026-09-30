@@ -204,15 +204,50 @@ mobile disposition. All rows: 3 web themes (dark/light/high-contrast) × dense/f
 | ino-scrolltop | window/parent target; threshold; smooth scroll | visible/hidden | one size | `aria-label` | focus handling on activate; `prefers-reduced-motion` | Web-only |
 | ino-autofocus | directive; initial-focus management | n/a | n/a | n/a | documented interplay with focus-trap + route change | Web + both mobile equivalents |
 
-### Tier-3 additions — decline in writing (16 rows, rationale recorded in disposition JSON)
+### Phase B5 — Reinstated full-catalog rows (17 components; rev 2 amendment, 2026-09-30)
 
-SpeedDial, MegaMenu, Sidebar (alias → ino-drawer), ScrollArea + ScrollPanel (native scroll +
-existing scrollbar tokens), Inplace, BlockUI (covered by loading states + skeleton), Fluid
-(covered by density tokens), AnimateOnScroll, Bind, ClassNames, StyleClass, AutoFocus-adjacent
-utilities Ripple-style (Angular idioms — `[class]`/`[style]`/animations cover them), InputColor
-(no product use; risk-flag colors are tokens, never user-picked), DataTable-adjacent Compare
-duplicates, plus the 15 already-declined rows reaffirmed. **Any row here re-opens by board
-comment — it moves into B4 with a spec, nothing else changes.**
+**Amendment (board directive, INO-377 card `9fd2d7c2` + approval `f55baa72`):** the board
+directed "stick to 101 components with all variations." The former Tier-3 decline list (doc
+17's 15 rows + this doc's proposed 16) is superseded: every genuinely-distinct component in
+it is reinstated below as Phase B5 (after the B3/B4 gate); the remaining rows are aliases of
+capability we already ship, recorded in the covered-by ledger that follows. Same column key
+and §2 contract as every other phase.
+
+| Component | V — Variants/Structure | St — States | Sz | L — Labels | A11y | N — Notes / mobile |
+|---|---|---|---|---|---|---|
+| ino-knob | circular dial input; min/max/step; value template; readonly | dragging, at-bounds | dial sm/md/lg | value label + `aria-label` | `role=slider`, Arrow/Home/End, `aria-valuetext` | Web-only (mobile prefers native pickers) |
+| ino-rating | configurable star count; custom icons; clear/cancel toggle; integer values | hover-preview, readonly | sm/md/lg | own label; value announced | radiogroup of stars, Arrow keys | Port both |
+| ino-colorpicker | inline vs popover; HSB panel + hue/alpha bars; hex/rgb input; preset swatches | open, dragging, invalid-hex | swatch sm/md | full label set | dialog/combobox hybrid; slider semantics per bar; value announced on commit | Web-only (theming/admin surfaces) |
+| ino-editor | rich text: toolbar presets (basic/full); headings/lists/links/code; sanitized paste; char limit | invalid, readonly, at-limit | min-height scales | label + help/error | `role=toolbar` roving focus; `aria-multiline` textbox; format toggles announced | Web-only; heavy row — spec first |
+| ino-orgchart | node templates; expand/collapse subtrees; selection; connectors | expanded, selected, loading | zoom scales | chart label | tree-of-nodes semantics, Arrow traversal documented | Web-only |
+| ino-terminal | prompt template; command history; scrollback; welcome message | focused, busy | fixed-height scales | `aria-label` | `role=log` + `aria-live` polite output; input textbox semantics | Web-only (docs/dev tooling) |
+| ino-dock | bottom/side position; magnify-on-hover (off under reduced motion) | active-item, hover-magnify | icon sm/md/lg | item labels/tooltips | menubar semantics, Arrow keys | Web-only |
+| ino-carousel | horizontal/vertical; N visible + step; autoplay opt-in; circular; indicators + prev/next | playing/paused, at-bounds | item gap scales | slide labels ("x of n") | APG carousel: `aria-roledescription`, visible pause control, reduced-motion stops autoplay | Port both |
+| ino-galleria | thumbnail strip + stage; fullscreen; indicators; autoplay opt-in | fullscreen, loading, playing | stage scales | captions + counts | fullscreen = dialog (Esc exits); APG carousel semantics | Web-first; mobile = native gallery patterns |
+| ino-image | preview-on-click lightbox (zoom/rotate); error-fallback slot; lazy load | loading, error-fallback, zoomed | intrinsic + fit modes | `alt` required; caption slot | lightbox = dialog; zoom keys documented | Port both (base render; lightbox web-only) |
+| ino-imagecompare | before/after slider handle; horizontal/vertical | dragging, at-bounds | container scales | side labels | `role=slider` on handle, Arrow keys, `aria-valuetext` % | Web-only |
+| ino-dragdrop | directives: draggable/droppable; drag handle; drop-zone highlight | dragging, over-target, dropped-flash | n/a | n/a | keyboard alternative required (pick-up/move/drop) + `aria-live` announcements — a11y-hard row; spec first | Web-only |
+| ino-speeddial | FAB expanding to actions; linear/circle/quarter directions; optional mask | open, disabled-action | fab sm/md/lg | action tooltips/labels | menubutton + menu semantics; Esc closes; focus return | Web-only (mobile uses native FAB patterns) |
+| ino-megamenu | horizontal/vertical; multi-column panels; grouped links; icons | open-panel, active-item | compact/comfortable | menubar label | APG menubar with grouped panels; full Arrow/Esc map | Web-only |
+| ino-inplace | display slot ↔ edit slot swap; close on blur/Enter; lazy content | display, editing | inherits content | edit affordance labeled | button semantics on display; focus moves into editor and returns | Web-only |
+| ino-inputcolor | styled native color input; hex text twin; preset swatches | invalid-hex | sm/md/lg | full label set | native `input[type=color]` + text alternative documented | Web-only (token-first guidance stays in Notes) |
+| ino-animateonscroll | directive: enter/leave animation classes; threshold; once vs repeat | n/a (directive) | n/a | n/a | `prefers-reduced-motion` disables; content never hidden pre-animation (CLS/SR) | Web-only |
+
+### Covered-by ledger — alias rows, capability already shipped (rev 2 amendment)
+
+These rows are PrimeNG names for capability INOVIXUX already ships under another name.
+Nothing separate exists to build; each row closes in doc 24's disposition ledger as
+"covered by X." **Any row the board disagrees with moves into B5 as a build — say the row.**
+
+| PrimeNG row | Covered by |
+|---|---|
+| Sidebar | `ino-drawer` (same component, our name) |
+| ScrollArea / ScrollPanel | native scroll + scrollbar tokens |
+| BlockUI | loading states + `ino-skeleton` |
+| Fluid | density tokens (dense/fluid ships on every component) |
+| Bind / ClassNames / StyleClass | built-in Angular syntax (`[class]`/`[style]`) |
+| Ripple-style utilities | pressed-state tokens + Angular animations |
+| Gallery / Compare duplicate rows | `ino-galleria` / `ino-imagecompare` (built in B5) |
 
 ---
 

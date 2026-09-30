@@ -1,0 +1,251 @@
+name: Docs portal gates (D-gate 3)
+
+# INO-31 D-gate 3 (doc 26 §7, doc 29). The two gates that need a real browser:
+#
+#   interaction-smoke — overlay anchored to its trigger (the direct D1/INO-364 regression
+#                       test), focus trap, APG keyboard maps.
+#   visual-snapshots  — per-component × per-theme pixel snapshots of the docs pages, diffed.
+#
+# Deliberately a SEPARATE workflow from design-system.yml, for the reason that file's own
+# header asks for: `check` there installs nothing and finishes in ~15s, and adding a
+# browser download plus an Angular production build to it would turn the cheap gate into a
+# slow one and someone would switch it off. The third D-gate 3 check — docs-completeness
+# lint — is dependency-free and therefore lives in design-system.yml's `check` job where it
+# belongs, not here.
+#
+# The other half of the split is about baselines. Pixel baselines are valid for exactly one
+# rendering stack, so the visual job runs in the pinned Playwright container and NOTHING
+# else may write to web/e2e/__screenshots__. The interaction smoke has no such constraint
+# and is the gate contributors run locally (`npm run e2e:smoke`).
+#
+# Why this could not be a unit test: the D1 bug was a layout bug (an absolutely-positioned
+# overlay resolving against the wrong ancestor) and ino-datepicker.spec.ts passed 3/3
+# throughout. jsdom computes no layout, and ino-focus-trap.spec.ts says in its own header
+# that jsdom has no sequential focus navigation order either. Both classes of defect are
+# invisible to every gate we had before this one.
+#
+# Verified red as well as green before landing (INO-375): with the INO-364 fix reverted in a
+# throwaway checkout, 3 of the 4 anchoring tests fail naming INO-364 in the message; with it
+# in place, 16/16 pass. The body-portal case correctly stays green under that revert because
+# it positions from JS, not CSS — which is the honest result, not a gap.
+
+on:
+  push:
+    branches: [main, ino-31-design-system-parity]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      update_baselines:
+        description: 'Regenerate the visual baselines and upload them as an artifact to commit (see docs/brand/29-ci-gates-d3-ino-31.md §4)'
+        type: boolean
+        default: false
+
+concurrency:
+  group: docs-portal-e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  # Must match the @playwright/test version pinned in package.json. The
+  # version-drift guard step in the visual job fails the build if they part company —
+  # a container whose bundled browser does not match the test runner is how a pixel
+  # gate starts producing diffs nobody can reproduce.
+  PLAYWRIGHT_VERSION: 1.63.0
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # D-gate 3(a) — interaction smoke. Blocking.
+  # ---------------------------------------------------------------------------
+  interaction-smoke:
+    name: Interaction smoke — overlay anchoring, focus trap, APG keyboard
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      # web/ and mobile/capacitor/app/ are npm workspaces sharing one root install (INO-99) —
+      # install from the repo root, not from web/.
+      - name: Install dependencies
+        run: npm ci
+
+      # Only chromium. A three-browser matrix triples the wall clock to answer a question
+      # ("does our overlay anchor to its trigger") that is not browser-specific; cross-browser
+      # coverage is a separate decision with its own cost, not something to smuggle in here.
+      - name: Install Playwright chromium
+        run: npx playwright install --with-deps chromium
+
+      # --configuration production, same as the compile gate and deploy-pages.yml: AOT
+      # template type-checking and the SCSS budgets only run there, and the gate should be
+      # exercising the bytes we actually publish.
+      - name: Build the portal (production)
+        run: npm run e2e:build
+
+      - name: Interaction smoke
+        run: npm run e2e:smoke
+
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: interaction-smoke-report
+          path: |
+            web/e2e-report
+            web/e2e-results
+          retention-days: 14
+
+  # ---------------------------------------------------------------------------
+  # D-gate 3(b) — per-component × per-theme visual snapshots. Blocking once the
+  # baselines are seeded; see the seed-mode step for what happens before that.
+  # ---------------------------------------------------------------------------
+  visual-snapshots:
+    name: Visual snapshots — 43 components x 3 themes
+    runs-on: ubuntu-latest
+    # The pinned Playwright image, not ubuntu-latest's own fonts. Font rasterisation,
+    # fontconfig and the bundled browser build are the three things a pixel baseline is a
+    # hostage to, and the runner image updates them without telling us. The container is
+    # also what makes the baselines reproducible on a laptop (docker run, same tag).
+    container: mcr.microsoft.com/playwright:v1.63.0-noble
+    # REQUIRED for a container job, not cosmetic (INO-393). Actions resolves the default shell
+    # for `run:` steps inside a container to `sh -e {0}`, and on noble /bin/sh is dash, which
+    # has no `set -o pipefail` — every step below that opens with `set -euo pipefail` dies with
+    # "Illegal option -o pipefail" and exit 2 before running a single line of its body. That is
+    # what happened on this workflow's first real execution: the version guard "failed" while
+    # the versions in fact matched, and seed mode was never reached. The image has bash; say so.
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      # A mismatch here means the browser in the container is not the browser the test
+      # runner expects, which produces diffs that cannot be reproduced anywhere. Fail loudly
+      # rather than publish a baseline nobody can regenerate.
+      - name: Guard — runner version matches the container tag
+        run: |
+          set -euo pipefail
+          installed=$(npx playwright --version | awk '{print $2}')
+          if [ "$installed" != "$PLAYWRIGHT_VERSION" ]; then
+            echo "::error::@playwright/test is $installed but this job runs in mcr.microsoft.com/playwright:v$PLAYWRIGHT_VERSION."
+            echo "Bump BOTH: the container: line and env.PLAYWRIGHT_VERSION in this workflow, then reseed the baselines (docs/brand/29-ci-gates-d3-ino-31.md §4)."
+            exit 1
+          fi
+          echo "playwright $installed matches container v$PLAYWRIGHT_VERSION"
+
+      - name: Build the portal (production)
+        run: npm run e2e:build
+
+      - name: Are the baselines seeded?
+        id: baselines
+        run: |
+          # `mkdir -p` rather than `find ... 2>/dev/null` (INO-393). Git does not track empty
+          # directories, so on a seed run this path does not exist, and `find` on a missing
+          # directory exits 1 — which under `-o pipefail` fails the step. Redirecting stderr
+          # hides the message but not the status. The catch-22: the step whose whole job is to
+          # detect "no baselines yet" crashed in exactly the case it exists to detect.
+          mkdir -p web/e2e/__screenshots__
+          count=$(find web/e2e/__screenshots__ -name '*.png' | wc -l | tr -d ' ')
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+          echo "committed baselines: $count"
+
+      # ------------------------------------------------------------------
+      # Seed mode. Runs when the baselines directory is empty, or on an
+      # explicit dispatch with update_baselines=true.
+      #
+      # This is the one honest way to land this gate from a laptop: pixel baselines for
+      # THIS container cannot be generated on macOS or on a plain runner, so the first set
+      # has to come out of a CI run. The job produces them, uploads them, and says so
+      # loudly in the step summary — it does not pretend to have diffed anything.
+      # ------------------------------------------------------------------
+      - name: Seed baselines (no committed baselines yet, or explicitly requested)
+        if: steps.baselines.outputs.count == '0' || github.event.inputs.update_baselines == 'true'
+        run: |
+          set -euo pipefail
+          # Judge the seed run on what it PRODUCED, not on its exit status. Under
+          # `--update-snapshots` Playwright 1.63 treats writing a new snapshot as a pass (the
+          # seed run that armed this gate exited 0 with 144 passed), but that is a convention,
+          # not a contract — without `-u` a missing snapshot is a *failure* ("A snapshot doesn't
+          # exist at ..., writing actual"), and the two behaviours have swapped around across
+          # releases. If a future version exits non-zero here, `set -e` would abort the step,
+          # skip "Upload generated baselines", and silently discard the images the run exists to
+          # create. Counting the output is the check that survives that. The count is also a
+          # stronger assertion than the exit code: it still fails loudly, with its own message,
+          # when a broken build or a 500ing portal produces nothing.
+          status=0
+          npm run e2e:visual:update || status=$?
+          produced=$(find web/e2e/__screenshots__ -name '*.png' | wc -l | tr -d ' ')
+          echo "playwright exited $status; produced $produced baselines"
+          if [ "$produced" -eq 0 ]; then
+            echo "::error::Seed run produced no baselines at all (playwright exit $status). This is a real failure, not the expected write-new-snapshot exit code."
+            exit 1
+          fi
+          {
+            echo "### D-gate 3b — BASELINES NOT YET ARMED"
+            echo
+            echo "This run **generated** $produced baselines instead of diffing against committed ones."
+            echo "Nothing was compared, so this job proves nothing about the current diff."
+            echo
+            echo "To arm the gate: download the \`visual-baselines\` artifact from this run, unpack it"
+            echo "into \`web/e2e/__screenshots__/\`, and commit it. See"
+            echo "\`docs/brand/29-ci-gates-d3-ino-31.md\` §4."
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "::warning::D-gate 3b generated $produced baselines and compared nothing. Commit the visual-baselines artifact to arm the gate — see docs/brand/29-ci-gates-d3-ino-31.md §4."
+
+      - name: Upload generated baselines
+        if: steps.baselines.outputs.count == '0' || github.event.inputs.update_baselines == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-baselines
+          path: web/e2e/__screenshots__
+          retention-days: 30
+
+      # ------------------------------------------------------------------
+      # Diff mode — the actual gate.
+      # ------------------------------------------------------------------
+      - name: Diff against committed baselines
+        if: steps.baselines.outputs.count != '0' && github.event.inputs.update_baselines != 'true'
+        run: npm run e2e:visual
+
+      # A pixel diff nobody can look at is a dead end, so the report (which embeds the
+      # expected/actual/diff triptych per failure) is always uploaded on failure.
+      - name: Upload diff report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-diff-report
+          path: |
+            web/e2e-report
+            web/e2e-results
+          retention-days: 14
+
+      - name: Explain a diff failure
+        if: failure() && steps.baselines.outputs.count != '0'
+        run: |
+          {
+            echo "### D-gate 3b — visual diff failed"
+            echo
+            echo "Download the \`visual-diff-report\` artifact and open \`web/e2e-report/index.html\`:"
+            echo "each failure carries expected / actual / diff images."
+            echo
+            echo "If the change is INTENTIONAL (a token edit, a demo rewrite, a page-anatomy change),"
+            echo "refresh the baselines in the same PR that changed the look:"
+            echo
+            echo '    gh workflow run docs-portal-e2e.yml --ref <your-branch> -f update_baselines=true'
+            echo
+            echo "then commit the \`visual-baselines\` artifact. Do NOT regenerate baselines on a laptop —"
+            echo "they must come from this container. See \`docs/brand/29-ci-gates-d3-ino-31.md\`."
+          } >> "$GITHUB_STEP_SUMMARY"

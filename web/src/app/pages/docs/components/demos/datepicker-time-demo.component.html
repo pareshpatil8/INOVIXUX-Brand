@@ -31,8 +31,9 @@
     </p>
 
     <p class="demo-section__note">Positioned ancestor (<code>appendTo="self"</code>, default) — the panel stays anchored under the trigger, not offset by the surrounding <code>position: relative</code> wrapper.</p>
-    <app-demo-constrained-container variant="positioned">
+    <app-demo-constrained-container variant="positioned" data-testid="container-positioned">
       <ino-datepicker
+        data-testid="dp-positioned-ancestor"
         label="Date inside a positioned ancestor"
         hint="Overlay anchors to this field, not the wrapper"
         [(value)]="positionedAncestorValue"
@@ -41,8 +42,9 @@
     </app-demo-constrained-container>
 
     <p class="demo-section__note">Scrolling/clipping ancestor, <code>appendTo="self"</code> — the overlay never leaves this ancestor's DOM subtree, so it can be clipped.</p>
-    <app-demo-constrained-container variant="scroll">
+    <app-demo-constrained-container variant="scroll" data-testid="container-scroll-self">
       <ino-datepicker
+        data-testid="dp-scroll-self"
         label="Date inside a scrolling container"
         hint="appendTo=self stays inside this box"
         [(value)]="scrollSelfValue"
@@ -51,8 +53,9 @@
     </app-demo-constrained-container>
 
     <p class="demo-section__note">Same scrolling ancestor, <code>appendTo="body"</code> — the panel is reparented to <code>document.body</code> and escapes the clip.</p>
-    <app-demo-constrained-container variant="scroll">
+    <app-demo-constrained-container variant="scroll" data-testid="container-scroll-body">
       <ino-datepicker
+        data-testid="dp-scroll-body"
         label="Date inside a scrolling container (body portal)"
         hint="appendTo=body escapes the clip"
         appendTo="body"
@@ -62,8 +65,9 @@
     </app-demo-constrained-container>
 
     <p class="demo-section__note">Narrow ancestor (INO-368) — width-constrained container near a viewport edge, for flip/clamp behavior when the panel's default side has no room.</p>
-    <app-demo-constrained-container variant="narrow">
+    <app-demo-constrained-container variant="narrow" data-testid="container-narrow">
       <ino-datepicker
+        data-testid="dp-narrow-ancestor"
         label="Date inside a narrow container"
         hint="Panel flips/clamps to stay in view"
         [(value)]="narrowAncestorValue"

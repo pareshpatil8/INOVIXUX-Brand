@@ -107,6 +107,26 @@ jobs:
       - name: Email templates match tokens.css
         run: node scripts/check-email-tokens.mjs
 
+      # INO-375 / doc 26 §7 D-gate 3(c): "a manifest component without the §2 sections fails
+      # the build." The sixth question, and none of the five above ask it — all of them pass on
+      # a component whose /docs/components/<slug> page renders "No live example available", an
+      # empty Accessibility contract and nothing about states or sizing. That page is what the
+      # board rejected on 2026-09-28.
+      #
+      # It belongs in THIS job rather than the browser gate (docs-portal-e2e.yml) because it is
+      # dependency-free ESM over node: builtins like its five siblings — it reads the manifest,
+      # the generated docs extract, the two demo registries and the component docs, and needs no
+      # `npm ci`, so the ~15s no-install property of this job is preserved.
+      #
+      # If this step fails on your PR: write the missing section in
+      # docs/brand/06-angular-components/<slug>.md and re-run
+      # `node scripts/generate-component-docs-extract.mjs`, or register a live demo. The
+      # 35 gaps that predate the gate are waived in scripts/docs-completeness-waivers.json,
+      # each naming the issue that deletes it (INO-371 for 30, INO-374 for 5) — and an unused
+      # waiver fails this build, so the file cannot become a parking lot.
+      - name: Docs pages carry the §2 Publish Contract sections
+        run: node scripts/check-docs-completeness.mjs
+
   # ---------------------------------------------------------------------------
   # The compile gate (INO-262). Three SEPARATE jobs, deliberately:
   #

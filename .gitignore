@@ -1,3 +1,10 @@
 node_modules/
 .DS_Store
 .dart_tool/
+
+# Playwright run output (INO-375 / D-gate 3). The BASELINES under
+# web/e2e/__screenshots__/ are committed on purpose — they are the gate's contract. These two
+# are per-run artifacts (traces, failure screenshots, the HTML report) that CI uploads as
+# artifacts instead.
+web/e2e-results/
+web/e2e-report/

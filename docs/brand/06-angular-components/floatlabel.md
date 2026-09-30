@@ -89,6 +89,20 @@ The label's position/size transition uses `--ino-motion-duration-fast` +
 
 ---
 
+## Labels and fields
+
+This component **is** the fleet's float/ifta-label integration (§2.4) — it composes the shared
+`ino-label` leaf and forwards `required` straight through to it for the decorative `*` marker
+(callers needing an announced "required" still set `aria-required` on the projected control
+itself, per `ino-label`'s own contract). There is no separate help-text or error-text input here:
+hint/error rendering belongs to the wrapped control (`ino-input`/`ino-select`/etc.), which renders
+its own `hint`/`error` paragraph below the float-label wrapper — see [Relationship to
+`ino-input`/`ino-select`](#relationship-to-ino-inputino-select) below. `invalid`/`disabled`/
+`readonly` pass through to the inner `ino-label` for its danger/dim/muted treatments so the
+label's visual state always matches the control it names.
+
+---
+
 ## Accessibility contract
 
 **Role / ARIA** — the internal `<ino-label for>` gives the accessible-name link natively; no extra

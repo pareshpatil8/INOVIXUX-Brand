@@ -1,0 +1,24 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Structure — eyebrow, headline, lead, projected content</h3>
+  <p class="demo-section__note">
+    <code>eyebrow</code>/<code>headline</code>/<code>lead</code> are plain string inputs; the
+    default <code>&lt;ng-content&gt;</code> slot carries whatever call-site content follows (here,
+    a CTA button) — the hero shell never knows what it contains.
+  </p>
+  <ino-hero
+    eyebrow="KYB underwriting"
+    headline="Approve businesses in minutes, not weeks"
+    lead="Automated document verification and risk scoring, with a human approver on every decision."
+  >
+    <button ino-button variant="primary">Get started</button>
+  </ino-hero>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States — headline only</h3>
+  <p class="demo-section__note">
+    <code>eyebrow</code> and <code>lead</code> are optional (<code>*ngIf</code>-gated); omitting
+    either collapses its row rather than leaving empty space.
+  </p>
+  <ino-hero headline="Built for regulated industries"></ino-hero>
+</section>
