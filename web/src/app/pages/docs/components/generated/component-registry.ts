@@ -4,6 +4,7 @@
 import { Type } from '@angular/core';
 
 import { InoAlertComponent } from '../../../../components/alert/ino-alert.component';
+import { InoAutocompleteComponent } from '../../../../components/autocomplete/ino-autocomplete.component';
 import { InoButtonComponent } from '../../../../components/button/ino-button.component';
 import { InoCardComponent } from '../../../../components/card/ino-card.component';
 import { InoCheckboxComponent } from '../../../../components/checkbox/ino-checkbox.component';
@@ -22,6 +23,8 @@ import { InoIftaLabelComponent } from '../../../../components/iftalabel/ino-ifta
 import { InoInputComponent } from '../../../../components/input/ino-input.component';
 import { InoInputGroupComponent } from '../../../../components/input-group/ino-input-group.component';
 import { InoInputOtpComponent } from '../../../../components/input-otp/ino-input-otp.component';
+import { InoInputMaskComponent } from '../../../../components/inputmask/ino-inputmask.component';
+import { InoInputNumberComponent } from '../../../../components/inputnumber/ino-inputnumber.component';
 import { InoLabelComponent } from '../../../../components/label/ino-label.component';
 import { InoMeterGroupComponent } from '../../../../components/meter-group/ino-meter-group.component';
 import { InoMetricPanelComponent } from '../../../../components/metric-panel/ino-metric-panel.component';
@@ -29,6 +32,7 @@ import { InoModalComponent } from '../../../../components/modal/ino-modal.compon
 import { InoMultiSelectComponent } from '../../../../components/multiselect/ino-multiselect.component';
 import { InoNavComponent } from '../../../../components/nav/ino-nav.component';
 import { InoPaginatorComponent } from '../../../../components/paginator/ino-paginator.component';
+import { InoPasswordComponent } from '../../../../components/password/ino-password.component';
 import { InoPopoverComponent } from '../../../../components/popover/ino-popover.component';
 import { InoProgressBarComponent } from '../../../../components/progress-bar/ino-progress-bar.component';
 import { InoProgressSpinnerComponent } from '../../../../components/progress-spinner/ino-progress-spinner.component';
@@ -49,6 +53,7 @@ import { InoVirtualScrollerComponent } from '../../../../components/virtual-scro
 
 export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'alert': InoAlertComponent,
+  'autocomplete': InoAutocompleteComponent,
   'button': InoButtonComponent,
   'card': InoCardComponent,
   'checkbox': InoCheckboxComponent,
@@ -67,6 +72,8 @@ export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'input': InoInputComponent,
   'input-group': InoInputGroupComponent,
   'input-otp': InoInputOtpComponent,
+  'inputmask': InoInputMaskComponent,
+  'inputnumber': InoInputNumberComponent,
   'label': InoLabelComponent,
   'meter-group': InoMeterGroupComponent,
   'metric-panel': InoMetricPanelComponent,
@@ -74,6 +81,7 @@ export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'multiselect': InoMultiSelectComponent,
   'nav': InoNavComponent,
   'paginator': InoPaginatorComponent,
+  'password': InoPasswordComponent,
   'popover': InoPopoverComponent,
   'progress-bar': InoProgressBarComponent,
   'progress-spinner': InoProgressSpinnerComponent,

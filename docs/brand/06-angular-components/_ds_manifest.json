@@ -1,6 +1,6 @@
 {
   "generatedFrom": "previews/*.html @dsCard markers",
-  "cardCount": 16,
+  "cardCount": 40,
   "cards": [
     {
       "id": "button",
@@ -15,6 +15,12 @@
       "doc": "paginator.md"
     },
     {
+      "id": "table",
+      "group": "Data",
+      "preview": "previews/table.html",
+      "doc": "table.md"
+    },
+    {
       "id": "timeline",
       "group": "Data",
       "preview": "previews/timeline.html",
@@ -27,10 +33,28 @@
       "doc": "virtual-scroller.md"
     },
     {
+      "id": "file-upload",
+      "group": "File",
+      "preview": "previews/file-upload.html",
+      "doc": "file-upload.md"
+    },
+    {
       "id": "datepicker",
       "group": "Form",
       "preview": "previews/datepicker.html",
       "doc": "datepicker.md"
+    },
+    {
+      "id": "floatlabel",
+      "group": "Form",
+      "preview": "previews/floatlabel.html",
+      "doc": "floatlabel.md"
+    },
+    {
+      "id": "iftalabel",
+      "group": "Form",
+      "preview": "previews/iftalabel.html",
+      "doc": "iftalabel.md"
     },
     {
       "id": "input",
@@ -39,16 +63,58 @@
       "doc": "input.md"
     },
     {
+      "id": "input-otp",
+      "group": "Form",
+      "preview": "previews/input-otp.html",
+      "doc": "input-otp.md"
+    },
+    {
       "id": "label",
       "group": "Form",
       "preview": "previews/label.html",
       "doc": "label.md"
     },
     {
+      "id": "multiselect",
+      "group": "Form",
+      "preview": "previews/multiselect.html",
+      "doc": "multiselect.md"
+    },
+    {
+      "id": "password",
+      "group": "Form",
+      "preview": "previews/password.html",
+      "doc": "password.md"
+    },
+    {
       "id": "select",
       "group": "Form",
       "preview": "previews/select.html",
       "doc": "select.md"
+    },
+    {
+      "id": "textarea",
+      "group": "Form",
+      "preview": "previews/textarea.html",
+      "doc": "textarea.md"
+    },
+    {
+      "id": "checkbox",
+      "group": "Forms",
+      "preview": "previews/checkbox.html",
+      "doc": "checkbox.md"
+    },
+    {
+      "id": "radio-group",
+      "group": "Forms",
+      "preview": "previews/radio-group.html",
+      "doc": "radio-group.md"
+    },
+    {
+      "id": "toggle",
+      "group": "Forms",
+      "preview": "previews/toggle.html",
+      "doc": "toggle.md"
     },
     {
       "id": "control-size-scale",
@@ -69,6 +135,18 @@
       "doc": "form-label-tokens.md"
     },
     {
+      "id": "card",
+      "group": "Layout",
+      "preview": "previews/card.html",
+      "doc": "card.md"
+    },
+    {
+      "id": "imagery-illustration",
+      "group": "Media",
+      "preview": "previews/imagery-illustration.html",
+      "doc": "imagery-illustration.md"
+    },
+    {
       "id": "alert",
       "group": "Messages",
       "preview": "previews/alert.html",
@@ -79,6 +157,18 @@
       "group": "Misc",
       "preview": "previews/focus-trap.html",
       "doc": "focus-trap.md"
+    },
+    {
+      "id": "meter-group",
+      "group": "Misc",
+      "preview": "previews/meter-group.html",
+      "doc": "meter-group.md"
+    },
+    {
+      "id": "progress-bar",
+      "group": "Misc",
+      "preview": "previews/progress-bar.html",
+      "doc": "progress-bar.md"
     },
     {
       "id": "progress-spinner",
@@ -93,10 +183,64 @@
       "doc": "skeleton.md"
     },
     {
+      "id": "stepper",
+      "group": "Misc",
+      "preview": "previews/stepper.html",
+      "doc": "stepper.md"
+    },
+    {
+      "id": "tabs",
+      "group": "Misc",
+      "preview": "previews/tabs.html",
+      "doc": "tabs.md"
+    },
+    {
       "id": "tag",
       "group": "Misc",
       "preview": "previews/tag.html",
       "doc": "tag.md"
+    },
+    {
+      "id": "ino-nav",
+      "group": "Navigation",
+      "preview": "previews/ino-nav.html",
+      "doc": "ino-nav.md"
+    },
+    {
+      "id": "confirm-dialog",
+      "group": "Overlay",
+      "preview": "previews/confirm-dialog.html",
+      "doc": "confirm-dialog.md"
+    },
+    {
+      "id": "confirm-popup",
+      "group": "Overlay",
+      "preview": "previews/confirm-popup.html",
+      "doc": "confirm-popup.md"
+    },
+    {
+      "id": "drawer",
+      "group": "Overlay",
+      "preview": "previews/drawer.html",
+      "doc": "drawer.md"
+    },
+    {
+      "id": "modal",
+      "group": "Overlay",
+      "preview": "previews/modal.html",
+      "doc": "modal.md"
+    },
+    {
+      "id": "popover",
+      "group": "Overlay",
+      "preview": "previews/popover.html",
+      "doc": "popover.md"
+    },
+    {
+      "id": "tooltip",
+      "group": "Overlay",
+      "preview": "previews/tooltip.html",
+      "doc": "tooltip.md"
     }
   ]
 }
