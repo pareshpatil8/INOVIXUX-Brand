@@ -26,6 +26,7 @@ import { InoInputOtpComponent } from '../../../../components/input-otp/ino-input
 import { InoInputMaskComponent } from '../../../../components/inputmask/ino-inputmask.component';
 import { InoInputNumberComponent } from '../../../../components/inputnumber/ino-inputnumber.component';
 import { InoInputTagsComponent } from '../../../../components/inputtags/ino-inputtags.component';
+import { InoKeyfilterComponent } from '../../../../components/keyfilter/ino-keyfilter.component';
 import { InoLabelComponent } from '../../../../components/label/ino-label.component';
 import { InoListboxComponent } from '../../../../components/listbox/ino-listbox.component';
 import { InoMeterGroupComponent } from '../../../../components/meter-group/ino-meter-group.component';
@@ -79,6 +80,7 @@ export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'inputmask': InoInputMaskComponent,
   'inputnumber': InoInputNumberComponent,
   'inputtags': InoInputTagsComponent,
+  'keyfilter': InoKeyfilterComponent,
   'label': InoLabelComponent,
   'listbox': InoListboxComponent,
   'meter-group': InoMeterGroupComponent,

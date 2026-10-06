@@ -2367,6 +2367,23 @@
         "templates": []
       }
     },
+    "keyfilter": {
+      "name": "ino-keyfilter",
+      "docPath": "docs/brand/06-angular-components/keyfilter.md",
+      "a11y": "<p><strong>Role / ARIA.</strong> None of its own, by design. It is a mechanism, not content — same posture as\n<code>[inoFocusTrap]</code>.</p>\n<p><strong>Must not block IME or assistive-technology input.</strong> Filtering happens <em>only</em> in the <code>keydown</code>\nhandler, and only for a single printable character (<code>event.key.length === 1</code>) with no modifier\nheld (<code>ctrlKey</code>/<code>metaKey</code>/<code>altKey</code>). The handler returns immediately whenever\n<code>event.isComposing</code> — or the legacy <code>keyCode === 229</code> some browsers/WebViews still use instead of\na reliable <code>isComposing</code> — is true. An IME composing non-Latin text is therefore never tested\nagainst the (inherently Latin/numeric) preset regexes, so composition is never interrupted and\nthe composed result is never retroactively stripped. There is deliberately no <code>input</code>-event\nresync filter the way <code>&lt;ino-inputmask&gt;</code> has one — a resync filter is exactly the mechanism that\nwould strip IME-composed text after the fact. Non-printable and modifier-combo keys (Tab,\nBackspace, Delete, arrows, Home/End, Enter, Ctrl/Cmd/Alt shortcuts — copy, paste, undo,\nselect-all, screen-reader command keys) are never intercepted, so assistive technology retains\nevery key it needs.</p>\n<p><strong>Screen-reader behavior on rejection.</strong> Silent by default — no <code>aria-live</code> region announces a\nblocked keystroke, because one owned by this directive would be a second, uncoordinated\nannouncement competing with whatever the host field's own hint/error text already says.\n<code>inoKeyfilterReject</code> exists for a caller that wants its own reaction (an <code>aria-live</code> region, a\nshake animation, a toast):</p>\n<pre><code>&lt;ino-input inoKeyfilter=\"int\" (inoKeyfilterReject)=\"announce($event)\"&gt;&lt;/ino-input&gt;\n&lt;div aria-live=\"polite\" class=\"sr-only\"&gt;{{ liveMessage() }}&lt;/div&gt;\n</code></pre>\n<p><strong>Contrast / target size.</strong> Nothing is painted, so there is no text or non-text contrast pair, and\nno pointer target, to audit — same as <code>[inoFocusTrap]</code>.</p>\n<hr />\n",
+      "notes": "<p><strong>States, Sizing, and Labels</strong> (doc 26 §2 points 2–4) are recorded <code>n/a</code> — see §\"States\" above and\n<code>SPEC.md</code> §2 for the full row-by-row disposition.</p>\n<p><strong>PrimeNG mapping.</strong> <code>pKeyFilter</code>'s five presets map 1:1 onto <code>int</code>/<code>num</code>/<code>alpha</code>/<code>alphanum</code>/custom\nregex above.</p>\n<hr />\n",
+      "api": {
+        "props": [],
+        "events": [],
+        "methods": [],
+        "templates": [
+          {
+            "name": "default",
+            "description": null
+          }
+        ]
+      }
+    },
     "label": {
       "name": "ino-label",
       "docPath": "docs/brand/06-angular-components/label.md",
@@ -4039,8 +4056,8 @@
     },
     "slider": {
       "name": "ino-slider",
-      "docPath": null,
-      "a11y": null,
+      "docPath": "docs/brand/06-angular-components/slider.md",
+      "a11y": "<p><strong>Role / ARIA</strong> — <code>role=\"slider\"</code> on <strong>each thumb</strong> (not the host element): a range slider is two\nindependent APG slider widgets sharing one visual track, per the ARIA Authoring Practices Guide.\n<code>aria-valuenow</code> always; <code>aria-valuemin</code>/<code>aria-valuemax</code> are the <em>effective</em> bounds for that\nthumb — the lower thumb's max is the upper thumb's current value (and vice versa) in range mode,\nnever the slider's global <code>min</code>/<code>max</code>, so a screen reader never announces a range the thumb can't\nactually reach. <code>aria-orientation</code> is <code>\"horizontal\"</code> (default) or <code>\"vertical\"</code>. <code>aria-label</code> is\nderived from <code>label</code>; range mode suffixes <code>\"(minimum)\"</code>/<code>\"(maximum)\"</code> so the two thumbs are\ndistinguishable without visual context. <code>aria-disabled</code>/<code>aria-readonly</code> are set when\n<code>disabled</code>/<code>readonly</code> are true — <code>slider</code> is one of the ARIA roles that supports <code>aria-readonly</code>\n(unlike, say, <code>button</code>). <code>aria-invalid</code> is not applicable to <code>role=\"slider\"</code> per the ARIA spec; the\nerror text still renders as a <code>role=\"alert\"</code> paragraph, matching every other form control's\nerror-surface convention.</p>\n<p><strong>Keyboard</strong> — APG slider pattern, per focused thumb:</p>\n<table>\n<thead>\n<tr>\n<th>Key</th>\n<th>Behavior</th>\n</tr>\n</thead>\n<tbody><tr>\n<td>ArrowRight / ArrowUp</td>\n<td>Increment by <code>step</code></td>\n</tr>\n<tr>\n<td>ArrowLeft / ArrowDown</td>\n<td>Decrement by <code>step</code></td>\n</tr>\n<tr>\n<td>PageUp</td>\n<td>Increment by <code>step * 10</code></td>\n</tr>\n<tr>\n<td>PageDown</td>\n<td>Decrement by <code>step * 10</code></td>\n</tr>\n<tr>\n<td>Home</td>\n<td>Jump to <code>min</code></td>\n</tr>\n<tr>\n<td>End</td>\n<td>Jump to <code>max</code></td>\n</tr>\n<tr>\n<td>Tab</td>\n<td>Move focus to the other thumb (range mode) or the next control</td>\n</tr>\n</tbody></table>\n<p>All keys call <code>event.preventDefault()</code> so the page does not scroll while a thumb has focus.</p>\n<p><strong>Contrast</strong> — WCAG 2.2 AA, gated by <code>check-theme-parity</code>.</p>\n<p><strong>RTL</strong> — logical properties only (<code>inset-inline-*</code>, <code>padding-inline</code>); vertical orientation is\nthe one place this component isn't purely logical-property-driven (there is no directional\nconvention for \"up is more\" vs. \"down is more\" that RTL flips), so its geometry is measured from\nthe track's own bottom edge rather than mirrored — see <code>SPEC.md</code> §3.</p>\n<p>Full contract: <code>SPEC.md</code> §9.</p>\n<hr />\n",
       "notes": null,
       "api": {
         "props": [

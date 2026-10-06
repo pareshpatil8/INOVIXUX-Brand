@@ -1,6 +1,6 @@
 {
   "generatedFrom": "previews/*.html @dsCard markers",
-  "cardCount": 40,
+  "cardCount": 46,
   "cards": [
     {
       "id": "button",
@@ -39,6 +39,12 @@
       "doc": "file-upload.md"
     },
     {
+      "id": "autocomplete",
+      "group": "Form",
+      "preview": "previews/autocomplete.html",
+      "doc": "autocomplete.md"
+    },
+    {
       "id": "datepicker",
       "group": "Form",
       "preview": "previews/datepicker.html",
@@ -69,10 +75,28 @@
       "doc": "input-otp.md"
     },
     {
+      "id": "inputmask",
+      "group": "Form",
+      "preview": "previews/inputmask.html",
+      "doc": "inputmask.md"
+    },
+    {
+      "id": "inputtags",
+      "group": "Form",
+      "preview": "previews/inputtags.html",
+      "doc": "inputtags.md"
+    },
+    {
       "id": "label",
       "group": "Form",
       "preview": "previews/label.html",
       "doc": "label.md"
+    },
+    {
+      "id": "listbox",
+      "group": "Form",
+      "preview": "previews/listbox.html",
+      "doc": "listbox.md"
     },
     {
       "id": "multiselect",
@@ -91,6 +115,12 @@
       "group": "Form",
       "preview": "previews/select.html",
       "doc": "select.md"
+    },
+    {
+      "id": "slider",
+      "group": "Form",
+      "preview": "previews/slider.html",
+      "doc": "slider.md"
     },
     {
       "id": "textarea",
@@ -157,6 +187,12 @@
       "group": "Misc",
       "preview": "previews/focus-trap.html",
       "doc": "focus-trap.md"
+    },
+    {
+      "id": "keyfilter",
+      "group": "Misc",
+      "preview": "previews/keyfilter.html",
+      "doc": "keyfilter.md"
     },
     {
       "id": "meter-group",

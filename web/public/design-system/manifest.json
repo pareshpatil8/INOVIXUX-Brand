@@ -8,7 +8,7 @@
     "tablet": "641-900px",
     "desktop": ">900px"
   },
-  "componentCount": 51,
+  "componentCount": 52,
   "components": [
     {
       "name": "ino-alert",
@@ -1910,6 +1910,20 @@
           "optional": true
         }
       ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-keyfilter",
+      "slug": "keyfilter",
+      "className": "InoKeyfilterComponent",
+      "sourcePath": "web/src/app/components/keyfilter/ino-keyfilter.component.ts",
+      "previewPath": null,
+      "inputs": [],
       "variants": null,
       "viewports": [
         "mobile",

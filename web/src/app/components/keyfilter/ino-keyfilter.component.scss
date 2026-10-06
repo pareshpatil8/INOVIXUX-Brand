@@ -1,0 +1,10 @@
+// A key filter is behavior, not surface — it contributes no colour, spacing, radius, elevation,
+// duration or type. `display: contents` keeps this wrapper out of layout entirely (unlike
+// focus-trap's `display: block`, this host never needs to be a containing block for anything —
+// there is no absolutely-positioned sentinel here), so the projected field lays out exactly as
+// it would without the wrapper.
+//
+// There are no theme branches here and nothing for check-theme-parity.mjs to resolve.
+:host {
+  display: contents;
+}
