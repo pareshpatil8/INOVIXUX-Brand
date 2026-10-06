@@ -2013,9 +2013,9 @@
     },
     "inputnumber": {
       "name": "ino-inputnumber",
-      "docPath": null,
-      "a11y": null,
-      "notes": null,
+      "docPath": "docs/brand/06-angular-components/inputnumber.md",
+      "a11y": "<p><strong>Role / ARIA</strong> — <code>role=\"spinbutton\"</code> on the <code>&lt;input&gt;</code> element. <code>aria-valuenow</code>, <code>aria-valuemin</code>,\n<code>aria-valuemax</code> are set and updated on every value change. <code>aria-invalid=\"true\"</code> when <code>error</code> is\nset; <code>aria-describedby</code> points to the error text <code>&lt;p role=\"alert\"&gt;</code> so screen readers announce it\non focus.</p>\n<p><strong>Button labels</strong> — increment/decrement buttons have <code>aria-label=\"Increment value\"</code> and\n<code>aria-label=\"Decrement value\"</code> respectively, plus <code>aria-hidden=\"true\"</code> on their icon SVGs.</p>\n<p><strong>Label association</strong> — <code>&lt;ino-label for&gt;</code> creates a real <code>&lt;label&gt;</code> pointing to the input's <code>id</code>.</p>\n<p><strong>Disabled state</strong> — native <code>disabled</code> attribute on the input and buttons; buttons also disabled\nindividually when at min/max bounds.</p>\n<p><strong>Focus ring</strong> — CSS <code>:focus-visible</code> outline on the input and buttons, using\n<code>var(--ino-focus-ring)</code> and <code>var(--ino-focus-ring-offset)</code> tokens for WCAG contrast compliance.</p>\n<p><strong>Keyboard</strong> — Full APG spinbutton pattern: Up/Down arrows increment/decrement by <code>step</code>;\nPageUp/PageDown by <code>step * 10</code>; Home/End jump to min/max (if set).</p>\n<p><strong>Contrast and targets</strong> — All interactive elements meet WCAG 2.2 AA contrast requirements across\nall three themes (dark, light, high-contrast). Focus ring, invalid ring, and danger error text all\nresolve through tokens audited by <code>check-theme-parity</code>.</p>\n<p><strong>RTL</strong> — logical properties only (<code>inline-size</code>, <code>inset-inline-end</code>, etc.); no\n<code>left</code>/<code>right</code>/<code>top</code>/<code>bottom</code> anywhere in the stylesheet.</p>\n<hr />\n",
+      "notes": "<p>Recorded here rather than silently dropped:</p>\n<ul>\n<li><strong>Button layout variants</strong> (horizontal, vertical-stacked-outside-input) — only vertical-stacked\ninside the input is built, as it is the most compact and mobile-friendly. Button layout variants\nadd API surface with marginal UX benefit; the stacked-inside layout works across all sizes and\ndensities.</li>\n<li><strong>Custom button templates</strong> — our buttons are fixed SVG icons; no slot override. Custom button\ntemplates would require a template-outlet mechanism this repo doesn't yet have; defer to a future\n\"advanced customization\" wave if demand surfaces.</li>\n<li><strong><code>onFocus</code> / <code>onBlur</code> formatting toggle</strong> — PrimeNG switches between raw and formatted display\non focus; we show formatted always in display mode. The focus/blur formatting toggle is a\nmicro-optimization that adds implementation complexity (two separate render paths) without clear\na11y or UX justification. Revisit if user testing shows confusion.</li>\n</ul>\n",
       "api": {
         "props": [
           {
@@ -2273,6 +2273,149 @@
             "description": null
           }
         ]
+      }
+    },
+    "listbox": {
+      "name": "ino-listbox",
+      "docPath": "docs/brand/06-angular-components/listbox.md",
+      "a11y": "<p><strong>Role / ARIA</strong> — WAI-ARIA APG <strong>Listbox</strong> pattern, roving-<code>tabindex</code> variant: <code>role=\"listbox\"</code> is\nalways in the DOM; each row is <code>role=\"option\"</code> with <code>aria-selected</code> reflecting membership;\n<code>aria-multiselectable=\"true\"</code> is set only when <code>multiple</code> is <code>true</code>; <code>aria-disabled</code>/<code>aria-busy</code>\nmirror <code>disabled</code>/<code>loading</code>. <code>aria-activedescendant</code> is never used — see <code>SPEC.md</code> §2 for why that\ndiverges from <code>ino-select</code>.</p>\n<p><strong>Keyboard</strong> —</p>\n<table>\n<thead>\n<tr>\n<th>Key</th>\n<th>Single-selection</th>\n<th>Multi-selection</th>\n</tr>\n</thead>\n<tbody><tr>\n<td><code>Tab</code> / <code>Shift+Tab</code></td>\n<td>Moves focus onto/off the one row carrying <code>tabindex=\"0\"</code></td>\n<td>Same</td>\n</tr>\n<tr>\n<td><code>ArrowDown</code> / <code>ArrowUp</code></td>\n<td>Move the roving tab stop to the next/previous enabled row (clamped, no wrap) <strong>and</strong> select it</td>\n<td>Move the roving tab stop only</td>\n</tr>\n<tr>\n<td><code>Home</code> / <code>End</code></td>\n<td>Jump to the first/last enabled row, select it</td>\n<td>Jump to the first/last enabled row, focus only</td>\n</tr>\n<tr>\n<td><code>Space</code> / <code>Enter</code></td>\n<td>Select the focused row</td>\n<td>Toggle membership of the focused row</td>\n</tr>\n<tr>\n<td>Printable character</td>\n<td>Typeahead — jump to the next row whose label starts with the typed text (500 ms buffer reset)</td>\n<td>Same, focus only</td>\n</tr>\n<tr>\n<td><code>ArrowDown</code> from the filter box</td>\n<td>Moves real focus from the filter box into the list</td>\n<td>Same</td>\n</tr>\n<tr>\n<td><code>Escape</code> in the filter box</td>\n<td>Clears the filter query</td>\n<td>Same</td>\n</tr>\n</tbody></table>\n<p><strong>Focus management under virtualization</strong> — a row can only receive real DOM focus once it's\nrendered. Moving the roving tab stop first calls <code>&lt;ino-virtual-scroller&gt;</code>'s <code>scrollToIndex()</code> to\nbring the target row into the rendered window, then looks it up by id once change detection has\nre-rendered — see <code>SPEC.md</code> §2 for the full sequencing argument.</p>\n<p><strong>Contrast</strong> — selected-row text (<code>--ino-color-accent-text-safe</code>) and the filtered-empty/loading\nmessage colors (<code>--ino-color-on-surface-muted</code>) are existing audited roles\n(<code>check-theme-parity.mjs</code>), not new values, across all 3 themes.</p>\n<p><strong>Target size</strong> — every row clears <code>min-block-size: var(--ino-control-height)</code> at every size rung.</p>\n<p><strong>RTL</strong> — logical properties only (<code>inline-size</code>, <code>padding-inline</code>, <code>inset-inline-*</code>); no\n<code>left</code>/<code>right</code>/<code>top</code>/<code>bottom</code> anywhere in the stylesheet.</p>\n<hr />\n",
+      "notes": "<ul>\n<li><strong>A second, separately-imported multi-select component.</strong> <code>ino-select</code>/<code>ino-multiselect</code> are\ntwo components because their <em>trigger</em> chrome differs sharply (single text vs. chip row); a\nlistbox has no trigger at all, so the single/multiple difference is one input flag\n(<code>multiple</code>) and a checkbox per row — not enough divergence to justify a second component. See\n<code>SPEC.md</code> §3.</li>\n<li><strong><code>aria-activedescendant</code> combobox focus model.</strong> Deliberately not reused from <code>ino-select</code> —\na listbox has no collapsed/combobox state to park focus on. See <code>SPEC.md</code> §2.</li>\n</ul>\n",
+      "api": {
+        "props": [
+          {
+            "name": "options",
+            "type": "InoListboxOption[]",
+            "values": null,
+            "default": "[]",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "value",
+            "type": "string | string[]",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": "`string` when `multiple` is `false` (default), `string[]` when `true`. See SPEC.md §2."
+          },
+          {
+            "name": "hint",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "error",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "size",
+            "type": "InoControlSize",
+            "values": null,
+            "default": "'default'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "required",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "readonly",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "loading",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "multiple",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": "Multi-select membership model, reused from `ino-multiselect` (toggle without losing the other rows' state) — a listbox row click/`Space` toggles rather than replaces `value`."
+          },
+          {
+            "name": "filter",
+            "type": "boolean",
+            "values": null,
+            "default": "true",
+            "optional": true,
+            "description": "A listbox's filter box is always visible above the list (not gated behind an \"open\" panel the way `ino-select`'s in-panel filter is) — see SPEC.md §3. Defaults to `true`: doc 26 §5 lists \"filter box\" as part of this component's baseline structure, not an opt-in extra."
+          },
+          {
+            "name": "filterLabel",
+            "type": "string",
+            "values": null,
+            "default": "'Filter'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "filterPlaceholder",
+            "type": "string",
+            "values": null,
+            "default": "'Filter…'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "virtualScrollThreshold",
+            "type": "number",
+            "values": null,
+            "default": "100",
+            "optional": true,
+            "description": "Options at or above this count render through `<ino-virtual-scroller>` (reuses T-3) instead of a plain `*ngFor`, same mechanism/default as `ino-select`/`ino-multiselect`/`ino-autocomplete`."
+          }
+        ],
+        "events": [
+          {
+            "name": "valueChange",
+            "type": "string | string[]",
+            "description": null
+          },
+          {
+            "name": "filterChange",
+            "type": "string",
+            "description": null
+          }
+        ],
+        "methods": [
+          {
+            "name": "activateOption",
+            "params": "row: InoListboxRow",
+            "returnType": "void",
+            "description": "Click/`Enter`/`Space` on a row. Single-selection: replaces `value` (never toggles off — a listbox always has exactly one selected row once a choice has been made, matching `ino-select`'s single-selection model). Multi-selection: toggles membership, reusing `ino-multiselect`'s toggle-and-stay-open model (there is no \"stay open\" concept here, but the toggle itself, and the \"never lock out a currently-selected row\" refusal rule, carry over verbatim)."
+          }
+        ],
+        "templates": []
       }
     },
     "meter-group": {
@@ -3552,6 +3695,121 @@
         "templates": []
       }
     },
+    "select-button": {
+      "name": "ino-select-button",
+      "docPath": null,
+      "a11y": null,
+      "notes": null,
+      "api": {
+        "props": [
+          {
+            "name": "options",
+            "type": "InoSelectButtonOption[]",
+            "values": null,
+            "default": "[]",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "value",
+            "type": "string | string[]",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "name",
+            "type": "unknown",
+            "values": null,
+            "default": "`ino-select-button-${++idSeq}`",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "size",
+            "type": "InoControlSize",
+            "values": null,
+            "default": "'default'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "multiple",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "readonly",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "iconOnly",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "equalWidth",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "groupLabel",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "ariaLabel",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "ariaLabelledby",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          }
+        ],
+        "events": [
+          {
+            "name": "valueChange",
+            "type": "string | string[]",
+            "description": null
+          }
+        ],
+        "methods": [],
+        "templates": []
+      }
+    },
     "skeleton": {
       "name": "ino-skeleton",
       "docPath": "docs/brand/06-angular-components/skeleton.md",
@@ -3621,6 +3879,164 @@
           }
         ],
         "events": [],
+        "methods": [],
+        "templates": []
+      }
+    },
+    "slider": {
+      "name": "ino-slider",
+      "docPath": null,
+      "a11y": null,
+      "notes": null,
+      "api": {
+        "props": [
+          {
+            "name": "label",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "hint",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "error",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "trackSize",
+            "type": "InoSliderTrackSize",
+            "values": [
+              "sm",
+              "md"
+            ],
+            "default": "'md'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "min",
+            "type": "number",
+            "values": null,
+            "default": "0",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "max",
+            "type": "number",
+            "values": null,
+            "default": "100",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "step",
+            "type": "number",
+            "values": null,
+            "default": "1",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "range",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "vertical",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "showMarks",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "showTooltip",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "showMinMaxLabels",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "showValueLabel",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "required",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "readonly",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "value",
+            "type": "number | [number, number]",
+            "values": null,
+            "default": "0",
+            "optional": true,
+            "description": "Plain `number` in single mode (default), `[number, number]` when `range={true}`. Mirrors `ino-autocomplete`'s `value: string | string[]` mode-flag convention."
+          }
+        ],
+        "events": [
+          {
+            "name": "valueChange",
+            "type": "number | [number, number]",
+            "description": null
+          }
+        ],
         "methods": [],
         "templates": []
       }
