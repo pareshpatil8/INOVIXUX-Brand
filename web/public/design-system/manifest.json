@@ -8,7 +8,7 @@
     "tablet": "641-900px",
     "desktop": ">900px"
   },
-  "componentCount": 47,
+  "componentCount": 49,
   "components": [
     {
       "name": "ino-alert",
@@ -1852,6 +1852,126 @@
       ]
     },
     {
+      "name": "ino-listbox",
+      "slug": "listbox",
+      "className": "InoListboxComponent",
+      "sourcePath": "web/src/app/components/listbox/ino-listbox.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "options",
+          "type": "InoListboxOption[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "value",
+          "type": "string | string[]",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "hint",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "InoControlSize",
+          "values": null,
+          "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "multiple",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "filter",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "filterLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Filter'",
+          "optional": true
+        },
+        {
+          "name": "filterPlaceholder",
+          "type": "string",
+          "values": null,
+          "default": "'Filter…'",
+          "optional": true
+        },
+        {
+          "name": "virtualScrollThreshold",
+          "type": "number",
+          "values": null,
+          "default": "100",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
       "name": "ino-meter-group",
       "slug": "meter-group",
       "className": "InoMeterGroupComponent",
@@ -2866,6 +2986,105 @@
           "type": "number",
           "values": null,
           "default": "100",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-select-button",
+      "slug": "select-button",
+      "className": "InoSelectButtonComponent",
+      "sourcePath": "web/src/app/components/select-button/ino-select-button.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "options",
+          "type": "InoSelectButtonOption[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "value",
+          "type": "string | string[]",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "name",
+          "type": "unknown",
+          "values": null,
+          "default": "`ino-select-button-${++idSeq}`",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "InoControlSize",
+          "values": null,
+          "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "multiple",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "iconOnly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "equalWidth",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "groupLabel",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "ariaLabelledby",
+          "type": "string",
+          "values": null,
+          "default": "''",
           "optional": true
         }
       ],

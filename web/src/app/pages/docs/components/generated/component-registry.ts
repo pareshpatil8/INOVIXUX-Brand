@@ -26,6 +26,7 @@ import { InoInputOtpComponent } from '../../../../components/input-otp/ino-input
 import { InoInputMaskComponent } from '../../../../components/inputmask/ino-inputmask.component';
 import { InoInputNumberComponent } from '../../../../components/inputnumber/ino-inputnumber.component';
 import { InoLabelComponent } from '../../../../components/label/ino-label.component';
+import { InoListboxComponent } from '../../../../components/listbox/ino-listbox.component';
 import { InoMeterGroupComponent } from '../../../../components/meter-group/ino-meter-group.component';
 import { InoMetricPanelComponent } from '../../../../components/metric-panel/ino-metric-panel.component';
 import { InoModalComponent } from '../../../../components/modal/ino-modal.component';
@@ -38,6 +39,7 @@ import { InoProgressBarComponent } from '../../../../components/progress-bar/ino
 import { InoProgressSpinnerComponent } from '../../../../components/progress-spinner/ino-progress-spinner.component';
 import { InoRadioGroupComponent } from '../../../../components/radio-group/ino-radio-group.component';
 import { InoSelectComponent } from '../../../../components/select/ino-select.component';
+import { InoSelectButtonComponent } from '../../../../components/select-button/ino-select-button.component';
 import { InoSkeletonComponent } from '../../../../components/skeleton/ino-skeleton.component';
 import { InoStepperComponent } from '../../../../components/stepper/ino-stepper.component';
 import { InoTableComponent } from '../../../../components/table/ino-table.component';
@@ -75,6 +77,7 @@ export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'inputmask': InoInputMaskComponent,
   'inputnumber': InoInputNumberComponent,
   'label': InoLabelComponent,
+  'listbox': InoListboxComponent,
   'meter-group': InoMeterGroupComponent,
   'metric-panel': InoMetricPanelComponent,
   'modal': InoModalComponent,
@@ -87,6 +90,7 @@ export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'progress-spinner': InoProgressSpinnerComponent,
   'radio-group': InoRadioGroupComponent,
   'select': InoSelectComponent,
+  'select-button': InoSelectButtonComponent,
   'skeleton': InoSkeletonComponent,
   'stepper': InoStepperComponent,
   'table': InoTableComponent,
