@@ -6,7 +6,7 @@
     [value]="value"
     [checked]="selected"
     [disabled]="disabled"
-    [attr.aria-pressed]="type === 'checkbox' ? selected : null"
+    [attr.aria-label]="!label && ariaLabel ? ariaLabel : null"
     (click)="onClick($event)"
     (change)="onChange($event)"
     class="ino-select-button-option__input"

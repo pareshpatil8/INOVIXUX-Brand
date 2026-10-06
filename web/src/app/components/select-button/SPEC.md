@@ -22,19 +22,17 @@ standalone toggle-button.
 
 ---
 
-## 2. ARIA: radiogroup (single) vs group of toggles (multi)
+## 2. ARIA: radiogroup (single) vs group of checkboxes (multi)
 
 **Single-select:** host element carries `role="radiogroup"`. Options render `<input type="radio">`.
 Radio semantics give screen readers the correct "one-of-N selected" count without any custom
 ARIA.
 
-**Multi-select:** host carries `role="group"`. Options render `<input type="checkbox">` plus
-`aria-pressed` (mirroring the WAI-ARIA button pattern for toggle buttons). The checkbox provides
-the checked/unchecked state; `aria-pressed` provides the "toggle button" affordance for AT that
-reads pressed state on interactive elements.
-
-`aria-pressed` is omitted (`null`) in single-select mode — redundant with the radio semantics and
-confusing to AT.
+**Multi-select:** host carries `role="group"`. Options render `<input type="checkbox">`. The
+checkbox's native checked/unchecked state provides all the semantics needed. **No `aria-pressed`**:
+placing `aria-pressed` on an `<input type="checkbox">` is invalid ARIA (ARIA 1.2 specifies
+`aria-pressed` is only valid on `role="button"`), trips axe `aria-allowed-attr`, and causes
+conflicting checked+pressed announcements. Native checkbox state is correct and sufficient.
 
 ---
 
@@ -86,12 +84,15 @@ options at `flex: 1 1 auto`, which respects natural content width.
 
 ---
 
-## 7. Icon-only mode
+## 7. Icon-only mode and accessible names
 
-`iconOnly` hides the text label and removes it from the a11y tree. The *caller* must supply a
-meaningful `aria-label` on the outer `<ino-select-button>` (or per-option, by extending the API)
-because the rendered label text is absent. The icon span retains `aria-hidden="true"` in icon-only
-mode so AT doesn't read the icon ligature/code point.
+`iconOnly` hides the text label and removes it from the a11y tree. Each `InoSelectButtonOption`
+now includes an optional `ariaLabel` field, and `InoSelectButtonOptionComponent` accepts an
+`ariaLabel` @Input. When `iconOnly=true`, the component applies the `ariaLabel` to the input via
+`[attr.aria-label]="!label && ariaLabel ? ariaLabel : null"` (pattern borrowed from
+`ino-toggle-button:8`). This ensures WCAG 4.1.2 compliance: every input has an accessible name
+even when the visible label is hidden. The icon span retains `aria-hidden="true"` so AT doesn't
+read the icon ligature/code point.
 
 ---
 
@@ -111,3 +112,43 @@ has no Flutter equivalent; `Semantics(button: true, selected: …)` is used unif
 
 Both ports support single and multiple selection, sm/md/lg sizing, per-option disabled, groupLabel,
 and equal-width mode. Icon-only is not ported (no standard icon system on mobile yet).
+
+---
+
+## 9. Readonly state (B1 deliberate omission)
+
+The `readonly` @Input exists and prevents selection changes at the interaction level (the `onClick`
+handler calls `event.preventDefault()` when `readonly=true`), but emits **no visual cue** and **no
+`aria-readonly` attribute**. This is a B1 gap.
+
+A readonly segmented control is pixel-identical to an interactive one and announces identically to
+AT, then silently refuses input — worse UX than not having the input at all. The correct
+implementation would mirror `ino-toggle-button:11` (`[attr.aria-readonly]="readonly ? true : null"`)
+and add a visual treatment (e.g., dimmed color without full `disabled` opacity, or a distinct
+readonly class that withdraws hover/active affordances while keeping full legibility).
+
+**Decision for B1:** leave `readonly` as interaction-only (no visual, no AT). This will be aligned
+with `ino-toggle-button`'s full `aria-readonly` + visual treatment in a follow-up phase once the
+correct readonly visual pattern for segmented controls is established. The @Input remains so
+callers can bind to it, but the lack of feedback violates §2 point 2 (readonly demonstrated in all
+3 themes). Documented in the narrative doc's "Deliberate omissions" section.
+
+---
+
+## 10. Invalid/error state (B1 deliberate omission)
+
+The §2 standard state set includes invalid/error (`ino-toggle-button` implements it via an `error`
+string @Input → `aria-invalid` + `role="alert"` message + invalid ring). This component has **no
+`invalid` or `error` @Input** and no error styling.
+
+Segmented controls are typically selection-first UI (view toggles, filters, toolbar modes) rather
+than form-validation fields, so error states are rare — unlike a boolean toggle button, which is
+often a required form field. When select-button is used for filtering or view modes, "invalid"
+doesn't apply; when it *is* used as a form control (e.g., "required: pick one payment method"), a
+standard HTML5 `required` attribute on a hidden backing field would be the more common pattern
+than inline error messages.
+
+**Decision for B1:** omit invalid/error entirely. If a future use case requires form-validation
+error states, the `ino-toggle-button` pattern (error message via `aria-describedby`, invalid ring
+from `--ino-color-error`) is ready to apply. Documented in the narrative doc's "Deliberate
+omissions" section.

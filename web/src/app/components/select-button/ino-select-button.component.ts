@@ -9,22 +9,22 @@ export interface InoSelectButtonOption {
   value: string;
   icon?: string;
   disabled?: boolean;
+  ariaLabel?: string;
 }
 
 let idSeq = 0;
 
 /**
  * `<ino-select-button>` — segmented control for single or multiple selection, styled as a button group.
- * Implements the WAI-ARIA radiogroup pattern for single-select mode and a group of toggle buttons for
+ * Implements the WAI-ARIA radiogroup pattern for single-select mode and a group of checkboxes for
  * multi-select mode. Composes `<ino-select-button-option>` per option.
  *
  * Single-select mode uses native radio buttons with radiogroup semantics. Multi-select mode uses
- * checkboxes with toggle button semantics (aria-pressed). The component automatically switches
- * between input types based on the `multiple` property.
+ * checkboxes. The component automatically switches between input types based on the `multiple` property.
  *
  * Supports variants:
  * - Single/multiple selection modes
- * - Icon-only buttons (caller must provide aria-label on the option)
+ * - Icon-only buttons (requires ariaLabel on each option for WCAG 4.1.2)
  * - Equal-width distribution of buttons
  *
  * States (beyond the standard set):

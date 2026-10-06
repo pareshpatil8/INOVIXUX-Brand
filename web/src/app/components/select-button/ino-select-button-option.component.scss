@@ -23,7 +23,7 @@
   color: var(--ino-color-on-surface);
   background: var(--ino-color-surface-raised);
   border: 1px solid var(--ino-color-border);
-  border-left-width: 0;
+  border-inline-start-width: 0;
   cursor: pointer;
   user-select: none;
   transition: all 0.2s ease;
@@ -31,14 +31,14 @@
 
 /* Border-radius and left border are driven by host position inside the group */
 :host(:first-child) .ino-select-button-option__label {
-  border-left-width: 1px;
-  border-top-left-radius: var(--ino-border-radius-md);
-  border-bottom-left-radius: var(--ino-border-radius-md);
+  border-inline-start-width: 1px;
+  border-start-start-radius: var(--ino-border-radius-md);
+  border-end-start-radius: var(--ino-border-radius-md);
 }
 
 :host(:last-child) .ino-select-button-option__label {
-  border-top-right-radius: var(--ino-border-radius-md);
-  border-bottom-right-radius: var(--ino-border-radius-md);
+  border-start-end-radius: var(--ino-border-radius-md);
+  border-end-end-radius: var(--ino-border-radius-md);
 }
 
 .ino-select-button-option__content {

@@ -7,12 +7,15 @@ let idCounter = 0;
 
 /**
  * `<ino-select-button-option>` — a single button within a select-button group. Can operate as either
- * a radio button (single-select mode) or a toggle button (multi-select mode) depending on the parent
+ * a radio button (single-select mode) or a checkbox (multi-select mode) depending on the parent
  * group's configuration. Styled as a segmented control button with accent fill when selected.
  *
  * In single-select mode, uses native `<input type="radio">` for radiogroup semantics. In multi-select
  * mode, uses `<input type="checkbox">` for independent toggle semantics. The parent
  * `<ino-select-button>` determines the mode and manages selection state.
+ *
+ * When `iconOnly=true`, the `ariaLabel` input must be provided to give the input an accessible name
+ * (since the visible label text is hidden). This ensures WCAG 4.1.2 compliance.
  *
  * Contract: docs/brand/06-angular-components/select-button.md. Decisions record:
  * web/src/app/components/select-button/SPEC.md.
@@ -29,6 +32,7 @@ export class InoSelectButtonOptionComponent {
   @Input() label = '';
   @Input() value = '';
   @Input() icon = '';
+  @Input() ariaLabel = '';
   @Input() name = `ino-select-button-option-${++idCounter}`;
   @Input() type: 'radio' | 'checkbox' = 'radio';
   @Input() size: InoControlSize = 'default';
