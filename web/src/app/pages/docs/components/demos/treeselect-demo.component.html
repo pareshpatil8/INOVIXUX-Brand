@@ -1,0 +1,193 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Single-selection</h3>
+  <p class="demo-section__note">
+    Click to open the panel. Picking a row selects it and closes the panel, same as
+    <code>ino-select</code>. <code>ArrowRight</code>/<code>ArrowLeft</code> expand/collapse a
+    branch or move to its parent; <code>ArrowUp</code>/<code>ArrowDown</code> move the active row.
+  </p>
+  <div class="demo-row">
+    <ino-treeselect
+      label="Assign to team"
+      [nodes]="orgNodes"
+      [value]="singleValue"
+      (valueChange)="onSingleValueChange($event)"
+      [filter]="true"
+    ></ino-treeselect>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Multiple-selection (flat membership)</h3>
+  <p class="demo-section__note">
+    <code>selectionMode="multiple"</code> toggles membership without closing the panel and without
+    cascading to a branch's descendants — picking "Engineering" alone would not also pick
+    "Frontend"/"Backend".
+  </p>
+  <div class="demo-row">
+    <ino-treeselect
+      label="Notify teams"
+      [nodes]="orgNodes"
+      selectionMode="multiple"
+      [value]="multipleValue"
+      (valueChange)="onMultipleValueChange($event)"
+      [filter]="true"
+    ></ino-treeselect>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Checkbox selection (cascading tri-state)</h3>
+  <p class="demo-section__note">
+    <code>selectionMode="checkbox"</code> cascades to every loaded descendant and re-derives each
+    ancestor's checkbox. Below, "Web" and "API" are checked, so "Frontend", "Backend", and
+    "Engineering" render the indeterminate ("mixed") state — not all of their children are
+    checked, but at least one descendant is.
+  </p>
+  <div class="demo-row">
+    <ino-treeselect
+      label="Grant access to"
+      [nodes]="orgNodes"
+      selectionMode="checkbox"
+      [value]="checkboxValue"
+      (valueChange)="onCheckboxValueChange($event)"
+      [filter]="true"
+    ></ino-treeselect>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Lazy children (async <code>loadChildren</code>)</h3>
+  <p class="demo-section__note">
+    "Archived projects" has <code>hasChildren: true</code> with no <code>children</code> loaded
+    yet. Expanding it emits <code>(loadChildren)</code>; this demo answers by setting that node's
+    <code>loading: true</code> (rendering the loading-branch spinner in place of the chevron) for
+    600ms, then pushes a new <code>nodes</code> array back in with its children populated — the
+    same async-datasource contract <code>ino-autocomplete</code>'s <code>search</code> output
+    documents.
+  </p>
+  <div class="demo-row">
+    <ino-treeselect
+      label="Project"
+      [nodes]="lazyNodes"
+      [value]="lazyValue"
+      (valueChange)="onLazyValueChange($event)"
+      (loadChildren)="onLoadChildren($event)"
+      [filter]="true"
+    ></ino-treeselect>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Filter — narrowed to zero results</h3>
+  <p class="demo-section__note">
+    The in-panel filter box narrows the tree as you type, auto-expanding every surviving branch.
+    Below, the panel is already open and the filter query "<code>{{ filteredEmptyQuery }}</code>"
+    matches none of the labels, producing the "No matches." empty state. Clear the filter box (or
+    press <code>Escape</code>) to see the full tree again.
+  </p>
+  <div class="demo-row">
+    <ino-treeselect
+      #filteredEmptyTreeSelect
+      label="Assign to team"
+      [nodes]="orgNodes"
+      [value]="''"
+      [filter]="true"
+    ></ino-treeselect>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States</h3>
+  <p class="demo-section__note">
+    Default, disabled, readonly, invalid, and loading states below are static snapshots. Hover /
+    focus-visible / active are live on every enabled trigger on this page — tab onto any trigger
+    above to see them.
+  </p>
+  <div class="demo-row">
+    <ino-treeselect
+      label="Default"
+      [nodes]="orgNodes"
+      [value]="singleValue"
+      [filter]="true"
+    ></ino-treeselect>
+
+    <ino-treeselect
+      label="Disabled"
+      [disabled]="true"
+      [nodes]="orgNodes"
+      [value]="disabledValue"
+      [filter]="true"
+    ></ino-treeselect>
+
+    <ino-treeselect
+      label="Readonly (locked)"
+      [readonly]="true"
+      [nodes]="orgNodes"
+      [value]="readonlyValue"
+      [filter]="true"
+    ></ino-treeselect>
+
+    <ino-treeselect
+      label="Invalid / error"
+      error="Select at least one team"
+      [nodes]="orgNodes"
+      [value]="invalidValue"
+      [filter]="true"
+    ></ino-treeselect>
+
+    <ino-treeselect
+      label="Loading"
+      [loading]="true"
+      [nodes]="orgNodes"
+      [value]="loadingValue"
+      [filter]="true"
+    ></ino-treeselect>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Sizing</h3>
+  <p class="demo-section__note">
+    <code>size</code> accepts <code>sm</code> / <code>default</code> / <code>lg</code>, same scale
+    as every other Tier-1 form control.
+  </p>
+  <div class="demo-row">
+    <ino-treeselect
+      label="Small"
+      size="sm"
+      [nodes]="orgNodes"
+      [value]="''"
+    ></ino-treeselect>
+
+    <ino-treeselect
+      label="Default"
+      size="default"
+      [nodes]="orgNodes"
+      [value]="''"
+    ></ino-treeselect>
+
+    <ino-treeselect
+      label="Large"
+      size="lg"
+      [nodes]="orgNodes"
+      [value]="''"
+    ></ino-treeselect>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Keyboard interaction</h3>
+  <p class="demo-section__note">
+    Focus any trigger above and try these keyboard shortcuts:
+  </p>
+  <ul style="color: var(--ino-color-on-surface-muted); font-size: var(--ino-type-body-sm-size, 12.5px); margin: 0; padding-left: var(--ino-space-5);">
+    <li><strong>Enter / Space / ArrowDown (closed):</strong> open the panel</li>
+    <li><strong>ArrowUp / ArrowDown (open):</strong> move the active row</li>
+    <li><strong>ArrowRight:</strong> expand the active branch (or move into it if already expanded)</li>
+    <li><strong>ArrowLeft:</strong> collapse the active branch (or move to its parent if already collapsed)</li>
+    <li><strong>Home / End:</strong> jump to the first/last enabled row</li>
+    <li><strong>Enter / Space (open):</strong> select (single) or toggle membership/checkbox of the active row</li>
+    <li><strong>Escape:</strong> close the panel without committing</li>
+    <li><strong>Tab:</strong> close the panel and move focus on</li>
+  </ul>
+</section>

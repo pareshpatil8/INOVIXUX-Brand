@@ -11,6 +11,7 @@ import { TierCardDemoComponent } from './demos/tier-card-demo.component';
 import { InputNumberDemoComponent } from './demos/inputnumber-demo.component';
 import { ListboxDemoComponent } from './demos/listbox-demo.component';
 import { InputTagsDemoComponent } from './demos/inputtags-demo.component';
+import { TreeSelectDemoComponent } from './demos/treeselect-demo.component';
 
 /**
  * Slug -> hand-authored demo component, for components whose §2 Component Publish Contract
@@ -35,4 +36,5 @@ export const CUSTOM_DEMOS: Record<string, Type<unknown>> = {
   'inputnumber': InputNumberDemoComponent,
   'listbox': ListboxDemoComponent,
   'inputtags': InputTagsDemoComponent,
+  'treeselect': TreeSelectDemoComponent,
 };
