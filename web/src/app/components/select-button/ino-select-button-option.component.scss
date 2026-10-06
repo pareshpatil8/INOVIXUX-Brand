@@ -115,3 +115,20 @@
     padding: var(--ino-control-padding-block);
   }
 }
+
+:host(.ino-select-button-option--readonly) {
+  .ino-select-button-option__label {
+    cursor: default;
+    opacity: 0.8;
+  }
+
+  .ino-select-button-option__label:hover {
+    background: var(--ino-color-surface-raised);
+    filter: none;
+
+    &:has(.ino-select-button-option__input:checked) {
+      background: var(--ino-gradient-accent);
+      filter: none;
+    }
+  }
+}

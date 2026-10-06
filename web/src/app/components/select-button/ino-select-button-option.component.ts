@@ -27,6 +27,9 @@ let idCounter = 0;
   templateUrl: './ino-select-button-option.component.html',
   styleUrl: './ino-select-button-option.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '[class.ino-select-button-option--readonly]': 'readonly',
+  },
 })
 export class InoSelectButtonOptionComponent {
   @Input() label = '';

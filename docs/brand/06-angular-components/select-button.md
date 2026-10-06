@@ -110,8 +110,8 @@ first option's start border and start radii, and the last option's end radii, co
 under `dir="rtl"`.
 
 **State announcements** — Checked/unchecked (radio/checkbox native), disabled (native `[disabled]`),
-group label (via `aria-labelledby` or `aria-label`). `readonly` currently has no AT-observable
-effect (see [Deliberate omissions](#deliberate-omissions)).
+group label (via `aria-labelledby` or `aria-label`), readonly (via `aria-readonly="true"` when
+`readonly=true`).
 
 ---
 
@@ -124,12 +124,11 @@ effect (see [Deliberate omissions](#deliberate-omissions)).
 semantics require exactly one option selected at all times after the first selection. PrimeNG's
 `allowEmpty` is similarly omitted.
 
-**No `readonly` visual or AT effect (web-only).** The `readonly` @Input exists and prevents
-selection changes at the interaction level (click handler returns early), but emits no visual
-cue and no `aria-readonly` attribute. This is a B1 gap: either a readonly visual treatment
-(dimmed without full `disabled` opacity) or an explicit "readonly is not supported on segmented
-controls" decision is needed. `ino-toggle-button` implements full `aria-readonly` + visual
-treatment; this component will align in a follow-up phase.
+**`readonly` implementation.** The `readonly` @Input prevents selection changes at the interaction
+level (click handler returns early), emits `aria-readonly="true"` on each option's input, and
+applies a visual treatment (reduced opacity, default cursor, no hover state changes) to indicate
+non-interactive state while preserving readability. This follows the pattern established in
+`ino-toggle-button`.
 
 **No invalid/error state.** The §2 standard state set includes invalid/error, but segmented
 controls are typically selection-first UI (filtering, view modes) rather than form-validation
