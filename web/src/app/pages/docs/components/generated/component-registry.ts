@@ -7,6 +7,7 @@ import { InoAlertComponent } from '../../../../components/alert/ino-alert.compon
 import { InoAutocompleteComponent } from '../../../../components/autocomplete/ino-autocomplete.component';
 import { InoButtonComponent } from '../../../../components/button/ino-button.component';
 import { InoCardComponent } from '../../../../components/card/ino-card.component';
+import { InoCascadeSelectComponent } from '../../../../components/cascade-select/ino-cascade-select.component';
 import { InoCheckboxComponent } from '../../../../components/checkbox/ino-checkbox.component';
 import { InoConfirmDialogComponent } from '../../../../components/confirm-dialog/ino-confirm-dialog.component';
 import { InoConfirmPopupComponent } from '../../../../components/confirm-popup/ino-confirm-popup.component';
@@ -55,6 +56,7 @@ import { InoToastContainerComponent } from '../../../../components/toast-contain
 import { InoToggleComponent } from '../../../../components/toggle/ino-toggle.component';
 import { InoToggleButtonComponent } from '../../../../components/toggle-button/ino-toggle-button.component';
 import { InoTooltipComponent } from '../../../../components/tooltip/ino-tooltip.component';
+import { InoTreeSelectComponent } from '../../../../components/treeselect/ino-treeselect.component';
 import { InoVirtualScrollerComponent } from '../../../../components/virtual-scroller/ino-virtual-scroller.component';
 
 export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
@@ -62,6 +64,7 @@ export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'autocomplete': InoAutocompleteComponent,
   'button': InoButtonComponent,
   'card': InoCardComponent,
+  'cascade-select': InoCascadeSelectComponent,
   'checkbox': InoCheckboxComponent,
   'confirm-dialog': InoConfirmDialogComponent,
   'confirm-popup': InoConfirmPopupComponent,
@@ -110,5 +113,6 @@ export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'toggle': InoToggleComponent,
   'toggle-button': InoToggleButtonComponent,
   'tooltip': InoTooltipComponent,
+  'treeselect': InoTreeSelectComponent,
   'virtual-scroller': InoVirtualScrollerComponent,
 };

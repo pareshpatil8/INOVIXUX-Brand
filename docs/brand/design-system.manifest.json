@@ -8,7 +8,7 @@
     "tablet": "641-900px",
     "desktop": ">900px"
   },
-  "componentCount": 53,
+  "componentCount": 55,
   "components": [
     {
       "name": "ino-alert",
@@ -322,6 +322,105 @@
         "sunken",
         "overlay"
       ],
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-cascade-select",
+      "slug": "cascade-select",
+      "className": "InoCascadeSelectComponent",
+      "sourcePath": "web/src/app/components/cascade-select/ino-cascade-select.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "options",
+          "type": "InoCascadeSelectOption[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "values": null,
+          "default": "'Select an option'",
+          "optional": true
+        },
+        {
+          "name": "hint",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "InoControlSize",
+          "values": null,
+          "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "backLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Back'",
+          "optional": true
+        }
+      ],
+      "variants": null,
       "viewports": [
         "mobile",
         "tablet",
@@ -4377,6 +4476,130 @@
           "type": "number",
           "values": null,
           "default": "0",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-treeselect",
+      "slug": "treeselect",
+      "className": "InoTreeSelectComponent",
+      "sourcePath": "web/src/app/components/treeselect/ino-treeselect.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "nodes",
+          "type": "InoTreeSelectNode[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "value",
+          "type": "string | string[]",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "selectionMode",
+          "type": "'single' | 'multiple' | 'checkbox'",
+          "values": [
+            "single",
+            "multiple",
+            "checkbox"
+          ],
+          "default": "'single'",
+          "optional": true
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "values": null,
+          "default": "'Select…'",
+          "optional": true
+        },
+        {
+          "name": "hint",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "InoControlSize",
+          "values": null,
+          "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "filter",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "filterLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Filter'",
+          "optional": true
+        },
+        {
+          "name": "filterPlaceholder",
+          "type": "string",
+          "values": null,
+          "default": "'Filter…'",
           "optional": true
         }
       ],

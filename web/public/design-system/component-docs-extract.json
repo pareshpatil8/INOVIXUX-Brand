@@ -389,6 +389,137 @@
         ]
       }
     },
+    "cascade-select": {
+      "name": "ino-cascade-select",
+      "docPath": "docs/brand/06-angular-components/cascade-select.md",
+      "a11y": "<p><strong>Role / ARIA</strong> — <code>role=\"combobox\"</code> trigger (<code>aria-haspopup=\"listbox\"</code>, <code>aria-expanded</code>,\n<code>aria-controls</code> pointing at the current level's listbox), opening a <code>role=\"listbox\"</code> panel for\nwhichever level is currently displayed. Each row is <code>role=\"option\"</code>; a row with children carries\n<code>aria-haspopup=\"listbox\"</code> instead of <code>aria-selected=\"true\"</code> (only a leaf can be selected).\n<code>aria-activedescendant</code> tracks the active row by id, same model <code>ino-select</code> uses — real DOM focus\nnever leaves the trigger. The breadcrumb bar is a <code>&lt;nav aria-label=\"Selected path\"&gt;</code> with each\nancestor a button and the current level's ancestor marked <code>aria-current=\"true\"</code>.</p>\n<p><strong>Keyboard</strong> — see SPEC.md §4 for the full table; summary:</p>\n<table>\n<thead>\n<tr>\n<th>Key</th>\n<th>Action</th>\n</tr>\n</thead>\n<tbody><tr>\n<td><code>ArrowDown</code>/<code>ArrowUp</code></td>\n<td>Move the active row within the current level (clamped, no wrap)</td>\n</tr>\n<tr>\n<td><code>ArrowRight</code></td>\n<td>Drill into the active row, if it has children</td>\n</tr>\n<tr>\n<td><code>ArrowLeft</code></td>\n<td>Go back one level, if not at root</td>\n</tr>\n<tr>\n<td><code>Home</code>/<code>End</code></td>\n<td>Jump to the first/last enabled row in the current level</td>\n</tr>\n<tr>\n<td><code>Enter</code>/<code>Space</code></td>\n<td>Activate the active row — drill in (parent) or select + close (leaf)</td>\n</tr>\n<tr>\n<td>Printable character</td>\n<td>Typeahead within the current level only (500 ms reset window)</td>\n</tr>\n<tr>\n<td><code>Escape</code></td>\n<td>Close the panel entirely — does not step back a level first</td>\n</tr>\n<tr>\n<td><code>Tab</code></td>\n<td>Close without restoring focus to the trigger</td>\n</tr>\n</tbody></table>\n<p><strong>Contrast</strong> — selected-row text (<code>--ino-color-accent-text-safe</code>) and empty/muted message colors\nare existing audited roles (<code>check-theme-parity.mjs</code>), not new values, across all 3 themes.</p>\n<p><strong>Target size</strong> — the trigger, every row, and the breadcrumb back button clear\n<code>min-block-size: var(--ino-control-height)</code> / <code>var(--ino-target-comfortable)</code> /\n<code>var(--ino-target-min)</code> as appropriate at every size rung.</p>\n<p><strong>RTL</strong> — logical properties only (<code>inline-size</code>, <code>padding-inline-*</code>, <code>inset-inline-*</code>); no\n<code>left</code>/<code>right</code>/<code>top</code>/<code>bottom</code> anywhere in the stylesheet.</p>\n<hr />\n",
+      "notes": "<ul>\n<li><strong>No cascading flyout of simultaneous panels.</strong> The popup is one level, replaced in place, not N\nside-by-side panels (which is what PrimeNG's own <code>CascadeSelect</code> renders) — see SPEC.md §1 for\nwhy this is the shape that also works as a phone-width stacked sheet.</li>\n<li><strong>No async per-level children loader.</strong> The full <code>options</code> tree is a synchronous <code>@Input()</code>,\nsame as <code>ino-select</code>/<code>ino-listbox</code>. Doc 26 §5 names \"loading\" as a state, not an async-loading\nfeature. See SPEC.md §5.</li>\n<li><strong>No custom option templates or virtual scrolling on mobile.</strong> Same omissions <code>InoSelect</code>'s own\nport documents, for the same reason — see SPEC.md §7.</li>\n</ul>\n",
+      "api": {
+        "props": [
+          {
+            "name": "options",
+            "type": "InoCascadeSelectOption[]",
+            "values": null,
+            "default": "[]",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "value",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": "Selected leaf's `value`. `''` = no selection."
+          },
+          {
+            "name": "placeholder",
+            "type": "string",
+            "values": null,
+            "default": "'Select an option'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "hint",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "error",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "size",
+            "type": "InoControlSize",
+            "values": null,
+            "default": "'default'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "required",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "readonly",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "loading",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": "Spinner + `aria-busy`; same contract as every other Tier-1 control's `loading` input — see doc 26 §5's \"loading\" state row."
+          },
+          {
+            "name": "backLabel",
+            "type": "string",
+            "values": null,
+            "default": "'Back'",
+            "optional": true,
+            "description": "Label for the \"go back one level\" affordance, read by assistive tech."
+          }
+        ],
+        "events": [
+          {
+            "name": "valueChange",
+            "type": "string",
+            "description": null
+          },
+          {
+            "name": "openChange",
+            "type": "boolean",
+            "description": null
+          }
+        ],
+        "methods": [
+          {
+            "name": "drillInto",
+            "params": "option: InoCascadeSelectOption",
+            "returnType": "void",
+            "description": "Click/Enter/Space/ArrowRight on a row with children: push it onto the breadcrumb and show its children. Resets the roving pointer to the first enabled child of the new level."
+          },
+          {
+            "name": "goBack",
+            "params": "toIndex?: number",
+            "returnType": "void",
+            "description": "ArrowLeft/back-button/breadcrumb-click: truncate the path back to `toIndex` (`0` = root). Omit `toIndex` to go up exactly one level. The roving pointer lands back on the option whose children we just left, matching the \"where was I\" expectation Arrow-key navigation sets up elsewhere in this repo."
+          },
+          {
+            "name": "activateRow",
+            "params": "row: InoCascadeSelectRow",
+            "returnType": "void",
+            "description": "Click/Enter/Space on a row: drill in when it has children, select when it's a leaf — the one branch every activation path (mouse, keyboard) funnels through."
+          }
+        ],
+        "templates": []
+      }
+    },
     "checkbox": {
       "name": "ino-checkbox",
       "docPath": "docs/brand/06-angular-components/checkbox.md",
@@ -5403,6 +5534,156 @@
             "name": "panelLeave",
             "type": "void",
             "description": null
+          }
+        ],
+        "methods": [],
+        "templates": []
+      }
+    },
+    "treeselect": {
+      "name": "ino-treeselect",
+      "docPath": "docs/brand/06-angular-components/treeselect.md",
+      "a11y": "<p><strong>Role / ARIA</strong> — <code>role=\"combobox\"</code> trigger (<code>aria-haspopup=\"tree\"</code>, <code>aria-expanded</code>,\n<code>aria-controls</code> pointing at the tree), opening a <code>role=\"tree\"</code> panel. Each row is <code>role=\"treeitem\"</code>\nwith <code>aria-level</code> (1-based depth) and, when it has children, <code>aria-expanded</code>. <code>'single'</code>/<code>'multiple'</code>\nmodes set <code>aria-selected</code>; <code>'checkbox'</code> mode sets <code>aria-checked</code> (<code>\"true\"</code>/<code>\"false\"</code>/<code>\"mixed\"</code>)\ninstead and <code>aria-multiselectable=\"true\"</code> on the tree root. <code>aria-activedescendant</code> tracks the\nactive row by id, same model <code>ino-select</code> uses — real DOM focus never leaves the trigger (or the\nfilter input, when <code>filter</code> is on).</p>\n<p><strong>Keyboard</strong> — see SPEC.md §2 for the full table; summary:</p>\n<table>\n<thead>\n<tr>\n<th>Key</th>\n<th>Action</th>\n</tr>\n</thead>\n<tbody><tr>\n<td><code>ArrowDown</code>/<code>ArrowUp</code></td>\n<td>Move the active row (clamped, no wrap)</td>\n</tr>\n<tr>\n<td><code>ArrowRight</code></td>\n<td>Expand a collapsed branch, or move into its first child if already expanded</td>\n</tr>\n<tr>\n<td><code>ArrowLeft</code></td>\n<td>Collapse an expanded branch, or move to its parent</td>\n</tr>\n<tr>\n<td><code>Home</code>/<code>End</code></td>\n<td>Jump to the first/last visible row</td>\n</tr>\n<tr>\n<td><code>Enter</code>/<code>Space</code></td>\n<td>Activate the row (select/toggle/check depending on <code>selectionMode</code>)</td>\n</tr>\n<tr>\n<td><code>Escape</code></td>\n<td>Close without changing <code>value</code></td>\n</tr>\n<tr>\n<td><code>Tab</code></td>\n<td>Close without changing <code>value</code></td>\n</tr>\n</tbody></table>\n<p><strong>Contrast</strong> — selected-row text (<code>--ino-color-accent-text-safe</code>) and empty/muted message colors\nare existing audited roles (<code>check-theme-parity.mjs</code>), not new values, across all 3 themes.</p>\n<p><strong>Target size</strong> — the trigger and every row clear <code>min-block-size: var(--ino-control-height)</code> /\n<code>var(--ino-target-comfortable)</code> at every size rung; the expand toggle is <code>var(--ino-target-min)</code>.</p>\n<p><strong>RTL</strong> — logical properties only (<code>inline-size</code>, <code>padding-inline-*</code>, <code>inset-inline-*</code>); no\n<code>left</code>/<code>right</code>/<code>top</code>/<code>bottom</code> anywhere in the stylesheet.</p>\n<hr />\n",
+      "notes": "<ul>\n<li><strong>No typeahead.</strong> The always-available <code>filter</code> box already covers find-by-label across the\nwhole loaded tree; a tree's typeahead would have to decide whether to search only visible rows,\nan ambiguity the filter box sidesteps. See SPEC.md §2.</li>\n<li><strong>No <code>ino-tree</code> delegation (yet).</strong> Doc 26 §5 names <code>ino-tree</code> (Phase B3, not built) as this\ncomponent's dependency. The tree-rendering core is self-contained here rather than blocked on an\nunstarted phase; SPEC.md §1 records the intended refactor once <code>ino-tree</code> ships.</li>\n<li><strong>Checking a lazy branch does not retroactively cascade to children that load afterward.</strong> See\nSPEC.md §4 for why, and what a caller that wants that behavior has to do instead.</li>\n<li><strong>No virtual scrolling.</strong> Doc 26 §5's row doesn't call for it, and lazy loading already bounds\nhow much of a large tree is ever materialized at once.</li>\n</ul>\n",
+      "api": {
+        "props": [
+          {
+            "name": "nodes",
+            "type": "InoTreeSelectNode[]",
+            "values": null,
+            "default": "[]",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "value",
+            "type": "string | string[]",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": "`string` in `'single'` mode, `string[]` in `'multiple'`/`'checkbox'`. See SPEC.md §3."
+          },
+          {
+            "name": "selectionMode",
+            "type": "'single' | 'multiple' | 'checkbox'",
+            "values": [
+              "single",
+              "multiple",
+              "checkbox"
+            ],
+            "default": "'single'",
+            "optional": true,
+            "description": "`'single'` — select-and-close, one value. `'multiple'` — toggle-without-closing, flat membership (reuses `ino-listbox`'s model), no cascade to descendants. `'checkbox'` — toggle-without-closing, cascades to every loaded descendant and re-derives each ancestor's membership (full/partial/none) — doc 26 §5's \"partial-checked\" state. See SPEC.md §3."
+          },
+          {
+            "name": "placeholder",
+            "type": "string",
+            "values": null,
+            "default": "'Select…'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "hint",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "error",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "size",
+            "type": "InoControlSize",
+            "values": null,
+            "default": "'default'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "required",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "readonly",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "loading",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": "Suppresses committing a selection while an async fetch is in flight; the panel and filter box stay live — same contract as `ino-autocomplete`'s `loading`. Distinct from a per-node `loading` (lazy children fetch) — see SPEC.md §5 (states)."
+          },
+          {
+            "name": "filter",
+            "type": "boolean",
+            "values": null,
+            "default": "true",
+            "optional": true,
+            "description": "In-panel search box, narrows the tree to matching labels + their ancestors (auto-expanded while the query is non-empty). Defaults `true` — doc 26 §5 lists \"filter\" as part of this component's baseline structure, same call `ino-listbox` makes for its own filter box."
+          },
+          {
+            "name": "filterLabel",
+            "type": "string",
+            "values": null,
+            "default": "'Filter'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "filterPlaceholder",
+            "type": "string",
+            "values": null,
+            "default": "'Filter…'",
+            "optional": true,
+            "description": null
+          }
+        ],
+        "events": [
+          {
+            "name": "valueChange",
+            "type": "string | string[]",
+            "description": null
+          },
+          {
+            "name": "filterChange",
+            "type": "string",
+            "description": null
+          },
+          {
+            "name": "openChange",
+            "type": "boolean",
+            "description": null
+          },
+          {
+            "name": "loadChildren",
+            "type": "InoTreeSelectNode",
+            "description": "Fires when a lazy node (`hasChildren: true`, `children` still empty/undefined) is expanded — the hook a parent uses to fetch and push that node's children back in. See SPEC.md §4."
           }
         ],
         "methods": [],

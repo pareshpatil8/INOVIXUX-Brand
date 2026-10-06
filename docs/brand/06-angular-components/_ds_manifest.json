@@ -1,6 +1,6 @@
 {
   "generatedFrom": "previews/*.html @dsCard markers",
-  "cardCount": 48,
+  "cardCount": 49,
   "cards": [
     {
       "id": "button",
@@ -43,6 +43,12 @@
       "group": "Form",
       "preview": "previews/autocomplete.html",
       "doc": "autocomplete.md"
+    },
+    {
+      "id": "cascade-select",
+      "group": "Form",
+      "preview": "previews/cascade-select.html",
+      "doc": "cascade-select.md"
     },
     {
       "id": "datepicker",
