@@ -1,0 +1,122 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Single-selection</h3>
+  <p class="demo-section__note">
+    Default single-selection listbox. Options are grouped ("Fruit" / "Vegetable") and one row
+    ("Durian") is disabled. <code>ArrowUp</code>/<code>ArrowDown</code> move the roving tab stop
+    and select the newly-focused row; <code>Home</code>/<code>End</code> jump to the first/last
+    enabled row.
+  </p>
+  <div class="demo-row">
+    <ino-listbox
+      label="Favorite produce"
+      [options]="fruitOptions"
+      [value]="singleValue"
+      (valueChange)="onSingleValueChange($event)"
+      [filter]="true"
+    ></ino-listbox>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Multiple-selection (checkboxes)</h3>
+  <p class="demo-section__note">
+    <code>[multiple]="true"</code> renders a checkbox per row and toggles membership on
+    click/<code>Space</code>/<code>Enter</code> instead of replacing the selection.
+    <code>ArrowUp</code>/<code>ArrowDown</code> move focus only here — they do not change
+    selection.
+  </p>
+  <div class="demo-row">
+    <ino-listbox
+      label="Produce to order"
+      [options]="fruitOptions"
+      [multiple]="true"
+      [value]="multipleValue"
+      (valueChange)="onMultipleValueChange($event)"
+      [filter]="true"
+    ></ino-listbox>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Filter — narrowed to zero results</h3>
+  <p class="demo-section__note">
+    The always-visible filter box narrows the list as you type. Below, the filter query
+    "<code>{{ filteredEmptyQuery }}</code>" matches none of the options, producing the
+    <code>.ino-listbox--filtered-empty</code> host class and the "No options match your filter."
+    message. Clear the filter box (or press <code>Escape</code>) to see the full list again.
+  </p>
+  <div class="demo-row">
+    <ino-listbox
+      #filteredEmptyListbox
+      label="Favorite produce"
+      [options]="fruitOptions"
+      [value]="''"
+      [filter]="true"
+    ></ino-listbox>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States</h3>
+  <p class="demo-section__note">
+    Default, disabled, readonly, invalid, and loading states below are static snapshots. Hover /
+    focus-visible / active / selected are live on every enabled listbox on this page — hover or
+    tab onto any row above to see them.
+  </p>
+  <div class="demo-row">
+    <ino-listbox
+      label="Default"
+      [options]="fruitOptions"
+      [value]="singleValue"
+      [filter]="true"
+    ></ino-listbox>
+
+    <ino-listbox
+      label="Disabled"
+      [disabled]="true"
+      [options]="fruitOptions"
+      [value]="disabledValue"
+      [filter]="true"
+    ></ino-listbox>
+
+    <ino-listbox
+      label="Readonly (locked)"
+      [readonly]="true"
+      [options]="fruitOptions"
+      [value]="readonlyValue"
+      [filter]="true"
+    ></ino-listbox>
+
+    <ino-listbox
+      label="Invalid / error"
+      error="Select at least one item"
+      [options]="fruitOptions"
+      [value]="invalidValue"
+      [filter]="true"
+    ></ino-listbox>
+
+    <ino-listbox
+      label="Loading"
+      [loading]="true"
+      [options]="fruitOptions"
+      [value]="loadingValue"
+      [filter]="true"
+    ></ino-listbox>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Keyboard interaction (APG Listbox pattern)</h3>
+  <p class="demo-section__note">
+    Focus any listbox above and try these keyboard shortcuts:
+  </p>
+  <ul style="color: var(--ino-color-on-surface-muted); font-size: var(--ino-type-body-sm-size, 12.5px); margin: 0; padding-left: var(--ino-space-5);">
+    <li><strong>Tab / Shift+Tab:</strong> move focus onto/off the roving tab stop</li>
+    <li><strong>Arrow Up/Down:</strong> move the roving tab stop (single-selection also selects; multi-selection moves focus only)</li>
+    <li><strong>Home / End:</strong> jump to the first/last enabled row</li>
+    <li><strong>Space / Enter:</strong> select (single) or toggle membership (multiple) of the focused row</li>
+    <li><strong>Printable character:</strong> typeahead — jump to the next row whose label starts with the typed text</li>
+    <li><strong>Arrow Down from the filter box:</strong> moves focus from the filter box into the list</li>
+    <li><strong>Escape in the filter box:</strong> clears the filter query</li>
+  </ul>
+</section>
