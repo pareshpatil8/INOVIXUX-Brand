@@ -2213,6 +2213,160 @@
         "templates": []
       }
     },
+    "inputtags": {
+      "name": "ino-inputtags",
+      "docPath": "docs/brand/06-angular-components/inputtags.md",
+      "a11y": "<p><strong>Role / ARIA:</strong></p>\n<ul>\n<li>Input: <code>role=\"combobox\"</code> with <code>aria-expanded</code> tracking dropdown state</li>\n<li>Chip list: <code>role=\"list\"</code> with each chip as <code>role=\"listitem\"</code></li>\n<li>Suggestions dropdown: <code>role=\"listbox\"</code> with each option as <code>role=\"option\"</code></li>\n<li><code>aria-activedescendant</code> on input points to the active suggestion</li>\n</ul>\n<p><strong>Keyboard support:</strong> See \"Keyboard contract\" above. All navigation, selection, and removal actions\nare keyboard-accessible.</p>\n<p><strong>Screen reader announcements:</strong></p>\n<ul>\n<li>Tag removal: \"Removed {tag label}\" announced via <code>role=\"status\"</code> live region</li>\n<li>Error message: <code>aria-describedby</code> points to error text, <code>aria-invalid=\"true\"</code> when <code>error</code> is set</li>\n</ul>\n<p><strong>Focus indicators:</strong> Focus ring on input field, visible focus on chip remove buttons (<code>:focus-visible</code>).</p>\n<p><strong>WCAG 2.2 AA:</strong></p>\n<ul>\n<li>Contrast: <code>--ino-color-primary</code> / <code>--ino-color-error</code> tokens meet AA (gated by <code>check-theme-parity</code>)</li>\n<li>All interactive elements keyboard-accessible</li>\n<li>All state changes announced to screen readers</li>\n</ul>\n<hr />\n",
+      "notes": "<ul>\n<li><strong>No grouping:</strong> Suggestions do not support <code>option.group</code> (unlike <code>ino-autocomplete</code>). The use\ncase for grouped tag suggestions is weak.</li>\n<li><strong>No <code>forceSelection</code>:</strong> All typed input can be added as a tag—there is no mode that rejects\nfree-text and requires picking from suggestions. Use <code>validateTag</code> if you want to mark certain\ntags invalid.</li>\n<li><strong>No built-in async fetch:</strong> Listen to the <code>(search)</code> output and update <code>[suggestions]</code>\nexternally (same contract as <code>ino-autocomplete</code>).</li>\n</ul>\n<hr />\n",
+      "api": {
+        "props": [
+          {
+            "name": "label",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "value",
+            "type": "InoInputTagsTag[]",
+            "values": null,
+            "default": "[]",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "suggestions",
+            "type": "InoInputTagsOption[]",
+            "values": null,
+            "default": "[]",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "placeholder",
+            "type": "string",
+            "values": null,
+            "default": "'Add tags…'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "hint",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "error",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "size",
+            "type": "InoControlSize",
+            "values": null,
+            "default": "'default'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "required",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "readonly",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "allowDuplicates",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "addOnBlur",
+            "type": "boolean",
+            "values": null,
+            "default": "true",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "maxTags",
+            "type": "number | null",
+            "values": null,
+            "default": "null",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "validateTag",
+            "type": "((tag: string)",
+            "values": null,
+            "default": "> boolean) | null = null",
+            "optional": true,
+            "description": "Optional per-tag validation. Return true if valid, false if invalid. Invalid tags get marked with `invalid: true` and styled with `--ino-color-error`."
+          },
+          {
+            "name": "separators",
+            "type": "string",
+            "values": null,
+            "default": "','",
+            "optional": true,
+            "description": "Separator characters that trigger tag addition (beyond Enter). Default: comma."
+          }
+        ],
+        "events": [
+          {
+            "name": "valueChange",
+            "type": "InoInputTagsTag[]",
+            "description": null
+          },
+          {
+            "name": "tagAdd",
+            "type": "InoInputTagsTag",
+            "description": null
+          },
+          {
+            "name": "tagRemove",
+            "type": "InoInputTagsTag",
+            "description": null
+          },
+          {
+            "name": "search",
+            "type": "string",
+            "description": null
+          }
+        ],
+        "methods": [],
+        "templates": []
+      }
+    },
     "label": {
       "name": "ino-label",
       "docPath": "docs/brand/06-angular-components/label.md",
@@ -3879,6 +4033,164 @@
           }
         ],
         "events": [],
+        "methods": [],
+        "templates": []
+      }
+    },
+    "slider": {
+      "name": "ino-slider",
+      "docPath": null,
+      "a11y": null,
+      "notes": null,
+      "api": {
+        "props": [
+          {
+            "name": "label",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "hint",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "error",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "trackSize",
+            "type": "InoSliderTrackSize",
+            "values": [
+              "sm",
+              "md"
+            ],
+            "default": "'md'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "min",
+            "type": "number",
+            "values": null,
+            "default": "0",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "max",
+            "type": "number",
+            "values": null,
+            "default": "100",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "step",
+            "type": "number",
+            "values": null,
+            "default": "1",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "range",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "vertical",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "showMarks",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "showTooltip",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "showMinMaxLabels",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "showValueLabel",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "required",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "readonly",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "value",
+            "type": "number | [number, number]",
+            "values": null,
+            "default": "0",
+            "optional": true,
+            "description": "Plain `number` in single mode (default), `[number, number]` when `range={true}`. Mirrors `ino-autocomplete`'s `value: string | string[]` mode-flag convention."
+          }
+        ],
+        "events": [
+          {
+            "name": "valueChange",
+            "type": "number | [number, number]",
+            "description": null
+          }
+        ],
         "methods": [],
         "templates": []
       }

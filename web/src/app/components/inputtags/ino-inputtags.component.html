@@ -1,0 +1,97 @@
+<div class="ino-inputtags__wrapper">
+  <ino-label
+    *ngIf="label"
+    [for]="inputId"
+    [required]="required"
+    [disabled]="disabled"
+    [size]="size">
+    {{ label }}
+  </ino-label>
+
+  <div
+    class="ino-inputtags__field"
+    [class.ino-inputtags__field--disabled]="disabled"
+    [class.ino-inputtags__field--readonly]="readonly"
+    [class.ino-inputtags__field--error]="!!error"
+    [class.ino-inputtags__field--at-max]="isAtMax">
+
+    <div class="ino-inputtags__tags" role="list">
+      <div
+        *ngFor="let tag of value"
+        class="ino-inputtags__tag"
+        [class.ino-inputtags__tag--invalid]="tag.invalid"
+        role="listitem">
+        <ng-container *ngIf="chipTemplate; else defaultChip">
+          <ng-container *ngTemplateOutlet="chipTemplate; context: { $implicit: tag }"></ng-container>
+        </ng-container>
+        <ng-template #defaultChip>
+          <span class="ino-inputtags__tag-label">{{ tag.label }}</span>
+        </ng-template>
+        <button
+          type="button"
+          class="ino-inputtags__tag-remove"
+          [attr.aria-label]="'Remove ' + tag.label"
+          [disabled]="disabled || readonly"
+          (click)="onChipRemove(tag, $event)">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+            <path d="M9 3L3 9M3 3L9 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <input
+        #input
+        [id]="inputId"
+        type="text"
+        class="ino-inputtags__input"
+        [value]="inputValue"
+        [placeholder]="value.length === 0 ? placeholder : ''"
+        [disabled]="disabled || isAtMax"
+        [readonly]="readonly"
+        [attr.aria-expanded]="shouldShowSuggestions"
+        [attr.aria-controls]="shouldShowSuggestions ? listboxId : null"
+        [attr.aria-activedescendant]="activeOptionId()"
+        [attr.aria-describedby]="[hint ? hintId : null, error ? errorId : null].filter(Boolean).join(' ') || null"
+        [attr.aria-invalid]="error ? 'true' : null"
+        role="combobox"
+        autocomplete="off"
+        (input)="onInput($event)"
+        (keydown)="onKeyDown($event)"
+        (blur)="onBlur()" />
+    </div>
+  </div>
+
+  <div *ngIf="hint && !error" [id]="hintId" class="ino-inputtags__hint">
+    {{ hint }}
+  </div>
+
+  <div *ngIf="error" [id]="errorId" class="ino-inputtags__error" role="alert">
+    {{ error }}
+  </div>
+
+  <div
+    *ngIf="shouldShowSuggestions"
+    [id]="listboxId"
+    class="ino-inputtags__dropdown"
+    role="listbox">
+    <div
+      *ngFor="let suggestion of filteredSuggestions; let i = index"
+      [id]="optionId(i)"
+      class="ino-inputtags__option"
+      [class.ino-inputtags__option--active]="isActive(i)"
+      [class.ino-inputtags__option--disabled]="suggestion.disabled"
+      [attr.aria-selected]="isActive(i)"
+      [attr.aria-disabled]="suggestion.disabled || null"
+      role="option"
+      (click)="onSuggestionClick(suggestion)">
+      <ng-container *ngIf="suggestionTemplate; else defaultSuggestion">
+        <ng-container *ngTemplateOutlet="suggestionTemplate; context: { $implicit: suggestion }"></ng-container>
+      </ng-container>
+      <ng-template #defaultSuggestion>
+        {{ suggestion.label }}
+      </ng-template>
+    </div>
+  </div>
+
+  <div #announcer [id]="announcerId" class="ino-sr-only" role="status" aria-live="polite"></div>
+</div>

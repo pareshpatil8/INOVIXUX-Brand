@@ -25,6 +25,7 @@ import { InoInputGroupComponent } from '../../../../components/input-group/ino-i
 import { InoInputOtpComponent } from '../../../../components/input-otp/ino-input-otp.component';
 import { InoInputMaskComponent } from '../../../../components/inputmask/ino-inputmask.component';
 import { InoInputNumberComponent } from '../../../../components/inputnumber/ino-inputnumber.component';
+import { InoInputTagsComponent } from '../../../../components/inputtags/ino-inputtags.component';
 import { InoLabelComponent } from '../../../../components/label/ino-label.component';
 import { InoListboxComponent } from '../../../../components/listbox/ino-listbox.component';
 import { InoMeterGroupComponent } from '../../../../components/meter-group/ino-meter-group.component';
@@ -41,6 +42,7 @@ import { InoRadioGroupComponent } from '../../../../components/radio-group/ino-r
 import { InoSelectComponent } from '../../../../components/select/ino-select.component';
 import { InoSelectButtonComponent } from '../../../../components/select-button/ino-select-button.component';
 import { InoSkeletonComponent } from '../../../../components/skeleton/ino-skeleton.component';
+import { InoSliderComponent } from '../../../../components/slider/ino-slider.component';
 import { InoStepperComponent } from '../../../../components/stepper/ino-stepper.component';
 import { InoTableComponent } from '../../../../components/table/ino-table.component';
 import { InoTabsComponent } from '../../../../components/tabs/ino-tabs.component';
@@ -76,6 +78,7 @@ export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'input-otp': InoInputOtpComponent,
   'inputmask': InoInputMaskComponent,
   'inputnumber': InoInputNumberComponent,
+  'inputtags': InoInputTagsComponent,
   'label': InoLabelComponent,
   'listbox': InoListboxComponent,
   'meter-group': InoMeterGroupComponent,
@@ -92,6 +95,7 @@ export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'select': InoSelectComponent,
   'select-button': InoSelectButtonComponent,
   'skeleton': InoSkeletonComponent,
+  'slider': InoSliderComponent,
   'stepper': InoStepperComponent,
   'table': InoTableComponent,
   'tabs': InoTabsComponent,
