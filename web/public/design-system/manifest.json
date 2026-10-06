@@ -8,7 +8,7 @@
     "tablet": "641-900px",
     "desktop": ">900px"
   },
-  "componentCount": 52,
+  "componentCount": 53,
   "components": [
     {
       "name": "ino-alert",
@@ -4190,6 +4190,98 @@
         },
         {
           "name": "checked",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-toggle-button",
+      "slug": "toggle-button",
+      "className": "InoToggleButtonComponent",
+      "sourcePath": "web/src/app/components/toggle-button/ino-toggle-button.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "onLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Yes'",
+          "optional": true
+        },
+        {
+          "name": "offLabel",
+          "type": "string",
+          "values": null,
+          "default": "'No'",
+          "optional": true
+        },
+        {
+          "name": "onIcon",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "offIcon",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "InoControlSize",
+          "values": null,
+          "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "pressed",
           "type": "boolean",
           "values": null,
           "default": "false",

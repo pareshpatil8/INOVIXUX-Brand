@@ -5222,6 +5222,113 @@
         "templates": []
       }
     },
+    "toggle-button": {
+      "name": "ino-toggle-button",
+      "docPath": "docs/brand/06-angular-components/toggle-button.md",
+      "a11y": "<p><strong>Role / ARIA</strong> — plain <code>&lt;button&gt;</code> (no role override — its implicit role is correct), with\n<code>aria-pressed</code> reflecting state (WAI-ARIA toggle-button pattern). <code>aria-invalid</code> +\n<code>aria-describedby</code> wire in the error message. <code>aria-readonly</code> reflects <code>readonly</code>. <code>aria-busy</code>\nreflects <code>loading</code>.</p>\n<p><strong>Keyboard</strong> — Tab to focus, Space or Enter to toggle (native <code>&lt;button&gt;</code> activation).</p>\n<p><strong>Contrast and targets</strong> — <code>size=\"default\"</code> resolves to 44px (<code>--ino-target-comfortable</code>), always</p>\n<blockquote>\n<p>= 32px even in dense mode via the control-height scale. Focus ring, invalid ring, and both face\ncolour pairs (secondary/primary, reused unmodified) resolve through tokens audited across all\nthree themes by <code>node scripts/check-theme-parity.mjs</code>.</p>\n</blockquote>\n<p><strong>RTL</strong> — logical properties only (<code>border-inline-start-color</code>); no <code>left</code>/<code>right</code>/<code>top</code>/<code>bottom</code>\nanywhere in the stylesheet.</p>\n<hr />\n",
+      "notes": null,
+      "api": {
+        "props": [
+          {
+            "name": "onLabel",
+            "type": "string",
+            "values": null,
+            "default": "'Yes'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "offLabel",
+            "type": "string",
+            "values": null,
+            "default": "'No'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "onIcon",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "offIcon",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "ariaLabel",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "size",
+            "type": "InoControlSize",
+            "values": null,
+            "default": "'default'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "pressed",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "readonly",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "loading",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "error",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          }
+        ],
+        "events": [
+          {
+            "name": "pressedChange",
+            "type": "boolean",
+            "description": null
+          }
+        ],
+        "methods": [],
+        "templates": []
+      }
+    },
     "tooltip": {
       "name": "ino-tooltip",
       "docPath": "docs/brand/06-angular-components/tooltip.md",

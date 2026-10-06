@@ -53,6 +53,7 @@ import { InoTierCardComponent } from '../../../../components/tier-card/ino-tier-
 import { InoTimelineComponent } from '../../../../components/timeline/ino-timeline.component';
 import { InoToastContainerComponent } from '../../../../components/toast-container/ino-toast-container.component';
 import { InoToggleComponent } from '../../../../components/toggle/ino-toggle.component';
+import { InoToggleButtonComponent } from '../../../../components/toggle-button/ino-toggle-button.component';
 import { InoTooltipComponent } from '../../../../components/tooltip/ino-tooltip.component';
 import { InoVirtualScrollerComponent } from '../../../../components/virtual-scroller/ino-virtual-scroller.component';
 
@@ -107,6 +108,7 @@ export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'timeline': InoTimelineComponent,
   'toast-container': InoToastContainerComponent,
   'toggle': InoToggleComponent,
+  'toggle-button': InoToggleButtonComponent,
   'tooltip': InoTooltipComponent,
   'virtual-scroller': InoVirtualScrollerComponent,
 };

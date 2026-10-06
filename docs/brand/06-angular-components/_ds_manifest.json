@@ -1,6 +1,6 @@
 {
   "generatedFrom": "previews/*.html @dsCard markers",
-  "cardCount": 46,
+  "cardCount": 47,
   "cards": [
     {
       "id": "button",
@@ -277,6 +277,12 @@
       "group": "Overlay",
       "preview": "previews/tooltip.html",
       "doc": "tooltip.md"
+    },
+    {
+      "id": "treeselect",
+      "group": "Form",
+      "preview": "previews/treeselect.html",
+      "doc": "treeselect.md"
     }
   ]
 }
