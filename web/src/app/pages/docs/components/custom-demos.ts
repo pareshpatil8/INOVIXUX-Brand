@@ -8,6 +8,7 @@ import { FooterDemoComponent } from './demos/footer-demo.component';
 import { HeroDemoComponent } from './demos/hero-demo.component';
 import { MetricPanelDemoComponent } from './demos/metric-panel-demo.component';
 import { TierCardDemoComponent } from './demos/tier-card-demo.component';
+import { InputNumberDemoComponent } from './demos/inputnumber-demo.component';
 
 /**
  * Slug -> hand-authored demo component, for components whose §2 Component Publish Contract
@@ -29,4 +30,5 @@ export const CUSTOM_DEMOS: Record<string, Type<unknown>> = {
   'hero': HeroDemoComponent,
   'metric-panel': MetricPanelDemoComponent,
   'tier-card': TierCardDemoComponent,
+  'inputnumber': InputNumberDemoComponent,
 };
