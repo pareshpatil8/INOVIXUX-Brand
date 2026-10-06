@@ -223,9 +223,10 @@ web's `dropdown` mode anchors the panel under the trigger (and `inline` sits in 
 both ports present the same suggestion list in a modal bottom sheet, because an anchored or
 in-flow list under a text field collides with the software keyboard and the bottom safe area on a
 phone. This is why the ports read `overlayScrim` (sheet backdrop) and `borderSoft` (grabber) —
-roles web's autocomplete never touches — and why they drop `accentActive` (no pointer-down-before-
-focus phase on touch, same divergence `ino-input`/`ino-datepicker`/`ino-select`/`ino-multiselect`
-already declare). All three are declared in the registry (§11).
+roles web's autocomplete never touches. Unlike `ino-input`/`ino-datepicker`/`ino-select`/
+`ino-multiselect`, web's autocomplete SCSS never reads `accent-active` in the first place (no
+`:active` state styled on `.ino-field__control`), so there is no corresponding "drop" divergence
+to declare here — only the two added roles. Both are declared in the registry (§11).
 
 ### 10d. Accessibility substitution
 
@@ -239,11 +240,11 @@ weight, so colour is never the only cue (WCAG SC 1.4.1), matching both existing 
 ## 11. Registry
 
 `scripts/check-theme-parity.mjs`'s `COMPONENT_REGISTRY` has one alphabetically-inserted entry for
-`autocomplete` (between `alert` and `button`), with real `{ path, roles }` entries for both mobile
-tracks (built in this issue, not a follow-up — §10) and the same three divergences the `select`/
-`multiselect` entries declare for the identical reasons: `accentActive` (dropped) and
-`overlayScrim`/`borderSoft` (added), per §10c. The registry's stale-divergence assertion means those
-three cannot rot into unexamined permissions.
+`autocomplete` (first in the list, before `button` — no `alert` entry exists in the registry today),
+with real `{ path, roles }` entries for both mobile tracks (built in this issue, not a follow-up —
+§10) and the `overlayScrim`/`borderSoft` added-role divergence the `select`/`multiselect` entries
+also declare, per §10c. The registry's stale-divergence assertion means those two cannot rot into
+unexamined permissions.
 
 ---
 

@@ -559,6 +559,24 @@ function webColorRoles(dir) {
 
 const COMPONENT_REGISTRY = [
   {
+    name: 'autocomplete',
+    web: 'web/src/app/components/autocomplete',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoAutocomplete.tsx',
+        roles: ['accent', 'accentTextSafe', 'border', 'borderSoft', 'danger', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'overlayScrim', 'surfaceRaised', 'surfaceSunken'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_autocomplete.dart',
+        roles: ['accent', 'accentTextSafe', 'border', 'borderSoft', 'danger', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'overlayScrim', 'surfaceRaised', 'surfaceSunken'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['overlayScrim', 'borderSoft'], reason: 'ADDED roles, not dropped ones — same one intentional visual divergence the select/multiselect ports declare (SPEC.md §10c). Web anchors the suggestion panel absolutely under the trigger (dropdown mode) or in-flow (inline mode) with no scrim and no sheet chrome; this port presents the same suggestion list in a modal bottom sheet (ConfirmActionSheet.tsx idiom, docs/brand/13-mobile-app-patterns.md §2) for the same reason — an anchored or in-flow list under a text field collides with the software keyboard and the bottom safe area on a phone. overlay-scrim is that sheet backdrop and border-soft its grabber. See web/src/app/components/autocomplete/SPEC.md §10c.' },
+      { platform: 'flutter', roles: ['overlayScrim', 'borderSoft'], reason: 'same as the React Native entry above — showModalBottomSheet barrierColor is overlay-scrim and the grabber is border-soft, matching confirm_action_sheet.dart / ino_select.dart.' },
+    ],
+  },
+  {
     name: 'button',
     web: 'web/src/app/components/button',
     mobile: {
