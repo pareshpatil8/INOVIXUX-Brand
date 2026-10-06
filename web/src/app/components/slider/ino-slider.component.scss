@@ -1,0 +1,200 @@
+/*
+ * <ino-slider> — INO-408 (INO-31 Phase B1, doc 26 §5 row `ino-slider`).
+ *
+ * No literal colour/space/radius/duration/font-size — every declaration resolves through a
+ * semantic role in tokens.css, logical properties only (RTL-safe: inline-size/block-size, no
+ * left/right/top/bottom anywhere below).
+ *
+ * Thumb/track sizing precedent copied from `<ino-toggle>` (INO-31): the thumb diameter reuses the
+ * Wave 0 `--ino-control-icon-size-*` alias (same rung `<ino-meter-group>`'s track thickness reuses),
+ * and the track thickness is a `calc()` fraction of that one alias rather than a new literal —
+ * tokens.css is frozen after Wave 0.
+ */
+
+.ino-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ino-space-2);
+}
+
+/* Track-size API — §2 contract row 3 ("track sm/md"). Two rungs only, per the spec row; see the
+   `InoSliderTrackSize` doc comment in the .ts for why this isn't `InoControlSize`. */
+:host {
+  --ino-slider-thumb: var(--ino-control-icon-size-default);
+  --ino-slider-track-thickness: calc(var(--ino-slider-thumb) / 3);
+}
+
+:host([data-track-size='sm']) {
+  --ino-slider-thumb: var(--ino-control-icon-size-sm);
+}
+
+.ino-slider__body {
+  display: flex;
+  align-items: center;
+  gap: var(--ino-space-3);
+}
+
+:host(.ino-slider--vertical) .ino-slider__body {
+  flex-direction: column-reverse;
+  align-items: center;
+  inline-size: fit-content;
+}
+
+.ino-slider__bound-label {
+  font-size: var(--ino-type-body-sm-size);
+  color: var(--ino-color-on-surface-muted);
+  font-family: var(--ino-font-display);
+  white-space: nowrap;
+}
+
+.ino-slider__track {
+  position: relative;
+  flex: 1;
+  inline-size: 100%;
+  block-size: var(--ino-slider-track-thickness);
+  min-block-size: var(--ino-slider-track-thickness);
+  border-radius: var(--ino-radius-pill);
+  background: var(--ino-color-surface-sunken);
+  border: 1px solid var(--ino-color-border);
+  touch-action: none;
+  cursor: pointer;
+}
+
+:host(.ino-slider--vertical) .ino-slider__track {
+  inline-size: var(--ino-slider-track-thickness);
+  block-size: var(--ino-space-10);
+  min-block-size: var(--ino-space-10);
+  flex: none;
+}
+
+:host(.ino-slider--disabled) .ino-slider__track,
+:host(.ino-slider--readonly) .ino-slider__track {
+  cursor: default;
+}
+
+:host(.ino-slider--disabled) {
+  opacity: 0.5;
+}
+
+.ino-slider__fill {
+  position: absolute;
+  inset-block: 0;
+  border-radius: inherit;
+  background: var(--ino-color-accent);
+}
+
+:host(.ino-slider--dragging) .ino-slider__fill {
+  background: var(--ino-color-accent-active);
+}
+
+.ino-slider__mark {
+  position: absolute;
+  inset-block-start: 50%;
+  inline-size: 2px;
+  block-size: 2px;
+  border-radius: 50%;
+  background: var(--ino-color-on-surface-muted);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+:host(.ino-slider--vertical) .ino-slider__mark {
+  inset-inline-start: 50%;
+  transform: translate(-50%, 50%);
+}
+
+.ino-slider__thumb {
+  position: absolute;
+  inset-block-start: 50%;
+  inline-size: var(--ino-slider-thumb);
+  block-size: var(--ino-slider-thumb);
+  border-radius: 50%;
+  background: var(--ino-color-on-accent);
+  border: 2px solid var(--ino-color-accent);
+  transform: translate(-50%, -50%);
+  cursor: grab;
+  transition: border-color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+    box-shadow var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+
+  &:hover {
+    border-color: var(--ino-color-accent-active);
+  }
+
+  &:active {
+    cursor: grabbing;
+    border-color: var(--ino-color-accent-active);
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+}
+
+:host(.ino-slider--vertical) .ino-slider__thumb {
+  inset-block-start: auto;
+  inset-inline-start: 50%;
+  transform: translate(-50%, 50%);
+}
+
+:host(.ino-slider--disabled) .ino-slider__thumb,
+:host(.ino-slider--readonly) .ino-slider__thumb {
+  cursor: default;
+}
+
+.ino-slider__tooltip {
+  position: absolute;
+  inset-block-end: calc(100% + var(--ino-space-2));
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+  padding-inline: var(--ino-space-2);
+  padding-block: 2px;
+  border-radius: var(--ino-radius-sm);
+  background: var(--ino-color-on-surface);
+  color: var(--ino-color-surface);
+  font-size: var(--ino-type-caption-size);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+:host(.ino-slider--vertical) .ino-slider__tooltip {
+  inset-block-end: 50%;
+  inset-inline-start: calc(100% + var(--ino-space-2));
+  transform: translateY(50%);
+}
+
+/* State — invalid. Non-text 3:1 boundary around the track, matching `<ino-meter-group>`'s
+   invalid-state precedent. */
+:host(.ino-slider--invalid) .ino-slider__track {
+  border-color: var(--ino-color-danger);
+}
+
+/* States — dragging / at-bounds (§5 row's extra states beyond the §2 standard set). */
+:host(.ino-slider--at-min) .ino-slider__thumb:first-of-type,
+:host(.ino-slider--at-max) .ino-slider__thumb:last-of-type {
+  border-color: var(--ino-color-accent-active);
+}
+
+.ino-slider__value-label {
+  margin: 0;
+  font-size: var(--ino-type-body-sm-size);
+  color: var(--ino-color-on-surface);
+  font-family: var(--ino-font-display);
+}
+
+.ino-field__hint {
+  margin: 0;
+  font-size: var(--ino-type-body-sm-size);
+  color: var(--ino-color-on-surface-muted);
+}
+
+.ino-field__error {
+  margin: 0;
+  font-size: var(--ino-type-body-sm-size);
+  color: var(--ino-color-danger);
+  font-weight: 600;
+}
