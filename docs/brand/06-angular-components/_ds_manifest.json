@@ -1,6 +1,6 @@
 {
   "generatedFrom": "previews/*.html @dsCard markers",
-  "cardCount": 47,
+  "cardCount": 48,
   "cards": [
     {
       "id": "button",
@@ -129,6 +129,12 @@
       "doc": "textarea.md"
     },
     {
+      "id": "treeselect",
+      "group": "Form",
+      "preview": "previews/treeselect.html",
+      "doc": "treeselect.md"
+    },
+    {
       "id": "checkbox",
       "group": "Forms",
       "preview": "previews/checkbox.html",
@@ -145,6 +151,12 @@
       "group": "Forms",
       "preview": "previews/toggle.html",
       "doc": "toggle.md"
+    },
+    {
+      "id": "toggle-button",
+      "group": "Forms",
+      "preview": "previews/toggle-button.html",
+      "doc": "toggle-button.md"
     },
     {
       "id": "control-size-scale",
@@ -277,12 +289,6 @@
       "group": "Overlay",
       "preview": "previews/tooltip.html",
       "doc": "tooltip.md"
-    },
-    {
-      "id": "treeselect",
-      "group": "Form",
-      "preview": "previews/treeselect.html",
-      "doc": "treeselect.md"
     }
   ]
 }

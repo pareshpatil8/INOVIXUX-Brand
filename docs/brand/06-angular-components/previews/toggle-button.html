@@ -1,0 +1,185 @@
+<!-- @dsCard group="Forms" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ino-toggle-button — two faces, aria-pressed, size API (INO-412)</title>
+<!-- Canonical token file, linked rather than copied: this preview must repaint with the system,
+     and must never become a second place raw hex values live. -->
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-eyebrow-size);
+    letter-spacing: var(--ino-type-eyebrow-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 60ch; }
+
+  .theme-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); }
+  .theme-pane {
+    flex: 1 1 280px;
+    padding: var(--ino-space-5);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-xl);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+  }
+  .theme-pane > h3 {
+    margin: 0 0 var(--ino-space-4);
+    font-size: var(--ino-type-body-sm-size);
+    color: var(--ino-color-on-surface-muted);
+    font-weight: 600;
+  }
+
+  .col { display: flex; flex-direction: column; gap: var(--ino-space-3); }
+  .row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--ino-space-6); }
+
+  /* Mirrors web/src/app/components/toggle-button/ino-toggle-button.component.scss — same token
+     bindings, so a divergence between this preview and the shipped component is visible as a
+     visual diff. */
+  .ino-toggle-button__control {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--ino-control-gap-default);
+    min-height: var(--ino-control-height-default);
+    padding-inline: var(--ino-control-padding-inline-roomy-default);
+    border-radius: var(--ino-radius-md);
+    border: 1px solid var(--ino-color-border);
+    background: var(--ino-color-surface-raised);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-control-font-size-default);
+    font-weight: 600;
+    line-height: 1;
+    cursor: pointer;
+    transition: background var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+      border-color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+      color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+      box-shadow var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+  }
+  .ino-toggle-button__control--sm { min-height: var(--ino-control-height-sm); padding-inline: var(--ino-control-padding-inline-roomy-sm); font-size: var(--ino-control-font-size-sm); }
+  .ino-toggle-button__control--lg { min-height: var(--ino-control-height-lg); padding-inline: var(--ino-control-padding-inline-roomy-lg); font-size: var(--ino-control-font-size-lg); }
+  .ino-toggle-button__control:hover:not(:disabled) { border-color: var(--ino-color-accent); }
+  .ino-toggle-button__control:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+  .ino-toggle-button__control:disabled { cursor: not-allowed; opacity: 0.5; }
+  .ino-toggle-button__control--invalid { box-shadow: var(--ino-invalid-ring); }
+  .ino-toggle-button__control--readonly { cursor: default; }
+  .ino-toggle-button__control--readonly:hover { border-color: var(--ino-color-border); }
+
+  /* Pressed face — the "on" side. */
+  .ino-toggle-button__control[aria-pressed='true'] {
+    background: var(--ino-gradient-accent);
+    border-color: transparent;
+    color: var(--ino-color-on-accent);
+  }
+
+  .ino-toggle-button__icon { font-size: var(--ino-control-icon-size-default); line-height: 1; }
+
+  .ino-toggle-button__spinner {
+    width: calc(var(--ino-control-icon-size-default) * 0.7);
+    height: calc(var(--ino-control-icon-size-default) * 0.7);
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    border-inline-start-color: transparent;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .ino-toggle-button__spinner { animation: ino-toggle-button-spin var(--ino-motion-duration-slow) linear infinite; }
+  }
+  @keyframes ino-toggle-button-spin { to { transform: rotate(360deg); } }
+
+  .ino-toggle-button__error { margin: 0; font-size: var(--ino-type-body-sm-size); color: var(--ino-color-danger); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<h1>Toggle button — two faces, aria-pressed, size API</h1>
+<p class="lede">
+  A single on/off button with two faces (<code>aria-pressed</code> on a native
+  <code>&lt;button&gt;</code>, the WAI-ARIA "toggle button" pattern) — distinct from
+  <code>&lt;ino-toggle&gt;</code>'s <code>role="switch"</code> pattern. Unpressed reuses
+  <code>ino-button</code>'s <code>secondary</code> shape; pressed reuses its <code>primary</code>
+  shape.
+</p>
+
+<h2>States × theme</h2>
+<div class="theme-row">
+
+  <div class="theme-pane">
+    <h3>dark — :root (default)</h3>
+    <div class="col">
+      <button type="button" class="ino-toggle-button__control" aria-pressed="false">Bold off</button>
+      <button type="button" class="ino-toggle-button__control" aria-pressed="true">Bold on</button>
+      <button type="button" class="ino-toggle-button__control" aria-pressed="true" disabled>Disabled</button>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="light">
+    <h3>light — [data-theme="light"]</h3>
+    <div class="col">
+      <button type="button" class="ino-toggle-button__control" aria-pressed="false">Bold off</button>
+      <button type="button" class="ino-toggle-button__control" aria-pressed="true">Bold on</button>
+      <button type="button" class="ino-toggle-button__control" aria-pressed="true" disabled>Disabled</button>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="high-contrast">
+    <h3>high-contrast — [data-theme="high-contrast"]</h3>
+    <div class="col">
+      <button type="button" class="ino-toggle-button__control" aria-pressed="false">Bold off</button>
+      <button type="button" class="ino-toggle-button__control" aria-pressed="true">Bold on</button>
+      <button type="button" class="ino-toggle-button__control" aria-pressed="true" disabled>Disabled</button>
+    </div>
+  </div>
+
+</div>
+
+<h2>Two faces, with icons</h2>
+<p class="lede">Optional <code>onIcon</code>/<code>offIcon</code> swap alongside <code>onLabel</code>/<code>offLabel</code> as <code>pressed</code> flips.</p>
+<div class="row">
+  <button type="button" class="ino-toggle-button__control" aria-pressed="false"><span class="ino-toggle-button__icon" aria-hidden="true">&#9743;</span>Muted</button>
+  <button type="button" class="ino-toggle-button__control" aria-pressed="true"><span class="ino-toggle-button__icon" aria-hidden="true">&#128266;</span>Unmuted</button>
+</div>
+
+<h2>Size (control-size scale)</h2>
+<div class="row">
+  <button type="button" class="ino-toggle-button__control ino-toggle-button__control--sm" aria-pressed="true">sm</button>
+  <button type="button" class="ino-toggle-button__control" aria-pressed="true">default</button>
+  <button type="button" class="ino-toggle-button__control ino-toggle-button__control--lg" aria-pressed="true">lg</button>
+</div>
+
+<h2>Readonly &amp; loading</h2>
+<div class="row">
+  <button type="button" class="ino-toggle-button__control ino-toggle-button__control--readonly" aria-pressed="true" aria-readonly="true" onclick="return false;">Readonly (pressed, locked)</button>
+  <button type="button" class="ino-toggle-button__control" aria-pressed="true" disabled aria-busy="true"><span class="ino-toggle-button__spinner" aria-hidden="true"></span>Saving&hellip;</button>
+</div>
+
+<h2>Invalid</h2>
+<div class="col" style="align-items: flex-start;">
+  <button type="button" class="ino-toggle-button__control ino-toggle-button__control--invalid" aria-pressed="false" aria-invalid="true">Accept terms</button>
+  <p class="ino-toggle-button__error" role="alert">Required before you can continue</p>
+</div>
+
+<h2>RTL</h2>
+<div class="row" dir="rtl">
+  <button type="button" class="ino-toggle-button__control" aria-pressed="true">تفعيل الإشعارات</button>
+</div>
+
+</body>
+</html>

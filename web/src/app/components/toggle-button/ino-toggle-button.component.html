@@ -1,0 +1,22 @@
+<div class="ino-toggle-button" [attr.data-size]="size">
+  <button
+    type="button"
+    class="ino-toggle-button__control"
+    [class.ino-toggle-button__control--pressed]="pressed"
+    [class.ino-toggle-button__control--readonly]="readonly && !disabled"
+    [attr.aria-pressed]="pressed"
+    [attr.aria-label]="!currentLabel && ariaLabel ? ariaLabel : null"
+    [attr.aria-invalid]="error ? true : null"
+    [attr.aria-describedby]="error ? errorId : null"
+    [attr.aria-readonly]="readonly ? true : null"
+    [attr.aria-busy]="loading ? true : null"
+    [disabled]="disabled || loading"
+    (click)="onClick()"
+  >
+    <span class="ino-toggle-button__icon" *ngIf="currentIcon" aria-hidden="true">{{ currentIcon }}</span>
+    <span class="ino-toggle-button__spinner" *ngIf="loading" aria-hidden="true"></span>
+    <span class="ino-toggle-button__label" *ngIf="currentLabel">{{ currentLabel }}</span>
+  </button>
+
+  <p *ngIf="error" [id]="errorId" class="ino-toggle-button__error" role="alert">{{ error }}</p>
+</div>
