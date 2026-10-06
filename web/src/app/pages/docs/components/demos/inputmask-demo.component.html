@@ -1,0 +1,196 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Variants — India-stack presets</h3>
+  <p class="demo-section__note">
+    <code>preset</code> resolves the mask + placeholder character from
+    <code>mask-presets.ts</code> and takes precedence over an explicit <code>mask</code>. Each box
+    below is prefilled with the preset's documented example value.
+  </p>
+  <div class="demo-row">
+    <ino-inputmask
+      label="PAN"
+      preset="pan"
+      hint="5 letters, 4 digits, 1 letter"
+      [value]="panValue"
+      (valueChange)="panValue = $event"
+    ></ino-inputmask>
+
+    <ino-inputmask
+      label="GSTIN"
+      preset="gstin"
+      hint="State code + PAN + entity code + checksum"
+      [value]="gstinValue"
+      (valueChange)="gstinValue = $event"
+    ></ino-inputmask>
+
+    <ino-inputmask
+      label="IFSC"
+      preset="ifsc"
+      hint="4 letters + literal 0 + 6 alnum branch code"
+      [value]="ifscValue"
+      (valueChange)="ifscValue = $event"
+    ></ino-inputmask>
+
+    <ino-inputmask
+      label="Phone"
+      preset="phone"
+      hint="India mobile number with +91 prefix"
+      [value]="phoneValue"
+      (valueChange)="phoneValue = $event"
+    ></ino-inputmask>
+
+    <ino-inputmask
+      label="Date"
+      preset="date"
+      hint="DD/MM/YYYY"
+      [value]="dateValue"
+      (valueChange)="dateValue = $event"
+    ></ino-inputmask>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Variants — explicit custom mask</h3>
+  <p class="demo-section__note">
+    <code>mask</code> grammar (<code>mask-tokens.ts</code>): <code>9</code> digit, <code>a</code>/<code>A</code>
+    letter (<code>A</code> auto-uppercases), <code>*</code> letter-or-digit, <code>?</code> marks the
+    rest optional, <code>\</code> escapes a literal. Example: a 6-digit PIN code with an optional
+    4-digit extension.
+  </p>
+  <div class="demo-row">
+    <ino-inputmask
+      label="PIN code (+ optional extension)"
+      mask="999999?-9999"
+      placeholderChar="#"
+      hint="6 required digits, optional 4-digit suffix"
+      [value]="customMaskValue"
+      (valueChange)="customMaskValue = $event"
+    ></ino-inputmask>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States</h3>
+  <p class="demo-section__note">
+    Default, disabled, readonly, invalid/error, loading, and incomplete (derived — true once any
+    slot is filled but a required slot is still empty, shown here via a partially-typed PAN).
+    Hover / focus-visible / active are live on every enabled box above and below — hover or tab
+    onto one to see them.
+  </p>
+  <div class="demo-row">
+    <ino-inputmask label="Default" preset="pan" [value]="panValue"></ino-inputmask>
+
+    <ino-inputmask
+      label="Disabled"
+      preset="pan"
+      [disabled]="true"
+      [value]="disabledValue"
+    ></ino-inputmask>
+
+    <ino-inputmask
+      label="Readonly"
+      preset="ifsc"
+      [readonly]="true"
+      [value]="readonlyValue"
+    ></ino-inputmask>
+
+    <ino-inputmask
+      label="Invalid / error"
+      preset="pan"
+      error="Checksum failed — re-enter PAN"
+      [value]="invalidValue"
+    ></ino-inputmask>
+
+    <ino-inputmask
+      label="Loading"
+      preset="phone"
+      [loading]="true"
+      [value]="loadingValue"
+    ></ino-inputmask>
+
+    <ino-inputmask
+      label="Incomplete"
+      preset="pan"
+      hint="Keep typing — not every slot is filled yet"
+      [value]="incompleteValue"
+      (valueChange)="incompleteValue = $event"
+    ></ino-inputmask>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Sizing</h3>
+  <p class="demo-section__note">
+    The three-rung control-size scale — <code>sm</code> / <code>default</code> / <code>lg</code>.
+  </p>
+  <div class="demo-row">
+    <ino-inputmask
+      *ngFor="let size of sizes"
+      [label]="size"
+      [size]="size"
+      preset="phone"
+      [value]="size === 'sm' ? smallValue : size === 'lg' ? largeValue : defaultSizeValue"
+    ></ino-inputmask>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Labels — hint, error, wrapping, RTL</h3>
+  <p class="demo-section__note">
+    Label association via <code>&lt;ino-label for&gt;</code>; hint text; error text with
+    <code>role="alert"</code> plus <code>aria-describedby</code>; long labels wrap; the format
+    description and literal separators render correctly under <code>dir="rtl"</code> since the
+    stylesheet uses only logical properties.
+  </p>
+  <div class="demo-col" style="max-width: 360px;">
+    <ino-inputmask
+      label="PAN"
+      [required]="true"
+      preset="pan"
+      [value]="labeledValue"
+      (valueChange)="labeledValue = $event"
+    ></ino-inputmask>
+
+    <ino-inputmask
+      label="IFSC"
+      preset="ifsc"
+      hint="Find this on your bank's cheque book or passbook"
+      [value]="hintValue"
+      (valueChange)="hintValue = $event"
+    ></ino-inputmask>
+
+    <ino-inputmask
+      label="PAN"
+      preset="pan"
+      error="This PAN is already linked to another account"
+      [value]="errorValue"
+      (valueChange)="errorValue = $event"
+    ></ino-inputmask>
+
+    <ino-inputmask
+      label="Goods and Services Tax Identification Number (this label is intentionally long to demonstrate wrapping behavior in constrained layouts)"
+      preset="gstin"
+      [value]="longLabelValue"
+      (valueChange)="longLabelValue = $event"
+    ></ino-inputmask>
+  </div>
+  <div class="demo-rtl" dir="rtl" style="margin-top: var(--ino-space-4); max-width: 360px;">
+    <ino-inputmask
+      label="رقم الهاتف"
+      preset="phone"
+      hint="أدخل رقم هاتفك"
+      [value]="rtlValue"
+      (valueChange)="rtlValue = $event"
+    ></ino-inputmask>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Keyboard / caret management</h3>
+  <p class="demo-section__note">
+    Focus any box above and try: typing advances the caret past literal separators to the next
+    editable slot; <strong>Backspace</strong>/<strong>Delete</strong> clear the previous/next
+    editable slot (or the full selection) and land the caret there; paste threads the clipboard
+    text through the mask; focusing an empty field jumps the caret to the first empty editable
+    slot; Arrows/Tab/Home/End use native caret movement unchanged.
+  </p>
+</section>
