@@ -13,6 +13,7 @@ import { ListboxDemoComponent } from './demos/listbox-demo.component';
 import { InputTagsDemoComponent } from './demos/inputtags-demo.component';
 import { TreeSelectDemoComponent } from './demos/treeselect-demo.component';
 import { InputMaskDemoComponent } from './demos/inputmask-demo.component';
+import { SliderDemoComponent } from './demos/slider-demo.component';
 
 /**
  * Slug -> hand-authored demo component, for components whose §2 Component Publish Contract
@@ -39,4 +40,5 @@ export const CUSTOM_DEMOS: Record<string, Type<unknown>> = {
   'inputtags': InputTagsDemoComponent,
   'treeselect': TreeSelectDemoComponent,
   'inputmask': InputMaskDemoComponent,
+  'slider': SliderDemoComponent,
 };
