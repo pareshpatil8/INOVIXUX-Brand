@@ -51,6 +51,23 @@
         </div>
       </div>
 
+      <h3>Density axis</h3>
+      <p>
+        Density is a global token axis, not a component prop (doc 26 §2 Sizing): the docs layout
+        defaults to <code>data-density="dense"</code>; <code>data-density="fluid"</code> switches
+        the same inputs to the comfortable-spacing token set (<code>web/src/tokens.css</code> §10).
+      </p>
+      <div class="docs-live-grid">
+        <div class="docs-live-box" data-density="dense">
+          <p class="docs-live-box__label">dense</p>
+          <ng-container *ngComponentOutlet="type; inputs: densityBaseInputs()"></ng-container>
+        </div>
+        <div class="docs-live-box" data-density="fluid">
+          <p class="docs-live-box__label">fluid</p>
+          <ng-container *ngComponentOutlet="type; inputs: densityBaseInputs()"></ng-container>
+        </div>
+      </div>
+
       <ng-container *ngIf="sizeExamples().length">
         <h3>Size axis</h3>
         <div class="docs-live-grid">

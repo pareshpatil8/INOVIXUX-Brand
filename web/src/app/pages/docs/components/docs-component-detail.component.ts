@@ -107,6 +107,15 @@ export class DocsComponentDetailComponent {
   protected readonly sizeExamples = computed<LiveExample[]>(() => this.examples().sizeRow);
   protected readonly stateExamples = computed<LiveExample[]>(() => this.examples().stateRow);
 
+  /** Doc 26 §2 row 3 (Sizing): density is a global `[data-density]` token axis, not a
+   * per-component `@Input()` (confirmed: no component declares a `dense`/`density` input —
+   * see `web/src/tokens.css` §10), so it can't be detected from the manifest the way
+   * `sizeExamples`/`stateExamples` are. Render it unconditionally against the first primary
+   * example's inputs instead. */
+  protected readonly densityBaseInputs = computed<Record<string, unknown>>(
+    () => this.examples().primary[0]?.inputs ?? {},
+  );
+
   private readonly examples = computed<{ primary: LiveExample[]; sizeRow: LiveExample[]; stateRow: LiveExample[] }>(() => {
     const component = this.component();
     if (!component) return { primary: [], sizeRow: [], stateRow: [] };
