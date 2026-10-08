@@ -134,6 +134,25 @@
 </section>
 
 <section class="demo-section">
+  <h3 class="demo-section__title">Density — dense vs. fluid</h3>
+  <p class="demo-section__note">
+    This docs page renders in the dense register by default (<code>[data-density="dense"]</code> on
+    the layout host); the pane on the right overrides to the fluid row-height floor to show the
+    contrast.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane" data-density="dense">
+      <p class="demo-pane__label">dense</p>
+      <ino-inputmask label="Dense row" preset="phone" [value]="defaultSizeValue"></ino-inputmask>
+    </div>
+    <div class="demo-pane" data-density="fluid">
+      <p class="demo-pane__label">fluid</p>
+      <ino-inputmask label="Fluid row" preset="phone" [value]="defaultSizeValue"></ino-inputmask>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
   <h3 class="demo-section__title">Labels — hint, error, wrapping, RTL</h3>
   <p class="demo-section__note">
     Label association via <code>&lt;ino-label for&gt;</code>; hint text; error text with

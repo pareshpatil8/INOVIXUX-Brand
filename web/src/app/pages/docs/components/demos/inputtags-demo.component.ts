@@ -75,6 +75,10 @@ export class InputTagsDemoComponent {
     { value: 'lg', label: 'lg' },
   ];
 
+  // Density
+  protected densityDenseValue: InoInputTagsTag[] = [{ value: 'dense', label: 'dense' }];
+  protected densityFluidValue: InoInputTagsTag[] = [{ value: 'fluid', label: 'fluid' }];
+
   // Disabled state
   protected disabledValue: InoInputTagsTag[] = [
     { value: 'disabled', label: 'disabled' },

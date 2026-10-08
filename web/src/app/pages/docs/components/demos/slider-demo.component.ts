@@ -47,6 +47,10 @@ export class SliderDemoComponent {
   protected smallTrackValue = 30;
   protected mediumTrackValue = 30;
 
+  // Density
+  protected densityDenseValue = 40;
+  protected densityFluidValue = 40;
+
   // Labels
   protected labeledValue = 45;
   protected hintValue = 55;
