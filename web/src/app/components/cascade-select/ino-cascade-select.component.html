@@ -33,11 +33,12 @@
            below the root level, same rationale ino-listbox's filter-box visibility rule uses:
            don't add chrome for a state that isn't true yet. -->
       <nav *ngIf="path.length" class="ino-field__breadcrumb" [attr.aria-label]="'Selected path'">
-        <button type="button" class="ino-field__breadcrumb-back" (click)="goBack()" [attr.aria-label]="backLabel">‹</button>
+        <button type="button" tabindex="-1" class="ino-field__breadcrumb-back" (click)="goBack()" [attr.aria-label]="backLabel">‹</button>
         <ol class="ino-field__breadcrumb-trail">
           <li *ngFor="let ancestor of path; let i = index">
             <button
               type="button"
+              tabindex="-1"
               class="ino-field__breadcrumb-item"
               [attr.aria-current]="i === path.length - 1 ? 'true' : null"
               (click)="goBack(i + 1)"
@@ -60,7 +61,7 @@
             [attr.aria-selected]="isSelected(row.option)"
             [attr.aria-disabled]="row.option.disabled || null"
             [attr.aria-haspopup]="hasChildren(row.option) ? 'listbox' : null"
-            (mouseenter)="activeIndex = row.index"
+            (mouseenter)="!row.option.disabled && (activeIndex = row.index)"
             (click)="activateRow(row)"
           >
             <span class="ino-field__option-label">

@@ -119,6 +119,33 @@ describe('InoCascadeSelectComponent', () => {
     expect(fixture.componentInstance.emitted).toEqual([]);
   });
 
+  it('hovering a disabled row does not move the active descendant onto it', () => {
+    openPanel();
+    rowByLabel('Asia').click();
+    fixture.detectChanges();
+    rowByLabel('India').click();
+    fixture.detectChanges();
+    const maharashtra = rowByLabel('Maharashtra');
+    maharashtra.dispatchEvent(new Event('mouseenter'));
+    fixture.detectChanges();
+    expect(trigger().getAttribute('aria-activedescendant')).toBe(maharashtra.id);
+    const karnataka = rowByLabel('Karnataka');
+    karnataka.dispatchEvent(new Event('mouseenter'));
+    fixture.detectChanges();
+    expect(trigger().getAttribute('aria-activedescendant')).toBe(maharashtra.id);
+  });
+
+  it('breadcrumb controls are excluded from the tab order', () => {
+    openPanel();
+    rowByLabel('Asia').click();
+    fixture.detectChanges();
+    const back = fixture.nativeElement.querySelector('.ino-field__breadcrumb-back') as HTMLButtonElement;
+    expect(back.tabIndex).toBe(-1);
+    for (const item of breadcrumbItems() as HTMLButtonElement[]) {
+      expect(item.tabIndex).toBe(-1);
+    }
+  });
+
   it('clicking the back button returns to the parent level', () => {
     openPanel();
     rowByLabel('Asia').click();

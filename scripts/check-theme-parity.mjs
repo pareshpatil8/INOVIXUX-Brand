@@ -596,6 +596,27 @@ const COMPONENT_REGISTRY = [
     ],
   },
   {
+    name: 'cascade-select',
+    web: 'web/src/app/components/cascade-select',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoCascadeSelect.tsx',
+        roles: ['accent', 'accentTextSafe', 'border', 'borderSoft', 'danger', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'overlayScrim', 'surfaceRaised', 'surfaceSunken'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_cascade_select.dart',
+        roles: ['accentTextSafe', 'border', 'borderSoft', 'danger', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'overlayScrim', 'surfaceRaised', 'surfaceSunken'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['accentActive'], reason: 'same rationale as the select/datepicker entries above — web reserves accent-active for the transient mousedown-before-focus-settles flash on the trigger (ino-cascade-select.component.scss `.ino-field__control:active`); touch has no pointer-down-before-focus phase, so the Pressable goes straight from unfocused to colors.accent when the sheet opens.' },
+      { platform: 'flutter', roles: ['accentActive'], reason: 'same as the React Native entry above.' },
+      { platform: 'flutter', roles: ['accent'], reason: 'the trigger is a plain GestureDetector + Container (ino_cascade_select.dart, around the `_open` callback), not a Material/InkWell with a focus/press border state, so unlike the React Native Pressable or ino_select.dart\'s OutlineInputBorder, the border never changes for open/focus/press — it stays invalid ? colors.danger : colors.border regardless of sheet state, so the role is never reached.' },
+      { platform: 'reactNative', roles: ['overlayScrim', 'borderSoft'], reason: 'ADDED roles, not dropped ones — same one intentional visual divergence the select/autocomplete ports declare (SPEC.md §7, doc 26 §5 "mobile = stacked sheet pages"). Web anchors the drill-down panel absolutely under the trigger with no scrim and no sheet chrome; a nested-listbox popover under a field collides with the software keyboard and bottom safe area on a phone, so this port presents each level as a full-screen modal sheet page (ConfirmActionSheet.tsx idiom, docs/brand/13-mobile-app-patterns.md §2). overlay-scrim is that sheet backdrop and border-soft its grabber. See web/src/app/components/cascade-select/SPEC.md §7.' },
+      { platform: 'flutter', roles: ['overlayScrim', 'borderSoft'], reason: 'same as the React Native entry above — showModalBottomSheet barrierColor is overlay-scrim and the grabber is border-soft, matching confirm_action_sheet.dart / ino_select.dart.' },
+    ],
+  },
+  {
     name: 'confirm-dialog',
     web: 'web/src/app/components/confirm-dialog',
     mobile: { reactNative: 'web-only', flutter: 'web-only' },
