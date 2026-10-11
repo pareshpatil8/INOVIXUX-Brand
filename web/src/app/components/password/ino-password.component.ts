@@ -78,6 +78,11 @@ export class InoPasswordComponent {
   @Input({ transform: booleanAttribute }) required = false;
   @Input({ transform: booleanAttribute }) disabled = false;
   @Input({ transform: booleanAttribute }) readonly = false;
+  /** Defaults to `'new-password'` because the headline variants (strength meter, policy hint
+   * panel) only appear on signup/change-password/reset surfaces, where `'current-password'`
+   * actively fights the platform password manager (wrong autofill value, suppressed
+   * generated-password suggestion). Login surfaces should pass `'current-password'` explicitly. */
+  @Input() autocomplete = 'new-password';
   /** Strength meter on/off (doc 26 §5 Variants/Structure). Defaults on — the row names it as the
    * component's headline structural variant, not an opt-in extra. */
   @Input({ transform: booleanAttribute }) showStrengthMeter = true;
@@ -104,6 +109,18 @@ export class InoPasswordComponent {
 
   protected get strengthLabel(): string {
     return STRENGTH_LABELS[this.strengthScore];
+  }
+
+  /** Error/hint first (so either still wins the live announcement precedence), then the
+   * strength meter and policy panel appended so both are programmatically associated with the
+   * input for a screen-reader user who navigates straight to the field. */
+  protected get describedBy(): string | null {
+    const ids = [
+      this.error ? this.errorId : this.hint ? this.hintId : null,
+      this.showStrengthMeter ? this.meterId : null,
+      this.policyRules.length ? this.policyId : null,
+    ].filter((id): id is string => !!id);
+    return ids.length ? ids.join(' ') : null;
   }
 
   onInput(event: Event): void {

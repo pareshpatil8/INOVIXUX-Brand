@@ -25,6 +25,7 @@ policy hint panel, and a Caps Lock warning — none of which the partial had.
 | `required` | `boolean` | `false` | Adds a visible `*` marker (decorative, `aria-hidden`) |
 | `disabled` | `boolean` | `false` | Native `disabled` — removed from focus order |
 | `readonly` | `boolean` | `false` | Native `readonly` — stays focusable, value stays announced/copyable |
+| `autocomplete` | `string` | `'new-password'` | Pass `'current-password'` on login surfaces; the default fits this component's headline signup/change-password/reset surfaces |
 | `showStrengthMeter` | `boolean` | `true` | See [Strength meter](#strength-meter) |
 | `policyRules` | `InoPasswordPolicyRule[]` | `[]` | See [Policy hint panel](#policy-hint-panel); empty hides the panel |
 
@@ -113,8 +114,10 @@ wired via `aria-describedby`.
 ## Accessibility contract
 
 **Role / ARIA** — a real `<label for>` gives the accessible name. `aria-invalid` reflects `error`;
-`aria-describedby` points at the error message (`role="alert"`) when present, else the hint text.
-The reveal toggle is a real `<button>` with `aria-label`/`aria-pressed` — never an icon-only
+`aria-describedby` points at the error message (`role="alert"`) when present, else the hint text,
+then appends the strength meter and policy panel ids (when shown) so both stay programmatically
+associated with the input for a screen reader user who navigates straight to the field. The
+reveal toggle is a real `<button>` with `aria-label`/`aria-pressed` — never an icon-only
 element with no accessible name. The strength meter sits in `aria-live="polite"` so its label
 change is announced without interrupting typing. The Caps Lock warning uses `role="status"`
 (implicit polite live region), announced once on appearance.

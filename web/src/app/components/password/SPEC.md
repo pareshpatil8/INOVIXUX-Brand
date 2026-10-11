@@ -148,3 +148,25 @@ Touches only `web/src/app/components/password/**`,
 `web/src/tokens.css` — every value this component needed already existed (`--ino-color-warning`
 and `--ino-color-success` were already defined for all 3 themes per `check-theme-parity.mjs`, just
 not previously consumed by a Form-group control).
+
+---
+
+## 11. CTO review follow-ups (commit `d8fbf60` → this revision)
+
+- **`autocomplete` is now an `@Input`, default `'new-password'`.** It was hardcoded to
+  `'current-password'`, which is the wrong token on this component's headline surfaces (signup /
+  change-password / reset): password managers autofill the *existing* password into a new-password
+  field and browsers suppress the generated-password suggestion. Login surfaces must pass
+  `autocomplete="current-password"` explicitly.
+- **`check-theme-parity.mjs` now has a `password` entry** in `COMPONENT_REGISTRY` (web role set vs.
+  both mobile ports, with `accentActive` and Flutter's missing placeholder-color read declared as
+  divergences) — §2 point 5's 3-theme AA contrast assertion and point 7's role-parity check were
+  previously unverified for this component because it was invisible to the gate.
+- **`aria-describedby` now also lists `meterId`/`policyId`** (appended after error/hint, which
+  still win precedence) so the strength meter and policy panel are programmatically associated
+  with the input for a screen reader user who navigates straight to the field rather than typing
+  through it.
+- Revealed (`type="text"`) state now also sets `autocapitalize="off"`, `autocorrect="off"`,
+  `spellcheck="false"` — unconditionally, since these are harmless while masked and matter once
+  revealed (mobile keyboards would otherwise capitalize the first character; spellcheck can send
+  field contents to a remote service).

@@ -2791,6 +2791,13 @@
           "optional": true
         },
         {
+          "name": "autocomplete",
+          "type": "string",
+          "values": null,
+          "default": "'new-password'",
+          "optional": true
+        },
+        {
           "name": "showStrengthMeter",
           "type": "boolean",
           "values": null,

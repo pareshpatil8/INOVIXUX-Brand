@@ -765,6 +765,25 @@ const COMPONENT_REGISTRY = [
     ],
   },
   {
+    name: 'keyfilter',
+    web: 'web/src/app/components/keyfilter',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoKeyfilter.ts',
+        roles: [],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_keyfilter.dart',
+        roles: [],
+      },
+    },
+    // Not a "roles: []" oversight — keyfilter is behaviour-only (ino-keyfilter.component.scss's
+    // own header: "a key filter is behavior, not surface — it contributes no colour, spacing,
+    // radius, elevation, duration or type"). web reads zero --ino-color-* roles, and both mobile
+    // ports are formatters (RN hook / Flutter TextInputFormatter) with no rendering of their own,
+    // so there is no role set for either side to diverge on. See SPEC.md §7.
+  },
+  {
     name: 'meter-group',
     web: 'web/src/app/components/meter-group',
     mobile: {
@@ -800,6 +819,31 @@ const COMPONENT_REGISTRY = [
       { platform: 'flutter', roles: ['accentActive'], reason: 'same as the React Native entry above.' },
       { platform: 'reactNative', roles: ['overlayScrim', 'borderSoft'], reason: 'ADDED roles, not dropped ones — same one intentional visual divergence ino-select\'s port declares (INO-258). Web anchors the option panel absolutely under the trigger with no scrim and no sheet chrome; this port presents the same checkbox list in a modal bottom sheet (ConfirmActionSheet.tsx idiom, docs/brand/13-mobile-app-patterns.md §2) for the same reason — an anchored popover under a field collides with the keyboard and the bottom safe area on a phone. overlay-scrim is that sheet backdrop and border-soft its grabber. See web/src/app/components/multiselect/SPEC.md §9.' },
       { platform: 'flutter', roles: ['overlayScrim', 'borderSoft'], reason: 'same as the React Native entry above — showModalBottomSheet barrierColor is overlay-scrim and the grabber is border-soft, matching confirm_action_sheet.dart / ino_select.dart.' },
+    ],
+  },
+  {
+    name: 'password',
+    web: 'web/src/app/components/password',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoPassword.tsx',
+        roles: ['accent', 'border', 'danger', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'success', 'surfaceRaised', 'surfaceSunken', 'warning'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_password.dart',
+        roles: ['accent', 'border', 'danger', 'onSurface', 'onSurfaceMuted', 'success', 'surfaceRaised', 'surfaceSunken', 'warning'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['accentActive'], reason: 'same rationale as the input entry above (INO-171) — web reserves accent-active for the transient mousedown-before-focus-settles flash (ino-password.component.scss `&:active`); touch input has no pointer-down-before-focus phase, so the port goes straight from unfocused to colors.accent on focus.' },
+      { platform: 'flutter', roles: ['accentActive'], reason: 'same as the React Native entry above.' },
+      // NOT a declared design decision — same shape as the ino_input placeholder gap this check
+      // surfaced at INO-171/INO-157. Flutter's InputDecoration sets no hintText/hintStyle at all,
+      // so this port has no placeholder affordance and never reads onSurfaceSubtle (web's
+      // ::placeholder color, RN's placeholderTextColor) the way web and RN do. Recorded here so
+      // the check passes without masking the finding; flagged to the password component owner to
+      // add Flutter placeholder support or confirm the omission is intended.
+      { platform: 'flutter', roles: ['onSurfaceSubtle'], reason: 'Flutter TextField/InputDecoration sets no hintText/hintStyle, so this port has no placeholder affordance and never reads the placeholder-color role — same class of gap as the ino_input Flutter finding (INO-157). Flagged, not fixed, here.' },
     ],
   },
   {
