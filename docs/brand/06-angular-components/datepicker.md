@@ -108,6 +108,25 @@ declared unconditionally rather than each repeating a
 
 ---
 
+## Labels and fields
+
+`label` renders as a real `<label for>` above the field (own markup, not the shared `ino-label`
+leaf); `required` appends a decorative `*` next to it (`aria-hidden`, matching the fleet-wide
+"colour/glyph alone never carries meaning" rule — callers needing a real required announcement
+also bind `aria-required` on the input). `placeholder` shows inside the typed-entry field and as
+the closed-state text when no date is picked yet.
+
+`hint` and `error` render as a paragraph under the field, `error` taking priority when both are
+set; both wire through `aria-describedby` so a screen reader announces them on focus, not just on
+visual inspection. `error` also swaps the field's border to the danger token and sets
+`aria-invalid`.
+
+`inline` mode (the calendar rendered directly on the page, no popover/field chrome) suppresses
+the label, hint and error rows entirely — there is no "field" to label once the control isn't a
+popover trigger; a caller using `inline` provides its own surrounding label markup.
+
+---
+
 ## Accessibility contract
 
 **Role / ARIA** — the overlay panel is `role="dialog"` `aria-modal="true"`

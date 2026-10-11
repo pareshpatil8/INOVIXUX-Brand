@@ -57,6 +57,17 @@ animating.
 
 ---
 
+## Labels and fields
+
+`label` overrides the bar's accessible name (`aria-label`); it is not a visible `<label for>` —
+this is a status indicator, not a form field, so there is no on-screen label element,
+`required`, hint text, or float-label integration to speak of. Left unset, the accessible name
+defaults to `"Loading"` (indeterminate mode) or `"N% complete"` (determinate), the same live-region
+convention `ino-progress-spinner` uses. `showValue` renders the percentage as visible on-bar text,
+independent of `label`/`aria-label`.
+
+---
+
 ## Accessibility contract
 
 **Role / ARIA** — `role="progressbar"`. Determinate: `aria-valuemin="0"`, `aria-valuemax="100"`,

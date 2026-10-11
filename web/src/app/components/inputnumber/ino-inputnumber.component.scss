@@ -1,0 +1,212 @@
+/* Shared `.ino-field` shell re-declared per control — matches the pattern established by
+   ino-input and ino-select. Values trace 1:1 to tokens.css. */
+.ino-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ino-space-2);
+}
+
+/* Size API — re-points three control-size aliases per `size` attribute */
+:host([data-size='sm']) {
+  --ino-control-height: var(--ino-control-height-sm);
+  --ino-control-padding-inline: var(--ino-control-padding-inline-sm);
+  --ino-control-font-size: var(--ino-control-font-size-sm);
+}
+
+:host([data-size='lg']) {
+  --ino-control-height: var(--ino-control-height-lg);
+  --ino-control-padding-inline: var(--ino-control-padding-inline-lg);
+  --ino-control-font-size: var(--ino-control-font-size-lg);
+}
+
+.ino-inputnumber__container {
+  display: flex;
+  align-items: center;
+  gap: var(--ino-space-2);
+}
+
+.ino-inputnumber__prefix,
+.ino-inputnumber__suffix {
+  color: var(--ino-color-on-surface-muted);
+  font-size: var(--ino-control-font-size, var(--ino-type-body-size));
+  font-family: var(--ino-font-display);
+  white-space: nowrap;
+}
+
+.ino-field__control-wrap {
+  position: relative;
+  display: flex;
+  flex: 1;
+  min-inline-size: 0;
+}
+
+.ino-field__control {
+  inline-size: 100%;
+  min-block-size: var(--ino-row-min-height, var(--ino-control-height, var(--ino-target-comfortable)));
+  padding-inline: var(--ino-control-padding-inline, var(--ino-space-4));
+  background: var(--ino-color-surface-sunken);
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-md);
+  color: var(--ino-color-on-surface);
+  font-family: var(--ino-font-display);
+  font-size: var(--ino-control-font-size, var(--ino-type-body-size));
+  transition: border-color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+    background var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+
+  /* Hide native number spinner buttons in favor of our custom buttons */
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  &[type='number'] {
+    -moz-appearance: textfield;
+  }
+
+  &::placeholder {
+    color: var(--ino-color-on-surface-subtle);
+  }
+
+  &:hover:not(:disabled):not(:read-only) {
+    border-color: var(--ino-color-on-surface-muted);
+  }
+
+  &:active:not(:disabled):not(:read-only) {
+    border-color: var(--ino-color-accent-active);
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+    border-color: var(--ino-color-accent);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &:read-only:not(:disabled) {
+    background: var(--ino-color-surface-raised);
+    cursor: default;
+  }
+}
+
+/* Extra padding when buttons are shown to prevent text from overlapping buttons */
+:host(:not(.ino-inputnumber--no-buttons)) .ino-field__control {
+  padding-inline-end: calc(var(--ino-control-padding-inline, var(--ino-space-4)) + 60px);
+}
+
+.ino-field__control--error {
+  border-color: var(--ino-color-danger);
+}
+
+/* Filled variant — Material-style filled field */
+:host(.ino-inputnumber--filled) .ino-field__control {
+  background: var(--ino-color-surface-raised);
+  border-color: transparent;
+  border-block-end: 1px solid var(--ino-color-border);
+  border-end-start-radius: 0;
+  border-end-end-radius: 0;
+
+  &:hover:not(:disabled):not(:read-only) {
+    border-block-end-color: var(--ino-color-on-surface-muted);
+  }
+
+  &:focus-visible {
+    border-block-end-color: var(--ino-color-accent);
+  }
+
+  &:read-only:not(:disabled) {
+    background: var(--ino-color-surface-sunken);
+  }
+}
+
+:host(.ino-inputnumber--filled) .ino-field__control--error {
+  border-block-end-color: var(--ino-color-danger);
+}
+
+/* Spinner buttons */
+.ino-inputnumber__buttons {
+  position: absolute;
+  inset-inline-end: var(--ino-space-2);
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ino-inputnumber__button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 24px;
+  block-size: 18px;
+  padding: 0;
+  background: var(--ino-color-surface-raised);
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-sm);
+  color: var(--ino-color-on-surface);
+  cursor: pointer;
+  transition: background var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+    border-color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+
+  &:hover:not(:disabled) {
+    background: var(--ino-color-surface);
+    border-color: var(--ino-color-on-surface-muted);
+  }
+
+  &:active:not(:disabled) {
+    background: var(--ino-color-surface-sunken);
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+    border-color: var(--ino-color-accent);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  svg {
+    inline-size: 12px;
+    block-size: 12px;
+  }
+}
+
+/* At-min/at-max states — visual feedback when value reaches bounds */
+:host(.ino-inputnumber--at-min) .ino-inputnumber__button--decrement {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+:host(.ino-inputnumber--at-max) .ino-inputnumber__button--increment {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ino-field__hint {
+  margin: 0;
+  font-size: var(--ino-type-body-sm-size);
+  color: var(--ino-color-on-surface-muted);
+}
+
+.ino-field__error {
+  margin: 0;
+  font-size: var(--ino-type-body-sm-size);
+  color: var(--ino-color-danger);
+  font-weight: 600;
+}

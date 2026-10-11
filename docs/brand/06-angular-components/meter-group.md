@@ -89,6 +89,19 @@ Segment `inline-size`/`block-size` transition on value change uses `--ino-motion
 
 ---
 
+## Labels and fields
+
+`label` is an `aria-label` fallback for the group as a whole (`[attr.aria-label]="accessibleLabel"`
+in the host bindings) — not a visible form-field label, since this component has no associated
+input control to name. When `label` is empty, `accessibleLabel` falls back to a generated summary
+of every item's own `label`/`value` (or `"Meter group"` when there are no items yet), appending "
+(data may be inaccurate)" while `invalid`. Because there's no field here, `required`/help-text/
+error-text/float-label integration (§2.4's field-specific concerns) don't apply; each item's own
+`label` is a separate, always-visible legend caption (see [Custom legend](#custom-legend)), not an
+accessible-name source.
+
+---
+
 ## Accessibility contract
 
 **Role / ARIA** — `role="group"` with `aria-label`, not `role="meter"`: this component renders

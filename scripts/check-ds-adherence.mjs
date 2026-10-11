@@ -148,6 +148,13 @@ function stripComments(text, kind) {
   return blockAndLine(text); // ts / tsx / dart
 }
 
+// HTML entity stripping — &#123; and &#x7B; look like #123 and #7B hex colours to the
+// raw-colour scan, but are character references not literals (INO-394). Blank them
+// before the hex scan, after comment stripping, so line numbers still match.
+function stripHtmlEntities(text) {
+  return text.replace(/&#x?[0-9a-fA-F]+;/g, blank);
+}
+
 /* ------------------------------------------------------------------ *
  * 4. Rules.
  * ------------------------------------------------------------------ */
@@ -447,7 +454,9 @@ for (const scope of SCOPES) {
     if (TOKEN_FILES.has(file) || SPEC_FILE.test(file)) continue;
     const ext = file.split('.').pop();
     const kind = ext === 'html' ? 'html' : ext === 'scss' || ext === 'css' ? 'css' : 'code';
-    const src = stripComments(readFileSync(full, 'utf8'), kind);
+    let src = stripComments(readFileSync(full, 'utf8'), kind);
+    // Strip HTML entities after comments so &#123; isn't misread as #123 hex colour (INO-394).
+    if (kind === 'html') src = stripHtmlEntities(src);
     filesLinted++;
 
     scanUniversal(file, src, { allowPrimitives: THEME_ADAPTERS.has(file) });

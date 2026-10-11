@@ -1,0 +1,431 @@
+<!-- @dsCard group="Form" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ino-cascade-select — nested option drill-down combobox with a breadcrumb trail (INO-422)</title>
+<!-- Canonical token file, linked rather than copied: this preview must repaint with the system,
+     and must never become a second place raw hex values live. -->
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-eyebrow-size);
+    letter-spacing: var(--ino-type-eyebrow-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 60ch; }
+
+  .theme-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); }
+  .theme-pane {
+    flex: 1 1 260px;
+    padding: var(--ino-space-5);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-xl);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+  }
+  .theme-pane > h3 {
+    margin: 0 0 var(--ino-space-4);
+    font-size: var(--ino-type-body-sm-size);
+    color: var(--ino-color-on-surface-muted);
+    font-weight: 600;
+  }
+
+  .row { display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--ino-space-5); }
+
+  /* Mirrors web/src/app/components/cascade-select/ino-cascade-select.component.scss — same
+     token bindings and class names, so a divergence between this preview and the shipped
+     component is visible as a visual diff. */
+  .ino-field { display: flex; flex-direction: column; gap: var(--ino-space-2); min-width: 240px; }
+  .ino-field--disabled .ino-field__control-wrap { opacity: 0.5; }
+  .ino-field__label { font-size: var(--ino-type-body-sm-size); font-weight: 600; color: var(--ino-color-on-surface); }
+  .ino-field__required { color: var(--ino-color-danger); }
+
+  .ino-field__control-wrap { position: relative; }
+  .ino-field__control {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    inline-size: 100%;
+    min-block-size: var(--ino-row-min-height, var(--ino-control-height-default));
+    padding-inline: var(--ino-space-4) var(--ino-space-8);
+    background: var(--ino-color-surface-sunken);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-md);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-control-font-size-default);
+    cursor: pointer;
+  }
+  .ino-field__control--sm { min-block-size: var(--ino-row-min-height, var(--ino-control-height-sm)); font-size: var(--ino-control-font-size-sm); }
+  .ino-field__control--lg { min-block-size: var(--ino-row-min-height, var(--ino-control-height-lg)); font-size: var(--ino-control-font-size-lg); }
+  .ino-field__control--placeholder { color: var(--ino-color-on-surface-subtle); }
+  .ino-field__control-wrap--invalid .ino-field__control { border-color: var(--ino-color-danger); }
+  .ino-field__value { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ino-field__chevron { position: absolute; inset-inline-end: var(--ino-space-4); inset-block-start: 50%; transform: translateY(-50%); color: var(--ino-color-on-surface-muted); font-size: 12px; }
+  .ino-field__chevron--open { transform: translateY(-50%) scaleY(-1); }
+  .ino-field__spinner {
+    position: absolute; inset-inline-end: var(--ino-space-7); inset-block-start: 50%; transform: translateY(-50%);
+    inline-size: 14px; block-size: 14px; border-radius: 50%; border: 2px solid var(--ino-color-on-surface-muted); border-top-color: transparent;
+  }
+
+  .ino-field__panel {
+    position: relative;
+    margin-block-start: var(--ino-space-2);
+    display: flex;
+    flex-direction: column;
+    background: var(--ino-color-surface-raised);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-md);
+    box-shadow: var(--ino-elevation-neutral-3);
+    overflow: hidden;
+  }
+
+  .ino-field__breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: var(--ino-space-1);
+    padding: var(--ino-space-2) var(--ino-space-3);
+    border-block-end: 1px solid var(--ino-color-border);
+    background: var(--ino-color-surface-sunken);
+  }
+  .ino-field__breadcrumb-back {
+    flex: 0 0 auto; inline-size: var(--ino-target-min, 24px); block-size: var(--ino-target-min, 24px);
+    display: grid; place-items: center; border: none; border-radius: var(--ino-radius-sm);
+    background: transparent; color: var(--ino-color-on-surface-muted); cursor: pointer; font-size: 16px;
+  }
+  .ino-field__breadcrumb-trail { display: flex; flex-wrap: wrap; align-items: center; gap: var(--ino-space-1); margin: 0; padding: 0; list-style: none; overflow: hidden; }
+  .ino-field__breadcrumb-trail li { display: flex; align-items: center; }
+  .ino-field__breadcrumb-trail li:not(:last-child)::after { content: '/'; margin-inline: var(--ino-space-1); color: var(--ino-color-on-surface-subtle); }
+  .ino-field__breadcrumb-item { border: none; background: transparent; padding: 0; color: var(--ino-color-on-surface-muted); font-size: var(--ino-type-body-sm-size); cursor: pointer; white-space: nowrap; }
+  .ino-field__breadcrumb-item[aria-current='true'] { color: var(--ino-color-on-surface); font-weight: 600; }
+
+  .ino-field__listbox { margin: 0; padding: var(--ino-space-1) 0; list-style: none; max-block-size: calc(var(--ino-control-height-default) * 8); overflow-y: auto; }
+
+  .ino-field__option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--ino-space-3);
+    padding: var(--ino-space-2) var(--ino-space-4);
+    min-block-size: var(--ino-row-min-height, var(--ino-control-height-default));
+    color: var(--ino-color-on-surface);
+    cursor: pointer;
+  }
+  .ino-field__option:hover:not(.ino-field__option--disabled) { background: var(--ino-color-surface-sunken); }
+  .ino-field__option--active { background: var(--ino-color-surface-sunken); outline: var(--ino-focus-ring); outline-offset: calc(-1 * var(--ino-focus-ring-offset)); }
+  .ino-field__option--selected { color: var(--ino-color-accent-text-safe); font-weight: 600; }
+  .ino-field__option--disabled { color: var(--ino-color-on-surface-subtle); cursor: not-allowed; }
+  .ino-field__option-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ino-field__option-caret { flex: 0 0 auto; color: var(--ino-color-on-surface-muted); }
+
+  .ino-field__empty { margin: 0; padding: var(--ino-space-4); color: var(--ino-color-on-surface-muted); font-size: var(--ino-type-body-sm-size); text-align: center; }
+  .ino-field__hint { margin: 0; font-size: var(--ino-type-body-sm-size); color: var(--ino-color-on-surface-muted); }
+  .ino-field__error { margin: 0; font-size: var(--ino-type-body-sm-size); color: var(--ino-color-danger); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<h1>CascadeSelect — nested option drill-down combobox</h1>
+<p class="lede">
+  A combobox trigger that opens a panel showing exactly one level of a hierarchical
+  <code>options</code> tree at a time, with a breadcrumb trail of the path drilled into so far.
+  Only leaf options are selectable values; parent options are drill targets. See
+  <code>SPEC.md</code>.
+</p>
+
+<h2>Theme × root level (open panel)</h2>
+<div class="theme-row">
+
+  <div class="theme-pane">
+    <h3>dark — :root (default)</h3>
+    <div class="ino-field">
+      <span class="ino-field__label">Destination</span>
+      <div class="ino-field__control-wrap">
+        <button class="ino-field__control ino-field__control--placeholder" type="button" role="combobox" aria-haspopup="listbox" aria-expanded="true">
+          <span class="ino-field__value">Select an option</span>
+        </button>
+        <span class="ino-field__chevron ino-field__chevron--open" aria-hidden="true">▾</span>
+        <div class="ino-field__panel">
+          <ul class="ino-field__listbox" role="listbox" aria-label="Destination">
+            <li class="ino-field__option ino-field__option--active" role="option" aria-selected="false" aria-haspopup="listbox">
+              <span class="ino-field__option-label">Asia</span>
+              <span class="ino-field__option-caret" aria-hidden="true">›</span>
+            </li>
+            <li class="ino-field__option" role="option" aria-selected="false" aria-haspopup="listbox">
+              <span class="ino-field__option-label">Europe</span>
+              <span class="ino-field__option-caret" aria-hidden="true">›</span>
+            </li>
+            <li class="ino-field__option" role="option" aria-selected="false" aria-haspopup="listbox">
+              <span class="ino-field__option-label">North America</span>
+              <span class="ino-field__option-caret" aria-hidden="true">›</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="light">
+    <h3>light — [data-theme="light"]</h3>
+    <div class="ino-field">
+      <span class="ino-field__label">Destination</span>
+      <div class="ino-field__control-wrap">
+        <button class="ino-field__control" type="button" role="combobox" aria-haspopup="listbox" aria-expanded="true">
+          <span class="ino-field__value">Asia / India / Maharashtra</span>
+        </button>
+        <span class="ino-field__chevron ino-field__chevron--open" aria-hidden="true">▾</span>
+        <div class="ino-field__panel">
+          <nav class="ino-field__breadcrumb" aria-label="Selected path">
+            <button class="ino-field__breadcrumb-back" type="button" aria-label="Back">‹</button>
+            <ol class="ino-field__breadcrumb-trail">
+              <li><button class="ino-field__breadcrumb-item">Asia</button></li>
+              <li><button class="ino-field__breadcrumb-item" aria-current="true">India</button></li>
+            </ol>
+          </nav>
+          <ul class="ino-field__listbox" role="listbox" aria-label="Destination">
+            <li class="ino-field__option ino-field__option--active ino-field__option--selected" role="option" aria-selected="true">
+              <span class="ino-field__option-label">Maharashtra</span>
+            </li>
+            <li class="ino-field__option" role="option" aria-selected="false">
+              <span class="ino-field__option-label">Karnataka</span>
+            </li>
+            <li class="ino-field__option ino-field__option--disabled" role="option" aria-selected="false" aria-disabled="true">
+              <span class="ino-field__option-label">Ladakh (disabled)</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="high-contrast">
+    <h3>high-contrast — [data-theme="high-contrast"]</h3>
+    <div class="ino-field">
+      <span class="ino-field__label">Destination — invalid</span>
+      <div class="ino-field__control-wrap ino-field__control-wrap--invalid">
+        <button class="ino-field__control ino-field__control--placeholder" type="button" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-invalid="true" aria-describedby="cascade-error-demo">
+          <span class="ino-field__value">Select an option</span>
+        </button>
+        <span class="ino-field__chevron" aria-hidden="true">▾</span>
+      </div>
+      <p class="ino-field__error" id="cascade-error-demo" role="alert">Choose a destination to continue.</p>
+    </div>
+  </div>
+
+</div>
+
+<h2>Drill-down and breadcrumb</h2>
+<div class="row">
+  <div class="ino-field">
+    <span class="ino-field__label">Root level</span>
+    <div class="ino-field__control-wrap">
+      <button class="ino-field__control ino-field__control--placeholder" type="button" role="combobox" aria-haspopup="listbox" aria-expanded="true">
+        <span class="ino-field__value">Select an option</span>
+      </button>
+      <div class="ino-field__panel">
+        <ul class="ino-field__listbox" role="listbox" aria-label="Destination">
+          <li class="ino-field__option ino-field__option--active" role="option" aria-selected="false" aria-haspopup="listbox">
+            <span class="ino-field__option-label">Asia</span>
+            <span class="ino-field__option-caret" aria-hidden="true">›</span>
+          </li>
+          <li class="ino-field__option" role="option" aria-selected="false" aria-haspopup="listbox">
+            <span class="ino-field__option-label">Europe</span>
+            <span class="ino-field__option-caret" aria-hidden="true">›</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="ino-field">
+    <span class="ino-field__label">open-level — one level drilled in</span>
+    <div class="ino-field__control-wrap">
+      <button class="ino-field__control ino-field__control--placeholder" type="button" role="combobox" aria-haspopup="listbox" aria-expanded="true">
+        <span class="ino-field__value">Select an option</span>
+      </button>
+      <div class="ino-field__panel">
+        <nav class="ino-field__breadcrumb" aria-label="Selected path">
+          <button class="ino-field__breadcrumb-back" type="button" aria-label="Back">‹</button>
+          <ol class="ino-field__breadcrumb-trail">
+            <li><button class="ino-field__breadcrumb-item" aria-current="true">Asia</button></li>
+          </ol>
+        </nav>
+        <ul class="ino-field__listbox" role="listbox" aria-label="Destination">
+          <li class="ino-field__option ino-field__option--active" role="option" aria-selected="false" aria-haspopup="listbox">
+            <span class="ino-field__option-label">India</span>
+            <span class="ino-field__option-caret" aria-hidden="true">›</span>
+          </li>
+          <li class="ino-field__option" role="option" aria-selected="false" aria-haspopup="listbox">
+            <span class="ino-field__option-label">Japan</span>
+            <span class="ino-field__option-caret" aria-hidden="true">›</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="ino-field">
+    <span class="ino-field__label">leaf level — two levels drilled in</span>
+    <div class="ino-field__control-wrap">
+      <button class="ino-field__control ino-field__control--placeholder" type="button" role="combobox" aria-haspopup="listbox" aria-expanded="true">
+        <span class="ino-field__value">Select an option</span>
+      </button>
+      <div class="ino-field__panel">
+        <nav class="ino-field__breadcrumb" aria-label="Selected path">
+          <button class="ino-field__breadcrumb-back" type="button" aria-label="Back">‹</button>
+          <ol class="ino-field__breadcrumb-trail">
+            <li><button class="ino-field__breadcrumb-item">Asia</button></li>
+            <li><button class="ino-field__breadcrumb-item" aria-current="true">India</button></li>
+          </ol>
+        </nav>
+        <ul class="ino-field__listbox" role="listbox" aria-label="Destination">
+          <li class="ino-field__option ino-field__option--active" role="option" aria-selected="false">
+            <span class="ino-field__option-label">Maharashtra</span>
+          </li>
+          <li class="ino-field__option" role="option" aria-selected="false">
+            <span class="ino-field__option-label">Karnataka</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>Size (control-size scale)</h2>
+<div class="row">
+  <div class="ino-field">
+    <span class="ino-field__label">Small</span>
+    <div class="ino-field__control-wrap">
+      <button class="ino-field__control ino-field__control--sm ino-field__control--placeholder" type="button" role="combobox" aria-haspopup="listbox" aria-expanded="false">
+        <span class="ino-field__value">Select an option</span>
+      </button>
+      <span class="ino-field__chevron" aria-hidden="true">▾</span>
+    </div>
+  </div>
+  <div class="ino-field">
+    <span class="ino-field__label">Default</span>
+    <div class="ino-field__control-wrap">
+      <button class="ino-field__control ino-field__control--placeholder" type="button" role="combobox" aria-haspopup="listbox" aria-expanded="false">
+        <span class="ino-field__value">Select an option</span>
+      </button>
+      <span class="ino-field__chevron" aria-hidden="true">▾</span>
+    </div>
+  </div>
+  <div class="ino-field">
+    <span class="ino-field__label">Large</span>
+    <div class="ino-field__control-wrap">
+      <button class="ino-field__control ino-field__control--lg ino-field__control--placeholder" type="button" role="combobox" aria-haspopup="listbox" aria-expanded="false">
+        <span class="ino-field__value">Select an option</span>
+      </button>
+      <span class="ino-field__chevron" aria-hidden="true">▾</span>
+    </div>
+  </div>
+</div>
+
+<h2>Density (<code>[data-density]</code>)</h2>
+<div class="row">
+  <div class="ino-field" data-density="dense">
+    <span class="ino-field__label">Dense</span>
+    <div class="ino-field__control-wrap">
+      <button class="ino-field__control ino-field__control--placeholder" type="button" role="combobox" aria-haspopup="listbox" aria-expanded="false">
+        <span class="ino-field__value">Select an option</span>
+      </button>
+      <span class="ino-field__chevron" aria-hidden="true">▾</span>
+    </div>
+  </div>
+  <div class="ino-field" data-density="fluid">
+    <span class="ino-field__label">Fluid</span>
+    <div class="ino-field__control-wrap">
+      <button class="ino-field__control ino-field__control--placeholder" type="button" role="combobox" aria-haspopup="listbox" aria-expanded="false">
+        <span class="ino-field__value">Select an option</span>
+      </button>
+      <span class="ino-field__chevron" aria-hidden="true">▾</span>
+    </div>
+  </div>
+</div>
+
+<h2>States</h2>
+<div class="row">
+  <div class="ino-field">
+    <span class="ino-field__label">Empty level</span>
+    <div class="ino-field__control-wrap">
+      <button class="ino-field__control ino-field__control--placeholder" type="button" role="combobox" aria-haspopup="listbox" aria-expanded="true">
+        <span class="ino-field__value">Select an option</span>
+      </button>
+      <div class="ino-field__panel">
+        <p class="ino-field__empty">No options found.</p>
+      </div>
+    </div>
+  </div>
+  <div class="ino-field">
+    <span class="ino-field__label">Loading (async)</span>
+    <div class="ino-field__control-wrap">
+      <button class="ino-field__control" type="button" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-busy="true">
+        <span class="ino-field__value">Asia / India / Maharashtra</span>
+      </button>
+      <span class="ino-field__spinner" aria-hidden="true"></span>
+    </div>
+  </div>
+  <div class="ino-field ino-field--disabled">
+    <span class="ino-field__label">Disabled</span>
+    <div class="ino-field__control-wrap">
+      <button class="ino-field__control" type="button" role="combobox" aria-haspopup="listbox" aria-expanded="false" disabled>
+        <span class="ino-field__value">Asia / India / Maharashtra</span>
+      </button>
+      <span class="ino-field__chevron" aria-hidden="true">▾</span>
+    </div>
+  </div>
+  <div class="ino-field">
+    <span class="ino-field__label">Required<span class="ino-field__required" aria-hidden="true"> *</span></span>
+    <div class="ino-field__control-wrap">
+      <button class="ino-field__control ino-field__control--placeholder" type="button" role="combobox" aria-haspopup="listbox" aria-expanded="false">
+        <span class="ino-field__value">Select an option</span>
+      </button>
+      <span class="ino-field__chevron" aria-hidden="true">▾</span>
+    </div>
+  </div>
+</div>
+
+<h2>RTL</h2>
+<div class="row" dir="rtl">
+  <div class="ino-field">
+    <span class="ino-field__label">الوجهة</span>
+    <div class="ino-field__control-wrap">
+      <button class="ino-field__control" type="button" role="combobox" aria-haspopup="listbox" aria-expanded="true">
+        <span class="ino-field__value">آسيا / الهند</span>
+      </button>
+      <div class="ino-field__panel">
+        <nav class="ino-field__breadcrumb" aria-label="المسار المحدد">
+          <button class="ino-field__breadcrumb-back" type="button" aria-label="رجوع">‹</button>
+          <ol class="ino-field__breadcrumb-trail">
+            <li><button class="ino-field__breadcrumb-item" aria-current="true">آسيا</button></li>
+          </ol>
+        </nav>
+        <ul class="ino-field__listbox" role="listbox" aria-label="الوجهة">
+          <li class="ino-field__option ino-field__option--active ino-field__option--selected" role="option" aria-selected="true">
+            <span class="ino-field__option-label">الهند</span>
+          </li>
+          <li class="ino-field__option" role="option" aria-selected="false" aria-haspopup="listbox">
+            <span class="ino-field__option-label">اليابان</span>
+            <span class="ino-field__option-caret" aria-hidden="true">‹</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

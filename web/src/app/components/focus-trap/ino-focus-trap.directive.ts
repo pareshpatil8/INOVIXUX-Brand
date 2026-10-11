@@ -168,13 +168,14 @@ export class InoFocusTrapDirective implements OnInit, OnChanges, OnDestroy {
     const restoreTo = this.previouslyFocused;
     this.previouslyFocused = null;
 
-    // Only restore if we still hold focus. If something else has already moved focus on
-    // (a toast action, the next dialog in a wizard), yanking it back would be the bug.
-    if (
-      this.inoFocusTrapRestoreFocus &&
-      restoreTo?.isConnected &&
-      this.host.contains(activeElement())
-    ) {
+    // Only restore if we still hold focus, OR if teardown itself is what dropped it. On the
+    // `*ngIf` teardown path the host subtree can already be detached / focus already fallen back
+    // to `<body>` by the time we get here, which reads identically to "we never held focus" if
+    // taken at face value — so treat `null`/`<body>` as ours too. Only a genuinely OTHER element
+    // taking focus (a toast action, the next dialog in a wizard) should skip the restore.
+    const current = activeElement();
+    const focusWasOurs = current === null || current === document.body || this.host.contains(current);
+    if (this.inoFocusTrapRestoreFocus && restoreTo?.isConnected && focusWasOurs) {
       restoreTo.focus();
     }
   }

@@ -96,6 +96,26 @@ The loading spinner uses `--ino-motion-duration-slow` linear rotation, matching 
 
 ---
 
+## Labels and fields
+
+`label` renders in a real `<label for>` tied to the box's `id` — clicking or tapping it toggles
+the checkbox natively, no click handler needed. There is no `required` input on `<ino-checkbox>`
+itself (a lone checkbox is rarely a "required field" in the form sense — `<ino-checkbox-group>`
+is the unit that validates); a caller that does need a required single checkbox sets
+`aria-required` directly on the native input via template attribute binding.
+
+`error` doubles as both the help/error text and the invalid signal: a non-empty string renders
+the message directly under the row (`role="alert"`, wired via `aria-describedby`) and paints the
+invalid ring on the box. There is no separate hint/help-text input — a checkbox's label is
+expected to be self-explanatory; put longer explanatory copy in the surrounding form layout.
+`<ino-checkbox-group>`'s `legend` plays the group-label role and its own `error` renders once at
+the group level (see above) rather than once per item.
+
+Long labels wrap onto multiple lines within the row; the box stays top-aligned with the first
+line rather than centering against the full wrapped block.
+
+---
+
 ## Accessibility contract
 
 **Role / ARIA** — native `checkbox` role (implicit). `aria-checked` reflects `checked` natively in

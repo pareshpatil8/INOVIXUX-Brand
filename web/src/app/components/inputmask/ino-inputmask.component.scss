@@ -1,0 +1,138 @@
+/* Shared `.ino-field` shell, same self-contained-per-component convention `ino-input`'s SCSS
+   documents (no shared SCSS-include infra yet) — values trace 1:1 to tokens.css. */
+.ino-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ino-space-2);
+}
+
+/* Size API (DoD row 3) — same re-pointing pattern as `ino-input`. */
+:host([data-size='sm']) {
+  --ino-control-height: var(--ino-control-height-sm);
+  --ino-control-padding-inline: var(--ino-control-padding-inline-sm);
+  --ino-control-font-size: var(--ino-control-font-size-sm);
+}
+
+:host([data-size='lg']) {
+  --ino-control-height: var(--ino-control-height-lg);
+  --ino-control-padding-inline: var(--ino-control-padding-inline-lg);
+  --ino-control-font-size: var(--ino-control-font-size-lg);
+}
+
+.ino-field__control-wrap {
+  position: relative;
+  display: block;
+}
+
+.ino-field__control {
+  inline-size: 100%;
+  min-block-size: var(--ino-row-min-height, var(--ino-control-height, var(--ino-target-comfortable)));
+  padding-inline: var(--ino-control-padding-inline, var(--ino-space-4));
+  background: var(--ino-color-surface-sunken);
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-md);
+  color: var(--ino-color-on-surface);
+  font-family: var(--ino-font-mono, var(--ino-font-display));
+  font-size: var(--ino-control-font-size, var(--ino-type-body-size));
+  /* Tabular figures + fixed letter-spacing keep the mask skeleton's literal separators from
+     shifting horizontally as placeholder underscores are replaced by typed characters. */
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.03em;
+  transition: border-color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+    background var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+
+  &:hover:not(:disabled):not(:read-only) {
+    border-color: var(--ino-color-on-surface-muted);
+  }
+
+  &:active:not(:disabled):not(:read-only) {
+    border-color: var(--ino-color-accent-active);
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+    border-color: var(--ino-color-accent);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &:read-only:not(:disabled) {
+    background: var(--ino-color-surface-raised);
+    cursor: default;
+  }
+}
+
+.ino-field__control--error {
+  border-color: var(--ino-color-danger);
+}
+
+/* Incomplete (doc 26 §5 States row) — a milder cue than `--error`: an amber border only while the
+   field has some but not all required characters, cleared the moment either the mask completes or
+   the field empties again (`incomplete` getter, ino-inputmask.component.ts). Never combined with
+   `--error`'s red — `error` (caller-driven, e.g. a failed checksum) always wins visually since the
+   template's `[class.ino-field__control--error]` and this host class are mutually exclusive states
+   in practice (a caller sets `error` once completeness has already been validated). */
+:host(.ino-inputmask--incomplete) .ino-field__control:not(.ino-field__control--error) {
+  border-color: var(--ino-color-warning);
+}
+
+:host(.ino-inputmask--loading) .ino-field__control {
+  padding-inline-end: calc(var(--ino-control-padding-inline, var(--ino-space-4)) + 24px);
+}
+
+.ino-field__spinner {
+  position: absolute;
+  inset-inline-end: var(--ino-space-4);
+  top: 50%;
+  transform: translateY(-50%);
+  inline-size: 14px;
+  block-size: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--ino-color-on-surface-muted);
+  border-top-color: transparent;
+  pointer-events: none;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: ino-inputmask-spin var(--ino-motion-duration-slow) linear infinite;
+  }
+}
+
+@keyframes ino-inputmask-spin {
+  to {
+    transform: translateY(-50%) rotate(360deg);
+  }
+}
+
+.ino-field__hint {
+  margin: 0;
+  font-size: var(--ino-type-body-sm-size);
+  color: var(--ino-color-on-surface-muted);
+}
+
+.ino-field__error {
+  margin: 0;
+  font-size: var(--ino-type-body-sm-size);
+  color: var(--ino-color-danger);
+  font-weight: 600;
+}
+
+/* Visually-hidden mask format description (a11y row: "mask announced via description") — standard
+   sr-only clip, same pattern as `ino-input-otp__sr-only`. */
+.ino-field__format-description {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}

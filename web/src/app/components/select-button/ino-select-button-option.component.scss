@@ -1,0 +1,134 @@
+:host {
+  display: inline-flex;
+  flex: 1 1 auto;
+}
+
+.ino-select-button-option__input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ino-select-button-option__label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+  padding: var(--ino-control-padding-block) var(--ino-control-padding-inline);
+  font-family: var(--ino-font-body);
+  font-size: var(--ino-control-font-size);
+  font-weight: 500;
+  line-height: var(--ino-control-line-height);
+  color: var(--ino-color-on-surface);
+  background: var(--ino-color-surface-raised);
+  border: 1px solid var(--ino-color-border);
+  border-inline-start-width: 0;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s ease;
+}
+
+/* Border-radius and left border are driven by host position inside the group */
+:host(:first-child) .ino-select-button-option__label {
+  border-inline-start-width: 1px;
+  border-start-start-radius: var(--ino-border-radius-md);
+  border-end-start-radius: var(--ino-border-radius-md);
+}
+
+:host(:last-child) .ino-select-button-option__label {
+  border-start-end-radius: var(--ino-border-radius-md);
+  border-end-end-radius: var(--ino-border-radius-md);
+}
+
+.ino-select-button-option__content {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ino-space-2);
+  min-width: 0;
+}
+
+.ino-select-button-option__icon {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.ino-select-button-option__text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Input is a descendant of label, so sibling combinators (~ +) cannot reach the label.
+   Use :has() to style the label based on its contained input's state. */
+.ino-select-button-option__label:has(.ino-select-button-option__input:checked) {
+  background: var(--ino-gradient-accent);
+  color: var(--ino-color-on-accent);
+  border-color: var(--ino-color-accent);
+  z-index: 1;
+}
+
+.ino-select-button-option__label:not(:has(.ino-select-button-option__input:disabled)):hover {
+  background: var(--ino-color-surface-hover);
+  z-index: 2;
+
+  &:has(.ino-select-button-option__input:checked) {
+    filter: brightness(1.1);
+  }
+}
+
+.ino-select-button-option__label:has(.ino-select-button-option__input:focus-visible) {
+  outline: var(--ino-focus-ring);
+  outline-offset: var(--ino-focus-ring-offset);
+  z-index: 3;
+}
+
+.ino-select-button-option__label:has(.ino-select-button-option__input:active) {
+  background: var(--ino-color-surface-pressed);
+
+  &:has(.ino-select-button-option__input:checked) {
+    background: var(--ino-color-accent-active);
+  }
+}
+
+.ino-select-button-option__label:has(.ino-select-button-option__input:disabled) {
+  background: var(--ino-color-surface-raised);
+  color: var(--ino-color-on-surface-muted);
+  border-color: var(--ino-color-border);
+  cursor: not-allowed;
+  opacity: 0.6;
+
+  &:hover {
+    background: var(--ino-color-surface-raised);
+    filter: none;
+  }
+}
+
+:host-context(.ino-select-button--equal-width) {
+  flex: 1 1 0%;
+  min-width: 0;
+}
+
+:host-context(.ino-select-button--icon-only) {
+  .ino-select-button-option__label {
+    aspect-ratio: 1;
+    padding: var(--ino-control-padding-block);
+  }
+}
+
+:host(.ino-select-button-option--readonly) {
+  .ino-select-button-option__label {
+    cursor: default;
+    opacity: 0.8;
+  }
+
+  .ino-select-button-option__label:hover {
+    background: var(--ino-color-surface-raised);
+    filter: none;
+
+    &:has(.ino-select-button-option__input:checked) {
+      background: var(--ino-gradient-accent);
+      filter: none;
+    }
+  }
+}

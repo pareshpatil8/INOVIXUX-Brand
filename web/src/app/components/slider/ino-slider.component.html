@@ -1,0 +1,99 @@
+<div class="ino-field ino-slider__field">
+  <ino-label
+    *ngIf="label"
+    [for]="sliderId + '-lower'"
+    [required]="required"
+    [disabled]="disabled"
+    [invalid]="!!error"
+    [readonly]="readonly"
+  >{{ label }}</ino-label>
+
+  <div class="ino-slider__body">
+    <span *ngIf="showMinMaxLabels" class="ino-slider__bound-label ino-slider__bound-label--min">{{ min }}</span>
+
+    <div
+      #track
+      class="ino-slider__track"
+      (pointerdown)="onTrackPointerDown($event, track)"
+    >
+      <div
+        class="ino-slider__fill"
+        [style.inset-inline-start.%]="vertical ? null : fillStartPercent"
+        [style.inset-inline-end.%]="vertical ? null : (100 - fillEndPercent)"
+        [style.inset-block-end.%]="vertical ? fillStartPercent : null"
+        [style.block-size.%]="vertical ? (fillEndPercent - fillStartPercent) : null"
+      ></div>
+
+      <span
+        *ngFor="let mark of marks"
+        class="ino-slider__mark"
+        [style.inset-inline-start.%]="vertical ? null : percentFor(mark)"
+        [style.inset-block-end.%]="vertical ? percentFor(mark) : null"
+      ></span>
+
+      <div
+        class="ino-slider__thumb"
+        role="slider"
+        tabindex="0"
+        [id]="sliderId + '-lower'"
+        [style.inset-inline-start.%]="vertical ? null : percentFor(lowerValue)"
+        [style.inset-block-end.%]="vertical ? percentFor(lowerValue) : null"
+        [attr.aria-label]="ariaLabelFor('lower')"
+        [attr.aria-valuemin]="min"
+        [attr.aria-valuemax]="range ? upperValue : max"
+        [attr.aria-valuenow]="lowerValue"
+        [attr.aria-orientation]="vertical ? 'vertical' : 'horizontal'"
+        [attr.aria-disabled]="disabled ? true : null"
+        [attr.aria-readonly]="readonly ? true : null"
+        (pointerdown)="onThumbPointerDown($event, 'lower', track)"
+        (pointermove)="onThumbPointerMove($event, 'lower')"
+        (pointerup)="onThumbPointerUp($event)"
+        (pointercancel)="onThumbPointerUp($event)"
+        (keydown)="onKeyDown($event, 'lower')"
+        (focus)="onThumbFocus('lower')"
+        (blur)="onThumbBlur()"
+      >
+        <span
+          *ngIf="showTooltip && activeThumb === 'lower'"
+          class="ino-slider__tooltip"
+        >{{ lowerValue }}</span>
+      </div>
+
+      <div
+        *ngIf="range"
+        class="ino-slider__thumb"
+        role="slider"
+        tabindex="0"
+        [id]="sliderId + '-upper'"
+        [style.inset-inline-start.%]="vertical ? null : percentFor(upperValue!)"
+        [style.inset-block-end.%]="vertical ? percentFor(upperValue!) : null"
+        [attr.aria-label]="ariaLabelFor('upper')"
+        [attr.aria-valuemin]="lowerValue"
+        [attr.aria-valuemax]="max"
+        [attr.aria-valuenow]="upperValue"
+        [attr.aria-orientation]="vertical ? 'vertical' : 'horizontal'"
+        [attr.aria-disabled]="disabled ? true : null"
+        [attr.aria-readonly]="readonly ? true : null"
+        (pointerdown)="onThumbPointerDown($event, 'upper', track)"
+        (pointermove)="onThumbPointerMove($event, 'upper')"
+        (pointerup)="onThumbPointerUp($event)"
+        (pointercancel)="onThumbPointerUp($event)"
+        (keydown)="onKeyDown($event, 'upper')"
+        (focus)="onThumbFocus('upper')"
+        (blur)="onThumbBlur()"
+      >
+        <span
+          *ngIf="showTooltip && activeThumb === 'upper'"
+          class="ino-slider__tooltip"
+        >{{ upperValue }}</span>
+      </div>
+    </div>
+
+    <span *ngIf="showMinMaxLabels" class="ino-slider__bound-label ino-slider__bound-label--max">{{ max }}</span>
+  </div>
+
+  <p *ngIf="showValueLabel" class="ino-slider__value-label">{{ displayValueLabel }}</p>
+
+  <p *ngIf="hint && !error" [id]="hintId" class="ino-field__hint">{{ hint }}</p>
+  <p *ngIf="error" [id]="errorId" class="ino-field__error" role="alert">{{ error }}</p>
+</div>

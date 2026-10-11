@@ -144,8 +144,15 @@ mode, file-upload. *Audit 1 day; fixes est. 8-10 agent-days across the catalog.*
 
 Doc 24's 102-row baseline minus 38 implemented (33 audit rows + 5 INO-318) minus 15 declined
 Tier-3 leaves **49 open rows**. The Tier-2/Tier-3 split for these was promised (doc 17) but
-never assigned — that gap is itself one of the board's "plenty of stuff missed." Proposed
-split, itemized: **33 build (Tier-2)**, **16 decline (Tier-3 additions)**.
+never assigned — that gap is itself one of the board's "plenty of stuff missed." ~~Proposed
+split, itemized: **33 build (Tier-2)**, **16 decline (Tier-3 additions)**.~~
+
+> **Superseded by the rev-2 amendment (2026-09-30).** The board directed the full catalog, so
+> there is no decline list: the split is now **52 build** (B1 12 · B2 12 · B3 5 · B4 5 ·
+> **B5 18**) and **12 alias rows** closed in the covered-by ledger at the end of this section,
+> plus the 5 already shipped. Nothing is left open. The per-component ledger is published at
+> `web/public/design-system/component-disposition.json` and reconciled to the 102-row baseline
+> in doc 24 §2.1 (INO-503).
 
 Column key — **V** Variants/Structure · **St** States (beyond the §2 standard set, which all
 rows get) · **Sz** Sizing · **L** Labels · **A11y** pattern/keyboard contract · **N** Notes /
@@ -204,15 +211,71 @@ mobile disposition. All rows: 3 web themes (dark/light/high-contrast) × dense/f
 | ino-scrolltop | window/parent target; threshold; smooth scroll | visible/hidden | one size | `aria-label` | focus handling on activate; `prefers-reduced-motion` | Web-only |
 | ino-autofocus | directive; initial-focus management | n/a | n/a | n/a | documented interplay with focus-trap + route change | Web + both mobile equivalents |
 
-### Tier-3 additions — decline in writing (16 rows, rationale recorded in disposition JSON)
+### Phase B5 — Reinstated full-catalog rows (17 components; rev 2 amendment, 2026-09-30)
 
-SpeedDial, MegaMenu, Sidebar (alias → ino-drawer), ScrollArea + ScrollPanel (native scroll +
-existing scrollbar tokens), Inplace, BlockUI (covered by loading states + skeleton), Fluid
-(covered by density tokens), AnimateOnScroll, Bind, ClassNames, StyleClass, AutoFocus-adjacent
-utilities Ripple-style (Angular idioms — `[class]`/`[style]`/animations cover them), InputColor
-(no product use; risk-flag colors are tokens, never user-picked), DataTable-adjacent Compare
-duplicates, plus the 15 already-declined rows reaffirmed. **Any row here re-opens by board
-comment — it moves into B4 with a spec, nothing else changes.**
+**Amendment (board directive, INO-377 card `9fd2d7c2` + approval `f55baa72`):** the board
+directed "stick to 101 components with all variations." The former Tier-3 decline list (doc
+17's 15 rows + this doc's proposed 16) is superseded: every genuinely-distinct component in
+it is reinstated below as Phase B5 (after the B3/B4 gate); the remaining rows are aliases of
+capability we already ship, recorded in the covered-by ledger that follows. Same column key
+and §2 contract as every other phase.
+
+| Component | V — Variants/Structure | St — States | Sz | L — Labels | A11y | N — Notes / mobile |
+|---|---|---|---|---|---|---|
+| ino-knob | circular dial input; min/max/step; value template; readonly | dragging, at-bounds | dial sm/md/lg | value label + `aria-label` | `role=slider`, Arrow/Home/End, `aria-valuetext` | Web-only (mobile prefers native pickers) |
+| ino-rating | configurable star count; custom icons; clear/cancel toggle; integer values | hover-preview, readonly | sm/md/lg | own label; value announced | radiogroup of stars, Arrow keys | Port both |
+| ino-colorpicker | inline vs popover; HSB panel + hue/alpha bars; hex/rgb input; preset swatches | open, dragging, invalid-hex | swatch sm/md | full label set | dialog/combobox hybrid; slider semantics per bar; value announced on commit | Web-only (theming/admin surfaces) |
+| ino-editor | rich text: toolbar presets (basic/full); headings/lists/links/code; sanitized paste; char limit | invalid, readonly, at-limit | min-height scales | label + help/error | `role=toolbar` roving focus; `aria-multiline` textbox; format toggles announced | Web-only; heavy row — spec first |
+| ino-orgchart | node templates; expand/collapse subtrees; selection; connectors | expanded, selected, loading | zoom scales | chart label | tree-of-nodes semantics, Arrow traversal documented | Web-only |
+| ino-terminal | prompt template; command history; scrollback; welcome message | focused, busy | fixed-height scales | `aria-label` | `role=log` + `aria-live` polite output; input textbox semantics | Web-only (docs/dev tooling) |
+| ino-dock | bottom/side position; magnify-on-hover (off under reduced motion) | active-item, hover-magnify | icon sm/md/lg | item labels/tooltips | menubar semantics, Arrow keys | Web-only |
+| ino-carousel | horizontal/vertical; N visible + step; autoplay opt-in; circular; indicators + prev/next | playing/paused, at-bounds | item gap scales | slide labels ("x of n") | APG carousel: `aria-roledescription`, visible pause control, reduced-motion stops autoplay | Port both |
+| ino-galleria | thumbnail strip + stage; fullscreen; indicators; autoplay opt-in | fullscreen, loading, playing | stage scales | captions + counts | fullscreen = dialog (Esc exits); APG carousel semantics | Web-first; mobile = native gallery patterns |
+| ino-image | preview-on-click lightbox (zoom/rotate); error-fallback slot; lazy load | loading, error-fallback, zoomed | intrinsic + fit modes | `alt` required; caption slot | lightbox = dialog; zoom keys documented | Port both (base render; lightbox web-only) |
+| ino-imagecompare | before/after slider handle; horizontal/vertical | dragging, at-bounds | container scales | side labels | `role=slider` on handle, Arrow keys, `aria-valuetext` % | Web-only |
+| ino-dragdrop | directives: draggable/droppable; drag handle; drop-zone highlight | dragging, over-target, dropped-flash | n/a | n/a | keyboard alternative required (pick-up/move/drop) + `aria-live` announcements — a11y-hard row; spec first | Web-only |
+| ino-speeddial | FAB expanding to actions; linear/circle/quarter directions; optional mask | open, disabled-action | fab sm/md/lg | action tooltips/labels | menubutton + menu semantics; Esc closes; focus return | Web-only (mobile uses native FAB patterns) |
+| ino-megamenu | horizontal/vertical; multi-column panels; grouped links; icons | open-panel, active-item | compact/comfortable | menubar label | APG menubar with grouped panels; full Arrow/Esc map | Web-only |
+| ino-inplace | display slot ↔ edit slot swap; close on blur/Enter; lazy content | display, editing | inherits content | edit affordance labeled | button semantics on display; focus moves into editor and returns | Web-only |
+| ino-inputcolor | styled native color input; hex text twin; preset swatches | invalid-hex | sm/md/lg | full label set | native `input[type=color]` + text alternative documented | Web-only (token-first guidance stays in Notes) |
+| ino-animateonscroll | directive: enter/leave animation classes; threshold; once vs repeat | n/a (directive) | n/a | n/a | `prefers-reduced-motion` disables; content never hidden pre-animation (CLS/SR) | Web-only |
+
+#### B5 addendum (rev 2.1, INO-503) — one baseline row the amendment left unplaced
+
+Closing doc 24's ledger row-by-row surfaced **SplitButton**: it appears in neither the 17-row table
+above nor the covered-by ledger below, so it was the single baseline row with no disposition at all.
+It is recorded as a build rather than a 12th alias row, because declining a row is a board call and
+the standing directive is the full catalog. **The board may re-dispose it** — a composition of
+`button[ino-button]` + `ino-menu` (B2) is the plausible alternative, in which case it moves to the
+covered-by ledger and B5 returns to 17. Flagged for acknowledgement on INO-503.
+
+| Component | V — Variants/Structure | St — States | Sz | L — Labels | A11y | N — Notes / mobile |
+|---|---|---|---|---|---|---|
+| ino-split-button | default action + toggle opening a menu of secondary actions; icon-only toggle; severity inherited from `ino-button` | open, disabled, disabled-action, loading (primary action) | sm/md/lg (the INO-124 control-size scale) | primary action = native content; toggle requires its own `aria-label` | button + menubutton pair: `aria-haspopup`/`aria-expanded` on the toggle only, Esc closes and returns focus, Arrow keys in the menu | Web-only (mobile uses a primary button + action sheet); reuses `ino-menu` (B2) — build after it |
+
+### Covered-by ledger — alias rows, capability already shipped (rev 2 amendment)
+
+These rows are PrimeNG names for capability INOVIXUX already ships under another name.
+Nothing separate exists to build; each row closes in doc 24's disposition ledger as
+"covered by X." **Any row the board disagrees with moves into B5 as a build — say the row.**
+
+| PrimeNG row | Covered by |
+|---|---|
+| Sidebar | `ino-drawer` (same component, our name) |
+| ScrollArea / ScrollPanel | native scroll + scrollbar tokens |
+| BlockUI | loading states + `ino-skeleton` |
+| Fluid | density tokens (dense/fluid ships on every component) |
+| Bind / ClassNames / StyleClass | built-in Angular syntax (`[class]`/`[style]`) |
+| Ripple-style utilities | pressed-state tokens + Angular animations |
+| Gallery / Compare duplicate rows | `ino-galleria` / `ino-imagecompare` (built in B5) |
+| TieredMenu | `ino-menu` (B2) — absorbed as its nested-submenu variant, per that row's own spec above. **Added by INO-503**, not in the board-approved list; same "say the row" escape hatch applies |
+
+**Closed in the ledger (INO-503, 2026-09-30).** Each row above now carries its one-line "covered by
+X" entry in `web/public/design-system/component-disposition.json` and renders as `Covered` on
+`/docs/components`, so doc 24's disposition record closes at **100% — 0 rows open**
+(52 Committed · 12 Covered · 5 Shipped, reconciled to the 102-row baseline in doc 24 §2.1).
+`scripts/generate-component-disposition.mjs` throws if a baseline row ever lacks a disposition,
+so the closure cannot silently regress.
 
 ---
 
@@ -308,7 +371,10 @@ seed, assignee, and a blocking QA subtask.
 
 ## 10. Decision points for the board (defaults apply on plain approval)
 
-1. **Tier-2/Tier-3 split (§5)** — default: build 33 as listed, decline 16 in writing.
+1. ~~**Tier-2/Tier-3 split (§5)** — default: build 33 as listed, decline 16 in writing.~~
+   **Decided, rev 2:** the board directed the full catalog (`f55baa72`) — 52 build, 12 alias rows,
+   no decline list. The only open question left on this axis is the SplitButton addendum (§5
+   rev 2.1) and the two INO-503-added alias rows; say the row to re-dispose any of them.
 2. **Mobile scope** — default: per-row dispositions in §5 tables.
 3. **QA Validator** — default: new dedicated agent with blocking sign-off authority.
 4. **Deploy gate** — default: Pages publishes only QA-approved tags (no more publish-on-merge).

@@ -1,0 +1,173 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Default behavior (correct defaults)</h3>
+  <p class="demo-section__note">
+    Default component with <code>separators=','</code> and <code>addOnBlur=true</code>. Type a tag
+    and press <strong>Enter</strong> to add, or type a tag followed by <strong>comma</strong> to
+    add, or type a tag and <strong>Tab/click away</strong> to add on blur. Press
+    <strong>Backspace</strong> with empty input to remove the last tag.
+  </p>
+  <div class="demo-row">
+    <ino-inputtags
+      label="Technologies"
+      [(value)]="defaultValue"
+      [suggestions]="suggestions"
+    ></ino-inputtags>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Autocomplete suggestions</h3>
+  <p class="demo-section__note">
+    The <code>suggestions</code> list filters as you type. Use <strong>Arrow Up/Down</strong> to
+    navigate, <strong>Enter</strong> to select, <strong>Escape</strong> to close, or
+    <strong>click</strong> a suggestion to add it as a tag.
+  </p>
+  <div class="demo-row">
+    <ino-inputtags
+      label="Select or type frameworks"
+      [(value)]="autocompleteValue"
+      [suggestions]="suggestions"
+      placeholder="Type to filter…"
+    ></ino-inputtags>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">maxTags (at-max state)</h3>
+  <p class="demo-section__note">
+    With <code>maxTags="3"</code>, once 3 tags are added, the input dims and becomes
+    non-interactive. The dropdown never opens when at-max. Chips remain removable — remove one to
+    add another.
+  </p>
+  <div class="demo-row">
+    <ino-inputtags
+      label="Up to 3 tags"
+      [(value)]="maxTagsValue"
+      [suggestions]="suggestions"
+      [maxTags]="3"
+      hint="Maximum 3 tags allowed"
+    ></ino-inputtags>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">validateTag (tag-invalid state)</h3>
+  <p class="demo-section__note">
+    The <code>validateTag</code> callback marks individual chips invalid. Below, tags that are all
+    uppercase (and longer than 1 character) are rejected and styled with
+    <code>--ino-color-error</code>. Try typing "<code>INVALID</code>" or "<code>REJECTED</code>" and
+    pressing Enter.
+  </p>
+  <div class="demo-row">
+    <ino-inputtags
+      label="Tags (no all-uppercase)"
+      [(value)]="validatedValue"
+      [suggestions]="suggestions"
+      [validateTag]="validateTagFn"
+      hint="All-uppercase tags will be marked invalid"
+    ></ino-inputtags>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States</h3>
+  <p class="demo-section__note">
+    Default, disabled, readonly, and invalid/error states below are static snapshots. Hover /
+    focus-visible / active are live on every enabled inputtags on this page — hover or tab onto any
+    field above to see them.
+  </p>
+  <div class="demo-row">
+    <ino-inputtags
+      label="Default"
+      [(value)]="defaultValue"
+      [suggestions]="suggestions"
+    ></ino-inputtags>
+
+    <ino-inputtags
+      label="Disabled"
+      [disabled]="true"
+      [(value)]="disabledValue"
+      [suggestions]="suggestions"
+    ></ino-inputtags>
+
+    <ino-inputtags
+      label="Readonly (locked)"
+      [readonly]="true"
+      [(value)]="readonlyValue"
+      [suggestions]="suggestions"
+    ></ino-inputtags>
+
+    <ino-inputtags
+      label="Invalid / error"
+      error="At least one tag is required"
+      [(value)]="errorValue"
+      [suggestions]="suggestions"
+    ></ino-inputtags>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Sizing</h3>
+  <p class="demo-section__note">
+    Three sizes: <code>size="sm"</code>, <code>size="default"</code>, and <code>size="lg"</code>.
+    The generic renderer cannot produce this row (it requires a "primary" enum input alongside
+    <code>size</code>), so this custom demo provides it explicitly.
+  </p>
+  <div class="demo-row">
+    <ino-inputtags
+      label="Small"
+      size="sm"
+      [(value)]="sizingSmallValue"
+      [suggestions]="suggestions"
+    ></ino-inputtags>
+
+    <ino-inputtags
+      label="Default"
+      size="default"
+      [(value)]="defaultValue"
+      [suggestions]="suggestions"
+    ></ino-inputtags>
+
+    <ino-inputtags
+      label="Large"
+      size="lg"
+      [(value)]="sizingLargeValue"
+      [suggestions]="suggestions"
+    ></ino-inputtags>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Density — dense vs. fluid</h3>
+  <p class="demo-section__note">
+    This docs page renders in the dense register by default (<code>[data-density="dense"]</code> on
+    the layout host); the pane on the right overrides to the fluid row-height floor to show the
+    contrast.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane" data-density="dense">
+      <p class="demo-pane__label">dense</p>
+      <ino-inputtags label="Dense row" [(value)]="densityDenseValue" [suggestions]="suggestions"></ino-inputtags>
+    </div>
+    <div class="demo-pane" data-density="fluid">
+      <p class="demo-pane__label">fluid</p>
+      <ino-inputtags label="Fluid row" [(value)]="densityFluidValue" [suggestions]="suggestions"></ino-inputtags>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Keyboard interaction</h3>
+  <p class="demo-section__note">
+    Focus any inputtags above and try these keyboard shortcuts:
+  </p>
+  <ul style="color: var(--ino-color-on-surface-muted); font-size: var(--ino-type-body-sm-size, 12.5px); margin: 0; padding-left: var(--ino-space-5);">
+    <li><strong>Enter / comma (,):</strong> add the current input as a tag</li>
+    <li><strong>Tab / click away (blur):</strong> add the current input as a tag</li>
+    <li><strong>Backspace (empty input):</strong> remove the last tag</li>
+    <li><strong>Arrow Up/Down:</strong> navigate suggestions</li>
+    <li><strong>Enter (suggestion active):</strong> select the active suggestion</li>
+    <li><strong>Escape:</strong> close the suggestions dropdown</li>
+    <li><strong>Click a chip's × button:</strong> remove that tag</li>
+  </ul>
+</section>

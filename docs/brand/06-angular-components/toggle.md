@@ -67,6 +67,17 @@ implementation used `translateX` and did not mirror correctly under `dir="rtl"`;
 
 ---
 
+## Labels and fields
+
+`label` is visible text rendered inside the `<button>` itself — the button is self-labelling from
+its own text content, not a separate `<label for>` association. `ariaLabel` is the fallback
+accessible name for a label-less/icon-adjacent toggle, only applied when `label` is empty. There is
+no `required` or hint-text input (a toggle button is rarely a "required field" in the form sense);
+`error` mirrors `ino-checkbox`'s contract — a non-empty string sets `aria-invalid`, renders under
+the control via `aria-describedby` (`role="alert"`), and paints the invalid ring.
+
+---
+
 ## Accessibility contract
 
 **Role / ARIA** — `role="switch"` on a native `<button>` (WAI-ARIA APG switch pattern), distinct

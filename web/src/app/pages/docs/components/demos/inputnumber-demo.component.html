@@ -1,0 +1,264 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Variants</h3>
+  <p class="demo-section__note">
+    Outline (default), filled, without spinner buttons. All variants support keyboard interaction
+    (Up/Down arrows, PageUp/PageDown, Home/End).
+  </p>
+  <div class="demo-row">
+    <ino-inputnumber
+      label="Outline (default)"
+      variant="outline"
+      [value]="basicValue"
+      (valueChange)="basicValue = $event"
+      [min]="0"
+      [max]="100"
+    ></ino-inputnumber>
+
+    <ino-inputnumber
+      label="Filled variant"
+      variant="filled"
+      [value]="filledValue"
+      (valueChange)="filledValue = $event"
+      [min]="0"
+      [max]="200"
+    ></ino-inputnumber>
+
+    <ino-inputnumber
+      label="Without buttons"
+      [showButtons]="false"
+      [value]="noButtonsValue"
+      (valueChange)="noButtonsValue = $event"
+      [min]="0"
+      [max]="100"
+    ></ino-inputnumber>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Prefix & Suffix</h3>
+  <p class="demo-section__note">
+    Static text before/after the input — useful for units, currency symbols, or contextual labels.
+  </p>
+  <div class="demo-row">
+    <ino-inputnumber
+      label="Weight"
+      prefix="Weight:"
+      suffix="kg"
+      [value]="weightValue"
+      (valueChange)="weightValue = $event"
+      [min]="0"
+      [max]="200"
+    ></ino-inputnumber>
+
+    <ino-inputnumber
+      label="Duration"
+      suffix="minutes"
+      [value]="durationValue"
+      (valueChange)="durationValue = $event"
+      [min]="0"
+      [max]="120"
+    ></ino-inputnumber>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Modes — Currency, Percent, Decimal</h3>
+  <p class="demo-section__note">
+    Formatting modes control display only — the stored <code>value</code> is always a plain number.
+    Currency and percent use <code>Intl.NumberFormat</code> for locale-aware formatting.
+  </p>
+  <div class="demo-row">
+    <ino-inputnumber
+      label="Currency mode"
+      mode="currency"
+      currency="USD"
+      locale="en-US"
+      [value]="currencyValue"
+      (valueChange)="currencyValue = $event"
+      [min]="0"
+      [max]="10000"
+    ></ino-inputnumber>
+
+    <ino-inputnumber
+      label="Percent mode"
+      mode="percent"
+      [value]="percentValue"
+      (valueChange)="percentValue = $event"
+      [min]="0"
+      [max]="1"
+      [step]="0.01"
+      [minFractionDigits]="2"
+      [maxFractionDigits]="2"
+    ></ino-inputnumber>
+
+    <ino-inputnumber
+      label="Decimal mode (default)"
+      mode="decimal"
+      [value]="decimalValue"
+      (valueChange)="decimalValue = $event"
+      [min]="0"
+      [max]="99999"
+      [minFractionDigits]="0"
+      [maxFractionDigits]="3"
+    ></ino-inputnumber>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States</h3>
+  <p class="demo-section__note">
+    Default, disabled, readonly, invalid, at-min, and at-max states below are static snapshots.
+    Hover / focus-visible / active are live on every enabled control on this page — hover or tab
+    onto any inputnumber above or below to see them. At-min/at-max disable the corresponding
+    spinner button and add a host class for custom styling.
+  </p>
+  <div class="demo-row">
+    <ino-inputnumber
+      label="Default"
+      [value]="42"
+      [min]="0"
+      [max]="100"
+    ></ino-inputnumber>
+
+    <ino-inputnumber
+      label="Disabled"
+      [disabled]="true"
+      [value]="disabledValue"
+      [min]="0"
+      [max]="100"
+    ></ino-inputnumber>
+
+    <ino-inputnumber
+      label="Readonly (locked)"
+      [readonly]="true"
+      [value]="readonlyValue"
+      [min]="0"
+      [max]="100"
+    ></ino-inputnumber>
+
+    <ino-inputnumber
+      label="Invalid / error"
+      error="Value must be between 0 and 100"
+      [value]="invalidValue"
+      [min]="0"
+      [max]="100"
+    ></ino-inputnumber>
+
+    <ino-inputnumber
+      label="At minimum"
+      [value]="atMinValue"
+      (valueChange)="atMinValue = $event"
+      [min]="0"
+      [max]="100"
+    ></ino-inputnumber>
+
+    <ino-inputnumber
+      label="At maximum"
+      [value]="atMaxValue"
+      (valueChange)="atMaxValue = $event"
+      [min]="0"
+      [max]="100"
+    ></ino-inputnumber>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Sizing</h3>
+  <p class="demo-section__note">
+    The three-rung control-size scale — <code>sm</code> / <code>default</code> / <code>lg</code>.
+    Each size re-points <code>--ino-control-height</code>, <code>--ino-control-padding-inline</code>,
+    and <code>--ino-control-font-size</code> tokens.
+  </p>
+  <div class="demo-row">
+    <ino-inputnumber
+      *ngFor="let size of sizes"
+      [label]="size"
+      [size]="size"
+      [value]="size === 'sm' ? smallValue : size === 'lg' ? largeValue : defaultValue"
+      [min]="0"
+      [max]="100"
+    ></ino-inputnumber>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Density — dense vs. fluid</h3>
+  <p class="demo-section__note">
+    This docs page renders in the dense register by default (<code>[data-density="dense"]</code> on
+    the layout host); the pane on the right overrides to the fluid row-height floor to show the
+    contrast.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane" data-density="dense">
+      <p class="demo-pane__label">dense</p>
+      <ino-inputnumber label="Dense row" [value]="defaultValue" [min]="0" [max]="100"></ino-inputnumber>
+    </div>
+    <div class="demo-pane" data-density="fluid">
+      <p class="demo-pane__label">fluid</p>
+      <ino-inputnumber label="Fluid row" [value]="defaultValue" [min]="0" [max]="100"></ino-inputnumber>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Labels — with hint, error, and wrapping</h3>
+  <p class="demo-section__note">
+    Label association via <code>&lt;ino-label for&gt;</code>, hint text for guidance, error text
+    with <code>role="alert"</code> and <code>aria-describedby</code> for screen reader announcement.
+    Long labels wrap naturally.
+  </p>
+  <div class="demo-col" style="max-width: 360px;">
+    <ino-inputnumber
+      label="Quantity"
+      hint="Enter a value between 0 and 100"
+      [value]="labeledValue"
+      (valueChange)="labeledValue = $event"
+      [min]="0"
+      [max]="100"
+    ></ino-inputnumber>
+
+    <ino-inputnumber
+      label="Stock level"
+      hint="Current inventory count"
+      [value]="hintValue"
+      (valueChange)="hintValue = $event"
+      [min]="0"
+      [max]="1000"
+    ></ino-inputnumber>
+
+    <ino-inputnumber
+      label="Order amount"
+      error="Value exceeds maximum allowed quantity"
+      [value]="errorValue"
+      (valueChange)="errorValue = $event"
+      [min]="0"
+      [max]="100"
+    ></ino-inputnumber>
+
+    <ino-inputnumber
+      label="Maximum file size in megabytes (this label is intentionally long to demonstrate wrapping behavior in constrained layouts)"
+      [value]="longLabelValue"
+      (valueChange)="longLabelValue = $event"
+      [min]="1"
+      [max]="100"
+    ></ino-inputnumber>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Keyboard interaction (APG Spinbutton Pattern)</h3>
+  <p class="demo-section__note">
+    Focus any inputnumber above and try these keyboard shortcuts:
+  </p>
+  <ul style="color: var(--ino-color-on-surface-muted); font-size: var(--ino-type-body-sm-size, 12.5px); margin: 0; padding-left: var(--ino-space-5);">
+    <li><strong>Up/Down arrows:</strong> increment/decrement by <code>step</code> (default 1)</li>
+    <li><strong>PageUp/PageDown:</strong> increment/decrement by <code>step × 10</code></li>
+    <li><strong>Home:</strong> jump to <code>min</code> (if set)</li>
+    <li><strong>End:</strong> jump to <code>max</code> (if set)</li>
+  </ul>
+  <p class="demo-section__note" style="margin-top: var(--ino-space-3);">
+    All examples above have <code>min</code> and <code>max</code> set to enable full keyboard
+    contract verification (INO-517 fix — the generic renderer's <code>null</code> defaults were
+    transformed to <code>NaN</code>, breaking every keyboard guard).
+  </p>
+</section>

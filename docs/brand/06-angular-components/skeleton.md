@@ -59,6 +59,16 @@ the OS preference (e.g. a printed/exported view). Full reasoning: `SPEC.md` §4.
 
 ---
 
+## Labels and fields
+
+`label` is a visually-hidden status announcement (`<span class="ino-skeleton__sr">`, `aria-live`),
+not a visible form-field label — a skeleton has no input to name. When `label` is set the host also
+gains `role="status"`/`aria-busy="true"`; when it's empty the whole placeholder is `aria-hidden` so
+assistive tech skips it entirely rather than announcing an unlabeled loading block.
+`required`/hint/error/float-label integration don't apply to a non-interactive placeholder.
+
+---
+
 ## Accessibility contract
 
 **Default (`label` unset):** `aria-hidden="true"`. A skeleton is a purely visual stand-in — the real

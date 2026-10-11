@@ -3,6 +3,17 @@ import { Type } from '@angular/core';
 import { CheckboxPresentabilityDemoComponent } from './demos/checkbox-presentability-demo.component';
 import { RadioPresentabilityDemoComponent } from './demos/radio-presentability-demo.component';
 import { DatepickerTimeDemoComponent } from './demos/datepicker-time-demo.component';
+import { FeatureGridDemoComponent } from './demos/feature-grid-demo.component';
+import { FooterDemoComponent } from './demos/footer-demo.component';
+import { HeroDemoComponent } from './demos/hero-demo.component';
+import { MetricPanelDemoComponent } from './demos/metric-panel-demo.component';
+import { TierCardDemoComponent } from './demos/tier-card-demo.component';
+import { InputNumberDemoComponent } from './demos/inputnumber-demo.component';
+import { ListboxDemoComponent } from './demos/listbox-demo.component';
+import { InputTagsDemoComponent } from './demos/inputtags-demo.component';
+import { TreeSelectDemoComponent } from './demos/treeselect-demo.component';
+import { InputMaskDemoComponent } from './demos/inputmask-demo.component';
+import { SliderDemoComponent } from './demos/slider-demo.component';
 
 /**
  * Slug -> hand-authored demo component, for components whose §2 Component Publish Contract
@@ -19,4 +30,15 @@ export const CUSTOM_DEMOS: Record<string, Type<unknown>> = {
   'radio-group': RadioPresentabilityDemoComponent,
   'checkbox': CheckboxPresentabilityDemoComponent,
   'datepicker': DatepickerTimeDemoComponent,
+  'feature-grid': FeatureGridDemoComponent,
+  'footer': FooterDemoComponent,
+  'hero': HeroDemoComponent,
+  'metric-panel': MetricPanelDemoComponent,
+  'tier-card': TierCardDemoComponent,
+  'inputnumber': InputNumberDemoComponent,
+  'listbox': ListboxDemoComponent,
+  'inputtags': InputTagsDemoComponent,
+  'treeselect': TreeSelectDemoComponent,
+  'inputmask': InputMaskDemoComponent,
+  'slider': SliderDemoComponent,
 };

@@ -1,0 +1,71 @@
+<div class="ino-field">
+  <ino-label
+    [for]="inputId"
+    [size]="size"
+    [required]="required"
+    [disabled]="disabled"
+    [invalid]="!!error"
+    [readonly]="readonly"
+  >{{ label }}</ino-label>
+
+  <div class="ino-inputnumber__container">
+    <span *ngIf="prefix" class="ino-inputnumber__prefix">{{ prefix }}</span>
+
+    <div class="ino-field__control-wrap">
+      <input
+        [id]="inputId"
+        type="number"
+        class="ino-field__control"
+        [class.ino-field__control--error]="!!error"
+        [placeholder]="placeholder"
+        [value]="inputValue"
+        [disabled]="disabled"
+        [readOnly]="readonly"
+        [required]="required"
+        [attr.min]="min"
+        [attr.max]="max"
+        [attr.step]="step"
+        role="spinbutton"
+        [attr.aria-valuenow]="value"
+        [attr.aria-valuemin]="min"
+        [attr.aria-valuemax]="max"
+        [attr.aria-invalid]="error ? true : null"
+        [attr.aria-describedby]="error ? errorId : (hint ? hintId : null)"
+        (input)="onInput($event)"
+        (keydown)="onKeyDown($event)"
+      />
+
+      <div *ngIf="showButtons" class="ino-inputnumber__buttons">
+        <button
+          [id]="incrementBtnId"
+          type="button"
+          class="ino-inputnumber__button ino-inputnumber__button--increment"
+          [disabled]="disabled || readonly || isAtMax()"
+          [attr.aria-label]="'Increment value'"
+          (click)="increment()"
+        >
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M6 2L6 10M2 6L10 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <button
+          [id]="decrementBtnId"
+          type="button"
+          class="ino-inputnumber__button ino-inputnumber__button--decrement"
+          [disabled]="disabled || readonly || isAtMin()"
+          [attr.aria-label]="'Decrement value'"
+          (click)="decrement()"
+        >
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M2 6L10 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <span *ngIf="suffix" class="ino-inputnumber__suffix">{{ suffix }}</span>
+  </div>
+
+  <p *ngIf="hint && !error" [id]="hintId" class="ino-field__hint">{{ hint }}</p>
+  <p *ngIf="error" [id]="errorId" class="ino-field__error" role="alert">{{ error }}</p>
+</div>

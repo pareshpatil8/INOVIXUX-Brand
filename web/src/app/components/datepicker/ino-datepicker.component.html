@@ -114,9 +114,9 @@
     <div class="ino-datepicker__weekdays" role="row">
       <span *ngFor="let wd of weekdayLabels" role="columnheader" class="ino-datepicker__weekday">{{ wd }}</span>
     </div>
-    <div class="ino-datepicker__week" role="row" *ngFor="let week of weeks">
+    <div class="ino-datepicker__week" role="row" *ngFor="let week of weeks; trackBy: trackByIndex">
       <button
-        *ngFor="let cell of week"
+        *ngFor="let cell of week; trackBy: trackByIndex"
         type="button"
         role="gridcell"
         class="ino-datepicker__btn ino-datepicker__cell"

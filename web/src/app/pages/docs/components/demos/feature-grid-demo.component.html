@@ -1,0 +1,28 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Structure — 4-column grid</h3>
+  <p class="demo-section__note">
+    Each item renders an icon, title and description; the grid reflows to 2 columns on tablet and
+    1 column on mobile (viewport behaviour, not a component @Input).
+  </p>
+  <ino-feature-grid [items]="fourItems"></ino-feature-grid>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Structure — partial row (2 items)</h3>
+  <p class="demo-section__note">
+    The grid does not force a minimum item count or pad short rows with placeholders.
+  </p>
+  <ino-feature-grid [items]="twoItems"></ino-feature-grid>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States — empty</h3>
+  <p class="demo-section__note">
+    No empty-state message is rendered by the component itself — an empty <code>items</code> array
+    renders nothing. Callers that can end up with zero items own their own empty-state copy.
+  </p>
+  <div class="demo-pane">
+    <ino-feature-grid [items]="noItems"></ino-feature-grid>
+    <p class="demo-pane__label">(renders nothing above this line)</p>
+  </div>
+</section>
