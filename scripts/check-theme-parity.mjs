@@ -1034,6 +1034,25 @@ const COMPONENT_REGISTRY = [
     ],
   },
   {
+    name: 'toggle-button',
+    web: 'web/src/app/components/toggle-button',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoToggleButton.tsx',
+        roles: ['accent', 'accentActive', 'border', 'onAccent', 'onSurface', 'surfaceRaised', 'surfaceSunken'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_toggle_button.dart',
+        roles: ['accent', 'accentActive', 'border', 'onAccent', 'onSurface', 'surface', 'surfaceRaised', 'surfaceSunken'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['danger'], reason: "readonly/loading/error are web-only for this component (SPEC.md §7, doc 26 §5 row) — InoToggleButton.tsx carries no error prop or message element, so colors.danger (painted only by web's ino-toggle-button__error paragraph, ino-toggle-button.component.scss) is never read." },
+      { platform: 'flutter', roles: ['danger'], reason: 'same as the React Native entry above — ino_toggle_button.dart has no error prop or message widget.' },
+      { platform: 'flutter', roles: ['surface'], reason: "the pressed face's border uses colors.surface.withValues(alpha: 0) as a typed transparent Color (same trick ino_button.dart's ghost/icon fill uses); web achieves the same transparent border with the literal CSS keyword `transparent` (ino-toggle-button.component.scss `.ino-toggle-button__control--pressed`), so this role never actually reads a surface value." },
+    ],
+  },
+  {
     name: 'tooltip',
     web: 'web/src/app/components/tooltip',
     mobile: { reactNative: 'web-only', flutter: 'web-only' },

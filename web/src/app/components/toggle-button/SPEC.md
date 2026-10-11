@@ -61,7 +61,15 @@ different components needing their own token pairs.
 
 - **Readonly**: `<button>` has no native `readonly` attribute, so it is enforced in the component
   — `onClick()` returns early while `readonly` is true. The control stays focusable and fully
-  legible (unlike `disabled`, which dims it); only the hover/active affordances withdraw.
+  legible (unlike `disabled`, which dims it); only the hover/active affordances withdraw. The
+  state is exposed as `aria-disabled`, not `aria-readonly`: `aria-readonly` is only a supported
+  attribute on `checkbox`/`combobox`/`textbox`/`listbox`/`grid`/`gridcell`/`slider`/
+  `spinbutton`/`radiogroup`-family roles and is dropped on a plain `button`, which would leave a
+  screen-reader user with no signal at all that the press is being silently ignored.
+  `aria-disabled` is supported on `button`, keeps the control focusable and discoverable (unlike
+  `[disabled]`, which removes it from the tab order), and is the correct semantics for "locked
+  value, still inspectable" as opposed to `disabled`'s "not interactive at all." (INO-412 CTO
+  review.)
 - **Loading**: `aria-busy` + natively `[disabled]` (so loading is keyboard-safe, not just
   visually inert) + an adjacent spinner; the label/icon stay on screen rather than disappearing.
 - **Invalid**: a non-empty `error` string sets `aria-invalid` + `aria-describedby`, renders the

@@ -107,7 +107,7 @@ describe('InoToggleButtonComponent', () => {
 
     const btn = button();
     expect(btn.disabled).toBe(false);
-    expect(btn.getAttribute('aria-readonly')).toBe('true');
+    expect(btn.getAttribute('aria-disabled')).toBe('true');
 
     btn.click();
     fixture.detectChanges();

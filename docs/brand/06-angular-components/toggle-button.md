@@ -77,7 +77,8 @@ and paints the invalid ring.
 
 **Role / ARIA** — plain `<button>` (no role override — its implicit role is correct), with
 `aria-pressed` reflecting state (WAI-ARIA toggle-button pattern). `aria-invalid` +
-`aria-describedby` wire in the error message. `aria-readonly` reflects `readonly`. `aria-busy`
+`aria-describedby` wire in the error message. `aria-disabled` reflects `readonly` (not
+`aria-readonly`, which a native `button` role does not support — see `SPEC.md` §5). `aria-busy`
 reflects `loading`.
 
 **Keyboard** — Tab to focus, Space or Enter to toggle (native `<button>` activation).

@@ -8,7 +8,7 @@
     [attr.aria-label]="!currentLabel && ariaLabel ? ariaLabel : null"
     [attr.aria-invalid]="error ? true : null"
     [attr.aria-describedby]="error ? errorId : null"
-    [attr.aria-readonly]="readonly ? true : null"
+    [attr.aria-disabled]="readonly ? true : null"
     [attr.aria-busy]="loading ? true : null"
     [disabled]="disabled || loading"
     (click)="onClick()"
