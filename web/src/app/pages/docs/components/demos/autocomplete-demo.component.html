@@ -1,0 +1,297 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Variants — structure</h3>
+  <p class="demo-section__note">
+    Every box below ships real <code>options</code>, so <code>[role="option"]</code> rows are
+    actually reachable — the generic renderer's <code>options: []</code> default never populated
+    any of these.
+  </p>
+  <div class="demo-row">
+    <ino-autocomplete
+      label="Dropdown mode"
+      [options]="flatOptions"
+      [value]="basicValue"
+      (valueChange)="basicValue = $any($event)"
+    ></ino-autocomplete>
+
+    <ino-autocomplete
+      label="Inline mode"
+      mode="inline"
+      [options]="flatOptions"
+      [value]="inlineValue"
+      (valueChange)="inlineValue = $any($event)"
+    ></ino-autocomplete>
+
+    <ino-autocomplete
+      label="Clearable"
+      [clearable]="true"
+      [options]="flatOptions"
+      [value]="clearableValue"
+      (valueChange)="clearableValue = $any($event)"
+    ></ino-autocomplete>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Variants — grouped options</h3>
+  <p class="demo-section__note">
+    Two groups (<code>Fruits</code>/<code>Vegetables</code>), each with one disabled row —
+    confirms group headings render and the disabled row is skipped by keyboard navigation.
+  </p>
+  <div class="demo-row">
+    <ino-autocomplete
+      label="Produce"
+      [options]="groupedOptions"
+      [value]="groupedValue"
+      (valueChange)="groupedValue = $any($event)"
+    ></ino-autocomplete>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Variants — virtualized list</h3>
+  <p class="demo-section__note">
+    120 options, above the default <code>virtualScrollThreshold</code> (100) — the panel renders
+    through <code>&lt;ino-virtual-scroller&gt;</code>, not a plain <code>*ngFor</code>.
+  </p>
+  <div class="demo-row">
+    <ino-autocomplete
+      label="Virtualized"
+      [options]="manyOptions"
+      [value]="virtualValue"
+      (valueChange)="virtualValue = $any($event)"
+    ></ino-autocomplete>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Variants — multiple selection</h3>
+  <p class="demo-section__note">
+    <code>multiple</code> renders a chip row on the trigger. The second box reaches
+    <code>maxSelected</code> — unselected rows dim rather than disable (existing chips stay
+    removable) and a <code>role="status"</code> message announces the cap; its panel is forced
+    open below to show the dimmed rows directly.
+  </p>
+  <div class="demo-row">
+    <ino-autocomplete
+      label="Frameworks"
+      [multiple]="true"
+      [options]="flatOptions"
+      [value]="multipleValue"
+      (valueChange)="multipleValue = $any($event)"
+    ></ino-autocomplete>
+
+    <ino-autocomplete
+      #maxSelectedAc
+      label="Max 2 selected"
+      [multiple]="true"
+      [maxSelected]="2"
+      [options]="flatOptions"
+      [value]="maxSelectedValue"
+      (valueChange)="maxSelectedValue = $any($event)"
+    ></ino-autocomplete>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States</h3>
+  <p class="demo-section__note">
+    <code>required</code>, <code>disabled</code>, <code>readonly</code>, <code>loading</code>
+    (with a non-empty query so the spinner and typed text are visible together), and
+    <code>error</code> (a <code>string</code> input, not auto-demoed by the generic renderer's
+    boolean-only state filter).
+  </p>
+  <div class="demo-row">
+    <ino-autocomplete
+      label="Required"
+      [required]="true"
+      [options]="flatOptions"
+      [value]="requiredValue"
+      (valueChange)="requiredValue = $any($event)"
+    ></ino-autocomplete>
+
+    <ino-autocomplete
+      label="Disabled"
+      [disabled]="true"
+      [options]="flatOptions"
+      [value]="disabledValue"
+    ></ino-autocomplete>
+
+    <ino-autocomplete
+      label="Readonly"
+      [readonly]="true"
+      [options]="flatOptions"
+      [value]="readonlyValue"
+    ></ino-autocomplete>
+
+    <ino-autocomplete
+      label="Loading"
+      [loading]="true"
+      [options]="flatOptions"
+      [value]="loadingValue"
+    ></ino-autocomplete>
+
+    <ino-autocomplete
+      label="Invalid / error"
+      error="No matching account found"
+      [options]="flatOptions"
+      [value]="invalidValue"
+      (valueChange)="invalidValue = $any($event)"
+    ></ino-autocomplete>
+
+    <ino-autocomplete
+      label="Force selection"
+      [forceSelection]="true"
+      [options]="flatOptions"
+      [value]="forceSelectionValue"
+      (valueChange)="forceSelectionValue = $any($event)"
+    ></ino-autocomplete>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States — open panel</h3>
+  <p class="demo-section__note">
+    Forced open via the component's own public <code>openPanel()</code> (same path a real
+    click/focus takes) so <code>open</code>, <code>no-results</code>, and <code>searching</code>
+    are screenshot-able without a visitor having to interact first.
+  </p>
+  <div class="demo-row">
+    <ino-autocomplete
+      #openPanelAc
+      label="Open — populated listbox"
+      [options]="groupedOptions"
+      [value]="openPanelValue"
+      (valueChange)="openPanelValue = $any($event)"
+    ></ino-autocomplete>
+
+    <ino-autocomplete
+      #noResultsAc
+      label="No results"
+      [options]="flatOptions"
+      [value]="noResultsValue"
+      (valueChange)="noResultsValue = $any($event)"
+    ></ino-autocomplete>
+
+    <ino-autocomplete
+      #searchingAc
+      label="Searching"
+      [loading]="true"
+      [options]="flatOptions"
+      [value]="searchingValue"
+      (valueChange)="searchingValue = $any($event)"
+    ></ino-autocomplete>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Sizing</h3>
+  <p class="demo-section__note">
+    <code>size: InoControlSize</code> is a type alias, so the generic renderer's manifest-driven
+    <code>sizeExamples()</code> never populates it — <code>sm</code>/<code>default</code>/
+    <code>lg</code> set explicitly here.
+  </p>
+  <div class="demo-row">
+    <ino-autocomplete
+      label="sm"
+      size="sm"
+      [options]="flatOptions"
+      [value]="smallValue"
+      (valueChange)="smallValue = $any($event)"
+    ></ino-autocomplete>
+
+    <ino-autocomplete
+      label="default"
+      size="default"
+      [options]="flatOptions"
+      [value]="defaultSizeValue"
+      (valueChange)="defaultSizeValue = $any($event)"
+    ></ino-autocomplete>
+
+    <ino-autocomplete
+      label="lg"
+      size="lg"
+      [options]="flatOptions"
+      [value]="largeValue"
+      (valueChange)="largeValue = $any($event)"
+    ></ino-autocomplete>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Density — dense vs. fluid</h3>
+  <div class="demo-grid">
+    <div class="demo-pane" data-density="dense">
+      <p class="demo-pane__label">dense</p>
+      <ino-autocomplete
+        label="Dense row"
+        [options]="flatOptions"
+        [value]="densityDenseValue"
+        (valueChange)="densityDenseValue = $any($event)"
+      ></ino-autocomplete>
+    </div>
+    <div class="demo-pane" data-density="fluid">
+      <p class="demo-pane__label">fluid</p>
+      <ino-autocomplete
+        label="Fluid row"
+        [options]="flatOptions"
+        [value]="densityFluidValue"
+        (valueChange)="densityFluidValue = $any($event)"
+      ></ino-autocomplete>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Labels — hint, error, RTL</h3>
+  <p class="demo-section__note">
+    Non-empty <code>label</code>/<code>hint</code>/<code>error</code> — the generic renderer's
+    <code>defaultValueFor()</code> returns <code>''</code> for every string input, so none of
+    these ever rendered visible text there.
+  </p>
+  <div class="demo-col" style="max-width: 360px;">
+    <ino-autocomplete
+      label="Account"
+      [required]="true"
+      [options]="flatOptions"
+      [value]="labeledValue"
+      (valueChange)="labeledValue = $any($event)"
+    ></ino-autocomplete>
+
+    <ino-autocomplete
+      label="Account"
+      hint="Start typing to search your accounts"
+      [options]="flatOptions"
+      [value]="hintValue"
+      (valueChange)="hintValue = $any($event)"
+    ></ino-autocomplete>
+
+    <ino-autocomplete
+      label="Account"
+      error="No matching account found"
+      [options]="flatOptions"
+      [value]="errorValue"
+      (valueChange)="errorValue = $any($event)"
+    ></ino-autocomplete>
+  </div>
+  <div class="demo-rtl" dir="rtl" style="margin-top: var(--ino-space-4); max-width: 360px;">
+    <ino-autocomplete
+      label="الحساب"
+      hint="ابدأ الكتابة للبحث في حساباتك"
+      [options]="flatOptions"
+      [value]="rtlValue"
+      (valueChange)="rtlValue = $any($event)"
+    ></ino-autocomplete>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Keyboard contract</h3>
+  <p class="demo-section__note">
+    Focus any box above and try:
+    <strong>ArrowDown</strong>/<strong>ArrowUp</strong> moves the active row, skipping disabled
+    rows; <strong>Home</strong>/<strong>End</strong> jump to the first/last enabled row;
+    <strong>Enter</strong> selects the active row (single mode closes the panel, multiple mode
+    stays open); <strong>Escape</strong> closes without changing the value;
+    <strong>Tab</strong> commits (with <code>forceSelection</code>) and moves focus on.
+  </p>
+</section>
