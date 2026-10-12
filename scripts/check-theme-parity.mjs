@@ -578,6 +578,42 @@ const COMPONENT_REGISTRY = [
     ],
   },
   {
+    name: 'card',
+    web: 'web/src/app/components/card',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoCard.tsx',
+        roles: ['accentActive', 'border', 'borderSoft', 'onSurfaceMuted', 'surfaceRaised', 'surfaceSunken'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_card.dart',
+        roles: ['border', 'borderSoft', 'onSurfaceMuted', 'surfaceRaised', 'surfaceSunken'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['accent', 'onSurface'], reason: 'web reads accent only for the interactive variant\'s :hover/:focus-visible border (ino-card.component.scss); touch has no hover and the port already supplies the pressed border via accentActive (below), so accent itself is never reached. onSurface colors the header/footer/body text on web, but header/footer/children are caller-supplied ReactNode here — the component never paints their text color itself.' },
+      { platform: 'flutter', roles: ['accent', 'accentActive', 'onSurface'], reason: 'onSurface: same rationale as the React Native entry above (header/footer/child are caller-supplied Widgets). accent and accentActive are both unreached because this port\'s GestureDetector renders no pressed-state border change at all — unlike the RN port, it never reads a press-state color (InoCard.build has no equivalent of RN\'s `pressed && isInteractive` style branch).' },
+    ],
+  },
+  {
+    name: 'checkbox',
+    web: 'web/src/app/components/checkbox',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoCheckbox.tsx',
+        roles: ['accent', 'border', 'danger', 'onAccent', 'onSurface', 'onSurfaceMuted'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_checkbox.dart',
+        roles: ['accent', 'border', 'danger', 'onAccent', 'onSurface', 'onSurfaceMuted'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['accentActive', 'border', 'onAccent'], reason: 'web restyles a real native <input type="checkbox"> via the `accent-color` CSS property, so it never needs its own border or on-accent-fill roles — the browser draws the box and tick. RN has no native checkbox primitive (InoCheckbox.tsx doc comment) and draws the box from scratch, so it needs border for the unchecked outline and onAccent for the checkmark glyph color that accent-color drew for free on web. accentActive is dropped because the drawn box has only two states (empty/filled, both using accent) with no separate pressed-color change — same "touch has no mousedown-before-focus phase" gap this file already records for accentActive on input/datepicker/select.' },
+      { platform: 'flutter', roles: ['accentActive', 'border', 'onAccent'], reason: 'same as the React Native entry above — ino_checkbox.dart draws its own box for the same "no native checkbox primitive" reason.' },
+    ],
+  },
+  {
     name: 'confirm-dialog',
     web: 'web/src/app/components/confirm-dialog',
     mobile: { reactNative: 'web-only', flutter: 'web-only' },
@@ -747,6 +783,33 @@ const COMPONENT_REGISTRY = [
     ],
   },
   {
+    name: 'label',
+    web: 'web/src/app/components/label',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoLabel.tsx',
+        roles: ['onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'dangerTextSafe'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_label.dart',
+        roles: ['onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'dangerTextSafe'],
+      },
+    },
+    // Web never reads a base palette role directly in ino-label.component.scss — it reads the
+    // semantic label-* aliases instead, which tokens.css (§ form-label tokens) points at the same
+    // base roles the mobile ports read directly: --ino-color-label -> on-surface,
+    // --ino-color-label-muted -> on-surface-muted, --ino-color-label-disabled -> on-surface-subtle,
+    // --ino-color-label-invalid / --ino-color-required-marker -> danger-text-safe. Every role on
+    // both sides of this entry is therefore a declared divergence by construction — not a gap,
+    // an indirection layer the camelCase(--ino-color-X) scan in this file cannot see through.
+    divergences: [
+      { platform: 'reactNative', roles: ['label', 'labelMuted', 'labelInvalid', 'labelDisabled', 'requiredMarker'], reason: 'web-only semantic aliases (tokens.css) that resolve to the base roles this port reads directly — see the component-level comment above.' },
+      { platform: 'reactNative', roles: ['onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'dangerTextSafe'], reason: 'the base roles the web aliases above resolve to; web never names them directly in ino-label.component.scss, so they read as "extra" here.' },
+      { platform: 'flutter', roles: ['label', 'labelMuted', 'labelInvalid', 'labelDisabled', 'requiredMarker'], reason: 'same as the React Native entry above.' },
+      { platform: 'flutter', roles: ['onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'dangerTextSafe'], reason: 'same as the React Native entry above.' },
+    ],
+  },
+  {
     name: 'meter-group',
     web: 'web/src/app/components/meter-group',
     mobile: {
@@ -762,6 +825,27 @@ const COMPONENT_REGISTRY = [
     divergences: [
       { platform: 'reactNative', roles: ['borderSoft'], reason: 'web reads border-soft for the loading-state shimmer gradient sweeping across the track; neither mobile port renders a shimmer texture (both simply show an empty track while busy, avoiding a new animation-gradient dependency for a single state), so the role is never reached. Full reasoning: web/src/app/components/meter-group/SPEC.md §7.' },
       { platform: 'flutter', roles: ['borderSoft'], reason: 'same as the React Native entry above.' },
+    ],
+  },
+  {
+    name: 'modal',
+    web: 'web/src/app/components/modal',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoModal.tsx',
+        roles: ['overlayScrim', 'onSurface', 'onSurfaceMuted', 'surfaceRaised'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_modal.dart',
+        roles: ['overlayScrim', 'onSurfaceMuted', 'surfaceRaised'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['accentActive', 'surfaceSunken'], reason: 'web reads these only for the close/maximize icon-button\'s :hover (surfaceSunken bg) and :active (accentActive glyph) states (ino-modal.component.scss); the port\'s close Pressable has no custom pressed style, so neither role is ever reached — same "touch has no hover/press-state color" gap this file records for several other components\' accentActive entries.' },
+      { platform: 'reactNative', roles: ['surfaceRaised'], reason: 'ADDED, not dropped — web composes <ino-card variant="overlay"> for the panel background (SPEC.md §"Overlay" row, ino-modal.component.ts class comment) and never reads --ino-color-surface-raised in its own .scss; this port renders its own panel View directly and has no shared card primitive to delegate to, so it reads surfaceRaised itself.' },
+      { platform: 'flutter', roles: ['accentActive', 'surfaceSunken'], reason: 'same as the React Native entry above — the close IconButton relies on Material\'s built-in ripple instead of a custom pressed-state color read.' },
+      { platform: 'flutter', roles: ['surfaceRaised'], reason: 'same delegation gap as the React Native entry above.' },
+      { platform: 'flutter', roles: ['onSurface'], reason: 'ADDED relative to the declared set, i.e. never read — the heading renders via `Theme.of(context).textTheme.titleMedium` (Flutter\'s ambient Material text style) rather than an explicit `colors.onSurface` read, unlike web (ino-modal.component.scss) and RN (InoModal.tsx), both of which set the heading color directly from the role.' },
     ],
   },
   {
@@ -803,6 +887,50 @@ const COMPONENT_REGISTRY = [
         roles: ['accent', 'danger', 'onSurface', 'surfaceSunken'],
       },
     },
+  },
+  {
+    name: 'progress-spinner',
+    web: 'web/src/app/components/progress-spinner',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoProgressSpinner.tsx',
+        roles: ['accent', 'borderSoft', 'danger'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_progress_spinner.dart',
+        roles: ['accent', 'borderSoft', 'danger'],
+      },
+    },
+    divergences: [],
+  },
+  {
+    name: 'radio-group',
+    web: 'web/src/app/components/radio-group',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoRadioGroup.tsx',
+        roles: ['onSurface'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_radio_group.dart',
+        roles: ['onSurface'],
+      },
+    },
+    // The web ino-radio-group directory bundles both the group chrome
+    // (ino-radio-group.component.scss: legend/error) and the individual radio control
+    // (ino-radio.component.scss: box/fill/label) in one folder, per this registry's own
+    // directory-per-web-component convention. The mobile ports split these into two separate
+    // files — InoRadioGroup.tsx/ino_radio_group.dart (this entry's declared path, group chrome
+    // only) and the sibling InoRadio.tsx/ino_radio.dart (individually registrable under its own
+    // "radio" name if a web/src/app/components/radio directory existed; it does not — radio only
+    // ships as part of the group). The individual-control roles below are a structural
+    // consequence of that split, not an unverified gap: InoRadio.tsx/ino_radio.dart do read them.
+    divergences: [
+      { platform: 'reactNative', roles: ['accent', 'accentActive', 'onSurfaceMuted'], reason: 'these color the individual radio control, which lives in the sibling InoRadio.tsx this entry does not point at — see the component-level comment above.' },
+      { platform: 'reactNative', roles: ['danger'], reason: 'web\'s ino-radio-group__error renders a group-level error message in danger; InoRadioGroup.tsx has no error prop or rendering at all, so this is an actual missing feature (not a structural-split artifact like the roles above) — filed as a gap, not a design decision.' },
+      { platform: 'flutter', roles: ['accent', 'accentActive', 'onSurfaceMuted'], reason: 'same structural-split rationale as the React Native entry above — these live in the sibling ino_radio.dart.' },
+      { platform: 'flutter', roles: ['danger'], reason: 'same as the React Native entry above — InoRadioGroup has no error-message feature.' },
+    ],
   },
   {
     name: 'select',
@@ -951,6 +1079,24 @@ const COMPONENT_REGISTRY = [
     ],
   },
   {
+    name: 'toggle',
+    web: 'web/src/app/components/toggle',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoToggle.tsx',
+        roles: ['accent', 'border', 'danger', 'onAccent', 'onSurface', 'onSurfaceMuted', 'surface', 'surfaceSunken'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_toggle.dart',
+        roles: ['accent', 'border', 'danger', 'onAccent', 'onSurface', 'onSurfaceMuted', 'surface', 'surfaceSunken'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['accentActive'], reason: 'same rationale as the input/datepicker/select entries above — web reserves accent-active for the transient mousedown-before-focus-settles flash (ino-toggle.component.scss); touch has no pointer-down-before-focus phase, so the port goes straight from unchecked to colors.accent on toggle.' },
+      { platform: 'flutter', roles: ['accentActive'], reason: 'same as the React Native entry above.' },
+    ],
+  },
+  {
     name: 'tooltip',
     web: 'web/src/app/components/tooltip',
     mobile: { reactNative: 'web-only', flutter: 'web-only' },
@@ -1018,6 +1164,28 @@ for (const entry of COMPONENT_REGISTRY) {
     }
     componentChecks++;
   }
+}
+
+// Reverse direction: a component that ships a mobile port but has no COMPONENT_REGISTRY
+// entry at all is never checked for role parity, declared divergences or contrast — the
+// loop above only validates entries that exist, so an unregistered port is invisible to it.
+// Enumerate web components and probe for the port-naming convention every existing entry
+// above already follows (ino_<snake>.dart / Ino<Pascal>.tsx) to catch that silently.
+const registeredNames = new Set(COMPONENT_REGISTRY.map(e => e.name));
+const toSnake = name => name.replace(/-/g, '_');
+const toPascal = name => name.split('-').map(part => part[0].toUpperCase() + part.slice(1)).join('');
+const webComponentDirs = readdirSync(new URL('web/src/app/components/', root), { withFileTypes: true })
+  .filter(d => d.isDirectory())
+  .map(d => d.name);
+for (const name of webComponentDirs) {
+  if (registeredNames.has(name)) continue;
+  const candidatePorts = [
+    `mobile/flutter/lib/widgets/ino_${toSnake(name)}.dart`,
+    `mobile/react-native/src/components/Ino${toPascal(name)}.tsx`,
+  ];
+  const foundPorts = candidatePorts.filter(p => existsSync(new URL(p, root)));
+  assert.equal(foundPorts.length, 0,
+    `${name}: mobile port(s) found (${foundPorts.join(', ')}) but no COMPONENT_REGISTRY entry exists — role parity, divergences and contrast are never checked for this component; add an entry (or 'web-only' with a reason if the port is a coincidence of naming)`);
 }
 
 console.log(`PASS: CSS mirrors; Capacitor import; ${colorChecks} color roles across 3 themes × 2 mobile ports; space/radius/targets/durations; Devanagari font pairing + line-height parity; focus-ring shape; invalid-ring shape, never-flatten rule and SC 1.4.11 budget in 3 themes; pressed-accent contrast in 3 themes; control-size scale across 3 densities + ${controlChecks} mobile port values; form-label tokens across 3 themes × 2 densities + RN/Flutter label type-scale parity; elevation scale (6 neutral + 3 brand + 2 inset) across 3 themes; data-viz layer (6 categorical + 8 sequential + 7 diverging, ${vizChecks} checks) across 3 themes; leading/tracking rhythm scale + composite type aliases across 3 densities; component registry (${COMPONENT_REGISTRY.length} components, ${componentChecks} platform checks).`);
