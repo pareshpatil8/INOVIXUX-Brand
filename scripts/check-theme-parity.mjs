@@ -1071,6 +1071,64 @@ for (let i = 1; i < COMPONENT_REGISTRY.length; i++) {
     `COMPONENT_REGISTRY must stay alphabetically inserted: "${COMPONENT_REGISTRY[i - 1].name}" is not before "${COMPONENT_REGISTRY[i].name}"`);
 }
 
+// ── INO-648 — reverse-coverage assertion ────────────────────────────────────────────────────────
+// Everything below this comment, and everything above since INO-171, only ever walked
+// COMPONENT_REGISTRY — a hand-maintained array. Forgetting to add an entry here does not fail the
+// gate, it silently REMOVES the component from it, so the gate reported green for 4 of 5 components
+// in the INO-544 batch that it never evaluated at all. Assert completeness against the filesystem
+// instead of trusting the array: every web/src/app/components/* directory that ships a matching
+// mobile port (React Native and/or Flutter — matched by name, ignoring case/punctuation, so
+// "cascade-select" matches "InoCascadeSelect.tsx"/"ino_cascade_select.dart") must appear in
+// COMPONENT_REGISTRY, or be named in EXEMPT with a written reason. Anything else fails loudly,
+// naming the component — that is the whole point: a missing entry can no longer just vanish.
+function normalizeName(s) { return s.toLowerCase().replace(/[^a-z0-9]/g, ''); }
+const stripExt = (f, prefix, suffix) => normalizeName(f.slice(prefix.length, f.length - suffix.length));
+const webComponentDirs = readdirSync(new URL('web/src/app/components/', root), { withFileTypes: true })
+  .filter(d => d.isDirectory()).map(d => d.name);
+const rnPortNames = readdirSync(new URL('mobile/react-native/src/components/', root))
+  .filter(f => /^Ino.*\.tsx?$/.test(f)).map(f => stripExt(f, 'Ino', f.endsWith('.tsx') ? '.tsx' : '.ts'));
+const flutterPortNames = readdirSync(new URL('mobile/flutter/lib/widgets/', root))
+  .filter(f => /^ino_.*\.dart$/.test(f)).map(f => stripExt(f, 'ino_', '.dart'));
+const registryNames = new Set(COMPONENT_REGISTRY.map(e => normalizeName(e.name)));
+// Each reason must explain why the pairing below is a decision, not an oversight (same bar the
+// EXEMPT-staleness check two loops down enforces for every other divergence in this file). All 14
+// were discovered by this assertion on first run (2026-10-11) and were not in INO-648's original
+// scope, which only knew about 4 — see INO-652 for the backfill.
+const EXEMPT = {
+  card: 'INO-652: ships both mobile ports (InoCard.tsx, ino_card.dart) with no registry entry — found by this assertion\'s first run, role/divergence audit not done yet.',
+  checkbox: 'INO-652: ships both mobile ports (InoCheckbox.tsx + InoCheckboxGroup.tsx, ino_checkbox.dart + ino_checkbox_group.dart) with no registry entry — found by this assertion\'s first run, role/divergence audit not done yet.',
+  inputmask: 'INO-652: ships both mobile ports (InoInputMask.tsx, ino_inputmask.dart) with no registry entry — found by this assertion\'s first run, role/divergence audit not done yet.',
+  inputnumber: 'INO-652: ships both mobile ports (InoInputNumber.tsx, ino_inputnumber.dart) with no registry entry — found by this assertion\'s first run, role/divergence audit not done yet.',
+  inputtags: 'INO-652: ships both mobile ports (InoInputTags.tsx, ino_inputtags.dart) with no registry entry — found by this assertion\'s first run, role/divergence audit not done yet.',
+  label: 'INO-652: ships both mobile ports (InoLabel.tsx, ino_label.dart) with no registry entry — found by this assertion\'s first run, role/divergence audit not done yet.',
+  listbox: 'INO-652: ships both mobile ports (InoListbox.tsx, ino_listbox.dart) with no registry entry — found by this assertion\'s first run, role/divergence audit not done yet.',
+  modal: 'INO-652: ships both mobile ports (InoModal.tsx, ino_modal.dart) with no registry entry — found by this assertion\'s first run, role/divergence audit not done yet.',
+  'progress-spinner': 'INO-652: ships both mobile ports (InoProgressSpinner.tsx, ino_progress_spinner.dart) with no registry entry — found by this assertion\'s first run, role/divergence audit not done yet.',
+  'radio-group': 'INO-652: ships both mobile ports (InoRadio.tsx + InoRadioGroup.tsx, ino_radio.dart + ino_radio_group.dart) with no registry entry — found by this assertion\'s first run, role/divergence audit not done yet.',
+  'select-button': 'INO-652: ships both mobile ports (InoSelectButton.tsx, ino_select_button.dart) with no registry entry — found by this assertion\'s first run, role/divergence audit not done yet.',
+  slider: 'INO-652: ships both mobile ports (InoSlider.tsx, ino_slider.dart) with no registry entry — found by this assertion\'s first run, role/divergence audit not done yet.',
+  toggle: 'INO-652: ships both mobile ports (InoToggle.tsx, ino_toggle.dart) with no registry entry — found by this assertion\'s first run, role/divergence audit not done yet.',
+  treeselect: 'INO-652: ships both mobile ports (InoTreeSelect.tsx, ino_treeselect.dart) with no registry entry — found by this assertion\'s first run, role/divergence audit not done yet.',
+};
+let exemptChecks = 0;
+for (const dir of webComponentDirs) {
+  const n = normalizeName(dir);
+  if (!rnPortNames.includes(n) && !flutterPortNames.includes(n)) continue; // no mobile port at all — nothing to reverse-check
+  if (registryNames.has(n)) continue;
+  assert.ok(Object.prototype.hasOwnProperty.call(EXEMPT, dir),
+    `${dir}: ships a mobile port (React Native and/or Flutter) with no COMPONENT_REGISTRY entry and no EXEMPT reason — add a registry entry, or EXEMPT['${dir}'] with a written reason, naming why.`);
+  assert.ok(EXEMPT[dir].trim(), `EXEMPT['${dir}']: reason must not be blank`);
+  exemptChecks++;
+}
+// EXEMPT itself cannot rot into stale permission: once a real entry lands, or the directory/ports
+// disappear, the exemption must be deleted — the same "declared divergence that no longer reflects
+// an actual difference fails just as loudly" rule the per-component divergences enforce below.
+for (const dir of Object.keys(EXEMPT)) {
+  const n = normalizeName(dir);
+  assert.ok(webComponentDirs.includes(dir), `EXEMPT['${dir}']: no such web/src/app/components directory — remove the stale exemption`);
+  assert.ok(!registryNames.has(n), `EXEMPT['${dir}']: this component now has a COMPONENT_REGISTRY entry — remove the stale exemption`);
+}
+
 let componentChecks = 0;
 for (const entry of COMPONENT_REGISTRY) {
   assert.ok(existsSync(new URL(entry.web, root)), `${entry.name}: web path ${entry.web} does not exist`);
@@ -1122,5 +1180,5 @@ for (const entry of COMPONENT_REGISTRY) {
   }
 }
 
-console.log(`PASS: CSS mirrors; Capacitor import; ${colorChecks} color roles across 3 themes × 2 mobile ports; space/radius/targets/durations; Devanagari font pairing + line-height parity; focus-ring shape; invalid-ring shape, never-flatten rule and SC 1.4.11 budget in 3 themes; pressed-accent contrast in 3 themes; control-size scale across 3 densities + ${controlChecks} mobile port values; form-label tokens across 3 themes × 2 densities + RN/Flutter label type-scale parity; elevation scale (6 neutral + 3 brand + 2 inset) across 3 themes; data-viz layer (6 categorical + 8 sequential + 7 diverging, ${vizChecks} checks) across 3 themes; leading/tracking rhythm scale + composite type aliases across 3 densities; component registry (${COMPONENT_REGISTRY.length} components, ${componentChecks} platform checks).`);
+console.log(`PASS: CSS mirrors; Capacitor import; ${colorChecks} color roles across 3 themes × 2 mobile ports; space/radius/targets/durations; Devanagari font pairing + line-height parity; focus-ring shape; invalid-ring shape, never-flatten rule and SC 1.4.11 budget in 3 themes; pressed-accent contrast in 3 themes; control-size scale across 3 densities + ${controlChecks} mobile port values; form-label tokens across 3 themes × 2 densities + RN/Flutter label type-scale parity; elevation scale (6 neutral + 3 brand + 2 inset) across 3 themes; data-viz layer (6 categorical + 8 sequential + 7 diverging, ${vizChecks} checks) across 3 themes; leading/tracking rhythm scale + composite type aliases across 3 densities; component registry (${COMPONENT_REGISTRY.length} components, ${componentChecks} platform checks); reverse coverage against ${webComponentDirs.length} web component directories (${exemptChecks} EXEMPT, see INO-652).`);
 console.log('High-contrast token pairs (AAA text >=7; non-text borders >=3; excludes disabled/decorative subtle role);\nplus per-theme pressed-accent pairs (INO-123):\n'+measurements.join('\n'));
