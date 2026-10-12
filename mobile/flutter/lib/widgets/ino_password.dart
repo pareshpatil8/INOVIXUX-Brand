@@ -40,6 +40,7 @@ int _scorePassword(String value) {
 /// warning is web-only, since a touch keyboard has no reliable modifier-state signal to key it off.
 class InoPassword extends StatefulWidget {
   final String? label;
+  final String? placeholder;
   final String? hint;
   final String? error;
   final String? initialValue;
@@ -52,6 +53,7 @@ class InoPassword extends StatefulWidget {
   const InoPassword({
     super.key,
     this.label,
+    this.placeholder,
     this.hint,
     this.error,
     this.initialValue,
@@ -126,6 +128,8 @@ class _InoPasswordState extends State<InoPassword> {
                     isDense: true,
                     filled: true,
                     fillColor: colors.surfaceSunken,
+                    hintText: widget.placeholder,
+                    hintStyle: TextStyle(fontSize: widget.size.fontSize, color: colors.onSurfaceSubtle),
                     contentPadding: EdgeInsets.only(
                       left: widget.size.paddingInline,
                       right: widget.size.paddingInline + 40,

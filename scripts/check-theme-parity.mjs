@@ -746,19 +746,12 @@ const COMPONENT_REGISTRY = [
       },
       flutter: {
         path: 'mobile/flutter/lib/widgets/ino_input.dart',
-        roles: ['accent', 'border', 'danger', 'onSurface', 'onSurfaceMuted', 'surfaceRaised', 'surfaceSunken'],
+        roles: ['accent', 'border', 'danger', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'surfaceRaised', 'surfaceSunken'],
       },
     },
     divergences: [
       { platform: 'reactNative', roles: ['accentActive'], reason: 'web reserves accent-active for the transient mousedown-before-focus-settles flash (ino-input.component.scss); touch input has no pointer-down-before-focus phase, so the port goes straight from unfocused to colors.accent on focus.' },
       { platform: 'flutter', roles: ['accentActive'], reason: 'same as the React Native entry above.' },
-      // NOT a declared design decision — this is an apparent gap this check surfaced while being
-      // written (INO-171). RN sets placeholderTextColor={colors.onSurfaceSubtle} explicitly
-      // (InoInput.tsx); Flutter's TextField/InputDecoration sets no hintStyle at all, so the
-      // placeholder falls back to Flutter's default theme color instead of reading the role web
-      // and RN both use. Recorded here so the check passes without masking the finding — flagged
-      // to the input component owner (INO-157) to fix Flutter or confirm the omission is intended.
-      { platform: 'flutter', roles: ['onSurfaceSubtle'], reason: 'GAP, not a decision: Flutter InoInput sets no explicit placeholder/hint color (no hintStyle on the InputDecoration), so it never reads onSurfaceSubtle at all, unlike web (::placeholder) and RN (placeholderTextColor). Filed as a follow-up against the input component owner rather than fixed here — see INO-171 handoff comment.' },
     ],
   },
   {
@@ -852,19 +845,12 @@ const COMPONENT_REGISTRY = [
       },
       flutter: {
         path: 'mobile/flutter/lib/widgets/ino_password.dart',
-        roles: ['accent', 'border', 'danger', 'onSurface', 'onSurfaceMuted', 'success', 'surfaceRaised', 'surfaceSunken', 'warning'],
+        roles: ['accent', 'border', 'danger', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'success', 'surfaceRaised', 'surfaceSunken', 'warning'],
       },
     },
     divergences: [
       { platform: 'reactNative', roles: ['accentActive'], reason: 'same rationale as the input entry above (INO-171) — web reserves accent-active for the transient mousedown-before-focus-settles flash (ino-password.component.scss `&:active`); touch input has no pointer-down-before-focus phase, so the port goes straight from unfocused to colors.accent on focus.' },
       { platform: 'flutter', roles: ['accentActive'], reason: 'same as the React Native entry above.' },
-      // NOT a declared design decision — same shape as the ino_input placeholder gap this check
-      // surfaced at INO-171/INO-157. Flutter's InputDecoration sets no hintText/hintStyle at all,
-      // so this port has no placeholder affordance and never reads onSurfaceSubtle (web's
-      // ::placeholder color, RN's placeholderTextColor) the way web and RN do. Recorded here so
-      // the check passes without masking the finding; flagged to the password component owner to
-      // add Flutter placeholder support or confirm the omission is intended.
-      { platform: 'flutter', roles: ['onSurfaceSubtle'], reason: 'Flutter TextField/InputDecoration sets no hintText/hintStyle, so this port has no placeholder affordance and never reads the placeholder-color role — same class of gap as the ino_input Flutter finding (INO-157). Flagged, not fixed, here.' },
     ],
   },
   {
