@@ -67,21 +67,36 @@ class InoKeyfilterFormatter extends TextInputFormatter {
 
   @override
   TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
-    if (newValue.text.length <= oldValue.text.length) return newValue;
+    final oldText = oldValue.text;
+    final newText = newValue.text;
 
-    // Locates the single contiguous insert by diffing from both ends — the caret position from
-    // `newValue.selection` pins the insert end, so unlike the RN hook this never has to guess it.
-    final insertEnd = newValue.selection.end >= 0 ? newValue.selection.end : newValue.text.length;
-    final insertLen = newValue.text.length - oldValue.text.length;
-    final insertStart = insertEnd - insertLen;
-    if (insertStart < 0 || insertEnd > newValue.text.length) return newValue;
+    // Diffs `newText` against `oldText` as a single contiguous edit — common prefix, common
+    // suffix, whatever's left in the middle is the removed run (from `oldText`) and the inserted
+    // run (from `newText`). Unlike a net-length comparison, this tells a replacement (a selection
+    // typed over) apart from a delete regardless of whether the edit grew, shrank, or stayed the
+    // same length — the same diff `../../react-native/src/components/InoKeyfilter.ts`'s
+    // `diffEdit` uses, since `onChangeText` has the identical "only the two whole strings, no
+    // selection" limitation this formatter now deliberately matches rather than trusting
+    // `newValue.selection`, which does not always pin the true edit boundary.
+    final maxPrefix = oldText.length < newText.length ? oldText.length : newText.length;
+    var start = 0;
+    while (start < maxPrefix && oldText[start] == newText[start]) {
+      start++;
+    }
+    final maxSuffix = maxPrefix - start;
+    var end = 0;
+    while (end < maxSuffix && oldText[oldText.length - 1 - end] == newText[newText.length - 1 - end]) {
+      end++;
+    }
 
-    final inserted = newValue.text.substring(insertStart, insertEnd);
-    final before = newValue.text.substring(0, insertStart);
-    final after = newValue.text.substring(insertEnd);
+    final inserted = newText.substring(start, newText.length - end);
+    if (inserted.isEmpty) return newValue; // pure deletion — nothing to filter
+
+    final before = oldText.substring(0, start);
+    final after = oldText.substring(oldText.length - end);
 
     var value = before + after;
-    var pos = insertStart;
+    var pos = start;
     var filtered = StringBuffer();
     for (final ch in inserted.characters) {
       if (_test(ch, _KeyfilterContext(value, pos))) {
@@ -96,7 +111,7 @@ class InoKeyfilterFormatter extends TextInputFormatter {
     onReject?.call(inserted);
 
     final result = before + filteredStr + after;
-    final caret = insertStart + filteredStr.length;
+    final caret = start + filteredStr.length;
     return TextEditingValue(
       text: result,
       selection: TextSelection.collapsed(offset: caret),
