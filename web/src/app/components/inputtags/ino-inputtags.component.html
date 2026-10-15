@@ -51,7 +51,7 @@
         [attr.aria-expanded]="shouldShowSuggestions"
         [attr.aria-controls]="shouldShowSuggestions ? listboxId : null"
         [attr.aria-activedescendant]="activeOptionId()"
-        [attr.aria-describedby]="[hint ? hintId : null, error ? errorId : null].filter(Boolean).join(' ') || null"
+        [attr.aria-describedby]="error ? errorId : (hint ? hintId : null)"
         [attr.aria-invalid]="error ? 'true' : null"
         role="combobox"
         autocomplete="off"
