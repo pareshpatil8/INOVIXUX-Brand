@@ -146,7 +146,7 @@ toggle); no `left`/`right`/`top`/`bottom` anywhere in the stylesheet.
 - **Pluggable strength scoring.** The meter's heuristic is fixed, not a caller-supplied function —
   see SPEC.md §2 for why that's kept separate from `policyRules`.
 
-## Mobile parity
+**Mobile parity:**
 
 - **Capacitor** — not a separate port; the same Angular component/CSS render in the Capacitor
   WebView.

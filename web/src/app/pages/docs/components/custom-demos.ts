@@ -17,6 +17,7 @@ import { SliderDemoComponent } from './demos/slider-demo.component';
 import { AutocompleteDemoComponent } from './demos/autocomplete-demo.component';
 import { KeyfilterDemoComponent } from './demos/keyfilter-demo.component';
 import { ToggleButtonDemoComponent } from './demos/toggle-button-demo.component';
+import { PasswordDemoComponent } from './demos/password-demo.component';
 
 /**
  * Slug -> hand-authored demo component, for components whose §2 Component Publish Contract
@@ -55,4 +56,11 @@ export const CUSTOM_DEMOS: Record<string, Type<unknown>> = {
   // type alias the manifest extractor can't enumerate (so no size row was generated), and
   // `pressed` — the state that defines the component — isn't in `STATE_INPUT_NAMES`.
   'toggle-button': ToggleButtonDemoComponent,
+  // Four stacked generic-renderer gaps (INO-691, fixing INO-407 QA rejection): `defaultValueFor()`
+  // forces `showStrengthMeter` to `false` despite the component's real default being `true`
+  // (boolean defaults are ignored entirely), can never render the policy hint panel (`policyRules`
+  // defaults to `[]`), never renders a Size axis (`size` is a type-alias input the manifest
+  // extractor can't enumerate), and never demonstrates label/hint/error text (all string inputs
+  // forced to `''`).
+  'password': PasswordDemoComponent,
 };
