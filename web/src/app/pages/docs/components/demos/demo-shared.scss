@@ -91,6 +91,102 @@
   }
 }
 
+// Keyfilter demo field chrome (`keyfilter-demo.component.html`, INO-693). The component paints
+// nothing, so its demo has to supply the field itself: these are a plain `<input>`'s stand-in for
+// whatever real field (normally `<ino-input>`) a consumer attaches the filter to — not a second
+// input style for anyone else to reuse. Same role the static
+// `docs/brand/06-angular-components/previews/keyfilter.html` card's demo chrome plays.
+.demo-row--keyfilter {
+  align-items: start;
+}
+
+.demo-keyfilter {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ino-space-2);
+  max-width: 26ch;
+}
+
+.demo-keyfilter__label {
+  font-size: var(--ino-type-label-size);
+  color: var(--ino-color-on-surface-muted);
+
+  code {
+    color: var(--ino-color-on-surface-subtle);
+  }
+}
+
+.demo-keyfilter__input {
+  min-height: var(--ino-control-height-default);
+  padding-inline: var(--ino-space-4);
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-md);
+  background: var(--ino-color-surface);
+  color: var(--ino-color-on-surface);
+  font: inherit;
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+}
+
+.demo-keyfilter__hint,
+.demo-keyfilter__readout {
+  margin: 0;
+  font-size: var(--ino-type-label-size);
+  color: var(--ino-color-on-surface-muted);
+}
+
+.demo-keyfilter__readout {
+  color: var(--ino-color-on-surface-subtle);
+}
+
+// The visual half of the `inoKeyfilterReject` feedback — the audible half is `.demo-live`.
+// Reduced motion keeps the ring (the signal) and drops only the animation (the decoration).
+.demo-keyfilter.is-rejected .demo-keyfilter__input {
+  animation: demo-keyfilter-reject var(--ino-motion-duration-slow)
+    var(--ino-motion-easing-standard) 1;
+}
+
+.demo-keyfilter.is-rejected .demo-keyfilter__readout {
+  color: var(--ino-color-danger-text-safe);
+}
+
+@keyframes demo-keyfilter-reject {
+  0%,
+  60% {
+    box-shadow: var(--ino-invalid-ring);
+    border-color: var(--ino-color-danger);
+  }
+  100% {
+    box-shadow: none;
+    border-color: var(--ino-color-border);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .demo-keyfilter.is-rejected .demo-keyfilter__input {
+    animation: none;
+    box-shadow: var(--ino-invalid-ring);
+    border-color: var(--ino-color-danger);
+  }
+}
+
+// Shared polite live region for a demo that needs one (keyfilter's rejection announcements).
+// Visible on purpose: the point is to show the caller-supplied announcement the component itself
+// declines to make.
+.demo-live {
+  margin: var(--ino-space-4) 0 0;
+  padding: var(--ino-space-2) var(--ino-space-3);
+  border-radius: var(--ino-radius-md);
+  background: var(--ino-color-surface-sunken);
+  color: var(--ino-color-on-surface);
+  font-family: var(--ino-font-mono);
+  font-size: var(--ino-type-label-size);
+  min-height: var(--ino-space-6);
+}
+
 .demo-rtl {
   border: 1px dashed var(--ino-color-border);
   border-radius: var(--ino-radius-md);

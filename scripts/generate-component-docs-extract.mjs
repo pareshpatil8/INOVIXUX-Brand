@@ -13,6 +13,12 @@ import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { marked } from 'marked';
 import sanitizeHtml from 'sanitize-html';
 
+import {
+  collectTypeAliases,
+  extractHostDirectiveApi,
+  findLocalTypeAliases,
+} from './host-directives.mjs';
+
 marked.setOptions({ gfm: true });
 
 /** Markdown -> sanitized HTML for one extracted section body. Allows the tags/attributes needed
@@ -98,14 +104,6 @@ function jsDocBefore(source, index, ranges) {
   return text || null;
 }
 
-function findLocalTypeAliases(source) {
-  const aliases = {};
-  for (const m of source.matchAll(/export type (\w+) = ((?:'[^']+'\s*\|?\s*)+);/g)) {
-    aliases[m[1]] = [...m[2].matchAll(/'([^']+)'/g)].map((x) => x[1]);
-  }
-  return aliases;
-}
-
 /** Best-effort type when an `@Input`/`@Output` field has no explicit `: Type` annotation and
  * relies on inference from its initializer, e.g. `@Input() label = '';`. */
 function inferTypeFromDefault(defaultValue) {
@@ -119,15 +117,16 @@ function inferTypeFromDefault(defaultValue) {
 
 /** Props table: every `@Input()` field, its type (declared or inferred), the union values a
  * local `export type` alias or inline string-union resolves to, its default, and the JSDoc
- * immediately above it (if any). */
-function parseProps(source, ranges) {
-  const aliases = findLocalTypeAliases(source);
+ * immediately above it (if any). `@Input('for') htmlFor` declares an explicit public name: that
+ * name, not the field name, is what callers bind to, so it is what the table shows. */
+function parseProps(source, ranges, aliases = findLocalTypeAliases(source)) {
   const props = [];
   const re =
-    /@Input\((?:\{[^}]*\})?\)\s*(?:readonly\s+)?(\w+)(\?)?\s*(?::\s*([^=;]+?))?\s*(?:=\s*([^;]+))?;/g;
+    /@Input\((?:'([^']*)'|\{[^}]*\})?\)\s*(?:readonly\s+)?(\w+)(\?)?\s*(?::\s*([^=;]+?))?\s*(?:=\s*([^;]+))?;/g;
   for (const m of source.matchAll(re)) {
     if (isInsideComment(ranges, m.index)) continue;
-    const [, name, optionalMark, typeRaw, defaultRaw] = m;
+    const [, publicName, fieldName, optionalMark, typeRaw, defaultRaw] = m;
+    const name = publicName || fieldName;
     const defaultValue = defaultRaw?.trim() ?? null;
     const type = typeRaw?.trim() ?? inferTypeFromDefault(defaultValue);
     let values = null;
@@ -211,14 +210,32 @@ function parseTemplates(markup) {
   return [...seen.values()];
 }
 
+/** Props/Events a component publishes by re-aliasing a sibling directive's through
+ * `hostDirectives` rather than declaring its own — `<ino-keyfilter>` and `<ino-focus-trap>` are
+ * built that way on purpose (one implementation, no wrapper node), and without this they render
+ * the portal's "declares no `@Input()` properties" placeholder despite having a live input
+ * surface. Aliases are collected across the directive's own relative imports so an enum input
+ * declared in a sibling file (`InoKeyfilterPreset`) still resolves to its `values` list. */
+function parseHostDirectiveApi(source, sourceUrl) {
+  const { inputs, outputs } = extractHostDirectiveApi(source, sourceUrl, (dirSource, dirUrl) => {
+    const dirRanges = findCommentRanges(dirSource);
+    return {
+      inputs: parseProps(dirSource, dirRanges, collectTypeAliases(dirSource, dirUrl)),
+      outputs: parseEvents(dirSource, dirRanges),
+    };
+  });
+  return { props: inputs, events: outputs };
+}
+
 function parseComponentApi(sourcePath) {
   const sourceUrl = new URL(sourcePath, root);
   if (!existsSync(sourceUrl)) return { props: [], events: [], methods: [], templates: [] };
   const source = readFileSync(sourceUrl, 'utf8');
   const ranges = findCommentRanges(source);
+  const hostDirectiveApi = parseHostDirectiveApi(source, sourceUrl);
   return {
-    props: parseProps(source, ranges),
-    events: parseEvents(source, ranges),
+    props: [...parseProps(source, ranges), ...hostDirectiveApi.props],
+    events: [...parseEvents(source, ranges), ...hostDirectiveApi.events],
     methods: parseMethods(source, ranges),
     templates: parseTemplates(resolveTemplateMarkup(source, sourceUrl)),
   };

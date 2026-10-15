@@ -6,6 +6,12 @@
 import { readFileSync, readdirSync, writeFileSync, statSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
+import {
+  collectTypeAliases,
+  extractHostDirectiveApi,
+  findLocalTypeAliases,
+} from './host-directives.mjs';
+
 const root = new URL('../', import.meta.url);
 const componentsDir = new URL('web/src/app/components/', root);
 
@@ -18,14 +24,6 @@ const VIEWPORTS = {
   tablet: '641-900px',
   desktop: '>900px',
 };
-
-function findLocalTypeAliases(source) {
-  const aliases = {};
-  for (const m of source.matchAll(/export type (\w+) = ((?:'[^']+'\s*\|?\s*)+);/g)) {
-    aliases[m[1]] = [...m[2].matchAll(/'([^']+)'/g)].map(x => x[1]);
-  }
-  return aliases;
-}
 
 // Blanks out `//` and `/* */` comments (preserving length/newlines so later offsets still make
 // sense) so a `@Input()` mentioned in a JSDoc example — e.g. multiselect's class-doc comment —
@@ -69,11 +67,14 @@ function inferTypeFromDefault(defaultValue) {
 function parseInputs(source, aliases) {
   const clean = stripComments(source);
   const inputs = [];
-  // Bare `@Input()` or the coercion form `@Input({ transform: booleanAttribute | numberAttribute })`.
-  const decoratorRe = /@Input\(\s*(?:\{\s*transform:\s*(booleanAttribute|numberAttribute)\s*\})?\s*\)\s*(\w+)(\??)\s*(?=[:=;])/g;
+  // Bare `@Input()`, the explicit-public-name form `@Input('for')`, or the coercion form
+  // `@Input({ transform: booleanAttribute | numberAttribute })`. When a public name is given it —
+  // not the field name — is what callers bind to, so that is what the manifest records.
+  const decoratorRe = /@Input\(\s*(?:'([^']*)'|\{\s*transform:\s*(booleanAttribute|numberAttribute)\s*\})?\s*\)\s*(\w+)(\??)\s*(?=[:=;])/g;
   let m;
   while ((m = decoratorRe.exec(clean))) {
-    const [, transform, name, optional] = m;
+    const [, publicName, transform, fieldName, optional] = m;
+    const name = publicName || fieldName;
     const afterName = m.index + m[0].length;
 
     let rawType = null;
@@ -136,7 +137,14 @@ for (const dirName of readdirSync(componentsDir).sort()) {
   const selectorMatch = source.match(/selector:\s*'([^']+)'/);
   const classMatch = source.match(/export class (\w+)/);
   const aliases = findLocalTypeAliases(source);
-  const inputs = parseInputs(source, aliases);
+  // Own `@Input()`s, then any published through `hostDirectives` — `<ino-keyfilter>` and
+  // `<ino-focus-trap>` declare their whole input surface that way and would otherwise report none.
+  const inputs = [
+    ...parseInputs(source, aliases),
+    ...extractHostDirectiveApi(source, tsPath, (dirSource, dirUrl) => ({
+      inputs: parseInputs(dirSource, collectTypeAliases(dirSource, dirUrl)),
+    })).inputs,
+  ];
   const variantInput = inputs.find(i => i.name === 'variant' || i.name === 'status');
   components.push({
     name: selectorMatch?.[1] ?? `ino-${dirName}`,

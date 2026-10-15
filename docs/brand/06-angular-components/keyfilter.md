@@ -134,6 +134,22 @@ directive ever sees the event. Recorded here per doc 26 §2 point 6 rather than 
 **PrimeNG mapping.** `pKeyFilter`'s five presets map 1:1 onto `int`/`num`/`alpha`/`alphanum`/custom
 regex above.
 
+**Mobile: ported, as formatters rather than widgets** (doc 26 §2 point 6). Neither mobile platform
+has an Angular-style attribute directive, so each port is the idiomatic non-visual "reject this
+edit" primitive for its runtime instead of a component:
+
+- **Flutter** — `InoKeyfilterFormatter`, a `TextInputFormatter` passed to a `TextField`'s
+  `inputFormatters:` list (`mobile/flutter/lib/widgets/ino_keyfilter.dart`).
+- **React Native** — `useInoKeyfilter(preset, options)`, a hook returning a `filterChangeText`
+  function wired ahead of the caller's own `onChangeText`
+  (`mobile/react-native/src/components/InoKeyfilter.ts`).
+
+Both re-implement the preset semantics rather than importing the web module (neither runtime can
+import web TypeScript), and both get the IME guarantee for free: a composed run commits as one
+already-resolved edit on both platforms, so there is no intermediate composing state either port
+could interrupt. Nothing is deferred or dropped here — the full per-row reasoning is in §"Mobile"
+below and `SPEC.md` §5.
+
 ---
 
 ## Mobile

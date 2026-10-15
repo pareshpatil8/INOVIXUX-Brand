@@ -1473,6 +1473,14 @@
       "api": {
         "props": [
           {
+            "name": "for",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": "The `id` of the projected native control — forwarded to the internal `<ino-label for>`, the same contract `<ino-label>` itself already has."
+          },
+          {
             "name": "label",
             "type": "string",
             "values": null,
@@ -1549,7 +1557,40 @@
       "a11y": "<p><strong>Role / ARIA.</strong> The trap declares <strong>none of its own</strong>, by design. It is a mechanism, not content.\n<code>role=\"dialog\"</code>, <code>aria-modal=\"true\"</code> and the accessible name belong to the consuming surface — that\nis the element a screen reader announces, and putting a role on the trap would produce a second,\nredundant landmark.</p>\n<p><strong>Keyboard map.</strong></p>\n<table>\n<thead>\n<tr>\n<th>Key</th>\n<th>Result</th>\n</tr>\n</thead>\n<tbody><tr>\n<td><code>Tab</code></td>\n<td>Next tabbable element. From the last, wraps to the first.</td>\n</tr>\n<tr>\n<td><code>Shift+Tab</code></td>\n<td>Previous tabbable element. From the first, wraps to the last.</td>\n</tr>\n<tr>\n<td>everything else</td>\n<td>Untouched — the browser's native tab order and the consumer's own handlers.</td>\n</tr>\n</tbody></table>\n<p>The trap deliberately does <strong>not</strong> handle <code>Esc</code>. Dismissal is the consuming surface's decision and\nits handler, because only the consumer knows whether closing is currently permitted (a\nConfirmDialog mid-submit may refuse).</p>\n<p><strong>SC 2.1.2 (No Keyboard Trap) — both directions.</strong> Focus is <em>contained</em> while the trap is active\nand <em>released</em> when it is disabled or destroyed. The release half is what hand-rolled traps\nusually miss, and it is the half the success criterion is actually named after: a trap with no\nexit is the failure, not the goal. Both directions have tests.</p>\n<p><strong>SC 2.4.3 (Focus Order).</strong> <code>restoreFocus</code> returns focus to the control that opened the surface,\nnot to the top of the document. It restores only if the trap still holds focus — if something else\nhas already moved focus on (a toast action, the next dialog in a wizard), yanking it back would be\nthe bug.</p>\n<p><strong>Sentinels are invisible to assistive tech.</strong> The two tab stops that perform the wrap are\n<code>aria-hidden=\"true\"</code> spans at zero opacity with <code>pointer-events: none</code>. A virtual-cursor user never\nencounters them, and they are not pointer targets — so SC 2.5.8 (target size) has nothing to\nmeasure here.</p>\n<p><strong>Contrast.</strong> Nothing is painted, so there is no text or non-text contrast pair to audit. The trap\nnever touches the focus ring of the elements it contains: those keep whatever <code>--ino-focus-ring</code>\ntheir own component paints, which is how the ring stays correct across dark, light and\nhigh-contrast for free. The single <code>outline: none</code> in the stylesheet is scoped to\n<code>:host([tabindex='-1']:focus)</code> — the programmatic container-fallback focus used when a container\nholds no tabbable content at all, which the user cannot reach by keyboard and has nothing to act on.</p>\n<p><strong>RTL.</strong> The sentinel's structural style uses <code>inset-block-start</code> / <code>inset-inline-start</code>, never\n<code>top</code> / <code>left</code>. There is no other positioned element.</p>\n<hr />\n",
       "notes": null,
       "api": {
-        "props": [],
+        "props": [
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": "Suspends the trap without removing the directive. Counterpart of PrimeNG's `pFocusTrapDisabled`. Flipping this back to `false` re-activates and re-runs auto-focus, which is the behavior a Drawer wants when it re-opens."
+          },
+          {
+            "name": "autoFocus",
+            "type": "boolean",
+            "values": null,
+            "default": "true",
+            "optional": true,
+            "description": "Move focus into the container on activation. Defaults to `true` because every consumer of this primitive is a dialog-like surface, and APG requires initial focus to land inside. Set `false` only when the consumer places focus itself."
+          },
+          {
+            "name": "initialFocus",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": "CSS selector for the element that should receive initial focus, resolved within the container. Falls back to the first tabbable element, then to the container itself. Use this rather than `autofocus`, which browsers apply inconsistently to dynamically inserted DOM."
+          },
+          {
+            "name": "restoreFocus",
+            "type": "boolean",
+            "values": null,
+            "default": "true",
+            "optional": true,
+            "description": "Return focus to whatever was focused before activation, on deactivate or destroy. This is the half of SC 2.4.3 (Focus Order) that hand-rolled traps usually miss: dismissing a dialog should put the user back on the control that opened it, not at the top of the document."
+          }
+        ],
         "events": [],
         "methods": [
           {
@@ -1683,6 +1724,14 @@
       "notes": null,
       "api": {
         "props": [
+          {
+            "name": "for",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": "The `id` of the projected native control — forwarded to the internal `<ino-label for>`, the same contract `<ino-label>`/`<ino-float-label>` already have."
+          },
           {
             "name": "label",
             "type": "string",
@@ -2502,10 +2551,47 @@
       "name": "ino-keyfilter",
       "docPath": "docs/brand/06-angular-components/keyfilter.md",
       "a11y": "<p><strong>Role / ARIA.</strong> None of its own, by design. It is a mechanism, not content — same posture as\n<code>[inoFocusTrap]</code>.</p>\n<p><strong>Must not block IME or assistive-technology input.</strong> Filtering happens <em>only</em> in the <code>keydown</code>\nhandler, and only for a single printable character (<code>event.key.length === 1</code>) with no modifier\nheld (<code>ctrlKey</code>/<code>metaKey</code>/<code>altKey</code>). The handler returns immediately whenever\n<code>event.isComposing</code> — or the legacy <code>keyCode === 229</code> some browsers/WebViews still use instead of\na reliable <code>isComposing</code> — is true. An IME composing non-Latin text is therefore never tested\nagainst the (inherently Latin/numeric) preset regexes, so composition is never interrupted and\nthe composed result is never retroactively stripped. There is deliberately no <code>input</code>-event\nresync filter the way <code>&lt;ino-inputmask&gt;</code> has one — a resync filter is exactly the mechanism that\nwould strip IME-composed text after the fact. Non-printable and modifier-combo keys (Tab,\nBackspace, Delete, arrows, Home/End, Enter, Ctrl/Cmd/Alt shortcuts — copy, paste, undo,\nselect-all, screen-reader command keys) are never intercepted, so assistive technology retains\nevery key it needs.</p>\n<p><strong>Screen-reader behavior on rejection.</strong> Silent by default — no <code>aria-live</code> region announces a\nblocked keystroke, because one owned by this directive would be a second, uncoordinated\nannouncement competing with whatever the host field's own hint/error text already says.\n<code>inoKeyfilterReject</code> exists for a caller that wants its own reaction (an <code>aria-live</code> region, a\nshake animation, a toast):</p>\n<pre><code>&lt;ino-input inoKeyfilter=\"int\" (inoKeyfilterReject)=\"announce($event)\"&gt;&lt;/ino-input&gt;\n&lt;div aria-live=\"polite\" class=\"sr-only\"&gt;{{ liveMessage() }}&lt;/div&gt;\n</code></pre>\n<p><strong>Contrast / target size.</strong> Nothing is painted, so there is no text or non-text contrast pair, and\nno pointer target, to audit — same as <code>[inoFocusTrap]</code>.</p>\n<hr />\n",
-      "notes": "<p><strong>States, Sizing, and Labels</strong> (doc 26 §2 points 2–4) are recorded <code>n/a</code> — see §\"States\" above and\n<code>SPEC.md</code> §2 for the full row-by-row disposition.</p>\n<p><strong>PrimeNG mapping.</strong> <code>pKeyFilter</code>'s five presets map 1:1 onto <code>int</code>/<code>num</code>/<code>alpha</code>/<code>alphanum</code>/custom\nregex above.</p>\n<hr />\n",
+      "notes": "<p><strong>States, Sizing, and Labels</strong> (doc 26 §2 points 2–4) are recorded <code>n/a</code> — see §\"States\" above and\n<code>SPEC.md</code> §2 for the full row-by-row disposition.</p>\n<p><strong>PrimeNG mapping.</strong> <code>pKeyFilter</code>'s five presets map 1:1 onto <code>int</code>/<code>num</code>/<code>alpha</code>/<code>alphanum</code>/custom\nregex above.</p>\n<p><strong>Mobile: ported, as formatters rather than widgets</strong> (doc 26 §2 point 6). Neither mobile platform\nhas an Angular-style attribute directive, so each port is the idiomatic non-visual \"reject this\nedit\" primitive for its runtime instead of a component:</p>\n<ul>\n<li><strong>Flutter</strong> — <code>InoKeyfilterFormatter</code>, a <code>TextInputFormatter</code> passed to a <code>TextField</code>'s\n<code>inputFormatters:</code> list (<code>mobile/flutter/lib/widgets/ino_keyfilter.dart</code>).</li>\n<li><strong>React Native</strong> — <code>useInoKeyfilter(preset, options)</code>, a hook returning a <code>filterChangeText</code>\nfunction wired ahead of the caller's own <code>onChangeText</code>\n(<code>mobile/react-native/src/components/InoKeyfilter.ts</code>).</li>\n</ul>\n<p>Both re-implement the preset semantics rather than importing the web module (neither runtime can\nimport web TypeScript), and both get the IME guarantee for free: a composed run commits as one\nalready-resolved edit on both platforms, so there is no intermediate composing state either port\ncould interrupt. Nothing is deferred or dropped here — the full per-row reasoning is in §\"Mobile\"\nbelow and <code>SPEC.md</code> §5.</p>\n<hr />\n",
       "api": {
-        "props": [],
-        "events": [],
+        "props": [
+          {
+            "name": "preset",
+            "type": "InoKeyfilterPreset",
+            "values": [
+              "int",
+              "num",
+              "alpha",
+              "alphanum",
+              "regex"
+            ],
+            "default": "'int'",
+            "optional": true,
+            "description": "Named preset; ignored (in favor of `pattern`) when set to `'regex'`."
+          },
+          {
+            "name": "pattern",
+            "type": "string | RegExp",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": "Custom per-character pattern, used only when `preset === 'regex'`. Tested one character at a time, same as every built-in preset — no anchors needed."
+          },
+          {
+            "name": "validateOnPaste",
+            "type": "boolean",
+            "values": null,
+            "default": "true",
+            "optional": true,
+            "description": "When a paste contains disallowed characters: strip them and insert the rest (default), or reject the whole paste when `false`. Either way `inoKeyfilterReject` fires once."
+          }
+        ],
+        "events": [
+          {
+            "name": "inoKeyfilterReject",
+            "type": "string",
+            "description": "Fires with the rejected character (keydown) or the full rejected clipboard text (paste). Nothing is announced to assistive technology by default — see SPEC.md §3 for why, and for the `aria-live` pattern a caller can wire to this output if it wants one."
+          }
+        ],
         "methods": [],
         "templates": [
           {
@@ -2522,6 +2608,14 @@
       "notes": "<ul>\n<li><strong>Not retrofit onto <code>ino-input</code>/<code>ino-select</code>.</strong> Those components keep their existing inline\n<code>&lt;label for&gt;</code> markup; this issue does not touch either file (merge hygiene). See\n<a href=\"../../../web/src/app/components/label/SPEC.md#4-not-retrofit-onto-ino-inputino-select-dod-row-11-merge-hygiene\">SPEC.md §4</a>.</li>\n</ul>\n",
       "api": {
         "props": [
+          {
+            "name": "for",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": "Native `for`/`id` association — the accessible-name link to the control this label names."
+          },
           {
             "name": "size",
             "type": "InoLabelSize",

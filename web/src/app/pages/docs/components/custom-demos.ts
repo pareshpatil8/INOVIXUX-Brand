@@ -15,6 +15,7 @@ import { TreeSelectDemoComponent } from './demos/treeselect-demo.component';
 import { InputMaskDemoComponent } from './demos/inputmask-demo.component';
 import { SliderDemoComponent } from './demos/slider-demo.component';
 import { AutocompleteDemoComponent } from './demos/autocomplete-demo.component';
+import { KeyfilterDemoComponent } from './demos/keyfilter-demo.component';
 
 /**
  * Slug -> hand-authored demo component, for components whose §2 Component Publish Contract
@@ -43,4 +44,8 @@ export const CUSTOM_DEMOS: Record<string, Type<unknown>> = {
   'inputmask': InputMaskDemoComponent,
   'slider': SliderDemoComponent,
   'autocomplete': AutocompleteDemoComponent,
+  // Not a composition problem like the rest of this map: the generic renderer mounts via
+  // `*ngComponentOutlet` with `inputs` only and can never project content, and
+  // `<ino-keyfilter>`'s whole template is `<ng-content>` — so it renders nothing at all there.
+  'keyfilter': KeyfilterDemoComponent,
 };

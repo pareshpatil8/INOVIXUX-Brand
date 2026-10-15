@@ -1159,6 +1159,13 @@
       "previewPath": null,
       "inputs": [
         {
+          "name": "for",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
           "name": "label",
           "type": "string",
           "values": null,
@@ -1229,7 +1236,36 @@
       "className": "InoFocusTrapComponent",
       "sourcePath": "web/src/app/components/focus-trap/ino-focus-trap.component.ts",
       "previewPath": null,
-      "inputs": [],
+      "inputs": [
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "autoFocus",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "initialFocus",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "restoreFocus",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        }
+      ],
       "variants": null,
       "viewports": [
         "mobile",
@@ -1334,6 +1370,13 @@
       "sourcePath": "web/src/app/components/iftalabel/ino-iftalabel.component.ts",
       "previewPath": null,
       "inputs": [
+        {
+          "name": "for",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
         {
           "name": "label",
           "type": "string",
@@ -2022,7 +2065,35 @@
       "className": "InoKeyfilterComponent",
       "sourcePath": "web/src/app/components/keyfilter/ino-keyfilter.component.ts",
       "previewPath": null,
-      "inputs": [],
+      "inputs": [
+        {
+          "name": "preset",
+          "type": "InoKeyfilterPreset",
+          "values": [
+            "int",
+            "num",
+            "alpha",
+            "alphanum",
+            "regex"
+          ],
+          "default": "'int'",
+          "optional": true
+        },
+        {
+          "name": "pattern",
+          "type": "string | RegExp",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "validateOnPaste",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        }
+      ],
       "variants": null,
       "viewports": [
         "mobile",
@@ -2037,6 +2108,13 @@
       "sourcePath": "web/src/app/components/label/ino-label.component.ts",
       "previewPath": null,
       "inputs": [
+        {
+          "name": "for",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
         {
           "name": "size",
           "type": "InoLabelSize",
