@@ -1,0 +1,323 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Variants — the two faces</h3>
+  <p class="demo-section__note">
+    The component owns its visible label and swaps <code>onLabel</code>/<code>offLabel</code> (and
+    <code>onIcon</code>/<code>offIcon</code> when provided) as <code>pressed</code> flips — it takes
+    no projected content, so the two faces can never drift out of sync with the state. Click any
+    button: the caption under it reads <code>pressed</code> back live, and the face changes from the
+    bordered <code>ino-button</code> secondary shape to the accent-filled primary shape.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">text only</p>
+      <ino-toggle-button
+        onLabel="Bold on"
+        offLabel="Bold off"
+        [(pressed)]="textFace"
+      ></ino-toggle-button>
+      <p class="demo-live">pressed = {{ textFace }}</p>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">icon + label</p>
+      <ino-toggle-button
+        onLabel="Unmuted"
+        offLabel="Muted"
+        onIcon="&#128266;"
+        offIcon="&#9743;"
+        [(pressed)]="iconFace"
+      ></ino-toggle-button>
+      <p class="demo-live">pressed = {{ iconFace }}</p>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">icon only + ariaLabel</p>
+      <ino-toggle-button
+        onLabel=""
+        offLabel=""
+        onIcon="&#128204;"
+        offIcon="&#128204;"
+        ariaLabel="Pin this conversation"
+        [(pressed)]="iconOnlyFace"
+      ></ino-toggle-button>
+      <p class="demo-live">pressed = {{ iconOnlyFace }}</p>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States</h3>
+  <p class="demo-section__note">
+    The standard state set. <code>disabled</code> dims to 50% and leaves the tab order;
+    <code>readonly</code> stays focusable and fully legible but silently ignores the press, exposed
+    as <code>aria-disabled</code> (not <code>aria-readonly</code>, which a native
+    <code>button</code> role drops — <code>SPEC.md</code> §5); <code>loading</code> is
+    <code>aria-busy</code> plus natively disabled, with the current face still on screen next to the
+    spinner. The three locked instances below are shown in both faces, since each face has its own
+    colour pair to check. Hover and <code>:focus-visible</code> are live on every enabled
+    instance — tab onto one for the focus ring.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">disabled — both faces</p>
+      <div class="demo-row">
+        <ino-toggle-button
+          onLabel="Bold on"
+          offLabel="Bold off"
+          [disabled]="true"
+          [pressed]="false"
+        ></ino-toggle-button>
+        <ino-toggle-button
+          onLabel="Bold on"
+          offLabel="Bold off"
+          [disabled]="true"
+          [pressed]="true"
+        ></ino-toggle-button>
+      </div>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">readonly — both faces</p>
+      <div class="demo-row">
+        <ino-toggle-button
+          onLabel="Locked on"
+          offLabel="Locked off"
+          [readonly]="true"
+          [pressed]="false"
+        ></ino-toggle-button>
+        <ino-toggle-button
+          onLabel="Locked on"
+          offLabel="Locked off"
+          [readonly]="true"
+          [pressed]="true"
+        ></ino-toggle-button>
+      </div>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">loading — both faces</p>
+      <div class="demo-row">
+        <ino-toggle-button
+          onLabel="Saving…"
+          offLabel="Saving…"
+          [loading]="true"
+          [pressed]="false"
+        ></ino-toggle-button>
+        <ino-toggle-button
+          onLabel="Saving…"
+          offLabel="Saving…"
+          [loading]="true"
+          [pressed]="true"
+        ></ino-toggle-button>
+      </div>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">invalid — <code>error</code> clears once pressed</p>
+      <ino-toggle-button
+        onLabel="Terms accepted"
+        offLabel="Accept terms"
+        [error]="termsError"
+        [(pressed)]="termsAccepted"
+      ></ino-toggle-button>
+      <p class="demo-live">
+        aria-invalid = {{ termsError ? 'true' : '(absent)' }}
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Sizing — sm / default / lg</h3>
+  <p class="demo-section__note">
+    <code>size</code> is typed <code>InoControlSize</code>, a type alias — the manifest extractor
+    records <code>"values": null</code> for that row, which is why the generated props table shows
+    no enumerated values and the generic renderer produced no size row. The three rungs read the
+    full five-alias <code>--ino-control-*</code> set (height, roomy inline padding, font size, icon
+    size, gap) — the same set <code>ino-button</code> reads. Both faces are shown at every rung.
+  </p>
+  <p class="demo-section__note">
+    Note the heights these rungs resolve to <em>here</em>: this page runs in the dense register, so
+    they are 28 / 32 / 40px, not the 32 / 44 / 52px of the fluid register. The component's
+    documented <code>size="default"</code> = 44px (<code>--ino-target-comfortable</code>) is the
+    fluid figure — see the fluid pane in the next section, which does measure 44px. The contract's
+    floor is that <code>size="default"</code> never drops below 32px even in dense mode, which is
+    exactly what the middle rung does here.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">size="sm"</p>
+      <div class="demo-row">
+        <ino-toggle-button
+          size="sm"
+          onLabel="Unmuted"
+          offLabel="Muted"
+          onIcon="&#128266;"
+          offIcon="&#9743;"
+          [(pressed)]="smOff"
+        ></ino-toggle-button>
+        <ino-toggle-button
+          size="sm"
+          onLabel="Unmuted"
+          offLabel="Muted"
+          onIcon="&#128266;"
+          offIcon="&#9743;"
+          [(pressed)]="smOn"
+        ></ino-toggle-button>
+      </div>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">size="default"</p>
+      <div class="demo-row">
+        <ino-toggle-button
+          size="default"
+          onLabel="Unmuted"
+          offLabel="Muted"
+          onIcon="&#128266;"
+          offIcon="&#9743;"
+          [(pressed)]="defaultOff"
+        ></ino-toggle-button>
+        <ino-toggle-button
+          size="default"
+          onLabel="Unmuted"
+          offLabel="Muted"
+          onIcon="&#128266;"
+          offIcon="&#9743;"
+          [(pressed)]="defaultOn"
+        ></ino-toggle-button>
+      </div>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">size="lg"</p>
+      <div class="demo-row">
+        <ino-toggle-button
+          size="lg"
+          onLabel="Unmuted"
+          offLabel="Muted"
+          onIcon="&#128266;"
+          offIcon="&#9743;"
+          [(pressed)]="lgOff"
+        ></ino-toggle-button>
+        <ino-toggle-button
+          size="lg"
+          onLabel="Unmuted"
+          offLabel="Muted"
+          onIcon="&#128266;"
+          offIcon="&#9743;"
+          [(pressed)]="lgOn"
+        ></ino-toggle-button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Density — dense vs. fluid</h3>
+  <p class="demo-section__note">
+    Density is a global <code>[data-density]</code> token axis, not a per-component
+    <code>@Input()</code>. This docs page renders in the dense register
+    (<code>[data-density="dense"]</code> on the layout host); the right-hand pane overrides to
+    fluid. The component's base rule reads the bare unsuffixed
+    <code>--ino-control-*</code> aliases and the size classes only re-point them, so density
+    composes with <code>size</code> for free rather than needing its own rules.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane" data-density="dense">
+      <p class="demo-pane__label">dense</p>
+      <ino-toggle-button
+        onLabel="Notifications on"
+        offLabel="Notifications off"
+        [(pressed)]="denseFace"
+      ></ino-toggle-button>
+    </div>
+    <div class="demo-pane" data-density="fluid">
+      <p class="demo-pane__label">fluid</p>
+      <ino-toggle-button
+        onLabel="Notifications on"
+        offLabel="Notifications off"
+        [(pressed)]="fluidFace"
+      ></ino-toggle-button>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Labels — accessible name, wrapping, RTL</h3>
+  <p class="demo-section__note">
+    A toggle button is self-labelling from its own text content, so <code>ariaLabel</code> is only
+    written to the DOM when the visible label is empty (the icon-only case in the first row above) —
+    a duplicate accessible name on a labelled button could only drift from the visible one. There is
+    no <code>required</code> or hint-text input: a toggle button is rarely a "required field" in the
+    form sense, and <code>error</code> covers the one case that matters. The stylesheet uses logical
+    properties only (<code>border-inline-start-color</code>, <code>padding-inline</code>), including
+    the spinner's gap notch, so both faces mirror correctly under <code>dir="rtl"</code>.
+  </p>
+  <div class="demo-col" style="max-width: 360px;">
+    <ino-toggle-button
+      onLabel="Receiving every regulatory bulletin for this jurisdiction"
+      offLabel="Not receiving regulatory bulletins for this jurisdiction"
+      [(pressed)]="longLabelFace"
+    ></ino-toggle-button>
+  </div>
+  <div class="demo-rtl" dir="rtl" style="margin-top: var(--ino-space-4); max-width: 360px;">
+    <ino-toggle-button
+      onLabel="تفعيل الإشعارات"
+      offLabel="إيقاف الإشعارات"
+      onIcon="&#128266;"
+      offIcon="&#9743;"
+      [(pressed)]="rtlFace"
+    ></ino-toggle-button>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Dense-table usage</h3>
+  <p class="demo-section__note">
+    A row-level flag inside a dense table — the narrowest realistic placement, and the two faces
+    stay distinguishable at table scale without a separate "compact" visual language. These stay at
+    <code>size="default"</code> rather than dropping to <code>sm</code> on purpose: in the dense
+    register <code>default</code> resolves to exactly the 32px floor the accessibility contract
+    promises, while <code>sm</code> would land at 28px — under the minimum target. Reach for
+    <code>size="sm"</code> in a fluid-register layout (where it is 32px), not to squeeze an
+    already-dense table.
+  </p>
+  <table class="demo-table">
+    <thead>
+      <tr>
+        <th scope="col">Flag</th>
+        <th scope="col">Invoice</th>
+        <th scope="col">Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of tableRows">
+        <td>
+          <ino-toggle-button
+            size="default"
+            onLabel="Flagged"
+            offLabel="Flag"
+            [pressed]="flaggedRows.has(row.id)"
+            (pressedChange)="setFlagged(row.id, $event)"
+          ></ino-toggle-button>
+        </td>
+        <td>{{ row.invoice }}</td>
+        <td>{{ row.amount }}</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Keyboard contract</h3>
+  <p class="demo-section__note">
+    Native <code>&lt;button&gt;</code> activation, nothing custom:
+    <strong>Tab</strong> focuses (and reaches the readonly instances too — only
+    <code>disabled</code>/<code>loading</code> leave the tab order);
+    <strong>Space</strong> or <strong>Enter</strong> toggles, flipping
+    <code>aria-pressed</code> and emitting <code>pressedChange</code>. No arrow-key handling: this
+    is a single independent button, not a radio-style group — for a mutually exclusive set, reach
+    for <code>&lt;ino-select-button&gt;</code> instead.
+  </p>
+</section>

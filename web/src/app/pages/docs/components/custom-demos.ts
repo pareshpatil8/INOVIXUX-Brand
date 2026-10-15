@@ -16,6 +16,7 @@ import { InputMaskDemoComponent } from './demos/inputmask-demo.component';
 import { SliderDemoComponent } from './demos/slider-demo.component';
 import { AutocompleteDemoComponent } from './demos/autocomplete-demo.component';
 import { KeyfilterDemoComponent } from './demos/keyfilter-demo.component';
+import { ToggleButtonDemoComponent } from './demos/toggle-button-demo.component';
 
 /**
  * Slug -> hand-authored demo component, for components whose §2 Component Publish Contract
@@ -48,4 +49,10 @@ export const CUSTOM_DEMOS: Record<string, Type<unknown>> = {
   // `*ngComponentOutlet` with `inputs` only and can never project content, and
   // `<ino-keyfilter>`'s whole template is `<ng-content>` — so it renders nothing at all there.
   'keyfilter': KeyfilterDemoComponent,
+  // Three stacked generic-renderer gaps, not a composition problem: `defaultValueFor()` returns
+  // `''` for every string input (so `onLabel`/`offLabel` lose their documented `'Yes'`/`'No'`
+  // defaults and the label element is `*ngIf`'d away — an empty, unlabeled button), `size` is a
+  // type alias the manifest extractor can't enumerate (so no size row was generated), and
+  // `pressed` — the state that defines the component — isn't in `STATE_INPUT_NAMES`.
+  'toggle-button': ToggleButtonDemoComponent,
 };

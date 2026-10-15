@@ -173,9 +173,12 @@
   }
 }
 
-// Shared polite live region for a demo that needs one (keyfilter's rejection announcements).
-// Visible on purpose: the point is to show the caller-supplied announcement the component itself
-// declines to make.
+// Monospace readout chrome, in two uses. (1) A shared polite live region for a demo that needs one
+// (keyfilter's rejection announcements) — visible on purpose, since the point is to show the
+// caller-supplied announcement the component itself declines to make. (2) A plain (non-live) state
+// readout under an instance, where the demo prints a binding back so a caption can't go stale after
+// a reviewer clicks (toggle-button's `pressed`/`aria-invalid`) — no `role`/`aria-live` there, since
+// the component already announces that state itself via `aria-pressed`.
 .demo-live {
   margin: var(--ino-space-4) 0 0;
   padding: var(--ino-space-2) var(--ino-space-3);
