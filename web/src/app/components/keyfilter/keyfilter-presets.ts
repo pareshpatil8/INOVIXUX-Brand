@@ -45,7 +45,12 @@ export function createKeyfilterTest(
   pattern: string | RegExp,
 ): (ch: string, ctx: InoKeyfilterContext) => boolean {
   if (preset === 'regex') {
-    const re = typeof pattern === 'string' ? new RegExp(pattern) : pattern;
+    // A caller-supplied RegExp with a `g`/`y` flag carries `lastIndex` state across `.test()`
+    // calls, which would make consecutive characters alternate accept/reject. Rebuilding without
+    // those flags keeps every call stateless, matching the per-character contract every preset
+    // test has to satisfy.
+    const re =
+      typeof pattern === 'string' ? new RegExp(pattern) : new RegExp(pattern.source, pattern.flags.replace(/[gy]/g, ''));
     return (ch) => re.test(ch);
   }
   return PRESET_TESTS[preset];

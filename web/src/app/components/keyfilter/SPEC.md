@@ -13,10 +13,12 @@ screen-reader behavior; Mobile: web directive + RN/Flutter formatter equivalents
 ## 1. What this component is
 
 A **behaviour-only primitive**, same category as `[inoFocusTrap]` (`../focus-trap/`): it renders
-nothing of its own and has no visual states, sizing, or label API. Unlike `<ino-inputmask>`, it
-never rewrites or reformats the field's value — a key either lands unchanged or doesn't land at
-all. It blocks keystrokes (and optionally filters pastes) that don't match a preset or a custom
-`pattern`, on whatever `<input>`/`<textarea>` it's attached to.
+nothing of its own and has no visual states, sizing, or label API. Unlike `<ino-inputmask>`, a
+keystroke the `keydown` path allows always lands unchanged — it either lands as typed or doesn't
+land at all. (The paste path is the one exception: when `validateOnPaste` is true, §3's `onPaste`
+writes the filtered survivors into the field itself.) It blocks keystrokes (and optionally filters
+pastes) that don't match a preset or a custom `pattern`, on whatever `<input>`/`<textarea>` it's
+attached to.
 
 Two forms ship, backed by one implementation, for the same reason `[inoFocusTrap]` ships two:
 
