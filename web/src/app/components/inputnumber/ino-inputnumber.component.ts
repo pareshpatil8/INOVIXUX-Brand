@@ -76,6 +76,9 @@ export class InoInputNumberComponent {
   protected readonly incrementBtnId = `${this.inputId}-increment`;
   protected readonly decrementBtnId = `${this.inputId}-decrement`;
 
+  protected focused = false;
+  protected inputText = '';
+
   protected get formattedValue(): string {
     if (this.value === null || this.value === undefined) return '';
 
@@ -99,8 +102,11 @@ export class InoInputNumberComponent {
     }
   }
 
-  protected get inputValue(): string {
-    return this.value !== null && this.value !== undefined ? String(this.value) : '';
+  protected get displayValue(): string {
+    if (this.focused) {
+      return this.inputText;
+    }
+    return this.formattedValue;
   }
 
   protected isAtMin(): boolean {
@@ -111,9 +117,19 @@ export class InoInputNumberComponent {
     return this.value !== null && this.max !== null && this.value >= this.max;
   }
 
+  onFocus(event: FocusEvent): void {
+    this.focused = true;
+    this.inputText = this.value !== null && this.value !== undefined ? String(this.value) : '';
+  }
+
+  onBlur(event: FocusEvent): void {
+    this.focused = false;
+  }
+
   onInput(event: Event): void {
     const inputElement = event.target as HTMLInputElement;
     const rawValue = inputElement.value;
+    this.inputText = rawValue;
 
     if (rawValue === '' || rawValue === '-') {
       this.value = null;
@@ -168,6 +184,9 @@ export class InoInputNumberComponent {
     const currentValue = this.value ?? 0;
     const newValue = currentValue + (this.step * multiplier);
     this.updateValue(newValue);
+    if (this.focused) {
+      this.inputText = String(this.value);
+    }
   }
 
   decrement(multiplier = 1): void {
@@ -176,6 +195,9 @@ export class InoInputNumberComponent {
     const currentValue = this.value ?? 0;
     const newValue = currentValue - (this.step * multiplier);
     this.updateValue(newValue);
+    if (this.focused) {
+      this.inputText = String(this.value);
+    }
   }
 
   protected updateValue(value: number): void {

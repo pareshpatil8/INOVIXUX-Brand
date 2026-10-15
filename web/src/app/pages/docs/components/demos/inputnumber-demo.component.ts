@@ -54,4 +54,9 @@ export class InputNumberDemoComponent {
   protected hintValue: number | null = 5;
   protected errorValue: number | null = 150;
   protected longLabelValue: number | null = 10;
+
+  // Locale examples (INO-670 — verify formatted display with non-default locales)
+  protected localeInrValue: number | null = 123456.78;
+  protected localeEurValue: number | null = 987654.32;
+  protected localeDecimalDeValue: number | null = 12345.67;
 }

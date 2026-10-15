@@ -105,6 +105,51 @@
 </section>
 
 <section class="demo-section">
+  <h3 class="demo-section__title">Locale formatting</h3>
+  <p class="demo-section__note">
+    The <code>locale</code> prop controls digit grouping and currency symbols via
+    <code>Intl.NumberFormat</code>. Below: Indian Rupee with Indic grouping, Euro with
+    European decimal/thousand separators, and German decimal grouping (period for thousands,
+    comma for decimal). Blur each input to see the formatted display.
+  </p>
+  <div class="demo-row">
+    <ino-inputnumber
+      label="Indian Rupee (hi-IN)"
+      mode="currency"
+      currency="INR"
+      locale="hi-IN"
+      [value]="localeInrValue"
+      (valueChange)="localeInrValue = $event"
+      [min]="0"
+      [max]="10000000"
+    ></ino-inputnumber>
+
+    <ino-inputnumber
+      label="Euro (de-DE)"
+      mode="currency"
+      currency="EUR"
+      locale="de-DE"
+      [value]="localeEurValue"
+      (valueChange)="localeEurValue = $event"
+      [min]="0"
+      [max]="10000000"
+    ></ino-inputnumber>
+
+    <ino-inputnumber
+      label="Decimal (de-DE)"
+      mode="decimal"
+      locale="de-DE"
+      [value]="localeDecimalDeValue"
+      (valueChange)="localeDecimalDeValue = $event"
+      [min]="0"
+      [max]="999999"
+      [minFractionDigits]="2"
+      [maxFractionDigits]="2"
+    ></ino-inputnumber>
+  </div>
+</section>
+
+<section class="demo-section">
   <h3 class="demo-section__title">States</h3>
   <p class="demo-section__note">
     Default, disabled, readonly, invalid, at-min, and at-max states below are static snapshots.

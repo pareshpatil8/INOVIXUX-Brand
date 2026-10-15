@@ -14,17 +14,15 @@
     <div class="ino-field__control-wrap">
       <input
         [id]="inputId"
-        type="number"
+        type="text"
+        inputmode="decimal"
         class="ino-field__control"
         [class.ino-field__control--error]="!!error"
         [placeholder]="placeholder"
-        [value]="inputValue"
+        [value]="displayValue"
         [disabled]="disabled"
         [readOnly]="readonly"
         [required]="required"
-        [attr.min]="min"
-        [attr.max]="max"
-        [attr.step]="step"
         role="spinbutton"
         [attr.aria-valuenow]="value"
         [attr.aria-valuemin]="min"
@@ -32,6 +30,8 @@
         [attr.aria-invalid]="error ? true : null"
         [attr.aria-describedby]="error ? errorId : (hint ? hintId : null)"
         (input)="onInput($event)"
+        (focus)="onFocus($event)"
+        (blur)="onBlur($event)"
         (keydown)="onKeyDown($event)"
       />
 
