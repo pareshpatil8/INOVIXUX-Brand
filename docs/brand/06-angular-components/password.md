@@ -146,6 +146,14 @@ toggle); no `left`/`right`/`top`/`bottom` anywhere in the stylesheet.
 - **Pluggable strength scoring.** The meter's heuristic is fixed, not a caller-supplied function —
   see SPEC.md §2 for why that's kept separate from `policyRules`.
 
+**PrimeNG mapping.** PrimeNG's `Password` component offers a reveal toggle and strength feedback via
+`promptLabel`/`weakLabel`/`mediumLabel`/`strongLabel` inputs. `ino-password` maps the reveal toggle
+1:1; strength feedback is present but takes a different shape — PrimeNG's label-per-threshold
+approach is replaced by a fixed 5-level heuristic + a visual 4-segment meter + a single
+`aria-live="polite"` text label that changes dynamically (`Too weak`/`Weak`/`Fair`/`Good`/`Strong`).
+The policy hint panel (`policyRules`) and Caps Lock warning are `ino-password` additions with no
+PrimeNG equivalent.
+
 **Mobile parity:**
 
 - **Capacitor** — not a separate port; the same Angular component/CSS render in the Capacitor
