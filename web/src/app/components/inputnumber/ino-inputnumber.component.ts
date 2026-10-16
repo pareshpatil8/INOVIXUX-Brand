@@ -167,12 +167,18 @@ export class InoInputNumberComponent {
         if (this.min !== null) {
           event.preventDefault();
           this.updateValue(this.min);
+          if (this.focused) {
+            this.inputText = String(this.value);
+          }
         }
         break;
       case 'End':
         if (this.max !== null) {
           event.preventDefault();
           this.updateValue(this.max);
+          if (this.focused) {
+            this.inputText = String(this.value);
+          }
         }
         break;
     }
