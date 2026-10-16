@@ -33,6 +33,15 @@
   }
 }
 
+// INO-736: the resolved union under an alias type name in the Props table's Type column. Subdued
+// one step below the type itself so the declared type stays the primary read.
+.docs-prop-values {
+  display: block;
+  margin-block-start: var(--ino-space-1);
+  color: var(--ino-color-on-surface-subtle);
+  font-size: 11px;
+}
+
 .docs-theme-switcher {
   display: flex;
   gap: var(--ino-space-2);

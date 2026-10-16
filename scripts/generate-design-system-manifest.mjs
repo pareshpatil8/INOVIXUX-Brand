@@ -6,11 +6,7 @@
 import { readFileSync, readdirSync, writeFileSync, statSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
-import {
-  collectTypeAliases,
-  extractHostDirectiveApi,
-  findLocalTypeAliases,
-} from './host-directives.mjs';
+import { collectTypeAliases, extractHostDirectiveApi } from './host-directives.mjs';
 
 const root = new URL('../', import.meta.url);
 const componentsDir = new URL('web/src/app/components/', root);
@@ -136,7 +132,12 @@ for (const dirName of readdirSync(componentsDir).sort()) {
   }
   const selectorMatch = source.match(/selector:\s*'([^']+)'/);
   const classMatch = source.match(/export class (\w+)/);
-  const aliases = findLocalTypeAliases(source);
+  // INO-736: resolve aliases the component *imports* too, not only the ones it declares.
+  // `size: InoControlSize` is declared in `web/src/app/components/control-size.ts`, a sibling
+  // file, so a local-only scan reported `values: null` for it on ~40 components and the docs
+  // portal's Size row (doc 26 §2 row 3) was never generated. Same fix INO-731 landed on the
+  // extract side; the `hostDirectives` branch below has used `collectTypeAliases` since INO-693.
+  const aliases = collectTypeAliases(source, tsPath);
   // Own `@Input()`s, then any published through `hostDirectives` — `<ino-keyfilter>` and
   // `<ino-focus-trap>` declare their whole input surface that way and would otherwise report none.
   const inputs = [

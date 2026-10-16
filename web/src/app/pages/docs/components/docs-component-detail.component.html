@@ -109,7 +109,12 @@
         <tbody>
           <tr *ngFor="let prop of extract.api.props">
             <td><code>{{ prop.name }}</code>{{ prop.optional ? '' : ' *' }}</td>
-            <td><code>{{ prop.type }}</code></td>
+            <td>
+              <code>{{ prop.type }}</code>
+              <span class="docs-prop-values" *ngIf="propValuesLabel(prop) as values">
+                <code>{{ values }}</code>
+              </span>
+            </td>
             <td><code>{{ prop.default ?? '—' }}</code></td>
             <td>{{ prop.description || '—' }}</td>
           </tr>

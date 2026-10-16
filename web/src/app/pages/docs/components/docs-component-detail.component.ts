@@ -4,6 +4,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 import {
+  ApiProp,
   ComponentDocsDataService,
   ManifestComponent,
   ManifestInput,
@@ -134,33 +135,49 @@ export class DocsComponentDetailComponent {
       inputs: { ...baseInputs, [stateInput.name]: true },
     }));
 
-    const primaryInput = inputs.find((i) => i.values && i.values.length > 0);
-    if (!primaryInput) {
-      return { primary: [{ label: 'default', inputs: baseInputs }], sizeRow: [], stateRow };
-    }
+    // INO-736: `size` is deliberately excluded from primary-axis candidacy. It has a dedicated
+    // Size row (doc 26 §2 row 3) immediately below, and now that the manifest resolves its
+    // imported `InoControlSize` alias it is the *first* input with values on most components —
+    // left in, it would make the primary grid three size boxes on ~40 pages and suppress the Size
+    // row entirely. `<ino-label>` was already in that state (its `InoLabelSize` is declared
+    // locally, so it resolved before this change) and is corrected by the same exclusion.
+    const primaryInput = inputs.find((i) => i.name !== 'size' && i.values && i.values.length > 0);
+    const primaryValues = primaryInput?.values?.slice(0, MAX_EXAMPLES) ?? [];
+    const primary: LiveExample[] = primaryInput
+      ? primaryValues.map((value) => ({
+          label: `${primaryInput.name}="${value}"`,
+          inputs: { ...baseInputs, [primaryInput.name]: value },
+        }))
+      : [{ label: 'default', inputs: baseInputs }];
 
-    const primaryValues = primaryInput.values!.slice(0, MAX_EXAMPLES);
-    const primary = primaryValues.map((value) => ({
-      label: `${primaryInput.name}="${value}"`,
-      inputs: { ...baseInputs, [primaryInput.name]: value },
-    }));
-
-    const sizeInput = inputs.find(
-      (i) => i.name === 'size' && i.values && i.values.length > 0 && i.name !== primaryInput.name,
-    );
-    let sizeRow: LiveExample[] = [];
-    if (sizeInput) {
-      sizeRow = sizeInput.values!.slice(0, MAX_EXAMPLES).map((value) => ({
-        label: `size="${value}"`,
-        inputs: { ...baseInputs, [primaryInput.name]: primaryValues[0], [sizeInput.name]: value },
-      }));
-    }
+    // The size row pins the primary axis to its first value so the three boxes differ only by
+    // size. With no primary axis it renders against the plain defaults.
+    const sizeInput = inputs.find((i) => i.name === 'size' && i.values && i.values.length > 0);
+    const sizeRow: LiveExample[] = sizeInput
+      ? sizeInput.values!.slice(0, MAX_EXAMPLES).map((value) => ({
+          label: `size="${value}"`,
+          inputs: {
+            ...baseInputs,
+            ...(primaryInput ? { [primaryInput.name]: primaryValues[0] } : {}),
+            [sizeInput.name]: value,
+          },
+        }))
+      : [];
 
     return { primary, sizeRow, stateRow };
   });
 
   protected inputValuesLabel(input: ManifestInput): string {
     return input.values && input.values.length ? input.values.join(' | ') : '—';
+  }
+
+  /** INO-736 §4: the Props table's Type column prints the *declared* type, so an alias like
+   * `InoControlSize` tells the reader nothing about its members. The extract has carried the
+   * resolved union since INO-731 — surface it under the type name. Returns null when there is
+   * nothing to add: no resolved values, or an inline union whose `type` already spells them out. */
+  protected propValuesLabel(prop: ApiProp): string | null {
+    if (!prop.values?.length || prop.type.includes("'")) return null;
+    return prop.values.map((value) => `'${value}'`).join(' | ');
   }
 
   /** Component class name for the import statement (e.g. `InoButtonComponent`). */
