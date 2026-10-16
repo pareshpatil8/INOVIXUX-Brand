@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Pre-existing, unrelated to INO-723's retokenisation; fixed here because the gate work made it
 // visible and it is a one-line fix in a file this change already touches.
 import 'package:flutter/semantics.dart';
+import 'package:flutter/services.dart';
 import '../theme/app_theme.dart';
 import '../theme/tokens.dart';
 
@@ -379,35 +380,50 @@ class _InoInputTagsState extends State<InoInputTags> {
                 ...widget.value.map((tag) => _buildChip(tag, chipHeight)),
                 SizedBox(
                   width: 120,
-                  child: TextField(
-                    controller: _controller,
-                    focusNode: _focusNode,
-                    enabled: widget.enabled && !_isAtMax,
-                    readOnly: widget.readOnly,
-                    style: TextStyle(fontSize: fontSize, color: p.onSurface),
-                    cursorColor: p.accent,
-                    decoration: const InputDecoration(
-                      border: InputBorder.none,
-                      isDense: true,
-                      contentPadding: EdgeInsets.zero,
-                    ),
-                    onSubmitted: (value) {
-                      if (value.trim().isNotEmpty) {
-                        _addTag(value.trim());
+                  child: Focus(
+                    onKeyEvent: (node, event) {
+                      // Backspace removes last tag when input is empty (INO-741)
+                      if (event is KeyDownEvent &&
+                          event.logicalKey == LogicalKeyboardKey.backspace &&
+                          _controller.text.isEmpty &&
+                          widget.value.isNotEmpty &&
+                          widget.enabled &&
+                          !widget.readOnly) {
+                        _removeLastTag();
+                        return KeyEventResult.handled;
                       }
+                      return KeyEventResult.ignored;
                     },
-                    onChanged: (value) {
-                      for (var i = 0; i < widget.separators.length; i++) {
-                        if (value.endsWith(widget.separators[i])) {
-                          final text =
-                              value.substring(0, value.length - 1).trim();
-                          if (text.isNotEmpty) {
-                            _addTag(text);
-                          }
-                          return;
+                    child: TextField(
+                      controller: _controller,
+                      focusNode: _focusNode,
+                      enabled: widget.enabled && !_isAtMax,
+                      readOnly: widget.readOnly,
+                      style: TextStyle(fontSize: fontSize, color: p.onSurface),
+                      cursorColor: p.accent,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        isDense: true,
+                        contentPadding: EdgeInsets.zero,
+                      ),
+                      onSubmitted: (value) {
+                        if (value.trim().isNotEmpty) {
+                          _addTag(value.trim());
                         }
-                      }
-                    },
+                      },
+                      onChanged: (value) {
+                        for (var i = 0; i < widget.separators.length; i++) {
+                          if (value.endsWith(widget.separators[i])) {
+                            final text =
+                                value.substring(0, value.length - 1).trim();
+                            if (text.isNotEmpty) {
+                              _addTag(text);
+                            }
+                            return;
+                          }
+                        }
+                      },
+                    ),
                   ),
                 ),
               ],
