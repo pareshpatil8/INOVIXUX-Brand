@@ -4,11 +4,14 @@
   gap: var(--ino-space-1);
 }
 
+/* INO-723: --ino-font-body and --ino-control-line-height do not exist in tokens.css — the real
+   control font is --ino-font-display, and the scale's line-heights live on the type roles, not on
+   the control aliases. The group label is a form label, so it reads the label role's line-height. */
 .ino-select-button__group-label {
-  font-family: var(--ino-font-body);
+  font-family: var(--ino-font-display);
   font-size: var(--ino-control-font-size);
   font-weight: 500;
-  line-height: var(--ino-control-line-height);
+  line-height: var(--ino-type-label-line);
   color: var(--ino-color-on-surface-muted);
 }
 
@@ -19,20 +22,21 @@
   width: 100%;
 }
 
+/* These re-point the unsuffixed --ino-control-* aliases from tokens.css §12 on the host, which is
+   how one set of declarations in the option serves three sizes × three densities (the INO-124
+   idiom). INO-723 dropped the --ino-control-padding-block / --ino-control-line-height lines: the
+   per-size properties they read (-block-sm/-lg, -line-height-sm/-lg) do not exist in §12, so they
+   defined their aliases to an invalid value and the option's padding shorthand died with them. */
 :host(.ino-select-button--sm) {
   --ino-control-height: var(--ino-control-height-sm);
-  --ino-control-padding-block: var(--ino-control-padding-block-sm);
   --ino-control-padding-inline: var(--ino-control-padding-inline-sm);
   --ino-control-font-size: var(--ino-control-font-size-sm);
-  --ino-control-line-height: var(--ino-control-line-height-sm);
   --ino-control-gap: var(--ino-control-gap-sm);
 }
 
 :host(.ino-select-button--lg) {
   --ino-control-height: var(--ino-control-height-lg);
-  --ino-control-padding-block: var(--ino-control-padding-block-lg);
   --ino-control-padding-inline: var(--ino-control-padding-inline-lg);
   --ino-control-font-size: var(--ino-control-font-size-lg);
-  --ino-control-line-height: var(--ino-control-line-height-lg);
   --ino-control-gap: var(--ino-control-gap-lg);
 }

@@ -136,7 +136,7 @@ fields, so error states are rare. `ino-toggle-button` supports `error` (string i
 `aria-invalid` + `role="alert"` message + invalid ring), but that component is often used as a
 boolean form field. If select-button needs form-validation error states in the future, the
 `ino-toggle-button` pattern (error message via `aria-describedby`, invalid ring from
-`--ino-color-error`) is ready to apply. Not implemented in B1.
+`--ino-invalid-ring`) is ready to apply. Not implemented in B1.
 
 **Icon-only mode is web-only.** The mobile ports (Flutter/RN) do not implement `iconOnly` because
 there is no standard icon system in the mobile layer yet. When a cross-platform icon library

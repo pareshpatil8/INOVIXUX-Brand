@@ -28,7 +28,9 @@ While typing, a filtered dropdown of suggestions appears (reuses the overlay + f
 `validateTag: (tag: string) => boolean` callback runs on each tag as it's added. Tags that fail validation:
 - Are still added to `value` (not rejected silently)
 - Have `invalid: true` set
-- Render with `--ino-color-error` styling and an error border
+- Render with `--ino-color-danger-text-safe` label text and an `--ino-color-danger` border (INO-723:
+  the chip fill stays `--ino-color-surface-raised` in both states — the invalid signal is the border
+  and the label colour, not a red tint)
 - Retain all normal chip behaviors (removable, keyboard-accessible)
 
 ---
@@ -104,8 +106,12 @@ All accessible via proper `for`, `id`, `aria-describedby` associations.
 - Field-level error: `aria-describedby` points to error message, `aria-invalid="true"` on input when `error` is set
 
 ### WCAG 2.2 AA
-- Contrast: `--ino-color-primary` / `--ino-color-error` tokens meet AA (already gated by `check-theme-parity`)
-- Focus indicators: `outline: 2px solid var(--ino-color-primary)` on chip remove buttons, focus ring on input
+- Contrast: `--ino-color-accent` / `--ino-color-danger` / `--ino-color-danger-text-safe` meet AA in all
+  three themes, gated by `check-theme-parity`. (Before INO-723 this line named `--ino-color-primary` /
+  `--ino-color-error`, which tokens.css never defined — so the claim that the gate covered them was
+  false twice over. The gate now also asserts that every `var(--ino-*)` in this file resolves at all.)
+- Focus indicators: `outline: var(--ino-focus-ring)` with `var(--ino-focus-ring-offset)` on the field
+  (`:focus-within`) and on chip remove buttons; the invalid field's focus ring is `--ino-invalid-ring`
 - Label association: `<ino-label>` with `for` pointing to `inputId`
 
 ---

@@ -552,7 +552,11 @@ function webColorRoles(dir) {
   assert.ok(scssFiles.length, `${dir}: no .scss files found`);
   const roles = new Set();
   for (const f of scssFiles) {
-    for (const m of read(`${dir}/${f}`).matchAll(/var\(--ino-color-([\w-]+)\)/g)) roles.add(camel(m[1]));
+    // Comments stripped first (INO-723): several files now carry a `/* was var(--ino-color-x) */`
+    // note explaining a role they deliberately stopped reading. Counting those as live usage
+    // would make the registry describe the comment rather than the code, and would then fail the
+    // "declared divergence no longer reflects an actual difference" check for the removed role.
+    for (const m of stripComments(read(`${dir}/${f}`)).matchAll(/var\(--ino-color-([\w-]+)\)/g)) roles.add(camel(m[1]));
   }
   return roles;
 }
@@ -863,6 +867,30 @@ const COMPONENT_REGISTRY = [
     ],
   },
   {
+    // INO-723. This entry replaces the EXEMPT line INO-652 left below, which said there was
+    // nothing truthful to declare because all three implementations sat outside the token system:
+    // web read an 11-property `primary`/`text`/`error` vocabulary tokens.css never defined, the
+    // React Native port hardcoded hex literals and never imported the palette, and the Flutter
+    // port read Material's ColorScheme (so `colorScheme.primary` = accentTextSafe, the text
+    // accent, was being used as a chip fill). All three now read the same nine Ino roles, so the
+    // entry writes itself — which is exactly the condition that exemption set for its own removal.
+    name: 'inputtags',
+    web: 'web/src/app/components/inputtags',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoInputTags.tsx',
+        roles: ['accent', 'border', 'borderSoft', 'danger', 'dangerTextSafe', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'surfaceRaised', 'surfaceSunken'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_inputtags.dart',
+        roles: ['accent', 'border', 'danger', 'dangerTextSafe', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'surfaceRaised', 'surfaceSunken'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['borderSoft'], reason: 'an ADDED role, not a dropped one. Web separates suggestion rows by hover tint and padding alone — a pointer affordance. Touch has no hover, so this port draws a hairline rule between rows instead (`option.borderBottomColor`), and border-soft is the role for a separator inside an already-bordered container (the same role InoAutocomplete.tsx spends on its sheet grabber). Flutter does not need it: ListTile inside a Material already renders its own row separation.' },
+    ],
+  },
+  {
     name: 'keyfilter',
     web: 'web/src/app/components/keyfilter',
     mobile: {
@@ -1088,9 +1116,9 @@ const COMPONENT_REGISTRY = [
       },
     },
     divergences: [
-      { platform: 'reactNative', roles: ['surfaceHover', 'surfacePressed'], reason: 'Read this one before copying its shape: these two roles DO NOT RESOLVE ON WEB EITHER. ino-select-button-option.component.scss reads var(--ino-color-surface-hover) at :hover (line 72) and var(--ino-color-surface-pressed) at :active (line 87), and tokens.css defines neither — so on web those declarations are invalid at computed-value time and clear the option background to transparent rather than tinting it. Raised as INO-723. The port dropping them is therefore not a parity loss today; and the interaction states it does express (hover has no touch equivalent; press is `pressed && !isDisabled && { opacity: 0.8 }`, InoSelectButton.tsx:117) are the ones the mobile idiom wants anyway. If INO-723 resolves by adding the two tokens, revisit this entry; if it resolves by re-pointing web at defined roles, the port may need to follow.' },
-      { platform: 'flutter', roles: ['surfaceHover', 'surfacePressed'], reason: 'same as the React Native entry above, including the undefined-token caveat — this port expresses press through Opacity (ino_select_button.dart:199) rather than a surface-role swap.' },
-      { platform: 'reactNative', roles: ['accentActive'], reason: 'web reads accent-active only for the pressed-AND-selected background — it is nested inside the `:active` rule (`.ino-select-button-option__label:has(:active) &:has(:checked)`, ino-select-button-option.component.scss:87-91), so it is a pointer-down state, not a selected state. Touch has no pointer-down-before-commit phase here, and the pressed feedback is opacity, so a selected option stays colors.accent while pressed.' },
+      { platform: 'reactNative', roles: ['surfaceSunken'], reason: 'INO-723 resolved the predecessor of this entry. Web used to read surface-hover at :hover and surface-pressed at :active — two roles tokens.css never defined, so both states cleared the segment background to transparent instead of tinting it. Neither token was added (the scale has no "hover"/"pressed" surface and tokens.css is frozen after Wave 0); web now reads surface-sunken for both, the one-step-down-from-raised fill every option surface in the tree uses. The port still does not read it, for the reason the old entry gave and INO-723 did not change: hover has no touch equivalent, and press is expressed as `pressed && !isDisabled && { opacity: 0.8 }` (InoSelectButton.tsx:117), which is the mobile idiom for pointer-down feedback.' },
+      { platform: 'flutter', roles: ['surfaceSunken'], reason: 'same as the React Native entry above — this port expresses press through Opacity (ino_select_button.dart:199) rather than a surface-role swap.' },
+      { platform: 'reactNative', roles: ['accentActive'], reason: 'web reads accent-active in two pointer-down places, both inside the `:active` rule (ino-select-button-option.component.scss): the pressed-AND-selected background, and — added by INO-723, replacing the undefined surface-pressed fill — the pressed border on an unselected segment. Both are pointer-down states, not selected states. Touch has no pointer-down-before-commit phase here and the pressed feedback is opacity, so a selected option stays colors.accent while pressed and an unselected one keeps colors.border.' },
       { platform: 'flutter', roles: ['accentActive'], reason: 'same as the React Native entry above.' },
       { platform: 'reactNative', roles: ['onSurfaceMuted'], reason: 'web spends this role in two places, and the port covers both without reading it. (1) The disabled option label (ino-select-button-option.component.scss:96) — this port dims the whole option with `opacity: isDisabled ? 0.6 : 1` (InoSelectButton.tsx:107) instead of re-colouring the text, so the label keeps colors.onSurface at 60%. (2) The group label (`.ino-select-button__group-label`, ino-select-button.component.scss:12) — this port delegates it to `<InoLabel>` (InoSelectButton.tsx:143), and InoLabel owns that role itself, so it is read, just from the label component rather than from here. See the label entry above.' },
       { platform: 'flutter', roles: ['onSurfaceMuted'], reason: 'same as the React Native entry above — Opacity(0.6) for the disabled option (ino_select_button.dart:199) and `InoLabel(groupLabel!)` for the group label (ino_select_button.dart:145).' },
@@ -1346,29 +1374,13 @@ const registryNames = new Set(COMPONENT_REGISTRY.map(e => normalizeName(e.name))
 //
 // This assertion's first run (2026-10-11) found 14 such components — not the 4 INO-648 knew about.
 // INO-652 backfilled 13 of them as real COMPONENT_REGISTRY entries above and deleted their
-// exemptions. The one left is below, and it is left for a substantive reason, not for lack of time.
-const EXEMPT = {
-  inputtags:
-    'INO-652 audited this one and deliberately did NOT give it a registry entry: there is nothing ' +
-    'truthful to declare. A registry entry states which --ino-color-* roles each platform reads, ' +
-    'and inputtags sits outside the token system on web and on React Native.\n' +
-    '  web: ino-inputtags.component.scss reads 13 colour custom properties, of which 11 are ' +
-    'defined NOWHERE in tokens.css (--ino-color-primary, -primary-alpha-10/20, --ino-color-error, ' +
-    '-error-alpha-10/20, --ino-color-text, -text-muted, --ino-color-surface-hover, ' +
-    '-surface-disabled, -surface-readonly). That is a different token vocabulary entirely ' +
-    '(primary/text/error rather than accent/on-surface/danger) and inputtags is the only consumer ' +
-    'of it in the tree. Those declarations are invalid at computed-value time, so they fall back to ' +
-    'inherited/initial rather than to the rule they meant to override. Only border and surface resolve.\n' +
-    '  React Native: InoInputTags.tsx hardcodes hex literals (#1f2937, #ef4444, #d1d5db, #dbeafe, ' +
-    '...) and never imports the palette, so it has no dark / light / high-contrast support at all.\n' +
-    '  Flutter: ino_inputtags.dart is the mild case — it reads Theme.of(context).colorScheme, which ' +
-    'buildInoTheme does build from the palette (app_theme.dart:12-22), so it resolves to real Ino ' +
-    'values through a Material indirection. Note colorScheme.primary is accentTextSafe, the ' +
-    'text-on-surface accent, not the chip-fill accent, so the tint is plausibly off-role.\n' +
-    'Declaring web roles the browser cannot resolve would make this gate assert against fiction, ' +
-    'which is the opposite of what INO-648 added it for. Re-tokenise all three implementations ' +
-    'first, then the entry writes itself and this line goes. Tracked as INO-723.',
-};
+// exemptions. The 14th, inputtags, was held back deliberately: all three of its implementations
+// sat outside the token system, so a registry entry would have declared roles the browser could
+// not resolve. INO-723 re-tokenised all three and gave it a real entry above, and this object is
+// now empty — the exemption list has no standing members and the staleness loop below keeps it
+// that way. Adding a key here is allowed but should be rare and argued; the bar is the one INO-652
+// set, "there is nothing truthful to declare," not "not yet got to it."
+const EXEMPT = {};
 let exemptChecks = 0;
 for (const dir of webComponentDirs) {
   const n = normalizeName(dir);
@@ -1386,6 +1398,40 @@ for (const dir of Object.keys(EXEMPT)) {
   const n = normalizeName(dir);
   assert.ok(webComponentDirs.includes(dir), `EXEMPT['${dir}']: no such web/src/app/components directory — remove the stale exemption`);
   assert.ok(!registryNames.has(n), `EXEMPT['${dir}']: this component now has a COMPONENT_REGISTRY entry — remove the stale exemption`);
+}
+
+// ── INO-723 — undefined-custom-property assertion ──────────────────────────────────────────────
+// A `var(--ino-foo)` that tokens.css never defines is not a no-op: the whole declaration becomes
+// invalid at computed-value time and falls back to inherited/initial, NOT to the rule it meant to
+// override. A background goes transparent; a padding shorthand goes to zero. Nothing errors,
+// nothing logs, and the component looks almost right — which is exactly the silent-drift class
+// this gate exists to catch, and the one class it could not see until now. It found 22 such
+// properties in ino-inputtags and 8 in ino-select-button (INO-723); the fix for both landed in
+// the same change as this assertion, which is why it can be switched on green.
+//
+// A property defined by the component itself is fine and common (`--ino-tag-fill`,
+// `--ino-toggle-track-width`): those are internal plumbing a parent rule sets and a child reads.
+// Scope is per component directory — the unit a single owner ships — so a sibling file in the
+// same folder counts as a definition (ino-select-button.component.scss sets the --ino-control-*
+// aliases that ino-select-button-option.component.scss reads), but another component's does not.
+//
+// Comments must be stripped before matching, or a `var(--ino-x)` quoted inside a /* … */ note
+// explaining why it was REMOVED reads as a live usage and the gate stays red after the fix.
+const definedTokenProps = new Set([...css.matchAll(/(--ino-[\w-]+)\s*:/g)].map(m => m[1]));
+const stripComments = s => s.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/[^\n]*/gm, '');
+let tokenRefChecks = 0;
+for (const dir of webComponentDirs) {
+  const scssFiles = readdirSync(new URL(`web/src/app/components/${dir}/`, root)).filter(f => f.endsWith('.scss'));
+  const sources = scssFiles.map(f => [f, stripComments(read(`web/src/app/components/${dir}/${f}`))]);
+  const localProps = new Set(sources.flatMap(([, s]) => [...s.matchAll(/(--ino-[\w-]+)\s*:/g)].map(m => m[1])));
+  for (const [file, src] of sources) {
+    for (const m of src.matchAll(/var\(\s*(--ino-[\w-]+)/g)) {
+      assert.ok(definedTokenProps.has(m[1]) || localProps.has(m[1]),
+        `web/src/app/components/${dir}/${file}: reads var(${m[1]}), which tokens.css does not define and no .scss in this component declares. ` +
+        `The declaration is invalid at computed-value time and silently falls back to inherited/initial — point it at a real role, or declare the property in this component.`);
+      tokenRefChecks++;
+    }
+  }
 }
 
 let componentChecks = 0;
@@ -1439,5 +1485,5 @@ for (const entry of COMPONENT_REGISTRY) {
   }
 }
 
-console.log(`PASS: CSS mirrors; Capacitor import; ${colorChecks} color roles across 3 themes × 2 mobile ports; space/radius/targets/durations; Devanagari font pairing + line-height parity; focus-ring shape; invalid-ring shape, never-flatten rule and SC 1.4.11 budget in 3 themes; pressed-accent contrast in 3 themes; control-size scale across 3 densities + ${controlChecks} mobile port values; form-label tokens across 3 themes × 2 densities + RN/Flutter label type-scale parity; elevation scale (6 neutral + 3 brand + 2 inset) across 3 themes; data-viz layer (6 categorical + 8 sequential + 7 diverging, ${vizChecks} checks) across 3 themes; leading/tracking rhythm scale + composite type aliases across 3 densities; component registry (${COMPONENT_REGISTRY.length} components, ${componentChecks} platform checks); reverse coverage against ${webComponentDirs.length} web component directories (${exemptChecks} EXEMPT, see INO-652).`);
+console.log(`PASS: CSS mirrors; Capacitor import; ${colorChecks} color roles across 3 themes × 2 mobile ports; space/radius/targets/durations; Devanagari font pairing + line-height parity; focus-ring shape; invalid-ring shape, never-flatten rule and SC 1.4.11 budget in 3 themes; pressed-accent contrast in 3 themes; control-size scale across 3 densities + ${controlChecks} mobile port values; form-label tokens across 3 themes × 2 densities + RN/Flutter label type-scale parity; elevation scale (6 neutral + 3 brand + 2 inset) across 3 themes; data-viz layer (6 categorical + 8 sequential + 7 diverging, ${vizChecks} checks) across 3 themes; leading/tracking rhythm scale + composite type aliases across 3 densities; component registry (${COMPONENT_REGISTRY.length} components, ${componentChecks} platform checks); reverse coverage against ${webComponentDirs.length} web component directories (${exemptChecks} EXEMPT, see INO-652); ${tokenRefChecks} var(--ino-*) references resolve to a defined property (INO-723).`);
 console.log('High-contrast token pairs (AAA text >=7; non-text borders >=3; excludes disabled/decorative subtle role);\nplus per-theme pressed-accent pairs (INO-123):\n'+measurements.join('\n'));

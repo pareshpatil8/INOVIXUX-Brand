@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+// SemanticsService lives in semantics.dart, not services.dart — without this the two
+// SemanticsService.announce calls below did not resolve and the file did not compile at all.
+// Pre-existing, unrelated to INO-723's retokenisation; fixed here because the gate work made it
+// visible and it is a one-line fix in a file this change already touches.
+import 'package:flutter/semantics.dart';
+import '../theme/app_theme.dart';
+import '../theme/tokens.dart';
 
 /// Model for a tag in InoInputTags
 class InoInputTag {
@@ -55,6 +61,15 @@ enum InoInputTagsSize { small, medium, large }
 /// **States:**
 /// - `tag-invalid`: when `validateTag` returns false
 /// - `at-max`: when tags length >= `maxTags`
+///
+/// **Theming (INO-723).** Colours come from `context.inoColors` — the [InoPalette] theme
+/// extension — not from `Theme.of(context).colorScheme`. The two are related (buildInoTheme does
+/// derive the ColorScheme from the palette), but the derivation is lossy in ways that mattered
+/// here: `colorScheme.primary` is `accentTextSafe`, the *text* accent, so using it as a chip fill
+/// read the wrong role; and the ColorScheme has no slot at all for `surfaceRaised` /
+/// `surfaceSunken` / `border`, which is why the field and chip previously fell back to Material
+/// defaults. Reading the extension directly is the idiom every other widget here uses, and it is
+/// what lets check-theme-parity.mjs state which Ino roles this port consumes.
 ///
 /// Contract: doc 26 §2 (Variants/Structure, States, Sizing, Labels, a11y, Mobile port).
 class InoInputTags extends StatefulWidget {
@@ -232,6 +247,11 @@ class _InoInputTagsState extends State<InoInputTags> {
   }
 
   OverlayEntry _createOverlayEntry() {
+    // Captured from the field's own context: the overlay builder runs against the Overlay's
+    // element, which sits above this subtree, so reading the palette in there would work only by
+    // accident of both being under the same MaterialApp. Resolve it here instead.
+    final p = context.inoColors;
+
     return OverlayEntry(
       builder: (context) => Positioned(
         width: context.size?.width,
@@ -241,7 +261,12 @@ class _InoInputTagsState extends State<InoInputTags> {
           offset: const Offset(0, 56),
           child: Material(
             elevation: 8,
-            borderRadius: BorderRadius.circular(8),
+            color: p.surfaceRaised,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(InoRadius.md),
+              side: BorderSide(color: p.border),
+            ),
+            clipBehavior: Clip.antiAlias,
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxHeight: 280),
               child: ListView.builder(
@@ -251,7 +276,15 @@ class _InoInputTagsState extends State<InoInputTags> {
                 itemBuilder: (context, index) {
                   final suggestion = _filteredSuggestions[index];
                   return ListTile(
-                    title: Text(suggestion.label),
+                    title: Text(
+                      suggestion.label,
+                      style: TextStyle(
+                        color: suggestion.disabled
+                            ? p.onSurfaceSubtle
+                            : p.onSurface,
+                      ),
+                    ),
+                    minTileHeight: inoRowMinHeight,
                     enabled: !suggestion.disabled,
                     onTap: () => _selectSuggestion(suggestion),
                   );
@@ -266,7 +299,7 @@ class _InoInputTagsState extends State<InoInputTags> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final p = context.inoColors;
     final chipHeight = _getChipHeight();
     final fontSize = _getFontSize();
 
@@ -278,41 +311,69 @@ class _InoInputTagsState extends State<InoInputTags> {
         children: [
           if (widget.label != null)
             Padding(
-              padding: const EdgeInsets.only(bottom: 8),
+              padding: const EdgeInsets.only(bottom: InoSpace.s2),
               child: Text.rich(
                 TextSpan(
                   text: widget.label,
                   children: [
+                    // dangerTextSafe, not danger: the marker is text on a surface. Same split
+                    // tokens.css §2 makes between the fill red and the legible text red.
                     if (widget.required)
                       TextSpan(
                         text: ' *',
-                        style: TextStyle(color: theme.colorScheme.error),
+                        style: TextStyle(color: p.dangerTextSafe),
                       ),
                   ],
                 ),
-                style: theme.textTheme.bodySmall
-                    ?.copyWith(fontWeight: FontWeight.w500),
+                style: TextStyle(
+                  fontSize: InoTypeLabel.label.fontSize,
+                  height: InoTypeLabel.label.height,
+                  letterSpacing: InoTypeLabel.label.letterSpacing,
+                  fontWeight: FontWeight.w500,
+                  color: p.onSurface,
+                ),
               ),
             ),
           InputDecorator(
             decoration: InputDecoration(
+              filled: true,
+              fillColor: widget.readOnly ? p.surfaceRaised : p.surfaceSunken,
               hintText: widget.value.isEmpty ? widget.placeholder : null,
+              hintStyle: TextStyle(color: p.onSurfaceSubtle),
               helperText: widget.error ?? widget.hint,
               helperStyle: TextStyle(
-                color: widget.error != null
-                    ? theme.colorScheme.error
-                    : theme.textTheme.bodySmall?.color,
+                color: widget.error != null ? p.dangerTextSafe : p.onSurfaceMuted,
+                fontWeight: widget.error != null ? FontWeight.w600 : null,
               ),
               errorText: widget.error,
+              errorStyle: TextStyle(color: p.dangerTextSafe, fontWeight: FontWeight.w600),
               enabled: widget.enabled && !_isAtMax,
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(InoRadius.md),
+                borderSide: BorderSide(color: p.border),
               ),
-              contentPadding: const EdgeInsets.all(8),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(InoRadius.md),
+                borderSide: BorderSide(color: p.border),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(InoRadius.md),
+                borderSide: BorderSide(color: p.accent, width: 2),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(InoRadius.md),
+                borderSide: BorderSide(color: p.danger),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(InoRadius.md),
+                borderSide: BorderSide(color: p.danger, width: 2),
+              ),
+              constraints: const BoxConstraints(minHeight: inoRowMinHeight),
+              contentPadding: const EdgeInsets.all(InoSpace.s1),
             ),
             child: Wrap(
-              spacing: 8,
-              runSpacing: 8,
+              spacing: InoSpace.s1,
+              runSpacing: InoSpace.s1,
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 ...widget.value.map((tag) => _buildChip(tag, chipHeight)),
@@ -323,7 +384,8 @@ class _InoInputTagsState extends State<InoInputTags> {
                     focusNode: _focusNode,
                     enabled: widget.enabled && !_isAtMax,
                     readOnly: widget.readOnly,
-                    style: TextStyle(fontSize: fontSize),
+                    style: TextStyle(fontSize: fontSize, color: p.onSurface),
+                    cursorColor: p.accent,
                     decoration: const InputDecoration(
                       border: InputBorder.none,
                       isDense: true,
@@ -356,27 +418,27 @@ class _InoInputTagsState extends State<InoInputTags> {
     );
   }
 
+  /// The chip is the neutral raised pill the rest of the system uses (`ino_multi_select.dart`'s
+  /// chip, `.ino-field__chip` on web), not an accent tint — INO-723 converged all three platforms
+  /// on it. The invalid variant keeps that fill and signals through the danger border plus
+  /// danger-text-safe label, which is also how the web component now spells it.
   Widget _buildChip(InoInputTag tag, double height) {
-    final theme = Theme.of(context);
-    final chipColor = tag.invalid
-        ? theme.colorScheme.error.withOpacity(0.1)
-        : theme.colorScheme.primary.withOpacity(0.1);
-    final textColor =
-        tag.invalid ? theme.colorScheme.error : theme.colorScheme.primary;
+    final p = context.inoColors;
+    final textColor = tag.invalid ? p.dangerTextSafe : p.onSurface;
 
     return Chip(
       label: Text(tag.label),
       labelStyle: TextStyle(color: textColor, fontSize: _getFontSize() - 2),
-      backgroundColor: chipColor,
+      backgroundColor: p.surfaceRaised,
       deleteIcon: Icon(Icons.close, size: 16, color: textColor),
       onDeleted: widget.enabled && !widget.readOnly
           ? () => _removeTag(tag)
           : null,
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       visualDensity: VisualDensity.compact,
-      side: tag.invalid
-          ? BorderSide(color: theme.colorScheme.error, width: 1)
-          : BorderSide.none,
+      shape: StadiumBorder(
+        side: BorderSide(color: tag.invalid ? p.danger : p.border),
+      ),
     );
   }
 

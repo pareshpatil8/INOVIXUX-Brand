@@ -15,30 +15,48 @@
   justify-content: center;
   width: 100%;
   min-width: 0;
-  padding: var(--ino-control-padding-block) var(--ino-control-padding-inline);
-  font-family: var(--ino-font-body);
+  /* INO-723: was `padding: var(--ino-control-padding-block) var(--ino-control-padding-inline)`
+     with `line-height: var(--ino-control-line-height)` and `font-family: var(--ino-font-body)`.
+     None of those three properties exists in tokens.css, so the padding shorthand was invalid at
+     computed-value time and the segment had NO block padding in any size — its height was just
+     the font's line box. The block axis is now driven by min-block-size + centring, which is the
+     idiom ino-button uses for the same reason (a label-bearing pressable, not a field). */
+  min-block-size: var(--ino-control-height);
+  padding-block: 0;
+  padding-inline: var(--ino-control-padding-inline);
+  font-family: var(--ino-font-display);
   font-size: var(--ino-control-font-size);
   font-weight: 500;
-  line-height: var(--ino-control-line-height);
+  line-height: 1;
   color: var(--ino-color-on-surface);
   background: var(--ino-color-surface-raised);
   border: 1px solid var(--ino-color-border);
   border-inline-start-width: 0;
   cursor: pointer;
   user-select: none;
-  transition: all 0.2s ease;
+  /* INO-723: was `transition: all 0.2s ease` — a hand-rolled duration/curve off the motion scale,
+     and `all` additionally animates the border-radius and layout properties the group re-points
+     per position. Named properties on the motion tokens, matching every other control. */
+  transition: background var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+    border-color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+    color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+    filter var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
 }
 
 /* Border-radius and left border are driven by host position inside the group */
 :host(:first-child) .ino-select-button-option__label {
   border-inline-start-width: 1px;
-  border-start-start-radius: var(--ino-border-radius-md);
-  border-end-start-radius: var(--ino-border-radius-md);
+  border-start-start-radius: var(--ino-radius-md);
+  border-end-start-radius: var(--ino-radius-md);
 }
 
 :host(:last-child) .ino-select-button-option__label {
-  border-start-end-radius: var(--ino-border-radius-md);
-  border-end-end-radius: var(--ino-border-radius-md);
+  border-start-end-radius: var(--ino-radius-md);
+  border-end-end-radius: var(--ino-radius-md);
 }
 
 .ino-select-button-option__content {
@@ -68,8 +86,12 @@
   z-index: 1;
 }
 
+/* INO-723: was --ino-color-surface-hover, which tokens.css does not define — so hovering an
+   unselected segment cleared its background to transparent instead of tinting it. surface-sunken
+   is the one-step-down-from-raised hover fill every list/option surface in the tree already uses
+   (ino-autocomplete/ino-listbox/ino-multiselect `.ino-field__option:hover`). */
 .ino-select-button-option__label:not(:has(.ino-select-button-option__input:disabled)):hover {
-  background: var(--ino-color-surface-hover);
+  background: var(--ino-color-surface-sunken);
   z-index: 2;
 
   &:has(.ino-select-button-option__input:checked) {
@@ -83,8 +105,15 @@
   z-index: 3;
 }
 
+/* INO-723: the unselected pressed state was --ino-color-surface-pressed, also undefined. There is
+   no "pressed surface" role in the scale and tokens.css is frozen after Wave 0, so the state now
+   reads the way every other pressable in the tree spells pointer-down — it keeps the hover fill
+   and swaps the border to accent-active (ino-input/ino-select/ino-multiselect
+   `&:active:not(:disabled) { border-color: var(--ino-color-accent-active); }`). That also keeps
+   hover and pressed distinguishable, which a second surface fill would not have. */
 .ino-select-button-option__label:has(.ino-select-button-option__input:active) {
-  background: var(--ino-color-surface-pressed);
+  background: var(--ino-color-surface-sunken);
+  border-color: var(--ino-color-accent-active);
 
   &:has(.ino-select-button-option__input:checked) {
     background: var(--ino-color-accent-active);
@@ -112,7 +141,10 @@
 :host-context(.ino-select-button--icon-only) {
   .ino-select-button-option__label {
     aspect-ratio: 1;
-    padding: var(--ino-control-padding-block);
+    /* INO-723: was `padding: var(--ino-control-padding-block)` (undefined). An icon-only segment
+       is square, so aspect-ratio against min-block-size already sets both axes — the inline
+       padding just has to stop forcing it wider than tall. */
+    padding-inline: 0;
   }
 }
 

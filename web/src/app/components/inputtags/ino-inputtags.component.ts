@@ -92,7 +92,7 @@ export class InoInputTagsComponent implements OnChanges, AfterViewInit, OnDestro
   @Input({ transform: booleanAttribute }) addOnBlur = true;
   @Input({ transform: numberAttribute }) maxTags: number | null = null;
   /** Optional per-tag validation. Return true if valid, false if invalid. Invalid tags get
-   *  marked with `invalid: true` and styled with `--ino-color-error`. */
+   *  marked with `invalid: true` and styled with `--ino-color-danger`. */
   @Input() validateTag: ((tag: string) => boolean) | null = null;
   /** Separator characters that trigger tag addition (beyond Enter). Default: comma. */
   @Input() separators = ',';

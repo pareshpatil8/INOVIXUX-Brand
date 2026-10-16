@@ -150,5 +150,5 @@ than inline error messages.
 
 **Decision for B1:** omit invalid/error entirely. If a future use case requires form-validation
 error states, the `ino-toggle-button` pattern (error message via `aria-describedby`, invalid ring
-from `--ino-color-error`) is ready to apply. Documented in the narrative doc's "Deliberate
+from `--ino-invalid-ring`) is ready to apply. Documented in the narrative doc's "Deliberate
 omissions" section.

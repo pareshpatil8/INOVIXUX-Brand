@@ -131,7 +131,9 @@ are keyboard-accessible.
 **Focus indicators:** Focus ring on input field, visible focus on chip remove buttons (`:focus-visible`).
 
 **WCAG 2.2 AA:**
-- Contrast: `--ino-color-primary` / `--ino-color-error` tokens meet AA (gated by `check-theme-parity`)
+- Contrast: `--ino-color-accent` / `--ino-color-danger` / `--ino-color-danger-text-safe` meet AA in all
+  three themes (gated by `check-theme-parity`). Re-tokenised in INO-723 — the roles named here before
+  that (`--ino-color-primary` / `--ino-color-error`) were never defined in `tokens.css` at all.
 - All interactive elements keyboard-accessible
 - All state changes announced to screen readers
 

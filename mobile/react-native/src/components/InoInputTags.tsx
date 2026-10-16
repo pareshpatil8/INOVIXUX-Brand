@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useMemo } from 'react';
 import {
   View,
   TextInput,
@@ -9,6 +9,15 @@ import {
   AccessibilityInfo,
   Platform,
 } from 'react-native';
+import { useTheme } from '../theme/ThemeProvider';
+import {
+  control,
+  Palette,
+  radius,
+  rowMinHeight,
+  space,
+  type as typeScale,
+} from '../theme/tokens';
 
 export interface InoInputTag {
   value: string;
@@ -62,6 +71,13 @@ export interface InoInputTagsProps {
  * - `tag-invalid`: when `validateTag` returns false
  * - `at-max`: when tags length >= `maxTags`
  *
+ * **Theming (INO-723).** Every colour below comes from `useTheme().colors`, so this port follows
+ * dark / light / high-contrast like its siblings. Until INO-723 it hardcoded hex literals
+ * (`#1f2937`, `#ef4444`, `#dbeafe`, …) and never imported the palette at all, which meant it had
+ * no theme support whatsoever and could not be given a COMPONENT_REGISTRY entry. The roles match
+ * the web component one-for-one — see `ino-inputtags.component.scss`'s header comment for the
+ * per-surface mapping, and check-theme-parity.mjs's registry entry for the declared divergences.
+ *
  * Contract: doc 26 §2 (Variants/Structure, States, Sizing, Labels, a11y, Mobile port).
  */
 export const InoInputTags: React.FC<InoInputTagsProps> = ({
@@ -85,8 +101,14 @@ export const InoInputTags: React.FC<InoInputTagsProps> = ({
   onTagRemove,
   onSearch,
 }) => {
+  const { colors } = useTheme();
+  const themed = useMemo(() => makeThemedStyles(colors), [colors]);
+
   const [inputValue, setInputValue] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
+  // Mirrors the web field's `:focus-within` accent border. Tracked in state rather than read off
+  // a pseudo-class because RN has none — the same `focused` flag InoInput.tsx keeps.
+  const [focused, setFocused] = useState(false);
   const inputRef = useRef<TextInput>(null);
 
   const isAtMax = maxTags !== null && value.length >= maxTags;
@@ -183,7 +205,10 @@ export const InoInputTags: React.FC<InoInputTagsProps> = ({
     }
   }, [inputValue, addTag]);
 
+  const handleFocus = useCallback(() => setFocused(true), []);
+
   const handleBlur = useCallback(() => {
+    setFocused(false);
     if (addOnBlur && inputValue.trim()) {
       addTag(inputValue.trim());
     }
@@ -193,32 +218,30 @@ export const InoInputTags: React.FC<InoInputTagsProps> = ({
   const sizeStyles = getSizeStyles(size);
 
   return (
-    <View style={styles.container}>
+    <View style={themed.container}>
       {label && (
-        <View style={styles.labelContainer}>
-          <Text style={styles.label}>
+        <View style={themed.labelContainer}>
+          <Text style={themed.label}>
             {label}
-            {required && <Text style={styles.required}> *</Text>}
+            {required && <Text style={themed.required}> *</Text>}
           </Text>
         </View>
       )}
 
       <View
         style={[
-          styles.field,
-          error && styles.fieldError,
-          disabled && styles.fieldDisabled,
-          isAtMax && styles.fieldAtMax,
+          themed.field,
+          focused && !disabled && !readOnly && themed.fieldFocused,
+          error && themed.fieldError,
+          disabled && themed.fieldDisabled,
+          readOnly && themed.fieldReadOnly,
+          isAtMax && themed.fieldAtMax,
         ]}>
-        <View style={styles.tagsContainer}>
+        <View style={themed.tagsContainer}>
           {value.map((tag, index) => (
             <View
               key={`${tag.value}-${index}`}
-              style={[
-                styles.tag,
-                sizeStyles.tag,
-                tag.invalid && styles.tagInvalid,
-              ]}
+              style={[themed.tag, tag.invalid && themed.tagInvalid]}
               accessible={true}
               accessibilityLabel={`Tag ${tag.label}${
                 tag.invalid ? ', invalid' : ''
@@ -226,9 +249,8 @@ export const InoInputTags: React.FC<InoInputTagsProps> = ({
               accessibilityRole="button">
               <Text
                 style={[
-                  styles.tagLabel,
-                  sizeStyles.tagLabel,
-                  tag.invalid && styles.tagLabelInvalid,
+                  themed.tagLabel,
+                  tag.invalid && themed.tagLabelInvalid,
                 ]}>
                 {tag.label}
               </Text>
@@ -237,11 +259,11 @@ export const InoInputTags: React.FC<InoInputTagsProps> = ({
                   onPress={() => removeTag(tag)}
                   accessibilityLabel={`Remove ${tag.label}`}
                   accessibilityRole="button"
-                  style={styles.tagRemove}>
+                  style={themed.tagRemove}>
                   <Text
                     style={[
-                      styles.tagRemoveIcon,
-                      tag.invalid && styles.tagRemoveIconInvalid,
+                      themed.tagRemoveIcon,
+                      tag.invalid && themed.tagRemoveIconInvalid,
                     ]}>
                     ×
                   </Text>
@@ -252,11 +274,15 @@ export const InoInputTags: React.FC<InoInputTagsProps> = ({
 
           <TextInput
             ref={inputRef}
-            style={[styles.input, sizeStyles.input]}
+            style={[themed.input, sizeStyles.input]}
             value={inputValue}
             onChangeText={handleInputChange}
             onSubmitEditing={handleSubmitEditing}
+            onFocus={handleFocus}
             onBlur={handleBlur}
+            placeholderTextColor={colors.onSurfaceSubtle}
+            cursorColor={colors.accent}
+            selectionColor={colors.accent}
             placeholder={value.length === 0 ? placeholder : ''}
             editable={!disabled && !readOnly && !isAtMax}
             accessible={true}
@@ -271,15 +297,15 @@ export const InoInputTags: React.FC<InoInputTagsProps> = ({
 
       {showSuggestions && !isAtMax && filteredSuggestions.length > 0 && (
         <ScrollView
-          style={styles.dropdown}
+          style={themed.dropdown}
           keyboardShouldPersistTaps="handled"
           nestedScrollEnabled>
           {filteredSuggestions.map((suggestion, index) => (
             <TouchableOpacity
               key={`${suggestion.value}-${index}`}
               style={[
-                styles.option,
-                suggestion.disabled && styles.optionDisabled,
+                themed.option,
+                suggestion.disabled && themed.optionDisabled,
               ]}
               onPress={() => selectSuggestion(suggestion)}
               disabled={suggestion.disabled}
@@ -288,8 +314,8 @@ export const InoInputTags: React.FC<InoInputTagsProps> = ({
               accessibilityRole="button">
               <Text
                 style={[
-                  styles.optionLabel,
-                  suggestion.disabled && styles.optionLabelDisabled,
+                  themed.optionLabel,
+                  suggestion.disabled && themed.optionLabelDisabled,
                 ]}>
                 {suggestion.label}
               </Text>
@@ -298,154 +324,170 @@ export const InoInputTags: React.FC<InoInputTagsProps> = ({
         </ScrollView>
       )}
 
-      {hint && !error && <Text style={styles.hint}>{hint}</Text>}
-      {error && <Text style={styles.error}>{error}</Text>}
+      {hint && !error && <Text style={themed.hint}>{hint}</Text>}
+      {error && <Text style={themed.error}>{error}</Text>}
     </View>
   );
 };
 
+/**
+ * Size axis. Only the input's own font size is driven by the control scale (`control[size]`,
+ * tokens.css §12) — the chip keeps one fixed `bodySm` size across all three, matching both the
+ * web component after INO-723 and `InoMultiSelect`'s chip. `minWidth` is the typing runway the
+ * field keeps for the caret, scaled off the control's inline padding rather than hand-picked.
+ */
 function getSizeStyles(size: InoInputTagsSize) {
-  switch (size) {
-    case 'sm':
-      return {
-        tag: { paddingVertical: 2, paddingHorizontal: 6 },
-        tagLabel: { fontSize: 12 },
-        input: { fontSize: 12, minWidth: 100 },
-      };
-    case 'lg':
-      return {
-        tag: { paddingVertical: 8, paddingHorizontal: 12 },
-        tagLabel: { fontSize: 16 },
-        input: { fontSize: 16, minWidth: 140 },
-      };
-    default:
-      return {
-        tag: { paddingVertical: 4, paddingHorizontal: 8 },
-        tagLabel: { fontSize: 14 },
-        input: { fontSize: 14, minWidth: 120 },
-      };
-  }
+  const ctrl = control[size];
+  return {
+    input: { fontSize: ctrl.fontSize, minWidth: ctrl.paddingInline * 7.5 },
+  };
 }
 
-const styles = StyleSheet.create({
-  container: {
-    marginBottom: 16,
-  },
-  labelContainer: {
-    marginBottom: 8,
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#1f2937',
-  },
-  required: {
-    color: '#ef4444',
-  },
-  field: {
-    minHeight: 44,
-    padding: 8,
-    borderWidth: 1,
-    borderColor: '#d1d5db',
-    borderRadius: 8,
-    backgroundColor: '#ffffff',
-  },
-  fieldError: {
-    borderColor: '#ef4444',
-  },
-  fieldDisabled: {
-    backgroundColor: '#f3f4f6',
-    opacity: 0.6,
-  },
-  fieldAtMax: {
-    opacity: 0.7,
-  },
-  tagsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  tag: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#dbeafe',
-    borderRadius: 4,
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-  },
-  tagInvalid: {
-    backgroundColor: '#fee2e2',
-    borderWidth: 1,
-    borderColor: '#ef4444',
-  },
-  tagLabel: {
-    fontSize: 14,
-    color: '#1e40af',
-  },
-  tagLabelInvalid: {
-    color: '#ef4444',
-  },
-  tagRemove: {
-    marginLeft: 4,
-    padding: 2,
-  },
-  tagRemoveIcon: {
-    fontSize: 18,
-    color: '#1e40af',
-    fontWeight: 'bold',
-  },
-  tagRemoveIconInvalid: {
-    color: '#ef4444',
-  },
-  input: {
-    fontSize: 14,
-    minWidth: 120,
-    height: 28,
-    padding: 0,
-    color: '#1f2937',
-  },
-  dropdown: {
-    maxHeight: 200,
-    marginTop: 4,
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
-    borderColor: '#d1d5db',
-    borderRadius: 8,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-      },
-      android: {
-        elevation: 4,
-      },
-    }),
-  },
-  option: {
-    padding: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f3f4f6',
-  },
-  optionDisabled: {
-    opacity: 0.5,
-  },
-  optionLabel: {
-    fontSize: 14,
-    color: '#1f2937',
-  },
-  optionLabelDisabled: {
-    color: '#9ca3af',
-  },
-  hint: {
-    marginTop: 4,
-    fontSize: 12,
-    color: '#6b7280',
-  },
-  error: {
-    marginTop: 4,
-    fontSize: 12,
-    color: '#ef4444',
-  },
-});
+/**
+ * INO-723 — built per palette rather than once at module scope, because `StyleSheet.create` runs
+ * at import time and the active theme is only known inside the tree. Memoised on `colors` at the
+ * call site, so it rebuilds on a theme switch and never per render.
+ */
+function makeThemedStyles(colors: Palette) {
+  return StyleSheet.create({
+    container: {
+      marginBottom: space[4],
+    },
+    labelContainer: {
+      marginBottom: space[2],
+    },
+    label: {
+      ...typeScale.label,
+      color: colors.onSurface,
+    },
+    // dangerTextSafe, not danger: the marker is running text on a surface, and `danger` is the
+    // non-text fill red (4.16:1 in dark — fails AA 1.4.3). Same split the web required-marker
+    // role makes.
+    required: {
+      color: colors.dangerTextSafe,
+    },
+    field: {
+      minHeight: rowMinHeight,
+      padding: space[1],
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: radius.md,
+      backgroundColor: colors.surfaceSunken,
+    },
+    // Listed before fieldError in the style array at the call site, so an invalid-and-focused
+    // field still reads danger — same precedence the web component's rule order gives it.
+    fieldFocused: {
+      borderColor: colors.accent,
+    },
+    fieldError: {
+      borderColor: colors.danger,
+    },
+    // Readonly re-fills, disabled dims — kept distinct for the reason ino-input documents: a
+    // readonly field's value is still meant to be read and copied.
+    fieldReadOnly: {
+      backgroundColor: colors.surfaceRaised,
+    },
+    // Disabled dims only — it does not swap the fill, matching the web component's
+    // `.ino-inputtags__field--disabled` after INO-723 (readonly is the state that re-fills, and
+    // this port has no separate readonly chrome — see the registry divergence).
+    fieldDisabled: {
+      opacity: 0.5,
+    },
+    fieldAtMax: {
+      opacity: 0.7,
+    },
+    tagsContainer: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      alignItems: 'center',
+      gap: space[1],
+    },
+    tag: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: space[1],
+      backgroundColor: colors.surfaceRaised,
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: radius.pill,
+      paddingVertical: space[1],
+      paddingHorizontal: space[2],
+    },
+    tagInvalid: {
+      borderColor: colors.danger,
+    },
+    tagLabel: {
+      ...typeScale.bodySm,
+      color: colors.onSurface,
+    },
+    tagLabelInvalid: {
+      color: colors.dangerTextSafe,
+    },
+    tagRemove: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: space[6],
+      height: space[6],
+      borderRadius: space[6] / 2,
+    },
+    tagRemoveIcon: {
+      fontSize: typeScale.bodyLg.fontSize,
+      lineHeight: typeScale.bodyLg.lineHeight,
+      color: colors.onSurface,
+      fontWeight: 'bold',
+    },
+    tagRemoveIconInvalid: {
+      color: colors.dangerTextSafe,
+    },
+    input: {
+      ...typeScale.body,
+      minWidth: 120,
+      padding: 0,
+      color: colors.onSurface,
+    },
+    dropdown: {
+      maxHeight: 280,
+      marginTop: space[1],
+      backgroundColor: colors.surfaceRaised,
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: radius.md,
+      // Android's `elevation` draws a platform-coloured shadow and needs no role. iOS would need
+      // an explicit `shadowColor`, and there is no shadow/elevation role in the palette to read
+      // one from — tokens.ts flags that gap explicitly ("no shadow/elevation tokens exist in this
+      // file"). Rather than hardcode '#000' (which INO-723 is removing from this file, and which
+      // is the wrong shadow for light and meaningless in high-contrast), the panel separates on
+      // iOS the way the rest of the system does: the surfaceRaised fill against a border role.
+      ...Platform.select({ android: { elevation: 4 } }),
+    },
+    option: {
+      minHeight: rowMinHeight,
+      justifyContent: 'center',
+      paddingVertical: space[2],
+      paddingHorizontal: space[4],
+      borderBottomWidth: 1,
+      borderBottomColor: colors.borderSoft,
+    },
+    optionDisabled: {
+      opacity: 0.5,
+    },
+    optionLabel: {
+      ...typeScale.body,
+      color: colors.onSurface,
+    },
+    optionLabelDisabled: {
+      color: colors.onSurfaceSubtle,
+    },
+    hint: {
+      ...typeScale.bodySm,
+      marginTop: space[1],
+      color: colors.onSurfaceMuted,
+    },
+    error: {
+      ...typeScale.bodySm,
+      marginTop: space[1],
+      fontWeight: '600',
+      color: colors.dangerTextSafe,
+    },
+  });
+}
