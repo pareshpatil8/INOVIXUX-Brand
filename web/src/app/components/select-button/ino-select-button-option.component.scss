@@ -89,9 +89,16 @@
 /* INO-723: was --ino-color-surface-hover, which tokens.css does not define — so hovering an
    unselected segment cleared its background to transparent instead of tinting it. surface-sunken
    is the one-step-down-from-raised hover fill every list/option surface in the tree already uses
-   (ino-autocomplete/ino-listbox/ino-multiselect `.ino-field__option:hover`). */
+   (ino-autocomplete/ino-listbox/ino-multiselect `.ino-field__option:hover`).
+
+   INO-734: in high-contrast, surface-raised -> surface-sunken is #050505 -> #000000, a one-step
+   luminance change invisible to pointer users. Adds the border-based affordance HC's own palette
+   note calls for ("distinguished by border, not luminance", tokens.css §2c). Same fix applied
+   verbatim to all sibling .ino-field__option / .ino-inputtags__option / .ino-select-button-option
+   hover rules in the tree. */
 .ino-select-button-option__label:not(:has(.ino-select-button-option__input:disabled)):hover {
   background: var(--ino-color-surface-sunken);
+  box-shadow: inset 0 0 0 1px var(--ino-color-on-surface-muted);
   z-index: 2;
 
   &:has(.ino-select-button-option__input:checked) {

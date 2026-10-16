@@ -192,6 +192,17 @@
     </ng-template>
   </ng-container>
 
+  <h2>Mobile parity</h2>
+  <ng-container *ngIf="docExtract() as extractMobile; else noDoc">
+    <div class="docs-markdown" *ngIf="extractMobile.mobile; else noMobile" [innerHTML]="extractMobile.mobile"></div>
+    <ng-template #noMobile>
+      <p>
+        No Mobile parity section in <code>{{ extractMobile.docPath }}</code> — this component has no
+        React Native / Flutter port recorded (doc 26 §5 mobile disposition).
+      </p>
+    </ng-template>
+  </ng-container>
+
   <h2>Theming</h2>
   <ng-container *ngIf="componentTokens() as tokens; else noTokens">
     <p>Component-specific design tokens (live values from current theme: <strong>{{ themeService.theme() }}</strong>):</p>

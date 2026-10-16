@@ -50,7 +50,7 @@
       <ng-container *ngIf="currentRows.length; else emptyState">
         <ul [id]="listboxId" class="ino-field__listbox" role="listbox" [attr.aria-label]="label || placeholder">
           <li
-            *ngFor="let row of currentRows"
+            *ngFor="let row of currentRows; trackBy: trackRow"
             [id]="optionId(row.index)"
             role="option"
             class="ino-field__option"

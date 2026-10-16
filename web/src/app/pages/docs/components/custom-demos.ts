@@ -18,6 +18,7 @@ import { AutocompleteDemoComponent } from './demos/autocomplete-demo.component';
 import { KeyfilterDemoComponent } from './demos/keyfilter-demo.component';
 import { ToggleButtonDemoComponent } from './demos/toggle-button-demo.component';
 import { PasswordDemoComponent } from './demos/password-demo.component';
+import { CascadeSelectDemoComponent } from './demos/cascade-select-demo.component';
 
 /**
  * Slug -> hand-authored demo component, for components whose §2 Component Publish Contract
@@ -63,4 +64,9 @@ export const CUSTOM_DEMOS: Record<string, Type<unknown>> = {
   // extractor can't enumerate), and never demonstrates label/hint/error text (all string inputs
   // forced to `''`).
   'password': PasswordDemoComponent,
+  // The whole component is a tree walk (INO-731, fixing INO-423): `defaultValueFor()` gives
+  // `options` an empty `[]`, so the generic renderer had nothing to drill into — no breadcrumb, no
+  // `open-level` state, no `aria-activedescendant`, and (because `error` is string-typed, not in
+  // the boolean-only `STATE_INPUT_NAMES` filter) no invalid example either.
+  'cascade-select': CascadeSelectDemoComponent,
 };

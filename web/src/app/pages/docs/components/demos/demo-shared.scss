@@ -36,6 +36,14 @@
   gap: var(--ino-space-6);
 }
 
+/* A row holding a control whose overlay panel is deliberately left open for the screenshot
+   (INO-731: ino-cascade-select's `open-level` breadcrumb state and its empty-tree message can only
+   be seen while the panel is up). The panel is absolutely positioned, so without reserved space it
+   lands on top of the next section's heading. */
+.demo-row--open-overlay {
+  padding-block-end: 11rem;
+}
+
 .demo-col {
   display: flex;
   flex-direction: column;

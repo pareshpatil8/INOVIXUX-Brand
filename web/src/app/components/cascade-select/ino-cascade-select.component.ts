@@ -152,6 +152,20 @@ export class InoCascadeSelectComponent implements OnChanges {
     return this.selectedPath?.map((option) => option.label).join(' / ') ?? '';
   }
 
+  /** `*ngFor` identity for the option rows. `currentRows` is a getter that builds a fresh array of
+   *  fresh row objects on *every* change-detection pass, so without a key Angular destroys and
+   *  recreates every `<li>` each pass. That is not just churn: the row's own `(mouseenter)`
+   *  handler then fires again on the replacement node, which runs change detection, which replaces
+   *  it again — a loop that leaves the row under the pointer permanently detached (measured on the
+   *  docs page before this fix: one `mouseenter` recreated the level ~3× in a second, and a click
+   *  on the hovered row could never land). Keying by level-index + option value keeps identity
+   *  stable within a level while still replacing the whole list when a drill-in/go-back swaps the
+   *  level under it. INO-731 (found by the INO-423 docs demo — the bug was invisible while the
+   *  generic renderer fed this component an empty `options` tree). */
+  protected trackRow(_index: number, row: InoCascadeSelectRow): string {
+    return `${row.index}:${row.option.value}`;
+  }
+
   protected hasChildren(option: InoCascadeSelectOption): boolean {
     return !!option.children?.length;
   }

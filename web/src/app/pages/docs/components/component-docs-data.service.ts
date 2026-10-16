@@ -121,18 +121,20 @@ export interface ComponentApi {
   templates: ApiTemplate[];
 }
 
-/** Extracted "Accessibility contract" / "Deliberate omissions" sections plus the generated API
- * tables for one shipped component, keyed by slug. `a11y`/`notes` are sanitized HTML (rendered
- * from markdown by `scripts/generate-component-docs-extract.mjs` at generation time — see
- * `format` on {@link ComponentDocsExtract}), safe to bind via `[innerHTML]`; `api` is structured
- * JSON, not HTML. `docPath`/`a11y`/`notes` are null for components with no narrative doc (5
- * marketing-only components, plus any not-yet-documented new component); `api` is still
- * populated from source in that case. */
+/** Extracted "Accessibility contract" / "Deliberate omissions" / "Mobile parity" sections plus the
+ * generated API tables for one shipped component, keyed by slug. `a11y`/`notes`/`mobile` are
+ * sanitized HTML (rendered from markdown by `scripts/generate-component-docs-extract.mjs` at
+ * generation time — see `format` on {@link ComponentDocsExtract}), safe to bind via `[innerHTML]`;
+ * `api` is structured JSON, not HTML. `docPath`/`a11y`/`notes`/`mobile` are null for components
+ * with no narrative doc (5 marketing-only components, plus any not-yet-documented new component);
+ * `api` is still populated from source in that case. `mobile` is additionally null for a component
+ * whose doc has no "## Mobile parity" heading — web-only rows legitimately have none. */
 export interface ComponentDocExtract {
   name: string;
   docPath: string | null;
   a11y: string | null;
   notes: string | null;
+  mobile: string | null;
   api: ComponentApi;
 }
 

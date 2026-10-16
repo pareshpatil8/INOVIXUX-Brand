@@ -1,5 +1,6 @@
-// INO-317/INO-367/INO-372: extracts the "Accessibility contract" and "Deliberate omissions"
-// sections out of each component's narrative doc (docs/brand/06-angular-components/<file>.md),
+// INO-317/INO-367/INO-372/INO-731: extracts the "Accessibility contract", "Deliberate omissions"
+// and "Mobile parity" sections out of each component's narrative doc
+// (docs/brand/06-angular-components/<file>.md),
 // renders them from markdown to sanitized HTML at generation time (so the portal has zero
 // runtime markdown dependency), parses each component's `@Input`/`@Output` (plus public
 // documented methods and `<ng-content>` slots) straight from its `.component.ts`/`.html` source
@@ -78,8 +79,25 @@ function findCommentRanges(source) {
   return ranges;
 }
 
-function isInsideComment(ranges, index) {
-  return ranges.some(([start, end]) => index >= start && index < end);
+/** `source` with every block comment's characters blanked to spaces (newlines kept, so line-anchored
+ * patterns and indices both survive), for the decorator/method scans below to match against.
+ *
+ * INO-731: post-filtering matches with "did this match *start* inside a comment?" — what this
+ * replaces — was not enough. A match that starts inside a comment keeps consuming past the
+ * closing `*‍/` and can swallow the first real declaration after it: `<ino-cascade-select>`'s class
+ * JSDoc contains the prose "`@Input() value: string` / `@Output() valueChange`", which matched as
+ * one `@Input` whose "type" ran to the end of the comment and on into
+ * `@Input() label = '';` — so `label`, a spec-required prop, was simply absent from the published
+ * API table (QA rejection on INO-423, row 1). Masking makes that unmatchable in the first place.
+ * `jsDocBefore` is still given the *original* source, since indices are preserved. */
+function maskComments(source, ranges) {
+  const chars = source.split('');
+  for (const [start, end] of ranges) {
+    for (let i = start; i < end; i++) {
+      if (chars[i] !== '\n') chars[i] = ' ';
+    }
+  }
+  return chars.join('');
 }
 
 /** The nearest `/** ... *‍/` JSDoc block that sits directly above `index` (only whitespace in
@@ -123,8 +141,7 @@ function parseProps(source, ranges, aliases = findLocalTypeAliases(source)) {
   const props = [];
   const re =
     /@Input\((?:'([^']*)'|\{[^}]*\})?\)\s*(?:readonly\s+)?(\w+)(\?)?\s*(?::\s*([^=;]+?))?\s*(?:=\s*([^;]+))?;/g;
-  for (const m of source.matchAll(re)) {
-    if (isInsideComment(ranges, m.index)) continue;
+  for (const m of maskComments(source, ranges).matchAll(re)) {
     const [, publicName, fieldName, optionalMark, typeRaw, defaultRaw] = m;
     const name = publicName || fieldName;
     const defaultValue = defaultRaw?.trim() ?? null;
@@ -151,8 +168,7 @@ function parseProps(source, ranges, aliases = findLocalTypeAliases(source)) {
 function parseEvents(source, ranges) {
   const events = [];
   const re = /@Output\(\)\s*(?:readonly\s+)?(\w+)\s*=\s*new EventEmitter<([^;]*?)>\(\);/g;
-  for (const m of source.matchAll(re)) {
-    if (isInsideComment(ranges, m.index)) continue;
+  for (const m of maskComments(source, ranges).matchAll(re)) {
     const [, name, type] = m;
     events.push({ name, type: type.trim(), description: jsDocBefore(source, m.index, ranges) });
   }
@@ -166,8 +182,7 @@ function parseEvents(source, ranges) {
 function parseMethods(source, ranges) {
   const methods = [];
   const re = /^  (\w+)\(([^)]*)\)(?:\s*:\s*([^{]+?))?\s*\{/gm;
-  for (const m of source.matchAll(re)) {
-    if (isInsideComment(ranges, m.index)) continue;
+  for (const m of maskComments(source, ranges).matchAll(re)) {
     const [, name, params, returnType] = m;
     if (LIFECYCLE_METHOD_NAMES.has(name)) continue;
     const description = jsDocBefore(source, m.index, ranges);
@@ -234,7 +249,13 @@ function parseComponentApi(sourcePath) {
   const ranges = findCommentRanges(source);
   const hostDirectiveApi = parseHostDirectiveApi(source, sourceUrl);
   return {
-    props: [...parseProps(source, ranges), ...hostDirectiveApi.props],
+    // `collectTypeAliases`, not the default `findLocalTypeAliases`: a component's enum input types
+    // normally live in a sibling file (`size: InoControlSize` is declared in
+    // `components/control-size.ts`), so the component file alone resolved them to `values: null` —
+    // the published Props table then had no value list for the one axis every control shares
+    // (INO-731; same root cause QA logged on INO-401/INO-409/INO-423). Host directives already
+    // resolved theirs this way.
+    props: [...parseProps(source, ranges, collectTypeAliases(source, sourceUrl)), ...hostDirectiveApi.props],
     events: [...parseEvents(source, ranges), ...hostDirectiveApi.events],
     methods: parseMethods(source, ranges),
     templates: parseTemplates(resolveTemplateMarkup(source, sourceUrl)),
@@ -284,13 +305,13 @@ for (const component of manifest.components) {
     ? parseComponentApi(component.sourcePath)
     : { props: [], events: [], methods: [], templates: [] };
   if (!docFile) {
-    components[slug] = { name: component.name, docPath: null, a11y: null, notes: null, api };
+    components[slug] = { name: component.name, docPath: null, a11y: null, notes: null, mobile: null, api };
     continue;
   }
   const docUrl = new URL(docFile, docsDir);
   const docPath = `docs/brand/06-angular-components/${docFile}`;
   if (!existsSync(docUrl)) {
-    components[slug] = { name: component.name, docPath: null, a11y: null, notes: null, api };
+    components[slug] = { name: component.name, docPath: null, a11y: null, notes: null, mobile: null, api };
     continue;
   }
   const markdown = readFileSync(docUrl, 'utf8');
@@ -299,6 +320,12 @@ for (const component of manifest.components) {
     docPath,
     a11y: renderSection(extractSection(markdown, 'Accessibility contract')),
     notes: renderSection(extractSection(markdown, 'Deliberate omissions')),
+    // INO-731: the narrative docs have carried a "## Mobile parity" section (which Capacitor /
+    // React Native / Flutter target ports exist, and what each one deliberately leaves out) since
+    // INO-372, but nothing extracted it — so the docs page for a "port"-disposition component
+    // mentioned mobile nowhere at all, failing §2 row 7 for every one of them, not just the
+    // component that happened to be under QA when it was noticed (INO-423).
+    mobile: renderSection(extractSection(markdown, 'Mobile parity')),
     api,
   };
 }

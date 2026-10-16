@@ -234,6 +234,7 @@
 
   &:hover:not(.ino-field__option--disabled) {
     background: var(--ino-color-surface-sunken);
+    box-shadow: inset 0 0 0 1px var(--ino-color-on-surface-muted);
   }
 
   &.ino-field__option--active {
