@@ -831,7 +831,7 @@ const COMPONENT_REGISTRY = [
     mobile: {
       reactNative: {
         path: 'mobile/react-native/src/components/InoInputMask.tsx',
-        roles: ['accent', 'border', 'danger', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'surfaceSunken', 'warning'],
+        roles: ['accent', 'border', 'danger', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'surfaceRaised', 'surfaceSunken', 'warning'],
       },
       flutter: {
         path: 'mobile/flutter/lib/widgets/ino_inputmask.dart',
@@ -841,7 +841,6 @@ const COMPONENT_REGISTRY = [
     divergences: [
       { platform: 'reactNative', roles: ['accentActive'], reason: 'same rationale as the input entry — web reserves accent-active for the transient mousedown-before-focus-settles border flash (`&:active:not(:disabled):not(:read-only)`, ino-inputmask.component.scss:53); touch has no pointer-down-before-focus phase, so the field goes straight from colors.border to colors.accent on focus.' },
       { platform: 'flutter', roles: ['accentActive'], reason: 'same as the React Native entry above.' },
-      { platform: 'reactNative', roles: ['surfaceRaised'], reason: 'NOT a deliberate divergence — a real parity gap. Web re-tints a readonly field to surface-raised (`&:read-only:not(:disabled)`, ino-inputmask.component.scss:68) and the Flutter port matches it (`fillColor: widget.readOnly ? colors.surfaceRaised : colors.surfaceSunken`, ino_inputmask.dart:302). This port accepts the same `readOnly` prop but spends it only on `editable={!nonEditable}` — the field background stays surfaceSunken, so a readonly masked field is visually indistinguishable from an editable one here. Declared so the gate stops reporting green on it; fix is to mirror the Flutter line. Raised as INO-724.' },
       { platform: 'reactNative', roles: ['onSurfaceSubtle'], reason: 'ADDED role, not a dropped one. Web has no `::placeholder` rule in this component because the mask template is rendered as the input\'s actual value (the underscores are value characters the user types over — see the tabular-nums comment at ino-inputmask.component.scss:38), so it inherits on-surface. React Native\'s TextInput paints its native placeholder separately and needs an explicit `placeholderTextColor`, which this port sets to on-surface-subtle — the same role web\'s sibling text inputs use for their placeholders.' },
     ],
   },
@@ -855,7 +854,7 @@ const COMPONENT_REGISTRY = [
       },
       flutter: {
         path: 'mobile/flutter/lib/widgets/ino_inputnumber.dart',
-        roles: ['accent', 'border', 'danger', 'onSurface', 'onSurfaceMuted', 'surfaceRaised', 'surfaceSunken'],
+        roles: ['accent', 'border', 'danger', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'surfaceRaised', 'surfaceSunken'],
       },
     },
     divergences: [
@@ -863,7 +862,6 @@ const COMPONENT_REGISTRY = [
       { platform: 'flutter', roles: ['accentActive'], reason: 'same as the React Native entry above.' },
       { platform: 'reactNative', roles: ['surface'], reason: 'web reads surface for the stepper buttons\' `&:hover:not(:disabled)` background (ino-inputnumber.component.scss:165) — a hover-only lift off surface-raised. Hover has no touch equivalent, so both stepper buttons here stay colors.surfaceRaised with a colors.border outline in every state and the role is never reached.' },
       { platform: 'flutter', roles: ['surface'], reason: 'same as the React Native entry above — the stepper buttons are a static surface-raised Container (ino_inputnumber.dart:369) with no hover state.' },
-      { platform: 'flutter', roles: ['onSurfaceSubtle'], reason: 'web colours the field placeholder with on-surface-subtle (`&::placeholder`, ino-inputnumber.component.scss:72) and the React Native port matches it via `placeholderTextColor`. This port builds its field through InputDecoration and never sets `hintStyle`, so the placeholder falls back to Material\'s own hintColor instead of reading the Ino role. Not a contrast regression that we have measured, but it is a Material default rather than a declared decision — same class of gap as the button entry\'s onDanger note. Raised as INO-724.' },
     ],
   },
   {
@@ -1149,7 +1147,7 @@ const COMPONENT_REGISTRY = [
       },
       flutter: {
         path: 'mobile/flutter/lib/widgets/ino_slider.dart',
-        roles: ['accent', 'borderSoft', 'danger', 'onSurface', 'onSurfaceMuted', 'surfaceRaised', 'surfaceSunken'],
+        roles: ['accent', 'borderSoft', 'danger', 'onSurface', 'onSurfaceMuted', 'surface', 'surfaceRaised', 'surfaceSunken'],
       },
     },
     divergences: [
@@ -1160,7 +1158,6 @@ const COMPONENT_REGISTRY = [
       { platform: 'reactNative', roles: ['borderSoft'], reason: 'ADDED role, not a dropped one. Web renders no tick marks — there is no tick rule anywhere in ino-slider.component.scss. Both mobile ports do render them for `marks` (InoSlider.tsx:254), because a touch thumb covers more of the track than a mouse cursor does and the marks are what make step positions findable without hovering. border-soft is the tick colour, chosen to sit under the track fill rather than compete with it.' },
       { platform: 'flutter', roles: ['borderSoft'], reason: 'same as the React Native entry above — activeTickMarkColor and inactiveTickMarkColor both read border-soft (ino_slider.dart:88-89).' },
       { platform: 'flutter', roles: ['accentActive'], reason: 'web re-tints the fill while dragging (`:host(.ino-slider--dragging) .ino-slider__fill`, ino-slider.component.scss:87) and also uses accent-active for the thumb hover/active ring and the at-max thumb. The React Native port keeps the dragging tint (`isDragging ? colors.accentActive : colors.accent`, InoSlider.tsx:241) and the at-bound ring, so this is a Flutter-only gap: Material\'s SliderTheme has no "track colour while dragging" slot, and this port expresses drag through the built-in overlay instead (`overlayColor: colors.accent.withOpacity(0.12)`, ino_slider.dart:86). The drag state is still visible, just as a halo rather than a fill shift.' },
-      { platform: 'flutter', roles: ['surface'], reason: 'web reads surface for the value tooltip\'s TEXT, inverted over an on-surface-filled bubble (ino-slider.component.scss:157-158), and the React Native port matches it exactly (tooltip background on-surface, text colors.surface, InoSlider.tsx:205-206). This port sets `valueIndicatorColor: colors.onSurface` for the bubble (ino_slider.dart:87) but never sets valueIndicatorTextStyle, so the label text falls back to Material\'s default rather than reading surface. Unlike the other Material indirections in this file, this one is NOT guaranteed to resolve to the right value: the bubble is deliberately inverted, so a default text colour derived from the normal surface is the one case where the fallback can land dark-on-dark. Worth measuring under all three themes — raised as INO-724 with the other port role gaps.' },
     ],
   },
   {

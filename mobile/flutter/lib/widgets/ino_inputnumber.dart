@@ -27,6 +27,11 @@ enum InoInputNumberVariant { outline, filled }
 class InoInputNumber extends StatefulWidget {
   final String? label;
   final String? hint;
+  /// In-field placeholder, shown while the field is empty — web's `[placeholder]` input and the
+  /// React Native port's `placeholder` prop. Distinct from [hint], which is the helper line BELOW
+  /// the field. Added in INO-724: this port had no placeholder surface at all, so the
+  /// on-surface-subtle placeholder role the other two ports read had nothing to paint here.
+  final String? placeholder;
   final String? error;
   final double? value;
   final ValueChanged<double?>? onValueChange;
@@ -52,6 +57,7 @@ class InoInputNumber extends StatefulWidget {
     super.key,
     this.label,
     this.hint,
+    this.placeholder,
     this.error,
     this.value,
     this.onValueChange,
@@ -241,6 +247,14 @@ class _InoInputNumberState extends State<InoInputNumber> {
                           decoration: InputDecoration(
                             isDense: true,
                             filled: true,
+                            // INO-724. Web colours the placeholder on-surface-subtle
+                            // (`&::placeholder`, ino-inputnumber.component.scss:72) and the React
+                            // Native port matches it via `placeholderTextColor`. Without an
+                            // explicit hintStyle the text falls back to Material's own hintColor.
+                            // Only the colour is overridden — InputDecorator merges hintStyle over
+                            // the field's own `style`, so the size-token fontSize still applies.
+                            hintText: widget.placeholder,
+                            hintStyle: TextStyle(color: colors.onSurfaceSubtle),
                             fillColor: filled
                                 ? (nonEditable && !widget.disabled ? colors.surfaceSunken : colors.surfaceRaised)
                                 : (widget.readOnly ? colors.surfaceRaised : colors.surfaceSunken),

@@ -85,6 +85,15 @@ class InoSlider extends StatelessWidget {
       thumbColor: colors.surfaceRaised,
       overlayColor: colors.accent.withOpacity(0.12),
       valueIndicatorColor: colors.onSurface,
+      // INO-724. The bubble above is deliberately inverted, so the label has to take the paired
+      // background role to stay legible — web sets it explicitly
+      // (ino-slider.component.scss:157-158) and the React Native port matches
+      // (InoSlider.tsx:205-206). Material's default indicator text colour derives from the page
+      // background instead, so leaving this unset is the one Material indirection in this file
+      // that can land dark-on-dark. Role name kept out of this prose on purpose: the parity
+      // gate's staleness check is a plain regex over the file and does not strip comments, so a
+      // mention here would satisfy it even if the line below were deleted.
+      valueIndicatorTextStyle: TextStyle(color: colors.surface),
       activeTickMarkColor: colors.borderSoft,
       inactiveTickMarkColor: colors.borderSoft,
       trackHeight: trackHeight,

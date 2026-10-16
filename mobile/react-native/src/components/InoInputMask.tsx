@@ -228,7 +228,12 @@ export function InoInputMask({
             paddingHorizontal: sizeTokens.paddingInline,
             fontSize: sizeTokens.fontSize,
             color: colors.onSurface,
-            backgroundColor: colors.surfaceSunken,
+            // INO-724. Readonly re-tints to surface-raised, mirroring web's
+            // `&:read-only:not(:disabled)` (ino-inputmask.component.scss:68) and the Flutter port's
+            // `fillColor` line (ino_inputmask.dart:302). The `!disabled` guard is web's, not
+            // Flutter's: a disabled field keeps the sunken fill and reads as unavailable through
+            // `styles.disabled`'s opacity instead, so the two cues never stack.
+            backgroundColor: readOnly && !disabled ? colors.surfaceRaised : colors.surfaceSunken,
             borderColor,
           },
           disabled && styles.disabled,
