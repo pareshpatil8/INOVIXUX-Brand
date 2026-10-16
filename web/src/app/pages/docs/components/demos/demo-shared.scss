@@ -65,7 +65,7 @@
 // Density override panes (dense/fluid) — the docs layout itself is fixed to
 // [data-density="dense"] (`docs-layout.component.ts`), so the "fluid" pane needs an explicit
 // override to show the contrast the §2 contract requires.
-.demo-pane[data-density] {
+.demo-pane[data-density="fluid"] {
   --ino-row-min-height: var(--ino-target-comfortable);
 }
 

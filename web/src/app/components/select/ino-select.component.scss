@@ -28,7 +28,7 @@
   align-items: center;
   inline-size: 100%;
   /* Density (DoD row 4) — same row-min-height fallback idiom as ino-input. */
-  min-block-size: var(--ino-row-min-height, var(--ino-control-height, var(--ino-target-comfortable)));
+  min-block-size: max(var(--ino-control-height, var(--ino-target-comfortable)), var(--ino-row-min-height, 0px));
   padding-inline: var(--ino-control-padding-inline, var(--ino-space-4));
   padding-inline-end: var(--ino-space-8);
   background: var(--ino-color-surface-sunken);
