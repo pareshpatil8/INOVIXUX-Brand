@@ -361,7 +361,7 @@ class _SpinnerButton extends StatelessWidget {
   final String label;
   final bool disabled;
   final VoidCallback onPressed;
-  final InoColors colors;
+  final InoPalette colors;
 
   const _SpinnerButton({
     required this.icon,

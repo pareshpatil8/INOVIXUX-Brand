@@ -179,7 +179,7 @@ export function InoInputNumber({
               max,
             }}
             editable={!nonEditable}
-            keyboardType={min !== null && min < 0 ? 'numbers-and-punctuation' : 'numeric'}
+            keyboardType={min != null && min < 0 ? 'numbers-and-punctuation' : 'numeric'}
             placeholderTextColor={colors.onSurfaceSubtle}
             value={displayValue}
             onChangeText={handleTextChange}
