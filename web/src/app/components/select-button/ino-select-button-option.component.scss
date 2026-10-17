@@ -1,6 +1,11 @@
 :host {
   display: inline-flex;
   flex: 1 1 auto;
+  /* INO-746: the segment is the flex item, so this is the level that has to opt out of the
+     automatic minimum size — without it `flex-shrink` is capped at min-content and the group
+     overflows its container rather than ellipsing, however the inner label is styled. The
+     `min-width: 0` on `__label` below is one level too deep to do this on its own. */
+  min-width: 0;
 }
 
 .ino-select-button-option__input {

@@ -6,7 +6,7 @@
     [value]="value"
     [checked]="selected"
     [disabled]="disabled"
-    [attr.aria-readonly]="readonly || null"
+    [attr.aria-readonly]="readonly && type === 'checkbox' ? true : null"
     [attr.aria-label]="iconOnly ? (ariaLabel || label) : null"
     (click)="onClick($event)"
     (change)="onChange($event)"

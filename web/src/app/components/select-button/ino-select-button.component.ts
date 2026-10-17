@@ -50,6 +50,12 @@ let idSeq = 0;
     '[attr.role]': "multiple ? 'group' : 'radiogroup'",
     '[attr.aria-label]': 'ariaLabel',
     '[attr.aria-labelledby]': 'effectiveLabelledby',
+    // INO-746: `radiogroup` supports `aria-readonly`; the `radio` role does not (the rule
+    // `ino-checkbox`'s SPEC.md §4 already settled, naming `radio` as its counter-example), so in
+    // single-select mode the readonly state is announced here on the group rather than per option.
+    // In multi-select the host is `role="group"`, which doesn't support it either — there each
+    // option's `checkbox` role carries it instead (`ino-select-button-option.component.html`).
+    '[attr.aria-readonly]': '!multiple && readonly ? true : null',
   },
 })
 export class InoSelectButtonComponent {

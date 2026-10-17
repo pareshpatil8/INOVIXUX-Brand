@@ -83,6 +83,62 @@ The component automatically switches input type and ARIA role based on the `mult
 
 ---
 
+## States
+
+**Default** — Options render with `background: var(--ino-color-surface-raised)`,
+`color: var(--ino-color-on-surface)`, and a 1px `--ino-color-border` stroke. The first option
+receives `border-inline-start-width: 1px` and start radii; all others have their start border
+suppressed to create the visually-connected segmented appearance. Cursor is `pointer` for all
+non-disabled options.
+
+**Checked (selected)** — Checked options (`:has(.ino-select-button-option__input:checked)`) apply
+`background: var(--ino-gradient-accent)`, `color: var(--ino-color-on-accent)`, and
+`border-color: var(--ino-color-accent)`. Elevated `z-index: 1` ensures the accent border remains
+visible over adjacent unselected options.
+
+**Hover** — Unselected options on hover receive `background: var(--ino-color-surface-sunken)` with
+an inset `box-shadow` border (`1px var(--ino-color-on-surface-muted)`), ensuring hover affordance
+remains visible in high-contrast mode where surface luminance shifts are minimal. Selected options
+on hover apply `filter: brightness(1.1)` to the accent gradient. Hover is suppressed on disabled
+options. Elevated `z-index: 2` ensures the hover border sits above adjacent default options.
+
+**Focus-visible** — When the contained input receives keyboard focus (`:has(:focus-visible)`), the
+label receives `outline: var(--ino-focus-ring)` with
+`outline-offset: var(--ino-focus-ring-offset)`. Elevated `z-index: 3` ensures the focus ring
+remains visible over hover and selected states. Native radio/checkbox focus behavior applies — Tab
+enters the group, Arrow keys navigate between options (radio mode), Space toggles (checkbox) or
+selects (radio).
+
+**Active (pressed)** — Unselected options on pointer-down (`:has(:active)`) receive
+`background: var(--ino-color-surface-sunken)` with `border-color: var(--ino-color-accent-active)`.
+Selected options on pointer-down apply `background: var(--ino-color-accent-active)`. This mirrors
+the pressed-state pattern used across field components (`ino-input`, `ino-select`, `ino-multiselect`)
+— hover fill + accent-active border.
+
+**Disabled (per-option)** — Individual options can be disabled via `InoSelectButtonOption.disabled`.
+Disabled options (`:has(:disabled)`) receive `color: var(--ino-color-on-surface-muted)`,
+`opacity: 0.6`, and `cursor: not-allowed`. Hover and active states are suppressed. Background
+remains `--ino-color-surface-raised` (unselected) or keeps the accent gradient (selected-but-disabled).
+Native `[disabled]` attribute on the input prevents interaction and announces the disabled state to
+assistive technology.
+
+**Disabled (group-level)** — When `[disabled]="true"` is set on the `<ino-select-button>` container,
+all options receive `[disabled]` on their inputs, applying the per-option disabled styling to every
+option in the group.
+
+**Readonly** — When `[readonly]="true"` is set on the container, all option components receive the
+`ino-select-button-option--readonly` host class. Readonly options display `cursor: default`,
+`opacity: 0.8`, and suppressed hover effects (background remains unchanged on hover, no brightness
+filter on selected options). The component's click handler returns early when readonly, preventing
+selection changes by pointer *and* by arrow key — a native radio group selects on arrow, so that
+second path matters. Tab navigation and screen reader access to the current selection are
+preserved; the group stays focusable, unlike `disabled`. `aria-readonly="true"` is announced from
+whichever element's role supports it — the `radiogroup` host in single-select mode, each
+`<input type="checkbox">` in multi-select mode (see the accessibility contract below).
+Currently web-only — see [Deliberate omissions](#deliberate-omissions).
+
+---
+
 ## Accessibility contract
 
 **Role / ARIA** — `role="radiogroup"` (single-select) or `role="group"` (multi-select) on the
@@ -93,6 +149,15 @@ ensuring every input has an accessible name even without visible text.
 
 `groupLabel` auto-wires `aria-labelledby` to a generated ID; `ariaLabel` is the fallback for
 groups without a visible label. `ariaLabelledby` allows callers to override the auto-wiring.
+
+**`aria-readonly` placement** — mode-dependent, because no single element can carry it in both
+modes. In single-select the attribute sits on the `role="radiogroup"` host, which supports it; the
+`radio` role on the individual inputs does **not** (the rule `ino-checkbox` settled, naming `radio`
+as its counter-example). In multi-select the host is `role="group"`, which does not support it
+either, so each option's native `checkbox` role carries it instead. The attribute is omitted
+entirely — never `"false"` — when `readonly` is off. There is deliberately no `aria-pressed` in
+either mode: it is invalid on a checkbox and would double-announce against the native checked
+state.
 
 **Keyboard** — Tab into the group (first/selected option receives focus), Arrow keys to navigate
 between options (radio mode only — browser-native radiogroup behavior), Space to toggle (checkbox
@@ -124,11 +189,14 @@ group label (via `aria-labelledby` or `aria-label`), readonly (via `aria-readonl
 semantics require exactly one option selected at all times after the first selection. PrimeNG's
 `allowEmpty` is similarly omitted.
 
-**`readonly` implementation.** The `readonly` @Input prevents selection changes at the interaction
-level (click handler returns early), emits `aria-readonly="true"` on each option's input, and
-applies a visual treatment (reduced opacity, default cursor, no hover state changes) to indicate
-non-interactive state while preserving readability. This follows the pattern established in
-`ino-toggle-button`.
+**`readonly` is web-only.** On the web the @Input is fully implemented — interaction blocked
+(pointer and arrow key), a visual treatment (0.8 opacity, default cursor, hover and pointer-down
+affordances withdrawn) that keeps the group legible and focusable, and `aria-readonly="true"` on
+the element whose role supports it. Neither mobile port implements it: there is no `readOnly` prop
+on `InoSelectButton.tsx` or `ino_select_button.dart`, so a readonly segmented control has no
+cross-platform equivalent yet. The ARIA placement is mode-dependent and is *not* a copy of
+`ino-toggle-button`'s unconditional per-input attribute — that component is a single control, not a
+group; see `SPEC.md` §9 for the rule and its counter-example.
 
 **No invalid/error state.** The §2 standard state set includes invalid/error, but segmented
 controls are typically selection-first UI (filtering, view modes) rather than form-validation

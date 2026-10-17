@@ -63,6 +63,14 @@
   background: var(--ino-color-surface-raised);
 }
 
+// INO-746: a pane whose control is genuinely wider than one auto-fit column. Without it the
+// control shrinks to fit and ellipses its labels, which reads as a rendering defect on a docs page
+// even though it is the component behaving correctly. Use only where the extra width is needed —
+// deliberate truncation is demonstrated on purpose elsewhere.
+.demo-pane--wide {
+  grid-column: span 2;
+}
+
 .demo-pane__label {
   font-family: var(--ino-font-mono);
   font-size: 11px;

@@ -19,6 +19,7 @@ import { KeyfilterDemoComponent } from './demos/keyfilter-demo.component';
 import { ToggleButtonDemoComponent } from './demos/toggle-button-demo.component';
 import { PasswordDemoComponent } from './demos/password-demo.component';
 import { CascadeSelectDemoComponent } from './demos/cascade-select-demo.component';
+import { SelectButtonDemoComponent } from './demos/select-button-demo.component';
 
 /**
  * Slug -> hand-authored demo component, for components whose §2 Component Publish Contract
@@ -69,4 +70,12 @@ export const CUSTOM_DEMOS: Record<string, Type<unknown>> = {
   // `open-level` state, no `aria-activedescendant`, and (because `error` is string-typed, not in
   // the boolean-only `STATE_INPUT_NAMES` filter) no invalid example either.
   'cascade-select': CascadeSelectDemoComponent,
+  // The component's whole visible surface is `*ngFor="let option of options"` (INO-746, fixing
+  // INO-411): `defaultValueFor()` gives `options` an empty `[]`, so every section of the page —
+  // live example, density axis, size axis, states — rendered a labelled empty `<div>` with zero
+  // `<ino-select-button-option>` elements in it. Behind that, `size` is a type-alias input the
+  // manifest extractor can't enumerate (no size row), and `multiple` — the input that picks
+  // between the radiogroup and checkbox-group patterns, i.e. the two variants — isn't in
+  // `STATE_INPUT_NAMES`.
+  'select-button': SelectButtonDemoComponent,
 };

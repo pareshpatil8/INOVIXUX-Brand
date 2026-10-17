@@ -1,0 +1,330 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Variants — single, multiple, icon-only, equal-width</h3>
+  <p class="demo-section__note">
+    The component renders one <code>&lt;ino-select-button-option&gt;</code> per entry in
+    <code>options</code> and takes no projected content, so the group can never drift out of sync
+    with its value. <code>multiple</code> switches both halves of the contract at once
+    (<code>SPEC.md</code> §2): off, the host is <code>role="radiogroup"</code> over native
+    <code>&lt;input type="radio"&gt;</code> segments and a click <em>replaces</em> the selection;
+    on, the host is <code>role="group"</code> over <code>&lt;input type="checkbox"&gt;</code>
+    segments and a click <em>accumulates</em>. There is deliberately no <code>aria-pressed</code> in
+    either mode — it is invalid on a checkbox and would double-announce against the native checked
+    state. Click any group: the caption reads <code>value</code> back live.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">single — role="radiogroup"</p>
+      <ino-select-button
+        [options]="settlementWindows"
+        ariaLabel="Settlement window"
+        [(value)]="singleValue"
+      ></ino-select-button>
+      <p class="demo-live">value = '{{ singleValue }}'</p>
+    </div>
+
+    <div class="demo-pane demo-pane--wide">
+      <p class="demo-pane__label">multiple — role="group"</p>
+      <ino-select-button
+        [options]="cardNetworks"
+        [multiple]="true"
+        ariaLabel="Accepted card networks"
+        [(value)]="multiValue"
+      ></ino-select-button>
+      <p class="demo-live">value = [{{ multiReadout }}]</p>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">iconOnly — ariaLabel per option</p>
+      <ino-select-button
+        [options]="alignments"
+        [iconOnly]="true"
+        ariaLabel="Text alignment"
+        [(value)]="iconOnlyValue"
+      ></ino-select-button>
+      <p class="demo-live">value = '{{ iconOnlyValue }}'</p>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">equalWidth — segments divide the container</p>
+      <div style="max-width: 280px;">
+        <ino-select-button
+          [options]="periods"
+          [equalWidth]="true"
+          ariaLabel="Reporting period"
+          [(value)]="equalWidthValue"
+        ></ino-select-button>
+      </div>
+      <p class="demo-live">value = '{{ equalWidthValue }}'</p>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States</h3>
+  <p class="demo-section__note">
+    <code>disabled</code> on the group disables every segment's native input, so the whole group
+    leaves the tab order and drops to 60% opacity; a single option's own
+    <code>disabled</code> flag does the same to that segment only while the rest of the group stays
+    interactive — the case the group-level input cannot express.
+    <code>readonly</code> keeps every segment focusable and fully legible (80% opacity, hover and
+    pointer-down affordances withdrawn), then intercepts the native <code>click</code> so neither
+    pointer nor arrow-key activation can move the selection. It is announced from whichever element
+    is allowed to carry it: in single-select mode <code>aria-readonly</code> sits on the host, whose
+    <code>radiogroup</code> role supports it, because the <code>radio</code> role does not — the
+    rule <code>ino-checkbox</code>'s <code>SPEC.md</code> §4 already settled, naming
+    <code>radio</code> as its counter-example. In multi-select the host is <code>role="group"</code>,
+    which doesn't support it either, so there each segment's native
+    <code>checkbox</code> role carries it instead.
+    Hover and <code>:focus-visible</code> are live on every enabled group —
+    tab into one for the focus ring, which is painted on the segment and raised above its
+    neighbours' shared border.
+  </p>
+  <p class="demo-section__note">
+    There is no invalid/error state on this component, by decision rather than oversight
+    (<code>SPEC.md</code> §10): a segmented control is selection-first UI — view modes, filters,
+    toolbar state — where "invalid" does not apply, and the form-control case is better served by
+    <code>required</code> on a backing field than by an inline error message. Reach for
+    <code>&lt;ino-radio-group&gt;</code> when you need a validated one-of-N field.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">disabled — whole group</p>
+      <ino-select-button
+        [options]="settlementWindows"
+        [disabled]="true"
+        ariaLabel="Settlement window (disabled)"
+        [value]="disabledValue"
+      ></ino-select-button>
+      <p class="demo-live">value = '{{ disabledValue }}' — cannot change</p>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">readonly — focusable, selection locked</p>
+      <ino-select-button
+        [options]="settlementWindows"
+        [readonly]="true"
+        ariaLabel="Settlement window (readonly)"
+        [value]="readonlyValue"
+      ></ino-select-button>
+      <p class="demo-live">value = '{{ readonlyValue }}' — cannot change</p>
+    </div>
+
+    <div class="demo-pane demo-pane--wide">
+      <p class="demo-pane__label">one option disabled, group live</p>
+      <ino-select-button
+        [options]="railsWithOneUnavailable"
+        ariaLabel="Payment rail"
+        [(value)]="perOptionDisabledValue"
+      ></ino-select-button>
+      <p class="demo-live">value = '{{ perOptionDisabledValue }}'</p>
+    </div>
+
+    <div class="demo-pane demo-pane--wide">
+      <p class="demo-pane__label">readonly — multi-select</p>
+      <ino-select-button
+        [options]="cardNetworks"
+        [multiple]="true"
+        [readonly]="true"
+        ariaLabel="Accepted card networks (readonly)"
+        [value]="readonlyMultiValue"
+      ></ino-select-button>
+      <p class="demo-live">value = [visa, amex] — cannot change</p>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Sizing — sm / default / lg</h3>
+  <p class="demo-section__note">
+    <code>size</code> is typed <code>InoControlSize</code>, a type alias — the manifest extractor
+    records <code>"values": null</code> for that row, which is why the generated props table shows
+    no enumerated values and the generic renderer produced no size row. The host's size class
+    re-points four unsuffixed <code>--ino-control-*</code> aliases (height, inline padding, font
+    size, gap) and the option's single set of declarations reads them, so one rule set serves three
+    sizes across all three densities.
+  </p>
+  <p class="demo-section__note">
+    Note the heights these rungs resolve to <em>here</em>: this page runs in the dense register, so
+    they are 28 / 32 / 40px, not the 36 / 44 / 52px of the fluid register — see the fluid pane in
+    the next section, which does measure 44px. The contract's floor is that
+    <code>size="default"</code> never drops below 32px even in dense mode, which is exactly what
+    the middle rung does here.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">size="sm"</p>
+      <ino-select-button
+        size="sm"
+        [options]="settlementWindows"
+        ariaLabel="Settlement window, small"
+        [(value)]="smValue"
+      ></ino-select-button>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">size="default"</p>
+      <ino-select-button
+        size="default"
+        [options]="settlementWindows"
+        ariaLabel="Settlement window, default"
+        [(value)]="defaultValue"
+      ></ino-select-button>
+    </div>
+
+    <div class="demo-pane demo-pane--wide">
+      <p class="demo-pane__label">size="lg"</p>
+      <ino-select-button
+        size="lg"
+        [options]="settlementWindows"
+        ariaLabel="Settlement window, large"
+        [(value)]="lgValue"
+      ></ino-select-button>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Density — dense vs. fluid</h3>
+  <p class="demo-section__note">
+    Density is a global <code>[data-density]</code> token axis, not a per-component
+    <code>@Input()</code>. This docs page renders in the dense register
+    (<code>[data-density="dense"]</code> on the layout host); the right-hand pane overrides to
+    fluid. Because the option reads the bare unsuffixed <code>--ino-control-*</code> aliases and the
+    size classes only re-point them, density composes with <code>size</code> for free rather than
+    needing rules of its own. Icon-only is shown here because it is the case where the two
+    registers differ most visibly: the segment is square via
+    <code>aspect-ratio: 1</code> against its height, so a density change moves both axes.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane" data-density="dense">
+      <p class="demo-pane__label">dense</p>
+      <ino-select-button
+        [options]="icons"
+        [iconOnly]="true"
+        ariaLabel="Result view, dense"
+        [(value)]="denseValue"
+      ></ino-select-button>
+    </div>
+    <div class="demo-pane" data-density="fluid">
+      <p class="demo-pane__label">fluid</p>
+      <ino-select-button
+        [options]="icons"
+        [iconOnly]="true"
+        ariaLabel="Result view, fluid"
+        [(value)]="fluidValue"
+      ></ino-select-button>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Labels — accessible name, truncation, RTL</h3>
+  <p class="demo-section__note">
+    Two labelling patterns, both handled without the caller wiring ids by hand
+    (<code>SPEC.md</code> §5). <code>groupLabel</code> renders a visible label above the group and
+    points the host's <code>aria-labelledby</code> at it; <code>ariaLabel</code> names the group
+    with no visible text, which is the right choice when surrounding copy already says what the
+    group is for. An explicit <code>ariaLabelledby</code> beats both. The group name is separate
+    from the per-segment name: each segment is named by its own label text, or by its
+    <code>ariaLabel</code> when <code>iconOnly</code> hides that text.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">groupLabel — visible, auto aria-labelledby</p>
+      <ino-select-button
+        groupLabel="Settlement window"
+        [options]="settlementWindows"
+        [(value)]="groupLabelValue"
+      ></ino-select-button>
+    </div>
+    <div class="demo-pane">
+      <p class="demo-pane__label">ariaLabel — named, no visible label</p>
+      <ino-select-button
+        ariaLabel="Settlement window"
+        [options]="settlementWindows"
+        [(value)]="ariaLabelValue"
+      ></ino-select-button>
+    </div>
+  </div>
+  <p class="demo-section__note" style="margin-top: var(--ino-space-4);">
+    A segment's text truncates with an ellipsis rather than wrapping or pushing the group past its
+    container — a segmented control that reflows to two lines stops reading as one control. The
+    stylesheet is logical-properties-only (<code>border-inline-start-width</code>,
+    <code>border-start-start-radius</code>, <code>padding-inline</code>), including the segment
+    joints and the first/last corner radii, so the group mirrors correctly under
+    <code>dir="rtl"</code>: the first option keeps the leading corners on the right.
+  </p>
+  <div class="demo-col" style="max-width: 320px;">
+    <ino-select-button
+      groupLabel="Destination account"
+      [options]="longLabels"
+      [equalWidth]="true"
+      [(value)]="longLabelValue"
+    ></ino-select-button>
+  </div>
+  <div class="demo-rtl" dir="rtl" style="margin-top: var(--ino-space-4); max-width: 360px;">
+    <ino-select-button
+      groupLabel="نافذة التسوية"
+      [options]="rtlOptions"
+      [(value)]="rtlValue"
+    ></ino-select-button>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Dense-table usage</h3>
+  <p class="demo-section__note">
+    A two-segment per-row decision inside a dense table — the narrowest realistic placement for a
+    segmented control, and the point at which it beats a pair of loose buttons: the row's state is
+    always visible rather than inferred. These stay at <code>size="default"</code> rather than
+    dropping to <code>sm</code> on purpose: in the dense register <code>default</code> resolves to
+    exactly the 32px floor the accessibility contract promises, while <code>sm</code> would land at
+    28px — under the minimum target. Reach for <code>size="sm"</code> in a fluid-register layout
+    (where it is 36px), not to squeeze an already-dense table.
+  </p>
+  <table class="demo-table">
+    <thead>
+      <tr>
+        <th scope="col">Counterparty</th>
+        <th scope="col">Payout limit</th>
+        <th scope="col">Rule</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let rule of payoutRules">
+        <td>{{ rule.counterparty }}</td>
+        <td>{{ rule.limit }}</td>
+        <td>
+          <ino-select-button
+            size="default"
+            [options]="ruleModes"
+            [ariaLabel]="'Payout rule for ' + rule.counterparty"
+            [value]="ruleMode(rule.id)"
+            (valueChange)="setRuleMode(rule.id, $event)"
+          ></ino-select-button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Keyboard contract</h3>
+  <p class="demo-section__note">
+    Native input semantics, nothing custom — which is the whole reason the segments are real
+    <code>&lt;input&gt;</code>s visually hidden inside their <code>&lt;label&gt;</code> rather than
+    <code>&lt;button&gt;</code>s with hand-rolled ARIA.
+  </p>
+  <p class="demo-section__note">
+    <strong>Single-select</strong> is the standard radiogroup roving-tabindex behaviour the browser
+    provides: <strong>Tab</strong> enters the group at the selected segment (or the first one if
+    nothing is selected) and the next <strong>Tab</strong> leaves the group entirely —
+    <strong>Arrow</strong> keys move <em>and</em> select within it, wrapping at both ends, and
+    <strong>Space</strong> selects the focused segment.
+    <strong>Multi-select</strong> is a group of independent checkboxes, so every segment is its own
+    tab stop and <strong>Space</strong> toggles it; arrow keys do nothing there.
+    <code>disabled</code> segments are skipped; <code>readonly</code> segments stay in the tab order
+    and stay arrowable, but the intercepted <code>click</code> means focus moves without the
+    selection following.
+  </p>
+</section>

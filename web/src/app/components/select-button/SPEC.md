@@ -115,23 +115,49 @@ and equal-width mode. Icon-only is not ported (no standard icon system on mobile
 
 ---
 
-## 9. Readonly state (B1 deliberate omission)
+## 9. Readonly state (resolved — INO-746)
 
-The `readonly` @Input exists and prevents selection changes at the interaction level (the `onClick`
-handler calls `event.preventDefault()` when `readonly=true`), but emits **no visual cue** and **no
-`aria-readonly` attribute**. This is a B1 gap.
+**Superseded.** This section recorded a B1 decision to ship `readonly` as interaction-only — no
+visual cue, no `aria-readonly` — and to align it with `ino-toggle-button` in a later phase. That
+alignment landed inside B1 and the decision no longer describes the code; the record is kept here
+because the ARIA placement it settled is not obvious from the template.
 
-A readonly segmented control is pixel-identical to an interactive one and announces identically to
-AT, then silently refuses input — worse UX than not having the input at all. The correct
-implementation would mirror `ino-toggle-button:11` (`[attr.aria-readonly]="readonly ? true : null"`)
-and add a visual treatment (e.g., dimmed color without full `disabled` opacity, or a distinct
-readonly class that withdraws hover/active affordances while keeping full legibility).
+**Shipped behaviour.** `readonly` does three things:
 
-**Decision for B1:** leave `readonly` as interaction-only (no visual, no AT). This will be aligned
-with `ino-toggle-button`'s full `aria-readonly` + visual treatment in a follow-up phase once the
-correct readonly visual pattern for segmented controls is established. The @Input remains so
-callers can bind to it, but the lack of feedback violates §2 point 2 (readonly demonstrated in all
-3 themes). Documented in the narrative doc's "Deliberate omissions" section.
+1. **Interaction.** `InoSelectButtonOptionComponent.onClick` returns early when `readonly`, so
+   neither a pointer click nor an arrow-key activation can move the selection. Native radio groups
+   select on arrow, so that second path is the one a click-only guard leaks past — it is asserted
+   explicitly (`state/readonly-refuses-an-arrow-key-selection-change`).
+2. **Visual.** The host class `ino-select-button-option--readonly` sets `cursor: default`,
+   `opacity: 0.8`, and withdraws the hover and pointer-down affordances, keeping the segment and
+   its selection fully legible. Deliberately *not* the `disabled` treatment (0.6 opacity, muted
+   text, removed from the tab order) — a readonly group stays focusable and readable.
+3. **AT.** `aria-readonly` is announced from whichever element's role is allowed to carry it, which
+   differs by mode:
+
+   | Mode | Host role | Carries `aria-readonly` |
+   |---|---|---|
+   | single (`multiple=false`) | `radiogroup` | the **host** — `radiogroup` supports it |
+   | multi (`multiple=true`) | `group` | each **`<input type="checkbox">`** — `checkbox` supports it |
+
+   The naive implementation — `[attr.aria-readonly]="readonly \|\| null"` on every option input,
+   which is what `ino-toggle-button:11` does and what this component briefly shipped — is invalid
+   in the default single-select mode: the `radio` role does **not** support `aria-readonly`. That
+   is the same rule `ino-checkbox`'s SPEC.md §4 already settled, which names `radio` as its
+   counter-example. `role="group"` does not support it either, so neither mode can put the
+   attribute in one fixed place. The attribute is absent (not `"false"`) whenever `readonly` is
+   off, in both modes.
+
+`ino-toggle-button` is a single control rather than a group, so its unconditional
+`[attr.aria-readonly]` is correct there and is *not* the pattern to copy here.
+
+§2 point 2 (readonly demonstrated in all 3 themes) is satisfied by the hand-authored docs demo
+added in INO-746 — `web/src/app/pages/docs/components/demos/select-button-demo.component.*`,
+mounted through `CUSTOM_DEMOS`, with both the single-select and multi-select readonly panes.
+
+Still web-only: neither mobile port implements `readonly` at all (no `readOnly` prop in
+`InoSelectButton.tsx` or `ino_select_button.dart`) — see §8 and the narrative doc's "Deliberate
+omissions".
 
 ---
 

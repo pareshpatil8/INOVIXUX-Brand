@@ -2,6 +2,14 @@
   display: inline-flex;
   flex-direction: column;
   gap: var(--ino-space-1);
+  /* INO-746: the option already carries the full truncation chain (`flex: 1 1 auto`, `min-width:
+     0`, `text-overflow: ellipsis`), but an `inline-flex` host sizes to its content and never hands
+     the segments a width to shrink into — so a group wider than its container pushed straight past
+     it and got clipped by the parent's edge instead of ellipsing. That is the case the narrative
+     contract's "truncates rather than pushing the group past its container" sentence describes,
+     and it only held when the caller also set `equalWidth`. Capping the host is what makes the
+     shrink chain reachable; it is inert whenever the group already fits. */
+  max-width: 100%;
 }
 
 /* INO-723: --ino-font-body and --ino-control-line-height do not exist in tokens.css — the real
