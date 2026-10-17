@@ -6,7 +6,6 @@
     class="ino-paginator__rows-select"
     [id]="rowsSelectId"
     [disabled]="disabled || loading"
-    [attr.aria-readonly]="readonly ? 'true' : null"
     (change)="onRowsPerPageChange($event)"
   >
     <option *ngFor="let option of rowsPerPageOptions" [value]="option" [selected]="option === rows">{{ option }}</option>

@@ -78,7 +78,8 @@ interface RenderedEvent {
     '[attr.role]': 'hostRole',
     '[attr.aria-busy]': 'loading || null',
     '[attr.aria-disabled]': 'disabled || null',
-    '[attr.aria-readonly]': 'readonly || null',
+    // INO-743: `listbox` supports `aria-readonly`, but `list` does not. Only apply when interactive (role=listbox).
+    '[attr.aria-readonly]': 'readonly && interactive ? true : null',
     '[attr.aria-label]': 'ariaLabel',
     '[attr.aria-describedby]': 'ariaDescribedBy',
   },
