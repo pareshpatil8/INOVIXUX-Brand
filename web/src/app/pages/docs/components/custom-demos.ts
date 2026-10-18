@@ -20,6 +20,7 @@ import { ToggleButtonDemoComponent } from './demos/toggle-button-demo.component'
 import { PasswordDemoComponent } from './demos/password-demo.component';
 import { CascadeSelectDemoComponent } from './demos/cascade-select-demo.component';
 import { SelectButtonDemoComponent } from './demos/select-button-demo.component';
+import { ToolbarDemoComponent } from './demos/toolbar-demo.component';
 
 /**
  * Slug -> hand-authored demo component, for components whose §2 Component Publish Contract
@@ -78,4 +79,10 @@ export const CUSTOM_DEMOS: Record<string, Type<unknown>> = {
   // between the radiogroup and checkbox-group patterns, i.e. the two variants — isn't in
   // `STATE_INPUT_NAMES`.
   'select-button': SelectButtonDemoComponent,
+  // The component is entirely slot-based content projection (`ng-content select="[slot='...']"`);
+  // the generic renderer mounts via `*ngComponentOutlet` with `inputs` only and cannot project
+  // content at all, so it would render an empty, unlabeled toolbar container with no visible
+  // elements. Three slots (start/center/end), two density modes, and keyboard navigation (arrow
+  // keys move focus) all require hand-authored examples with actual button/title/action content.
+  'toolbar': ToolbarDemoComponent,
 };

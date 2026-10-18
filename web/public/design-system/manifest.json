@@ -8,7 +8,7 @@
     "tablet": "641-900px",
     "desktop": ">900px"
   },
-  "componentCount": 55,
+  "componentCount": 57,
   "components": [
     {
       "name": "ino-alert",
@@ -1038,6 +1038,81 @@
           "type": "InoFeatureGridItem[]",
           "values": null,
           "default": "[]",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-fieldset",
+      "slug": "fieldset",
+      "className": "InoFieldsetComponent",
+      "sourcePath": "web/src/app/components/fieldset/ino-fieldset.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "legend",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "'sm' | 'md' | 'lg'",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "'md'",
+          "optional": true
+        },
+        {
+          "name": "collapsible",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "collapsed",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "values": null,
+          "default": "''",
           "optional": true
         }
       ],
@@ -4667,6 +4742,31 @@
           "type": "string",
           "values": null,
           "default": "''",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-toolbar",
+      "slug": "toolbar",
+      "className": "InoToolbarComponent",
+      "sourcePath": "web/src/app/components/toolbar/ino-toolbar.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "density",
+          "type": "'comfortable' | 'dense'",
+          "values": [
+            "comfortable",
+            "dense"
+          ],
+          "default": "'comfortable'",
           "optional": true
         }
       ],

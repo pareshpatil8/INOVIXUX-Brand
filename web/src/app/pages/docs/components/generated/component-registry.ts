@@ -14,6 +14,7 @@ import { InoConfirmPopupComponent } from '../../../../components/confirm-popup/i
 import { InoDatePickerComponent } from '../../../../components/datepicker/ino-datepicker.component';
 import { InoDrawerComponent } from '../../../../components/drawer/ino-drawer.component';
 import { InoFeatureGridComponent } from '../../../../components/feature-grid/ino-feature-grid.component';
+import { InoFieldsetComponent } from '../../../../components/fieldset/ino-fieldset.component';
 import { InoFileUploadComponent } from '../../../../components/file-upload/ino-file-upload.component';
 import { InoFloatLabelComponent } from '../../../../components/floatlabel/ino-floatlabel.component';
 import { InoFocusTrapComponent } from '../../../../components/focus-trap/ino-focus-trap.component';
@@ -55,6 +56,7 @@ import { InoTimelineComponent } from '../../../../components/timeline/ino-timeli
 import { InoToastContainerComponent } from '../../../../components/toast-container/ino-toast-container.component';
 import { InoToggleComponent } from '../../../../components/toggle/ino-toggle.component';
 import { InoToggleButtonComponent } from '../../../../components/toggle-button/ino-toggle-button.component';
+import { InoToolbarComponent } from '../../../../components/toolbar/ino-toolbar.component';
 import { InoTooltipComponent } from '../../../../components/tooltip/ino-tooltip.component';
 import { InoTreeSelectComponent } from '../../../../components/treeselect/ino-treeselect.component';
 import { InoVirtualScrollerComponent } from '../../../../components/virtual-scroller/ino-virtual-scroller.component';
@@ -71,6 +73,7 @@ export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'datepicker': InoDatePickerComponent,
   'drawer': InoDrawerComponent,
   'feature-grid': InoFeatureGridComponent,
+  'fieldset': InoFieldsetComponent,
   'file-upload': InoFileUploadComponent,
   'floatlabel': InoFloatLabelComponent,
   'focus-trap': InoFocusTrapComponent,
@@ -112,6 +115,7 @@ export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'toast-container': InoToastContainerComponent,
   'toggle': InoToggleComponent,
   'toggle-button': InoToggleButtonComponent,
+  'toolbar': InoToolbarComponent,
   'tooltip': InoTooltipComponent,
   'treeselect': InoTreeSelectComponent,
   'virtual-scroller': InoVirtualScrollerComponent,
