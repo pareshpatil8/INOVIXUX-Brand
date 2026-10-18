@@ -581,6 +581,26 @@ const COMPONENT_REGISTRY = [
     ],
   },
   {
+    name: 'breadcrumb',
+    web: 'web/src/app/components/breadcrumb',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoBreadcrumb.tsx',
+        roles: ['onSurface', 'onSurfaceMuted', 'onSurfaceSubtle'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_breadcrumb.dart',
+        roles: ['onSurface', 'onSurfaceMuted', 'onSurfaceSubtle'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['accent', 'accentActive', 'surfaceSunken'], reason: "web reads accent for a crumb link's hover/underline colour, accent-active for its pressed colour, and surface-sunken for the ellipsis trigger's hover background and the loading skeleton's bar fill (ino-breadcrumb.component.scss). Hover and :active are pointer/keyboard concepts this port doesn't reach — a touch press has no separate hover phase, and there is no dedicated pressed-colour read because tapping a crumb fires onItemPress directly rather than reproducing a hover-then-press sequence. loading is web-only (SPEC.md §10), so there is no skeleton for surface-sunken to tint either." },
+      { platform: 'flutter', roles: ['accent', 'accentActive', 'surfaceSunken'], reason: 'same as the React Native entry above.' },
+      { platform: 'reactNative', roles: ['onSurfaceSubtle'], reason: 'ADDED role, not a dropped one. Web dims a disabled or otherwise non-navigable crumb with opacity: 0.6 over the same on-surface-muted colour every other non-current crumb already reads (ino-breadcrumb.component.scss .ino-breadcrumb__label--disabled); this port has no opacity-dimming convention for static text and instead reads the dedicated, already-dimmer on-surface-subtle role directly for that case — the same substitution InoAutocomplete.tsx makes for its own disabled rows (rowDisabled ? colors.onSurfaceSubtle : colors.onSurfaceMuted).' },
+      { platform: 'flutter', roles: ['onSurfaceSubtle'], reason: 'same as the React Native entry above.' },
+    ],
+  },
+  {
     name: 'button',
     web: 'web/src/app/components/button',
     mobile: {

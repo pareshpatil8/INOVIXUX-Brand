@@ -5,6 +5,7 @@ import { Type } from '@angular/core';
 
 import { InoAlertComponent } from '../../../../components/alert/ino-alert.component';
 import { InoAutocompleteComponent } from '../../../../components/autocomplete/ino-autocomplete.component';
+import { InoBreadcrumbComponent } from '../../../../components/breadcrumb/ino-breadcrumb.component';
 import { InoButtonComponent } from '../../../../components/button/ino-button.component';
 import { InoCardComponent } from '../../../../components/card/ino-card.component';
 import { InoCascadeSelectComponent } from '../../../../components/cascade-select/ino-cascade-select.component';
@@ -65,6 +66,7 @@ import { InoVirtualScrollerComponent } from '../../../../components/virtual-scro
 export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'alert': InoAlertComponent,
   'autocomplete': InoAutocompleteComponent,
+  'breadcrumb': InoBreadcrumbComponent,
   'button': InoButtonComponent,
   'card': InoCardComponent,
   'cascade-select': InoCascadeSelectComponent,

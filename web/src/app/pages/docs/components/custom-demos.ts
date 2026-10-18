@@ -22,6 +22,7 @@ import { CascadeSelectDemoComponent } from './demos/cascade-select-demo.componen
 import { SelectButtonDemoComponent } from './demos/select-button-demo.component';
 import { FieldsetDemoComponent } from './demos/fieldset-demo.component';
 import { ToolbarDemoComponent } from './demos/toolbar-demo.component';
+import { BreadcrumbDemoComponent } from './demos/breadcrumb-demo.component';
 
 /**
  * Slug -> hand-authored demo component, for components whose §2 Component Publish Contract
@@ -91,4 +92,8 @@ export const CUSTOM_DEMOS: Record<string, Type<unknown>> = {
   // content, so every example would render a labelled empty box. See `SPEC.md` for the full
   // state/sizing contract this demo exercises.
   'fieldset': FieldsetDemoComponent,
+  // `items: InoBreadcrumbItem[]` hits the same `defaultValueFor()` gap `select-button`/
+  // `cascade-select` hit (empty array default), and the whole visible surface is driven by that
+  // array — the generic renderer would produce a labelled, empty `<nav>` in every section.
+  'breadcrumb': BreadcrumbDemoComponent,
 };

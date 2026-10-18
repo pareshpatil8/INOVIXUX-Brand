@@ -8,7 +8,7 @@
     "tablet": "641-900px",
     "desktop": ">900px"
   },
-  "componentCount": 58,
+  "componentCount": 59,
   "components": [
     {
       "name": "ino-alert",
@@ -198,6 +198,63 @@
           "type": "number",
           "values": null,
           "default": "100",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-breadcrumb",
+      "slug": "breadcrumb",
+      "className": "InoBreadcrumbComponent",
+      "sourcePath": "web/src/app/components/breadcrumb/ino-breadcrumb.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "items",
+          "type": "InoBreadcrumbItem[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "values": null,
+          "default": "'breadcrumb'",
+          "optional": true
+        },
+        {
+          "name": "ellipsisLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Show hidden breadcrumb items'",
+          "optional": true
+        },
+        {
+          "name": "maxVisible",
+          "type": "number",
+          "values": null,
+          "default": "0",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
           "optional": true
         }
       ],

@@ -261,6 +261,74 @@
         "templates": []
       }
     },
+    "breadcrumb": {
+      "name": "ino-breadcrumb",
+      "docPath": "docs/brand/06-angular-components/breadcrumb.md",
+      "a11y": "<p><strong>Role / ARIA</strong> — <code>nav[aria-label=\"breadcrumb\"]</code> (or the localized <code>ariaLabel</code> override) wraps an\n<code>ol</code>/<code>li</code> list — the WAI-ARIA APG breadcrumb pattern. The current-page <code>li</code> carries\n<code>aria-current=\"page\"</code> on its inner text, never a link. A per-item-disabled crumb carries\n<code>aria-disabled=\"true\"</code>; a crumb that is merely non-navigable for another reason (<code>readonly</code>, or no\n<code>href</code> at all) renders as plain text with no extra attribute — see <code>SPEC.md</code> §5.</p>\n<p><strong>Keyboard</strong> — Tab moves between navigable crumb links and the ellipsis trigger (every inert\ncrumb — disabled, readonly, or link-less — is plain text and never receives focus); Enter/Space\nactivate a focused link or the ellipsis trigger. Inside the opened popover, <code>&lt;ino-popover&gt;</code>'s own\n<code>[inoFocusTrap]</code> confines keyboard focus and Escape closes it, returning focus to the ellipsis\ntrigger.</p>\n<p><strong>Separators are not in the accessible tree</strong> — the <code>/</code> between crumbs is CSS generated content\n(<code>::before</code>), not a DOM node, so the list's accessible children are only the real crumbs (and the\nellipsis trigger when collapsed) — see <code>SPEC.md</code> §4.</p>\n<p><strong>Contrast</strong> — Crumb link, current-page, and ellipsis colors resolve through tokens audited across\nall three themes by <code>node scripts/check-theme-parity.mjs</code>.</p>\n<p><strong>RTL</strong> — logical properties only (<code>margin-inline-end</code> on the separator). No <code>left</code>/<code>right</code> in the\nstylesheet; the separator's position flips correctly under <code>dir=\"rtl\"</code>.</p>\n<p><strong>State announcements</strong> — Current page (<code>aria-current=\"page\"</code>), per-item disabled crumbs\n(<code>aria-disabled=\"true\"</code>), loading (<code>aria-busy=\"true\"</code> on the <code>nav</code> landmark).</p>\n<hr />\n",
+      "notes": "<p><strong>PrimeNG mapping.</strong> PrimeNG 22.1.1 <code>Breadcrumb</code>'s <code>model</code> (<code>MenuItem[]</code>) and <code>home</code> (a pinned\nleading item) map onto this component's <code>items</code> array; a \"home\" crumb is simply <code>items[0]</code> here\nrather than a separate input, since nothing about a leading crumb needs different handling from\nany other ancestor crumb.</p>\n<p><strong>No invalid/error state.</strong> The §2 standard state set includes invalid/error, but a breadcrumb has\nno bound value to validate — it is a navigation landmark, not a form control. Not implemented; see\n<code>SPEC.md</code> §7.</p>\n<p><strong>No <code>aria-readonly</code>, and no <code>aria-disabled</code> either.</strong> <code>readonly</code> changes rendering (inert text\ninstead of links) but emits no ARIA attribute at all for the crumbs it affects — <code>nav</code> and\n<code>ol</code>/<code>li</code> have no role that supports <code>aria-readonly</code>, and a plain, unfocusable <code>&lt;span&gt;</code> was never\ngoing to be announced as a control, so there is nothing for <code>aria-disabled</code> to withdraw. See\n<code>SPEC.md</code> §5.</p>\n<hr />\n",
+      "mobile": "<p>Both ports ship (per the row's \"Port both (header nav)\" disposition), reinterpreting two things\nthat have no direct mobile equivalent:</p>\n<ul>\n<li><strong>React Native</strong> — <code>mobile/react-native/src/components/InoBreadcrumb.tsx</code>. A horizontal row of\n<code>Pressable</code>/<code>Text</code> crumbs; <code>accessibilityRole=\"button\"</code> per navigable crumb, the current crumb a\nplain <code>Text</code> with no role. No popover for the collapsed-middle overflow — the hidden items\nexpand inline in place of the ellipsis on press.</li>\n<li><strong>Flutter</strong> — <code>mobile/flutter/lib/widgets/ino_breadcrumb.dart</code>. A <code>Row</code> of <code>GestureDetector</code>-\nwrapped <code>Text</code> crumbs; <code>Semantics(button: true)</code> per navigable crumb, the current crumb plain\n<code>Text</code>. Same inline-expand overflow treatment as the RN port.</li>\n</ul>\n<p>Both ports support icons, per-item <code>disabled</code>, the current-page item, and collapsed-middle\noverflow. Neither takes an Angular-Router-style <code>href</code> — both take a plain <code>onItemPress(item)</code>\ncallback instead, matching <code>InoSelectButton</code>'s ports. <code>readonly</code> and <code>loading</code> are web-only for\nthis B2 issue (see <a href=\"#deliberate-omissions\">Deliberate omissions</a> and <code>SPEC.md</code> §10).</p>\n",
+      "api": {
+        "props": [
+          {
+            "name": "items",
+            "type": "InoBreadcrumbItem[]",
+            "values": null,
+            "default": "[]",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "ariaLabel",
+            "type": "string",
+            "values": null,
+            "default": "'breadcrumb'",
+            "optional": true,
+            "description": "Fixed accessible name for the landmark per the spec row; exposed as an @Input only so a caller can localize it — the English default already satisfies `aria-label=\"breadcrumb\"`."
+          },
+          {
+            "name": "ellipsisLabel",
+            "type": "string",
+            "values": null,
+            "default": "'Show hidden breadcrumb items'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "maxVisible",
+            "type": "number",
+            "values": null,
+            "default": "0",
+            "optional": true,
+            "description": "Collapses the middle of the trail behind an ellipsis once `items.length` exceeds this count. `0` (default) never collapses. Always resolves to \"first + … + last two\" — see `SPEC.md` §3 for why that shape isn't independently configurable in B2."
+          },
+          {
+            "name": "readonly",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": "Renders every crumb as inert text; the current-page item is unaffected (it is already non-interactive). See `SPEC.md` §5."
+          },
+          {
+            "name": "loading",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": "Renders a skeleton trail instead of `items` — for a trail whose labels are still resolving (e.g. an async route title). See `SPEC.md` §6."
+          }
+        ],
+        "events": [
+          {
+            "name": "itemClick",
+            "type": "InoBreadcrumbItem",
+            "description": null
+          }
+        ],
+        "methods": [],
+        "templates": []
+      }
+    },
     "button": {
       "name": "button[ino-button], a[ino-button]",
       "docPath": "docs/brand/06-angular-components/button.md",
