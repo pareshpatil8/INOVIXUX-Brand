@@ -1,0 +1,141 @@
+/* Sizing is `--ino-control-padding-inline-roomy(-sm|-lg)` only (doc 26 §5: "padding scales"), not
+   the full control-size height/font/icon/gap set — a fieldset has no single line-height control
+   of its own. Reading the bare alias (already re-declared under both [data-density] blocks in
+   tokens.css §10/§12) means dense/fluid density composes for free, no branch needed here. */
+.ino-fieldset {
+  margin: 0;
+  padding-block: var(--ino-control-padding-inline-roomy);
+  padding-inline: var(--ino-control-padding-inline-roomy);
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-md);
+  background: var(--ino-color-surface-raised);
+  transition: border-color var(--ino-motion-duration-base) var(--ino-motion-easing-standard),
+    opacity var(--ino-motion-duration-base) var(--ino-motion-easing-standard);
+}
+
+.ino-fieldset--sm {
+  --ino-control-padding-inline-roomy: var(--ino-control-padding-inline-roomy-sm);
+}
+
+.ino-fieldset--lg {
+  --ino-control-padding-inline-roomy: var(--ino-control-padding-inline-roomy-lg);
+}
+
+/* Native `[disabled]` cascades to every real descendant form control for free; this just dims
+   the chrome this component owns (border/legend) to match every other disabled control. */
+.ino-fieldset:disabled {
+  opacity: 0.5;
+}
+
+.ino-fieldset--invalid {
+  border-color: var(--ino-color-danger);
+}
+
+.ino-fieldset__legend {
+  padding-inline: var(--ino-space-1);
+  margin-inline-start: calc(-1 * var(--ino-space-1));
+  font-size: var(--ino-type-body-sm-size);
+  font-weight: 600;
+  color: var(--ino-color-on-surface);
+}
+
+.ino-fieldset:disabled .ino-fieldset__legend {
+  color: var(--ino-color-on-surface-muted);
+}
+
+/* Disclosure toggle (WAI-ARIA APG pattern: button + aria-expanded/aria-controls). Hover/
+   focus-visible/active only ever apply here, never to the fieldset itself — a non-collapsible
+   fieldset (the common case, e.g. a plain address block) has no interactive surface at all. */
+.ino-fieldset__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ino-space-1);
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: var(--ino-radius-sm);
+
+  &:hover:not(:disabled) {
+    color: var(--ino-color-accent);
+  }
+
+  &:active:not(:disabled) {
+    color: var(--ino-color-accent-active);
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  &[aria-disabled='true'] {
+    cursor: not-allowed;
+  }
+}
+
+.ino-fieldset__chevron {
+  display: inline-block;
+  font-size: 11px;
+  transform: rotate(0deg);
+
+  &.ino-fieldset__chevron--expanded {
+    transform: rotate(90deg);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition: transform var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+  }
+}
+
+.ino-fieldset__content {
+  position: relative;
+  margin-block-start: var(--ino-space-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--ino-space-3);
+}
+
+.ino-fieldset--loading .ino-fieldset__content {
+  opacity: 0.5;
+}
+
+.ino-fieldset__spinner-wrap {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ino-fieldset__spinner {
+  inline-size: var(--ino-control-icon-size);
+  block-size: var(--ino-control-icon-size);
+  border-radius: 50%;
+  border: 2px solid var(--ino-color-on-surface-muted);
+  border-inline-start-color: transparent;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: ino-fieldset-spin var(--ino-motion-duration-slow) linear infinite;
+  }
+}
+
+@keyframes ino-fieldset-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.ino-fieldset__error {
+  margin: var(--ino-space-2) 0 0;
+  font-size: var(--ino-type-body-sm-size);
+  color: var(--ino-color-danger);
+  font-weight: 600;
+}
