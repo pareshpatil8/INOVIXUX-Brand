@@ -40,15 +40,89 @@ const STATE_INPUT_NAMES = [
   'error',
 ];
 
+/** The manifest records each `@Input()`'s declared default as the literal source text (`"'Yes'"`,
+ * `"true"`, `"0.5"`, `"null"`, `"() => null"`). Decode the literal forms; return `notLiteral` for
+ * anything else (calls, identifiers, object/array literals, `null`/`undefined`) so the caller falls
+ * back to its own type default rather than guessing. */
+const notLiteral = Symbol('not-a-literal-default');
+
+/** No usable default could be derived for this input. INO-748: the renderer must then leave the
+ * key *out* of the `[ngComponentOutletInputs]` bag rather than binding `null` — binding runs the
+ * setter, and `@Input({transform: numberAttribute}) maxTags: number | null = null` turns `null`
+ * into `NaN` (`numberAttribute`'s fallback), clobbering the class default. Omitting the key never
+ * invokes the setter, so the component keeps whatever it declared. */
+const noDefault = Symbol('no-derivable-default');
+
+function parseLiteralDefault(raw: string): unknown {
+  const text = raw.trim();
+  if (/^'.*'$/s.test(text) || /^".*"$/s.test(text) || /^`[^`${}]*`$/s.test(text)) {
+    return text.slice(1, -1);
+  }
+  if (text === 'true') return true;
+  if (text === 'false') return false;
+  if (/^-?\d+(\.\d+)?$/.test(text)) return Number(text);
+  return notLiteral;
+}
+
+/** `Foo<Bar[]> | null` → `Foo | null`. Nested generic arguments say nothing about what the input
+ * itself holds, so the type tests below must not see them. */
+function stripGenericArgs(type: string): string {
+  let out = type;
+  let previous: string;
+  do {
+    previous = out;
+    out = out.replace(/<[^<>]*>/g, '');
+  } while (out !== previous);
+  return out;
+}
+
+/** A parsed literal is only usable if the input's declared type can actually hold it — a `null`
+ * default on a `string` input, or a numeric default on a union of string literals, must not
+ * override the type default below. Arrays keep `[]`: the manifest never carries sample data. */
+function isAssignableTo(value: unknown, input: ManifestInput): boolean {
+  const type = input.type.trim();
+  // INO-748: an alias-typed enum names the alias (`InoAlertStatus`), not its members, so the
+  // textual tests below can't see that `'success'` is one of them — every such input lost its
+  // documented default and rendered against `null`. INO-736 already resolves each alias to its
+  // members in the manifest's `values`; ask that first.
+  if (typeof value === 'string' && input.values?.includes(value)) return true;
+  if (stripGenericArgs(type).includes('[]') || type.includes('Array<')) return false;
+  switch (typeof value) {
+    case 'string':
+      return type === 'string' || type.includes('string') || type.includes("'");
+    case 'boolean':
+      return type === 'boolean' || type.includes('boolean');
+    case 'number':
+      return type === 'number' || type.includes('number');
+    default:
+      return false;
+  }
+}
+
 /** Best-effort default for any manifest input not already pinned by the example generator below —
  * intentionally generic (INO-317 scope: a props-table-driven renderer, not hand-authored sample
- * data for all 38+ components). */
+ * data for all 38+ components).
+ *
+ * INO-709 limit 1: this used to return `''` for every `string` input, `false` for every boolean and
+ * `null` for everything else, discarding the default the manifest already carries. A component
+ * whose template gates its label on `*ngIf="someStringInput"` then rendered an unlabeled control,
+ * which is six of the B1 QA rejections (INO-401/407/409/419/421/413). Prefer the documented default
+ * when it is a literal the type can hold; otherwise omit the input entirely (`noDefault`) so the
+ * component's own class default stands. */
 function defaultValueFor(input: ManifestInput): unknown {
   const type = input.type.trim();
-  if (type.includes('[]')) return [];
+  if (input.default != null) {
+    const parsed = parseLiteralDefault(input.default);
+    if (parsed !== notLiteral && isAssignableTo(parsed, input)) return parsed;
+  }
+  // Only a top-level array type gets `[]`. A substring match also hit array types nested in a
+  // generic argument — `TemplateRef<{ $implicit: InoMeterSegment[] }> | null` was handed `[]`,
+  // which is truthy, so `ino-meter-group`'s `*ngIf="legendTemplate"` passed an array to
+  // `ngTemplateOutlet` and the docs page threw `createEmbeddedViewImpl is not a function` on load.
+  if (stripGenericArgs(type).includes('[]')) return [];
   if (type === 'boolean') return false;
   if (type === 'string') return '';
-  return null;
+  return noDefault;
 }
 
 /**
@@ -124,7 +198,8 @@ export class DocsComponentDetailComponent {
     const inputs = component.inputs;
     const baseInputs: Record<string, unknown> = {};
     for (const input of inputs) {
-      baseInputs[input.name] = defaultValueFor(input);
+      const value = defaultValueFor(input);
+      if (value !== noDefault) baseInputs[input.name] = value;
     }
 
     const stateInputs = inputs.filter(
