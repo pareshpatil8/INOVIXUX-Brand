@@ -1,4 +1,4 @@
-import { Directive, ElementRef, EventEmitter, Input, Output, booleanAttribute, inject } from '@angular/core';
+import { Directive, EventEmitter, Input, Output, booleanAttribute } from '@angular/core';
 import { InoKeyfilterContext, InoKeyfilterPreset, createKeyfilterTest } from './keyfilter-presets';
 
 /**
@@ -10,10 +10,11 @@ import { InoKeyfilterContext, InoKeyfilterPreset, createKeyfilterTest } from './
  * A **behaviour-only primitive**, same category as `[inoFocusTrap]` (`../focus-trap/`): it renders
  * nothing of its own and has no visual states, sizing, or label API — doc 26 §5's row for this
  * component records Variants/States/Sizing/Labels as `n/a (directive)` for exactly that reason.
- * Unlike `<ino-inputmask>`, it never rewrites or reformats the field's value — a key either lands
- * unchanged or doesn't land at all. Callers who need masking/formatting want `<ino-inputmask>`
- * instead; this is for a plain `<ino-input>` that just needs to refuse the wrong character class
- * (amount fields, numeric IDs, name fields).
+ * Unlike `<ino-inputmask>`, a keystroke the `keydown` path allows always lands unchanged — it
+ * either lands as typed or doesn't land at all (the paste path is the one exception; see
+ * `onPaste` and SPEC.md §3, which does write the field's value). Callers who need
+ * masking/formatting want `<ino-inputmask>` instead; this is for a plain `<ino-input>` that just
+ * needs to refuse the wrong character class (amount fields, numeric IDs, name fields).
  *
  * **Must-not-block-IME/AT contract (doc 26 §5 a11y row).** Filtering happens *only* in the
  * `keydown` handler, and only for a single printable character with no modifier held — and that
@@ -48,8 +49,6 @@ export class InoKeyfilterDirective {
    *  the `aria-live` pattern a caller can wire to this output if it wants one. */
   @Output() readonly inoKeyfilterReject = new EventEmitter<string>();
 
-  private readonly el = inject(ElementRef<HTMLInputElement | HTMLTextAreaElement>);
-
   private get test(): (ch: string, ctx: InoKeyfilterContext) => boolean {
     return createKeyfilterTest(this.preset, this.pattern);
   }
@@ -60,9 +59,16 @@ export class InoKeyfilterDirective {
     if (event.key.length !== 1) return;
 
     const input = event.target as HTMLInputElement;
+    // Same base-value construction `onPaste` uses below: when the keystroke replaces a
+    // non-empty selection, the selected text is about to disappear, so the position-sensitive
+    // rules (leading `-`, single `.`) must evaluate against the value with that selection
+    // already cut out — not the full pre-edit value, which still contains text that will never
+    // exist once this key lands.
+    const selStart = input.selectionStart ?? input.value.length;
+    const selEnd = input.selectionEnd ?? selStart;
     const ctx: InoKeyfilterContext = {
-      value: input.value,
-      selectionStart: input.selectionStart ?? input.value.length,
+      value: input.value.slice(0, selStart) + input.value.slice(selEnd),
+      selectionStart: selStart,
     };
     if (!this.test(event.key, ctx)) {
       event.preventDefault();

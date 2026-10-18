@@ -88,6 +88,21 @@ describe('InoKeyfilterDirective', () => {
       input().setSelectionRange(1, 1);
       expect(key('-')).toBe(true);
     });
+
+    it('allows a replacement minus when the whole value is selected (INO-420 B1)', () => {
+      // Regression: the pre-fix context carried the full pre-edit value even though the
+      // selection is about to be replaced, so this was rejected — flipping a corrected "-7" into
+      // a bare "7" on an amount field.
+      input().value = '-5';
+      input().setSelectionRange(0, 2);
+      expect(key('-')).toBe(false);
+    });
+
+    it('still rejects a minus landing mid-value even when it replaces a selection', () => {
+      input().value = '15';
+      input().setSelectionRange(1, 2); // selects the trailing "5"
+      expect(key('-')).toBe(true);
+    });
   });
 
   describe('preset: num', () => {
@@ -109,6 +124,18 @@ describe('InoKeyfilterDirective', () => {
     });
 
     it('allows a leading minus', () => {
+      expect(key('-')).toBe(false);
+    });
+
+    it('allows a replacement decimal point when the whole value is selected (INO-420 B1)', () => {
+      input().value = '1.5';
+      input().setSelectionRange(0, 3);
+      expect(key('.')).toBe(false);
+    });
+
+    it('allows a replacement minus when the whole value (with its own decimal point) is selected', () => {
+      input().value = '-1.5';
+      input().setSelectionRange(0, 4);
       expect(key('-')).toBe(false);
     });
   });
@@ -157,6 +184,22 @@ describe('InoKeyfilterDirective', () => {
 
     it('rejects a character outside the custom pattern', () => {
       expect(key('g')).toBe(true);
+    });
+  });
+
+  describe('preset: regex with a global-flagged RegExp (INO-420 B2.1)', () => {
+    beforeEach(() => {
+      fixture.componentInstance.preset.set('regex');
+      // A `g`/`y`-flagged RegExp carries `lastIndex` state across `.test()` calls — regression
+      // coverage for consecutive digits alternating accept/reject because of that state.
+      fixture.componentInstance.pattern.set(/\d/g);
+      fixture.detectChanges();
+    });
+
+    it('does not alternate accept/reject across consecutive characters', () => {
+      expect(key('1')).toBe(false);
+      expect(key('2')).toBe(false);
+      expect(key('3')).toBe(false);
     });
   });
 
