@@ -20,6 +20,7 @@ import { ToggleButtonDemoComponent } from './demos/toggle-button-demo.component'
 import { PasswordDemoComponent } from './demos/password-demo.component';
 import { CascadeSelectDemoComponent } from './demos/cascade-select-demo.component';
 import { SelectButtonDemoComponent } from './demos/select-button-demo.component';
+import { FieldsetDemoComponent } from './demos/fieldset-demo.component';
 import { ToolbarDemoComponent } from './demos/toolbar-demo.component';
 
 /**
@@ -85,4 +86,9 @@ export const CUSTOM_DEMOS: Record<string, Type<unknown>> = {
   // elements. Three slots (start/center/end), two density modes, and keyboard navigation (arrow
   // keys move focus) all require hand-authored examples with actual button/title/action content.
   'toolbar': ToolbarDemoComponent,
+  // The whole visible surface besides the legend is projected content (grouped fields); the
+  // generic renderer mounts via `*ngComponentOutlet` with `inputs` only and cannot project
+  // content, so every example would render a labelled empty box. See `SPEC.md` for the full
+  // state/sizing contract this demo exercises.
+  'fieldset': FieldsetDemoComponent,
 };
