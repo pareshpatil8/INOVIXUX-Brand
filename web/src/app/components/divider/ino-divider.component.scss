@@ -1,0 +1,59 @@
+/*
+ * <ino-divider> — INO-441 / INO-31 B2.
+ *
+ * No literal colour/space/font-size — every declaration resolves through a semantic role in
+ * tokens.css, logical properties only (`border-block-start`/`border-inline-start`, never
+ * `-top`/`-left`, RTL-safe by construction). State set is `n/a` per doc 26 §5 — no hover/focus/
+ * disabled styling exists because the component is presentational, same contract `ino-tag`
+ * documents for its own non-interactive shape.
+ */
+:host {
+  --ino-divider-thickness: var(--ino-border-width-hairline);
+
+  display: flex;
+  align-items: center;
+  inline-size: 100%;
+}
+
+/* Sizing axis (doc 26 §2 row 3) — the component's only size input is thickness, not
+   sm/md/lg: reads the shared border-width scale (tokens.css §6b) rather than inventing a
+   divider-local value. Not density-dependent — see SPEC.md §3. */
+:host([data-thickness='thick']) {
+  --ino-divider-thickness: var(--ino-border-width-thick);
+}
+
+/* Orientation — vertical relies on an ancestor that gives it a definite cross-size (flex row
+   with `align-items: stretch`, or an explicit block-size), the same contract a native `<hr>`
+   rotated 90deg or a CSS `border-inline-start` rule would carry; documented, not hidden. */
+:host([data-orientation='vertical']) {
+  flex-direction: column;
+  inline-size: auto;
+  block-size: 100%;
+}
+
+.ino-divider__line {
+  flex: 1 1 auto;
+  margin: 0;
+  border: 0;
+}
+
+:host([data-orientation='horizontal']) .ino-divider__line {
+  block-size: 0;
+  border-block-start: var(--ino-divider-thickness) solid var(--ino-color-border);
+}
+
+:host([data-orientation='vertical']) .ino-divider__line {
+  inline-size: 0;
+  border-inline-start: var(--ino-divider-thickness) solid var(--ino-color-border);
+}
+
+/* Labelled form (horizontal only, enforced in the template) — line, label, line. */
+.ino-divider__label {
+  flex: none;
+  margin-inline: var(--ino-space-3);
+  color: var(--ino-color-on-surface-muted);
+  font-family: var(--ino-font-display);
+  font-size: var(--ino-type-body-sm-size);
+  line-height: 1;
+  white-space: nowrap;
+}

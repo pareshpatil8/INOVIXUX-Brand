@@ -1,6 +1,6 @@
 {
   "generatedFrom": "previews/*.html @dsCard markers",
-  "cardCount": 49,
+  "cardCount": 50,
   "cards": [
     {
       "id": "button",
@@ -187,6 +187,12 @@
       "group": "Layout",
       "preview": "previews/card.html",
       "doc": "card.md"
+    },
+    {
+      "id": "divider",
+      "group": "Layout",
+      "preview": "previews/divider.html",
+      "doc": "divider.md"
     },
     {
       "id": "imagery-illustration",

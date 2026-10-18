@@ -534,6 +534,16 @@
   --ino-radius-pill: 20px;
 
   /* ---------------------------------------------------------------------
+   * 6b. BORDER WIDTH — named, not invented: -hairline is the 1px line every
+   *     bordered surface already uses (ino-card, ino-alert, ino-toggle-button);
+   *     -thick is the existing 2px weight used for emphasis (ino-card's
+   *     featured border). Added for ino-divider's thickness axis (doc 26 §5,
+   *     INO-441) so it reads a shared scale instead of a component-local value.
+   * ------------------------------------------------------------------- */
+  --ino-border-width-hairline: 1px;
+  --ino-border-width-thick: 2px;
+
+  /* ---------------------------------------------------------------------
    * 7. TOUCH TARGETS — mobile app + touch-input web/dense-table minimums.
    *    -min meets WCAG 2.2 §2.5.8 (24x24 CSS px floor, AA). -comfortable
    *    meets platform HIG guidance (iOS 44pt / Android 48dp) and is the

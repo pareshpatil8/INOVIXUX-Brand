@@ -268,6 +268,12 @@ class InoRadius {
   static const double sm = 6, md = 8, lg = 10, xl = 14, pill = 20;
 }
 
+/// tokens.css §6b — hairline is the 1px line every bordered surface already uses; thick is the
+/// existing 2px emphasis weight. Added for InoDivider (INO-441).
+class InoBorderWidth {
+  static const double hairline = 1, thick = 2;
+}
+
 /// tokens.css §7 — touch targets. Mobile always uses -comfortable per
 /// docs/brand/13-mobile-app-patterns.md §1/§3, never -min (dense-mode desktop exception only).
 class InoTarget {

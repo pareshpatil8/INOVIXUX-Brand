@@ -8,7 +8,7 @@
     "tablet": "641-900px",
     "desktop": ">900px"
   },
-  "componentCount": 57,
+  "componentCount": 58,
   "components": [
     {
       "name": "ino-alert",
@@ -936,6 +936,48 @@
             "body"
           ],
           "default": "'self'",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-divider",
+      "slug": "divider",
+      "className": "InoDividerComponent",
+      "sourcePath": "web/src/app/components/divider/ino-divider.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "orientation",
+          "type": "InoDividerOrientation",
+          "values": [
+            "horizontal",
+            "vertical"
+          ],
+          "default": "'horizontal'",
+          "optional": true
+        },
+        {
+          "name": "thickness",
+          "type": "InoDividerThickness",
+          "values": [
+            "hairline",
+            "thick"
+          ],
+          "default": "'hairline'",
+          "optional": true
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "''",
           "optional": true
         }
       ],

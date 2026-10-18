@@ -1202,6 +1202,50 @@
         "templates": []
       }
     },
+    "divider": {
+      "name": "ino-divider",
+      "docPath": "docs/brand/06-angular-components/divider.md",
+      "a11y": "<p><strong>Role / ARIA</strong> — <code>role=\"separator\"</code> on the host, always. <code>aria-orientation=\"vertical\"</code> is written\nonly for the vertical form; horizontal is <code>separator</code>'s APG default, so the attribute is omitted\nrather than redundantly set to <code>\"horizontal\"</code>. The role stays <code>separator</code> even when <code>label</code> is\nset — the label is a caption on the boundary, not owned content, so there is no switch to\n<code>role=\"group\"</code>. Full reasoning: <code>SPEC.md</code> §2.</p>\n<p><strong>Keyboard</strong> — none; the component is not focusable and has no interactive state.</p>\n<p><strong>Contrast</strong> — the line resolves through <code>--ino-color-border</code>; the label (when present) resolves\nthrough <code>--ino-color-on-surface-muted</code> — both audited across all three themes by\n<code>node scripts/check-theme-parity.mjs</code>.</p>\n<p><strong>RTL</strong> — logical properties only (<code>border-block-start</code> / <code>border-inline-start</code>, <code>margin-inline</code>);\nno <code>top</code>/<code>left</code>/<code>right</code>/<code>bottom</code> anywhere in the stylesheet.</p>\n<hr />\n",
+      "notes": "<p><strong>PrimeNG mapping.</strong> <code>Divider</code>'s <code>layout</code> (<code>'horizontal' | 'vertical'</code>) maps 1:1 onto\n<code>orientation</code>; <code>type</code> (<code>'solid' | 'dashed' | 'dotted'</code>) and <code>align</code> (label position along the\nline) are not carried over — doc 26 §5's row only calls for \"horizontal/vertical; with centered\nlabel,\" and no first-party page in the catalog currently needs a dashed/dotted rule or an\noff-center label. Add on a real consumer, not speculatively.</p>\n<p><strong>No vertical label.</strong> See <a href=\"#labels\">Labels</a> / <code>SPEC.md</code> §1.</p>\n<hr />\n",
+      "mobile": "<p>Both ports ship (per the issue's \"Port both (trivial)\" disposition).</p>\n<ul>\n<li><strong>React Native</strong> — <code>mobile/react-native/src/components/InoDivider.tsx</code>. The bare line is\n<code>accessible={false}</code> (RN has no <code>separator</code> role; a purely decorative rule is correctly hidden\nfrom the accessibility tree); the label <code>Text</code>, when present, stays in the tree as real content.</li>\n<li><strong>Flutter</strong> — <code>mobile/flutter/lib/widgets/ino_divider.dart</code>. A <code>Row</code>/<code>Column</code> with a bordered\n<code>Container</code> line and, when labelled, a <code>Text</code> between two flex-expanded line segments.</li>\n</ul>\n<p>Both ports support <code>orientation</code> and <code>thickness</code>; <code>label</code> renders in the horizontal form only,\nmatching web. Full reasoning: <code>SPEC.md</code> §5.</p>\n",
+      "api": {
+        "props": [
+          {
+            "name": "orientation",
+            "type": "InoDividerOrientation",
+            "values": [
+              "horizontal",
+              "vertical"
+            ],
+            "default": "'horizontal'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "thickness",
+            "type": "InoDividerThickness",
+            "values": [
+              "hairline",
+              "thick"
+            ],
+            "default": "'hairline'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          }
+        ],
+        "events": [],
+        "methods": [],
+        "templates": []
+      }
+    },
     "drawer": {
       "name": "ino-drawer",
       "docPath": "docs/brand/06-angular-components/drawer.md",
@@ -1333,6 +1377,99 @@
         "events": [],
         "methods": [],
         "templates": []
+      }
+    },
+    "fieldset": {
+      "name": "ino-fieldset",
+      "docPath": "docs/brand/06-angular-components/fieldset.md",
+      "a11y": "<p><strong>Role / ARIA</strong> — native <code>group</code> role (implicit, from <code>&lt;fieldset&gt;</code>+<code>&lt;legend&gt;</code>, not overridden).\n<code>aria-busy</code> reflects <code>loading</code>. <code>aria-invalid</code>/<code>aria-describedby</code> reflect <code>error</code> (both global\nARIA properties, valid on any role). No <code>aria-readonly</code> — see <a href=\"#readonly\">Readonly</a>.</p>\n<p><strong>Toggle button</strong> (only when <code>collapsible</code>) — native <code>button</code> role. <code>aria-expanded</code> reflects\n<code>!collapsed</code>. <code>aria-controls</code> points at the content region's <code>id</code>. <code>aria-disabled</code> reflects\n<code>readonly</code>.</p>\n<p><strong>Keyboard</strong> — Tab reaches the toggle button (when present) as a normal stop; Enter/Space\nactivate it (native <code>&lt;button&gt;</code> activation, no custom keydown handling). No arrow-key behavior —\nthis is a single disclosure control, not a same-role sibling group.</p>\n<p><strong>Contrast and targets</strong> — border, legend, and error text colours resolve through tokens audited\nacross all three themes by <code>node scripts/check-theme-parity.mjs</code>.</p>\n<p><strong>RTL</strong> — logical properties only (<code>padding-block</code>/<code>padding-inline</code>, <code>margin-inline-start</code>,\n<code>border-inline-start-color</code>); no <code>left</code>/<code>right</code>/<code>top</code>/<code>bottom</code> anywhere in the stylesheet.</p>\n<hr />\n",
+      "notes": "<p><strong>PrimeNG mapping.</strong> <code>Fieldset</code>'s <code>legend</code>/<code>toggleable</code>/<code>collapsed</code>/<code>(collapsedChange)</code> API maps\n1:1 onto this component's <code>legend</code>/<code>collapsible</code>/<code>collapsed</code>/<code>(collapsedChange)</code>.</p>\n<p><strong><code>empty</code> state not carried.</strong> A fieldset's whole purpose is grouping caller-projected fields; an\nempty fieldset has no useful collapsed/expanded affordance to demonstrate. Full reasoning:\n<code>SPEC.md</code> §4.</p>\n<p><strong>No native <code>disabled</code>/<code>readonly</code> cascade onto RN/Flutter children.</strong> Unlike the web component\n(which gets the descendant-<code>disabled</code> cascade for free from <code>&lt;fieldset disabled&gt;</code>), neither mobile\nplatform has an equivalent primitive — each mobile port only dims its own chrome; projected\nchildren keep their own <code>disabled</code>/<code>readonly</code>. Full reasoning: <code>SPEC.md</code> §6.</p>\n<hr />\n",
+      "mobile": "<p>Both ports ship (per the issue's \"Port both (simple)\" disposition).</p>\n<ul>\n<li><strong>React Native</strong> — <code>mobile/react-native/src/components/InoFieldset.tsx</code>.\n<code>accessibilityRole=\"none\"</code> wrapper (RN has no <code>group</code>/<code>fieldset</code> role); the collapsible toggle\nrow carries <code>accessibilityRole=\"button\"</code> + <code>accessibilityState={{ expanded, disabled: readonly }}</code>.</li>\n<li><strong>Flutter</strong> — <code>mobile/flutter/lib/widgets/ino_fieldset.dart</code>, <code>Semantics(container: true, label: legend)</code> wrapper; the collapsible toggle row carries <code>Semantics(button: true)</code>.</li>\n</ul>\n<p>Both ports support <code>legend</code>, the <code>sm</code>/<code>md</code>/<code>lg</code> padding scale, <code>collapsible</code>/<code>collapsed</code>,\n<code>loading</code>, and <code>error</code>. <code>readonly</code> is behavior-only on both (locks the toggle, no corresponding\naccessibility state exists on either platform for a readonly group). Full reasoning: <code>SPEC.md</code>\n§6.</p>\n",
+      "api": {
+        "props": [
+          {
+            "name": "legend",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "size",
+            "type": "'sm' | 'md' | 'lg'",
+            "values": [
+              "sm",
+              "md",
+              "lg"
+            ],
+            "default": "'md'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "collapsible",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "collapsed",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "readonly",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "loading",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "error",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          }
+        ],
+        "events": [
+          {
+            "name": "collapsedChange",
+            "type": "boolean",
+            "description": null
+          }
+        ],
+        "methods": [],
+        "templates": [
+          {
+            "name": "default",
+            "description": null
+          }
+        ]
       }
     },
     "file-upload": {
@@ -4306,8 +4443,8 @@
     "select-button": {
       "name": "ino-select-button",
       "docPath": "docs/brand/06-angular-components/select-button.md",
-      "a11y": "<p><strong>Role / ARIA</strong> — <code>role=\"radiogroup\"</code> (single-select) or <code>role=\"group\"</code> (multi-select) on the\ncontainer. Each option is a native <code>&lt;input type=\"radio\"&gt;</code> or <code>&lt;input type=\"checkbox\"&gt;</code> inside\na <code>&lt;label&gt;</code>, so checked/unchecked state is natively announced. When <code>iconOnly=true</code>, the\n<code>ariaLabel</code> from each <code>InoSelectButtonOption</code> is applied to the input via <code>[attr.aria-label]</code>,\nensuring every input has an accessible name even without visible text.</p>\n<p><code>groupLabel</code> auto-wires <code>aria-labelledby</code> to a generated ID; <code>ariaLabel</code> is the fallback for\ngroups without a visible label. <code>ariaLabelledby</code> allows callers to override the auto-wiring.</p>\n<p><strong>Keyboard</strong> — Tab into the group (first/selected option receives focus), Arrow keys to navigate\nbetween options (radio mode only — browser-native radiogroup behavior), Space to toggle (checkbox\nmode) or select (radio mode). All native <code>&lt;input&gt;</code> keyboard support, no custom handlers.</p>\n<p><strong>Contrast and targets</strong> — <code>size=\"default\"</code> resolves to 44px (<code>--ino-target-comfortable</code>), always</p>\n<blockquote>\n<p>= 32px even in dense mode via the control-height scale. Focus ring, selected-state gradient, and\nborder colors resolve through tokens audited across all three themes by\n<code>node scripts/check-theme-parity.mjs</code>. Selected options use <code>--ino-gradient-accent</code> with\n<code>--ino-color-on-accent</code> text for 4.5:1+ contrast.</p>\n</blockquote>\n<p><strong>RTL</strong> — logical properties only (<code>border-inline-start-width</code>, <code>border-start-start-radius</code>,\n<code>border-end-start-radius</code>). No <code>left</code>/<code>right</code>/<code>top</code>/<code>bottom</code> anywhere in the stylesheets. The\nfirst option's start border and start radii, and the last option's end radii, correctly flip\nunder <code>dir=\"rtl\"</code>.</p>\n<p><strong>State announcements</strong> — Checked/unchecked (radio/checkbox native), disabled (native <code>[disabled]</code>),\ngroup label (via <code>aria-labelledby</code> or <code>aria-label</code>), readonly (via <code>aria-readonly=\"true\"</code> when\n<code>readonly=true</code>).</p>\n<hr />\n",
-      "notes": "<p><strong>PrimeNG mapping.</strong> PrimeNG 22.1.1 <code>SelectButton</code>'s <code>[(ngModel)]</code>, <code>options</code>, <code>optionLabel</code>,\n<code>optionValue</code>, <code>optionDisabled</code>, <code>multiple</code>, <code>disabled</code> map onto this component's <code>[(value)]</code>,\n<code>options</code> array (with <code>label</code>/<code>value</code>/<code>disabled</code> fields), <code>multiple</code>, and <code>disabled</code>. PrimeNG's\n<code>unselectable</code> (allows deselecting in single-select mode) is not carried over — standard radio\nsemantics require exactly one option selected at all times after the first selection. PrimeNG's\n<code>allowEmpty</code> is similarly omitted.</p>\n<p><strong><code>readonly</code> implementation.</strong> The <code>readonly</code> @Input prevents selection changes at the interaction\nlevel (click handler returns early), emits <code>aria-readonly=\"true\"</code> on each option's input, and\napplies a visual treatment (reduced opacity, default cursor, no hover state changes) to indicate\nnon-interactive state while preserving readability. This follows the pattern established in\n<code>ino-toggle-button</code>.</p>\n<p><strong>No invalid/error state.</strong> The §2 standard state set includes invalid/error, but segmented\ncontrols are typically selection-first UI (filtering, view modes) rather than form-validation\nfields, so error states are rare. <code>ino-toggle-button</code> supports <code>error</code> (string input →\n<code>aria-invalid</code> + <code>role=\"alert\"</code> message + invalid ring), but that component is often used as a\nboolean form field. If select-button needs form-validation error states in the future, the\n<code>ino-toggle-button</code> pattern (error message via <code>aria-describedby</code>, invalid ring from\n<code>--ino-invalid-ring</code>) is ready to apply. Not implemented in B1.</p>\n<p><strong>Icon-only mode is web-only.</strong> The mobile ports (Flutter/RN) do not implement <code>iconOnly</code> because\nthere is no standard icon system in the mobile layer yet. When a cross-platform icon library\nlands, the ports can add <code>iconOnly</code> support mirroring the web implementation.</p>\n<hr />\n",
+      "a11y": "<p><strong>Role / ARIA</strong> — <code>role=\"radiogroup\"</code> (single-select) or <code>role=\"group\"</code> (multi-select) on the\ncontainer. Each option is a native <code>&lt;input type=\"radio\"&gt;</code> or <code>&lt;input type=\"checkbox\"&gt;</code> inside\na <code>&lt;label&gt;</code>, so checked/unchecked state is natively announced. When <code>iconOnly=true</code>, the\n<code>ariaLabel</code> from each <code>InoSelectButtonOption</code> is applied to the input via <code>[attr.aria-label]</code>,\nensuring every input has an accessible name even without visible text.</p>\n<p><code>groupLabel</code> auto-wires <code>aria-labelledby</code> to a generated ID; <code>ariaLabel</code> is the fallback for\ngroups without a visible label. <code>ariaLabelledby</code> allows callers to override the auto-wiring.</p>\n<p><strong><code>aria-readonly</code> placement</strong> — mode-dependent, because no single element can carry it in both\nmodes. In single-select the attribute sits on the <code>role=\"radiogroup\"</code> host, which supports it; the\n<code>radio</code> role on the individual inputs does <strong>not</strong> (the rule <code>ino-checkbox</code> settled, naming <code>radio</code>\nas its counter-example). In multi-select the host is <code>role=\"group\"</code>, which does not support it\neither, so each option's native <code>checkbox</code> role carries it instead. The attribute is omitted\nentirely — never <code>\"false\"</code> — when <code>readonly</code> is off. There is deliberately no <code>aria-pressed</code> in\neither mode: it is invalid on a checkbox and would double-announce against the native checked\nstate.</p>\n<p><strong>Keyboard</strong> — Tab into the group (first/selected option receives focus), Arrow keys to navigate\nbetween options (radio mode only — browser-native radiogroup behavior), Space to toggle (checkbox\nmode) or select (radio mode). All native <code>&lt;input&gt;</code> keyboard support, no custom handlers.</p>\n<p><strong>Contrast and targets</strong> — <code>size=\"default\"</code> resolves to 44px (<code>--ino-target-comfortable</code>), always</p>\n<blockquote>\n<p>= 32px even in dense mode via the control-height scale. Focus ring, selected-state gradient, and\nborder colors resolve through tokens audited across all three themes by\n<code>node scripts/check-theme-parity.mjs</code>. Selected options use <code>--ino-gradient-accent</code> with\n<code>--ino-color-on-accent</code> text for 4.5:1+ contrast.</p>\n</blockquote>\n<p><strong>RTL</strong> — logical properties only (<code>border-inline-start-width</code>, <code>border-start-start-radius</code>,\n<code>border-end-start-radius</code>). No <code>left</code>/<code>right</code>/<code>top</code>/<code>bottom</code> anywhere in the stylesheets. The\nfirst option's start border and start radii, and the last option's end radii, correctly flip\nunder <code>dir=\"rtl\"</code>.</p>\n<p><strong>State announcements</strong> — Checked/unchecked (radio/checkbox native), disabled (native <code>[disabled]</code>),\ngroup label (via <code>aria-labelledby</code> or <code>aria-label</code>), readonly (via <code>aria-readonly=\"true\"</code> when\n<code>readonly=true</code>).</p>\n<hr />\n",
+      "notes": "<p><strong>PrimeNG mapping.</strong> PrimeNG 22.1.1 <code>SelectButton</code>'s <code>[(ngModel)]</code>, <code>options</code>, <code>optionLabel</code>,\n<code>optionValue</code>, <code>optionDisabled</code>, <code>multiple</code>, <code>disabled</code> map onto this component's <code>[(value)]</code>,\n<code>options</code> array (with <code>label</code>/<code>value</code>/<code>disabled</code> fields), <code>multiple</code>, and <code>disabled</code>. PrimeNG's\n<code>unselectable</code> (allows deselecting in single-select mode) is not carried over — standard radio\nsemantics require exactly one option selected at all times after the first selection. PrimeNG's\n<code>allowEmpty</code> is similarly omitted.</p>\n<p><strong><code>readonly</code> is web-only.</strong> On the web the @Input is fully implemented — interaction blocked\n(pointer and arrow key), a visual treatment (0.8 opacity, default cursor, hover and pointer-down\naffordances withdrawn) that keeps the group legible and focusable, and <code>aria-readonly=\"true\"</code> on\nthe element whose role supports it. Neither mobile port implements it: there is no <code>readOnly</code> prop\non <code>InoSelectButton.tsx</code> or <code>ino_select_button.dart</code>, so a readonly segmented control has no\ncross-platform equivalent yet. The ARIA placement is mode-dependent and is <em>not</em> a copy of\n<code>ino-toggle-button</code>'s unconditional per-input attribute — that component is a single control, not a\ngroup; see <code>SPEC.md</code> §9 for the rule and its counter-example.</p>\n<p><strong>No invalid/error state.</strong> The §2 standard state set includes invalid/error, but segmented\ncontrols are typically selection-first UI (filtering, view modes) rather than form-validation\nfields, so error states are rare. <code>ino-toggle-button</code> supports <code>error</code> (string input →\n<code>aria-invalid</code> + <code>role=\"alert\"</code> message + invalid ring), but that component is often used as a\nboolean form field. If select-button needs form-validation error states in the future, the\n<code>ino-toggle-button</code> pattern (error message via <code>aria-describedby</code>, invalid ring from\n<code>--ino-invalid-ring</code>) is ready to apply. Not implemented in B1.</p>\n<p><strong>Icon-only mode is web-only.</strong> The mobile ports (Flutter/RN) do not implement <code>iconOnly</code> because\nthere is no standard icon system in the mobile layer yet. When a cross-platform icon library\nlands, the ports can add <code>iconOnly</code> support mirroring the web implementation.</p>\n<hr />\n",
       "mobile": "<p>Both ports ship (per the issue's \"Port both\" disposition).</p>\n<ul>\n<li><p><strong>React Native</strong> — <code>mobile/react-native/src/components/InoSelectButton.tsx</code>.\n<code>accessibilityRole=\"button\"</code> + <code>accessibilityState={{ selected: isSelected, disabled }}</code> per\noption. The <code>radiogroup</code> ARIA distinction has no direct RN equivalent — each option announces\nas a button with selected state, matching the pattern established in <code>InoSelect</code>.\n<code>ScrollView horizontal</code> wraps the button row for touch-friendly overflow.</p>\n</li>\n<li><p><strong>Flutter</strong> — <code>mobile/flutter/lib/widgets/ino_select_button.dart</code>. <code>Semantics(button: true, selected: isSelected)</code> per option, inside a horizontal <code>Row</code> that scrolls on overflow.\n<code>InkWell</code>-wrapped <code>Container</code> items apply <code>InoTokens</code> border radii and accent gradient for\nselected state.</p>\n</li>\n</ul>\n<p>Both ports support single/multiple selection modes, sm/default/lg sizing, per-option <code>disabled</code>,\n<code>groupLabel</code>, and <code>equalWidth</code> mode. <code>readonly</code>, <code>iconOnly</code>, and error states are web-only for\nthis B1 issue (see <a href=\"#deliberate-omissions\">Deliberate omissions</a>).</p>\n",
       "api": {
         "props": [
@@ -5814,6 +5951,44 @@
         ],
         "methods": [],
         "templates": []
+      }
+    },
+    "toolbar": {
+      "name": "ino-toolbar",
+      "docPath": null,
+      "a11y": null,
+      "notes": null,
+      "mobile": null,
+      "api": {
+        "props": [
+          {
+            "name": "density",
+            "type": "'comfortable' | 'dense'",
+            "values": [
+              "comfortable",
+              "dense"
+            ],
+            "default": "'comfortable'",
+            "optional": true,
+            "description": "Sizing density mode. - comfortable: 44px min-height, 16px vertical padding (default) - dense: 32px min-height, 8px vertical padding"
+          }
+        ],
+        "events": [],
+        "methods": [],
+        "templates": [
+          {
+            "name": "[slot='start']",
+            "description": null
+          },
+          {
+            "name": "[slot='center']",
+            "description": null
+          },
+          {
+            "name": "[slot='end']",
+            "description": null
+          }
+        ]
       }
     },
     "tooltip": {

@@ -1,0 +1,176 @@
+<!-- @dsCard group="Layout" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ino-divider — horizontal/vertical, centered label, thickness (INO-441)</title>
+<!-- Canonical token file, linked rather than copied: this preview must repaint with the system,
+     and must never become a second place raw hex values live. -->
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-eyebrow-size);
+    letter-spacing: var(--ino-type-eyebrow-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 60ch; }
+
+  .theme-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); }
+  .theme-pane {
+    flex: 1 1 280px;
+    padding: var(--ino-space-5);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-xl);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+  }
+  .theme-pane > h3 {
+    margin: 0 0 var(--ino-space-4);
+    font-size: var(--ino-type-body-sm-size);
+    color: var(--ino-color-on-surface-muted);
+    font-weight: 600;
+  }
+
+  .col { display: flex; flex-direction: column; gap: var(--ino-space-5); }
+
+  /* Mirrors web/src/app/components/divider/ino-divider.component.scss — same token bindings,
+     so a divergence between this preview and the shipped component is visible as a visual diff. */
+  .ino-divider {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    --ino-divider-thickness: var(--ino-border-width-hairline);
+  }
+  .ino-divider--thick { --ino-divider-thickness: var(--ino-border-width-thick); }
+  .ino-divider--vertical { flex-direction: column; width: auto; height: 64px; }
+  .ino-divider__line { flex: 1 1 auto; margin: 0; border: 0; }
+  .ino-divider:not(.ino-divider--vertical) .ino-divider__line {
+    block-size: 0;
+    border-block-start: var(--ino-divider-thickness) solid var(--ino-color-border);
+  }
+  .ino-divider--vertical .ino-divider__line {
+    inline-size: 0;
+    border-inline-start: var(--ino-divider-thickness) solid var(--ino-color-border);
+  }
+  .ino-divider__label {
+    flex: none;
+    margin: 0 var(--ino-space-3);
+    color: var(--ino-color-on-surface-muted);
+    font-size: var(--ino-type-body-sm-size);
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .vertical-row { display: flex; align-items: center; gap: var(--ino-space-5); height: 64px; }
+</style>
+</head>
+<body>
+
+<h1>Divider — a line that groups or separates content</h1>
+<p class="lede">
+  <code>role="separator"</code> on the host, always. Horizontal or vertical; the horizontal form
+  optionally carries a centered label. No interactive state (doc 26 §5 row: <code>St: n/a</code>).
+</p>
+
+<h2>Plain line × theme</h2>
+<div class="theme-row">
+
+  <div class="theme-pane">
+    <h3>dark — :root (default)</h3>
+    <div class="col">
+      <div class="ino-divider" role="separator"><span class="ino-divider__line"></span></div>
+      <div class="ino-divider ino-divider--thick" role="separator"><span class="ino-divider__line"></span></div>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="light">
+    <h3>light — [data-theme="light"]</h3>
+    <div class="col">
+      <div class="ino-divider" role="separator"><span class="ino-divider__line"></span></div>
+      <div class="ino-divider ino-divider--thick" role="separator"><span class="ino-divider__line"></span></div>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="high-contrast">
+    <h3>high-contrast — [data-theme="high-contrast"]</h3>
+    <div class="col">
+      <div class="ino-divider" role="separator"><span class="ino-divider__line"></span></div>
+      <div class="ino-divider ino-divider--thick" role="separator"><span class="ino-divider__line"></span></div>
+    </div>
+  </div>
+
+</div>
+
+<h2>Centered label (horizontal only)</h2>
+<p class="lede">
+  <code>label</code> renders between two flex-expanded line segments; the host keeps
+  <code>role="separator"</code> rather than switching to <code>role="group"</code> — see
+  SPEC.md §2.
+</p>
+<div class="col" style="max-width: 360px;">
+  <div class="ino-divider" role="separator">
+    <span class="ino-divider__line"></span>
+    <span class="ino-divider__label">OR</span>
+    <span class="ino-divider__line"></span>
+  </div>
+  <div class="ino-divider ino-divider--thick" role="separator">
+    <span class="ino-divider__line"></span>
+    <span class="ino-divider__label">Continue with email</span>
+    <span class="ino-divider__line"></span>
+  </div>
+</div>
+
+<h2>Vertical orientation</h2>
+<p class="lede">
+  Requires an ancestor that gives the host a definite cross-size (here, a flex row with a fixed
+  height) — see SPEC.md §4.
+</p>
+<div class="vertical-row">
+  <span>Edit</span>
+  <div class="ino-divider ino-divider--vertical" role="separator" aria-orientation="vertical"><span class="ino-divider__line"></span></div>
+  <span>Share</span>
+  <div class="ino-divider ino-divider--vertical ino-divider--thick" role="separator" aria-orientation="vertical"><span class="ino-divider__line"></span></div>
+  <span>Delete</span>
+</div>
+
+<h2>Dense vs. fluid density</h2>
+<p class="lede">
+  Thickness is deliberately <strong>not</strong> repointed by <code>[data-density]</code> — a
+  divider's line weight is a visual choice, not a control-comfort trade-off (SPEC.md §3). Row
+  spacing around it still composes with density like any other content.
+</p>
+<div class="row-density" style="display: flex; gap: var(--ino-space-7);">
+  <div data-density="dense" style="flex: 1 1 200px;">
+    <h3 style="margin: 0 0 var(--ino-space-2); font-size: var(--ino-type-body-sm-size); color: var(--ino-color-on-surface-muted);">dense</h3>
+    <div class="ino-divider" role="separator"><span class="ino-divider__line"></span></div>
+  </div>
+  <div data-density="fluid" style="flex: 1 1 200px;">
+    <h3 style="margin: 0 0 var(--ino-space-2); font-size: var(--ino-type-body-sm-size); color: var(--ino-color-on-surface-muted);">fluid</h3>
+    <div class="ino-divider" role="separator"><span class="ino-divider__line"></span></div>
+  </div>
+</div>
+
+<h2>RTL</h2>
+<div class="col" dir="rtl" style="max-width: 360px;">
+  <div class="ino-divider" role="separator">
+    <span class="ino-divider__line"></span>
+    <span class="ino-divider__label">أو</span>
+    <span class="ino-divider__line"></span>
+  </div>
+</div>
+
+</body>
+</html>

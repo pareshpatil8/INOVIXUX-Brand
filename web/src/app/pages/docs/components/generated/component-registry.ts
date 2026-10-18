@@ -12,6 +12,7 @@ import { InoCheckboxComponent } from '../../../../components/checkbox/ino-checkb
 import { InoConfirmDialogComponent } from '../../../../components/confirm-dialog/ino-confirm-dialog.component';
 import { InoConfirmPopupComponent } from '../../../../components/confirm-popup/ino-confirm-popup.component';
 import { InoDatePickerComponent } from '../../../../components/datepicker/ino-datepicker.component';
+import { InoDividerComponent } from '../../../../components/divider/ino-divider.component';
 import { InoDrawerComponent } from '../../../../components/drawer/ino-drawer.component';
 import { InoFeatureGridComponent } from '../../../../components/feature-grid/ino-feature-grid.component';
 import { InoFieldsetComponent } from '../../../../components/fieldset/ino-fieldset.component';
@@ -71,6 +72,7 @@ export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'confirm-dialog': InoConfirmDialogComponent,
   'confirm-popup': InoConfirmPopupComponent,
   'datepicker': InoDatePickerComponent,
+  'divider': InoDividerComponent,
   'drawer': InoDrawerComponent,
   'feature-grid': InoFeatureGridComponent,
   'fieldset': InoFieldsetComponent,

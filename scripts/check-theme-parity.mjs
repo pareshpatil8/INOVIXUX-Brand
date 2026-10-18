@@ -698,6 +698,21 @@ const COMPONENT_REGISTRY = [
     ],
   },
   {
+    name: 'divider',
+    web: 'web/src/app/components/divider',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoDivider.tsx',
+        roles: ['border', 'onSurfaceMuted'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_divider.dart',
+        roles: ['border', 'onSurfaceMuted'],
+      },
+    },
+    divergences: [],
+  },
+  {
     name: 'drawer',
     web: 'web/src/app/components/drawer',
     mobile: {
