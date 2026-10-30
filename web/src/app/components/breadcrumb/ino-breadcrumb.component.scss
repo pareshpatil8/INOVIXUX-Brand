@@ -47,10 +47,13 @@
   line-height: 1;
 }
 
+/* INO-786/INO-723: --ino-control-line-height does not exist in tokens.css. --ino-breadcrumb-font-size
+   resolves to --ino-control-font-size, which is itself --ino-type-body-size, so the matching
+   line-height is the body role's, not a control alias. */
 .ino-breadcrumb__label {
   font-family: var(--ino-font-display);
   font-size: var(--ino-breadcrumb-font-size);
-  line-height: var(--ino-control-line-height, 1.4);
+  line-height: var(--ino-type-body-line);
 }
 
 /* State 1 — default (link). */
@@ -166,7 +169,7 @@
 
 .ino-breadcrumb__skeleton {
   inline-size: 4.5em;
-  block-size: calc(var(--ino-breadcrumb-font-size) * var(--ino-control-line-height, 1.4));
+  block-size: calc(var(--ino-breadcrumb-font-size) * var(--ino-type-body-line));
   border-radius: var(--ino-radius-sm);
   background: var(--ino-color-surface-sunken);
 
