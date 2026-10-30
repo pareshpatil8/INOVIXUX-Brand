@@ -1,0 +1,226 @@
+<!-- @dsCard group="Menus" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ino-context-menu — right-click menu, nested submenus (INO-427)</title>
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-eyebrow-size);
+    letter-spacing: var(--ino-type-eyebrow-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 60ch; }
+
+  .theme-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); }
+  .theme-pane {
+    flex: 1 1 280px;
+    padding: var(--ino-space-5);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-xl);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    min-height: 240px;
+  }
+  .theme-pane > h3 {
+    margin: 0 0 var(--ino-space-4);
+    font-size: var(--ino-type-body-sm-size);
+    color: var(--ino-color-on-surface-muted);
+    font-weight: 600;
+  }
+
+  .demo-target {
+    padding: var(--ino-space-5);
+    border: 2px dashed var(--ino-color-border);
+    border-radius: var(--ino-radius-md);
+    text-align: center;
+    cursor: context-menu;
+    user-select: none;
+  }
+
+  /* Context menu styles (mirrors component SCSS) */
+  .ino-context-menu__overlay {
+    position: relative; /* Fixed in real component, relative here for static preview */
+    min-width: 12rem;
+    max-width: 20rem;
+    background: var(--ino-color-surface);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-md);
+    box-shadow: var(--ino-shadow-lg);
+    padding-block: var(--ino-control-gap-compact);
+    margin-top: var(--ino-space-4);
+  }
+
+  .ino-context-menu__item {
+    display: flex;
+    align-items: center;
+    gap: var(--ino-control-gap-compact);
+    min-height: var(--ino-control-height-compact);
+    padding-inline: var(--ino-control-padding-inline-compact);
+    font-size: var(--ino-control-font-size-compact);
+    color: var(--ino-color-on-surface);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .ino-context-menu__item:hover:not(.ino-context-menu__item--disabled) {
+    background: var(--ino-color-surface-sunken);
+    color: var(--ino-color-accent);
+  }
+
+  .ino-context-menu__item--disabled {
+    color: var(--ino-color-on-surface-muted);
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .ino-context-menu__item--has-children {
+    position: relative;
+    padding-inline-end: calc(var(--ino-control-padding-inline-compact) * 2);
+  }
+
+  .ino-context-menu__icon {
+    flex-shrink: 0;
+    width: 1rem;
+    height: 1rem;
+    line-height: 1;
+  }
+
+  .ino-context-menu__label {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ino-context-menu__chevron {
+    position: absolute;
+    inset-inline-end: var(--ino-control-padding-inline-compact);
+    color: var(--ino-color-on-surface-muted);
+    font-size: 1.25em;
+  }
+
+  .ino-context-menu__separator {
+    height: 1px;
+    margin-block: calc(var(--ino-control-gap-compact) / 2);
+    margin-inline: var(--ino-control-padding-inline-compact);
+    background: var(--ino-color-border);
+  }
+</style>
+</head>
+<body>
+
+<h1>Context Menu — right-click overlay with nested submenus</h1>
+<p class="lede">
+  <code>role="menu"</code> overlay triggered by right-click/contextmenu event. Cursor-anchored
+  positioning, roving tabindex focus management, nested submenu support. Web-only (doc 26 §5 row).
+</p>
+
+<h2>Basic menu × theme</h2>
+<div class="theme-row">
+
+  <div class="theme-pane">
+    <h3>dark — :root (default)</h3>
+    <div class="demo-target">Right-click for menu</div>
+    <div class="ino-context-menu__overlay" role="menu" aria-label="Context menu">
+      <div class="ino-context-menu__item" role="menuitem" tabindex="0">
+        <span class="ino-context-menu__icon">+</span>
+        <span class="ino-context-menu__label">New</span>
+      </div>
+      <div class="ino-context-menu__item" role="menuitem" tabindex="-1">
+        <span class="ino-context-menu__icon">📁</span>
+        <span class="ino-context-menu__label">Open</span>
+      </div>
+      <div class="ino-context-menu__separator" role="separator"></div>
+      <div class="ino-context-menu__item ino-context-menu__item--disabled" role="menuitem" aria-disabled="true" tabindex="-1">
+        <span class="ino-context-menu__icon">🗑</span>
+        <span class="ino-context-menu__label">Delete</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="light">
+    <h3>light — [data-theme="light"]</h3>
+    <div class="demo-target">Right-click for menu</div>
+    <div class="ino-context-menu__overlay" role="menu" aria-label="Context menu">
+      <div class="ino-context-menu__item" role="menuitem" tabindex="0">
+        <span class="ino-context-menu__icon">+</span>
+        <span class="ino-context-menu__label">New</span>
+      </div>
+      <div class="ino-context-menu__item" role="menuitem" tabindex="-1">
+        <span class="ino-context-menu__icon">📁</span>
+        <span class="ino-context-menu__label">Open</span>
+      </div>
+      <div class="ino-context-menu__separator" role="separator"></div>
+      <div class="ino-context-menu__item ino-context-menu__item--disabled" role="menuitem" aria-disabled="true" tabindex="-1">
+        <span class="ino-context-menu__icon">🗑</span>
+        <span class="ino-context-menu__label">Delete</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="high-contrast">
+    <h3>high-contrast — [data-theme="high-contrast"]</h3>
+    <div class="demo-target">Right-click for menu</div>
+    <div class="ino-context-menu__overlay" role="menu" aria-label="Context menu">
+      <div class="ino-context-menu__item" role="menuitem" tabindex="0">
+        <span class="ino-context-menu__icon">+</span>
+        <span class="ino-context-menu__label">New</span>
+      </div>
+      <div class="ino-context-menu__item" role="menuitem" tabindex="-1">
+        <span class="ino-context-menu__icon">📁</span>
+        <span class="ino-context-menu__label">Open</span>
+      </div>
+      <div class="ino-context-menu__separator" role="separator"></div>
+      <div class="ino-context-menu__item ino-context-menu__item--disabled" role="menuitem" aria-disabled="true" tabindex="-1">
+        <span class="ino-context-menu__icon">🗑</span>
+        <span class="ino-context-menu__label">Delete</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<h2>Nested submenus</h2>
+<p class="lede">
+  Items with <code>children</code> render a chevron (›) and open a submenu on hover (desktop) or
+  first tap (touch). Submenu anchors to the parent's inline-end edge (right in LTR, left in RTL).
+</p>
+<div class="ino-context-menu__overlay" role="menu" aria-label="Context menu" style="max-width: 240px;">
+  <div class="ino-context-menu__item ino-context-menu__item--has-children" role="menuitem" tabindex="0">
+    <span class="ino-context-menu__label">File</span>
+    <span class="ino-context-menu__chevron">›</span>
+  </div>
+  <div class="ino-context-menu__item ino-context-menu__item--has-children" role="menuitem" tabindex="-1">
+    <span class="ino-context-menu__label">Edit</span>
+    <span class="ino-context-menu__chevron">›</span>
+  </div>
+  <div class="ino-context-menu__separator" role="separator"></div>
+  <div class="ino-context-menu__item" role="menuitem" tabindex="-1">
+    <span class="ino-context-menu__label">Help</span>
+  </div>
+</div>
+
+<h2>States</h2>
+<p class="lede">
+  Roving <code>tabindex</code> (only one item is <code>tabindex="0"</code> at a time). Arrow keys
+  move focus. Disabled items have <code>aria-disabled="true"</code> and are skipped by keyboard
+  navigation. Separators are <code>role="separator"</code> and never focusable.
+</p>
+
+</body>
+</html>
