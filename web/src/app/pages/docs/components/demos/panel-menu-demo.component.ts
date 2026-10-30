@@ -87,6 +87,22 @@ export class PanelMenuDemoComponent {
     },
   ];
 
+  protected readonly rtlMenu: InoPanelMenuItem[] = [
+    {
+      label: 'الدفعات',
+      icon: '◈',
+      children: [
+        { label: 'المعاملات', href: '/docs/components/panel-menu' },
+        { label: 'المبالغ المستردة', href: '/docs/components/panel-menu' },
+      ],
+    },
+    {
+      label: 'التسويات',
+      icon: '◉',
+      children: [{ label: 'الدفعة اليومية', href: '/docs/components/panel-menu' }],
+    },
+  ];
+
   protected lastClicked = '(none yet)';
 
   protected onItemClick(item: InoPanelMenuItem): void {
