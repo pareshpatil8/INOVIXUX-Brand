@@ -26,6 +26,7 @@ import { BreadcrumbDemoComponent } from './demos/breadcrumb-demo.component';
 import { PanelDemoComponent } from './demos/panel-demo.component';
 import { PanelMenuDemoComponent } from './demos/panel-menu-demo.component';
 import { DynamicDialogDemoComponent } from './demos/dynamic-dialog-demo.component';
+import { MenuDemoComponent } from './demos/menu-demo.component';
 
 /**
  * Slug -> hand-authored demo component, for components whose §2 Component Publish Contract
@@ -113,4 +114,9 @@ export const CUSTOM_DEMOS: Record<string, Type<unknown>> = {
   // `InoDynamicDialogService`, not a component the generic `*ngComponentOutlet`-with-inputs
   // renderer can demonstrate anything through. See `dynamic-dialog-demo.component.ts`.
   'dynamic-dialog': DynamicDialogDemoComponent,
+  // `items: InoMenuItem[]` is the same recursive-array gap `breadcrumb`/`panel-menu` hit (empty
+  // array default), and the whole visible surface — flat list, grouped sections, nested submenu
+  // — is driven by that array. See `menu/SPEC.md` for the full state/sizing contract this demo
+  // exercises.
+  'menu': MenuDemoComponent,
 };

@@ -37,6 +37,7 @@ import { InoInputTagsComponent } from '../../../../components/inputtags/ino-inpu
 import { InoKeyfilterComponent } from '../../../../components/keyfilter/ino-keyfilter.component';
 import { InoLabelComponent } from '../../../../components/label/ino-label.component';
 import { InoListboxComponent } from '../../../../components/listbox/ino-listbox.component';
+import { InoMenuComponent } from '../../../../components/menu/ino-menu.component';
 import { InoMeterGroupComponent } from '../../../../components/meter-group/ino-meter-group.component';
 import { InoMetricPanelComponent } from '../../../../components/metric-panel/ino-metric-panel.component';
 import { InoModalComponent } from '../../../../components/modal/ino-modal.component';
@@ -104,6 +105,7 @@ export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'keyfilter': InoKeyfilterComponent,
   'label': InoLabelComponent,
   'listbox': InoListboxComponent,
+  'menu': InoMenuComponent,
   'meter-group': InoMeterGroupComponent,
   'metric-panel': InoMetricPanelComponent,
   'modal': InoModalComponent,

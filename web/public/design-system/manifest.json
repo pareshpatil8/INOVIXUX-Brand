@@ -8,7 +8,7 @@
     "tablet": "641-900px",
     "desktop": ">900px"
   },
-  "componentCount": 64,
+  "componentCount": 65,
   "components": [
     {
       "name": "ino-alert",
@@ -2686,6 +2686,95 @@
           "type": "number",
           "values": null,
           "default": "100",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-menu",
+      "slug": "menu",
+      "className": "InoMenuComponent",
+      "sourcePath": "web/src/app/components/menu/ino-menu.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "items",
+          "type": "InoMenuItem[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "sections",
+          "type": "InoMenuSection[] | null",
+          "values": null,
+          "default": "null",
+          "optional": true
+        },
+        {
+          "name": "mode",
+          "type": "InoMenuMode",
+          "values": [
+            "static",
+            "popup"
+          ],
+          "default": "'static'",
+          "optional": true
+        },
+        {
+          "name": "open",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "anchor",
+          "type": "HTMLElement | ElementRef<HTMLElement> | null",
+          "values": null,
+          "default": "null",
+          "optional": true
+        },
+        {
+          "name": "position",
+          "type": "InoOverlayPosition",
+          "values": [
+            "top",
+            "bottom",
+            "left",
+            "right"
+          ],
+          "default": "'bottom'",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "InoMenuSize",
+          "values": [
+            "compact",
+            "comfortable"
+          ],
+          "default": "'comfortable'",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Menu'",
+          "optional": true
+        },
+        {
+          "name": "emptyLabel",
+          "type": "string",
+          "values": null,
+          "default": "'No items'",
           "optional": true
         }
       ],
