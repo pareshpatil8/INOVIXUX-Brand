@@ -1,0 +1,132 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Live example — grouped results + "Recent"</h3>
+  <p class="demo-section__note">
+    Press <strong>⌘K</strong> / <strong>Ctrl+K</strong> anywhere on this page, or use the button
+    below. "Recent" leads while the query is empty and disappears entirely once you start typing
+    (<code>SPEC.md</code> §2). Try <kbd>↓</kbd>/<kbd>↑</kbd> to move, <kbd>Enter</kbd> to activate,
+    <kbd>Escape</kbd> to close.
+  </p>
+  <button ino-button variant="primary" size="default" (click)="liveOpen = true">
+    Open command menu (⌘K)
+  </button>
+  <ino-command-menu
+    [open]="liveOpen"
+    (openChange)="liveOpen = $event"
+    [groups]="groups"
+    [recentItems]="recentItems"
+    (select)="onSelect($event)"
+    (search)="onSearch($event)"
+  ></ino-command-menu>
+  <p class="demo-live">last selected: {{ lastSelected }} · last search: {{ lastSearch }}</p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States — empty-results, loading</h3>
+  <p class="demo-section__note">
+    The spec row's extra state beyond the §2 standard set. Both panes below open with no
+    <code>groups</code>/<code>recentItems</code> configured, so the listbox shows the message row
+    immediately: <code>emptyMessage</code> ("No results found.") when idle, or
+    <code>'Searching…'</code> while <code>loading</code> is <code>true</code> — the same
+    busy/no-match split <code>&lt;ino-autocomplete&gt;</code> uses.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">empty-results</p>
+      <button ino-button variant="secondary" size="default" (click)="emptyResultsOpen = true">
+        Open (nothing configured)
+      </button>
+      <ino-command-menu
+        [open]="emptyResultsOpen"
+        (openChange)="emptyResultsOpen = $event"
+        [groups]="[]"
+        [recentItems]="[]"
+      ></ino-command-menu>
+    </div>
+    <div class="demo-pane">
+      <p class="demo-pane__label">loading</p>
+      <button ino-button variant="secondary" size="default" (click)="loadingOpen = true">
+        Open (loading = true)
+      </button>
+      <ino-command-menu
+        [open]="loadingOpen"
+        (openChange)="loadingOpen = $event"
+        [groups]="[]"
+        [recentItems]="[]"
+        [loading]="true"
+      ></ino-command-menu>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Sizing &amp; density — fixed footprint</h3>
+  <p class="demo-section__note">
+    "Sizing: fixed" per the spec row — one <code>max-inline-size: 640px</code> footprint, no
+    <code>sm</code>/<code>default</code>/<code>lg</code> axis. Rows still compose with density
+    through the shared <code>--ino-control-height</code>/<code>--ino-space-*</code> tokens — the
+    left pane's rows run dense, the right pane's run fluid.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane" data-density="dense">
+      <p class="demo-pane__label">dense</p>
+      <button ino-button variant="secondary" size="default" (click)="densityDenseOpen = true">
+        Open (dense)
+      </button>
+      <ino-command-menu
+        [open]="densityDenseOpen"
+        (openChange)="densityDenseOpen = $event"
+        [groups]="groups"
+        [recentItems]="recentItems"
+      ></ino-command-menu>
+    </div>
+    <div class="demo-pane" data-density="fluid">
+      <p class="demo-pane__label">fluid</p>
+      <button ino-button variant="secondary" size="default" (click)="densityFluidOpen = true">
+        Open (fluid)
+      </button>
+      <ino-command-menu
+        [open]="densityFluidOpen"
+        (openChange)="densityFluidOpen = $event"
+        [groups]="groups"
+        [recentItems]="recentItems"
+      ></ino-command-menu>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Labels</h3>
+  <p class="demo-section__note">
+    <code>label</code> names the dialog landmark; <code>searchLabel</code> names the search
+    combobox (the spec row's "search label"); <code>placeholder</code> and <code>recentHeading</code>
+    are both overridable. No <code>required</code>/help-text/error-text inputs apply — a command
+    menu has no bound value to validate (see the narrative doc's "Deliberate omissions").
+  </p>
+  <button ino-button variant="secondary" size="default" (click)="noHotkeyOpen = true">
+    Open (custom labels, hotkey disabled)
+  </button>
+  <ino-command-menu
+    [open]="noHotkeyOpen"
+    (openChange)="noHotkeyOpen = $event"
+    [groups]="groups"
+    [recentItems]="recentItems"
+    [hotkey]="false"
+    label="Quick actions"
+    searchLabel="Search quick actions"
+    placeholder="Find an action…"
+    recentHeading="Last used"
+  ></ino-command-menu>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Keyboard contract</h3>
+  <p class="demo-section__note">
+    <strong>⌘K</strong>/<strong>Ctrl+K</strong> toggles open/closed from anywhere in the document
+    (the pane above with <code>[hotkey]="false"</code> is the one exception — it only opens via its
+    button). <strong>Arrow Up/Down</strong> move the active row, clamped at the first/last enabled
+    row. <strong>Home</strong>/<strong>End</strong> jump to the first/last enabled row.
+    <strong>Enter</strong> activates the active row. <strong>Escape</strong> closes. <strong>Tab</strong>
+    is deliberately unhandled — the search input is the only tabbable element inside the focus
+    trap, so Tab wraps back to itself.
+  </p>
+</section>

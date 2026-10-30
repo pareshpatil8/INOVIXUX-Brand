@@ -29,6 +29,7 @@ import { DynamicDialogDemoComponent } from './demos/dynamic-dialog-demo.componen
 import { MenuDemoComponent } from './demos/menu-demo.component';
 import { DividerDemoComponent } from './demos/divider-demo.component';
 import { AccordionDemoComponent } from './demos/accordion-demo.component';
+import { CommandMenuDemoComponent } from './demos/command-menu-demo.component';
 
 /**
  * Slug -> hand-authored demo component, for components whose §2 Component Publish Contract
@@ -133,4 +134,9 @@ export const CUSTOM_DEMOS: Record<string, Type<unknown>> = {
   // to demonstrate single/multiple expand, icon position, nested accordions, and keyboard navigation
   // per the APG accordion pattern. See `accordion/SPEC.md` for the full state/sizing contract.
   'accordion': AccordionDemoComponent,
+  // `groups`/`recentItems: InoCommandMenuGroup[]/InoCommandMenuItem[]` hit the same
+  // `defaultValueFor()` empty-array gap `menu`/`breadcrumb` hit, and `open` defaults to `false` —
+  // the generic renderer would mount a permanently-closed, empty palette with nothing to
+  // demonstrate in any section. See `command-menu-demo.component.ts`.
+  'command-menu': CommandMenuDemoComponent,
 };

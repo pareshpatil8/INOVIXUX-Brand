@@ -1,0 +1,73 @@
+<div *ngIf="open" class="ino-command-menu">
+  <div class="ino-command-menu__scrim" (click)="onBackdropClick()"></div>
+
+  <div
+    #panel
+    inoFocusTrap
+    class="ino-command-menu__panel"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-label]="label"
+    tabindex="-1"
+  >
+    <div class="ino-command-menu__search">
+      <span class="ino-command-menu__search-icon" aria-hidden="true">⌘</span>
+      <input
+        #input
+        type="text"
+        class="ino-command-menu__input"
+        role="combobox"
+        aria-haspopup="listbox"
+        [attr.aria-controls]="listboxId"
+        aria-expanded="true"
+        aria-autocomplete="list"
+        [attr.aria-activedescendant]="activeOptionId()"
+        [attr.aria-label]="searchLabel"
+        [attr.aria-busy]="loading || null"
+        [placeholder]="placeholder"
+        [value]="queryText"
+        autocomplete="off"
+        autocapitalize="off"
+        spellcheck="false"
+        (input)="onQueryInput($event)"
+        (keydown)="onInputKeydown($event)"
+      />
+    </div>
+
+    <div
+      [id]="listboxId"
+      class="ino-command-menu__listbox"
+      role="listbox"
+      [attr.aria-label]="searchLabel"
+      [attr.aria-busy]="loading || null"
+    >
+      <ng-container *ngIf="!isEmpty; else emptyState">
+        <ng-container *ngFor="let row of rows; trackBy: trackByIndex">
+          <div *ngIf="row.groupHeading" role="presentation" class="ino-command-menu__group-heading">
+            {{ row.groupHeading }}
+          </div>
+          <div
+            [id]="optionId(row.index)"
+            role="option"
+            class="ino-command-menu__option"
+            [class.ino-command-menu__option--active]="isActive(row.index)"
+            [class.ino-command-menu__option--disabled]="row.item.disabled"
+            [attr.aria-selected]="isActive(row.index)"
+            [attr.aria-disabled]="row.item.disabled || null"
+            (mouseenter)="activeIndex = row.index"
+            (mousedown)="$event.preventDefault()"
+            (click)="activateRow(row)"
+          >
+            <span class="ino-command-menu__option-label">{{ row.item.label }}</span>
+            <span *ngIf="row.item.description" class="ino-command-menu__option-description">{{ row.item.description }}</span>
+            <span *ngIf="row.item.shortcutLabel" class="ino-command-menu__option-shortcut" aria-hidden="true">{{ row.item.shortcutLabel }}</span>
+          </div>
+        </ng-container>
+      </ng-container>
+
+      <ng-template #emptyState>
+        <p class="ino-command-menu__empty" [attr.aria-busy]="loading || null">{{ emptyStateMessage }}</p>
+      </ng-template>
+    </div>
+  </div>
+</div>

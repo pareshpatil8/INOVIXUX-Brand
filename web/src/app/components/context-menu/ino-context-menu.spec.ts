@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { InoContextMenuComponent } from './ino-context-menu.component';
 import { InoContextMenuItem } from './ino-context-menu.types';
@@ -72,18 +73,18 @@ describe('InoContextMenuComponent', () => {
     component.items = items;
     component.visible = true;
 
-    spyOn(component.itemClick, 'emit');
+    vi.spyOn(component.itemClick, 'emit');
 
     component.onItemActivate(new Event('click'), items[0], 0);
 
     expect(component.itemClick.emit).toHaveBeenCalledWith({
-      originalEvent: jasmine.any(Event),
+      originalEvent: expect.any(Event),
       item: items[0],
     });
   });
 
   it('should call item command when activated', () => {
-    const commandSpy = jasmine.createSpy('command');
+    const commandSpy = vi.fn();
     const items: InoContextMenuItem[] = [{ label: 'Item 1', command: commandSpy }];
 
     component.items = items;
@@ -92,7 +93,7 @@ describe('InoContextMenuComponent', () => {
     component.onItemActivate(new Event('click'), items[0], 0);
 
     expect(commandSpy).toHaveBeenCalledWith({
-      originalEvent: jasmine.any(Event),
+      originalEvent: expect.any(Event),
       item: items[0],
     });
   });
@@ -102,7 +103,7 @@ describe('InoContextMenuComponent', () => {
     component.items = items;
     component.visible = true;
 
-    spyOn(component, 'hide');
+    vi.spyOn(component, 'hide');
 
     component.onItemActivate(new Event('click'), items[0], 0);
 
@@ -119,7 +120,7 @@ describe('InoContextMenuComponent', () => {
     component.items = items;
     component.visible = true;
 
-    spyOn(component, 'hide');
+    vi.spyOn(component, 'hide');
 
     component.onItemActivate(new Event('click'), items[0], 0);
 
@@ -146,7 +147,7 @@ describe('InoContextMenuComponent', () => {
 
   it('should return focus to invoking element on hide', () => {
     const mockElement = document.createElement('button');
-    spyOn(mockElement, 'focus');
+    vi.spyOn(mockElement, 'focus');
 
     component.returnFocusElement = mockElement;
     component.hide();
