@@ -1,0 +1,84 @@
+<nav
+  *ngIf="items.length || loading"
+  class="ino-panel-menu"
+  [attr.aria-label]="ariaLabel"
+  [attr.aria-busy]="loading ? true : null">
+
+  <ng-container *ngIf="!loading && items.length">
+    <ng-container *ngTemplateOutlet="groupList; context: { $implicit: items, level: 0, parentPath: '' }"></ng-container>
+  </ng-container>
+
+  <div *ngIf="!loading && !items.length" class="ino-panel-menu__empty">{{ emptyLabel }}</div>
+
+  <ul *ngIf="loading" class="ino-panel-menu__list ino-panel-menu__list--loading" aria-hidden="true" role="list">
+    <li class="ino-panel-menu__row"><span class="ino-panel-menu__skeleton"></span></li>
+    <li class="ino-panel-menu__row"><span class="ino-panel-menu__skeleton"></span></li>
+    <li class="ino-panel-menu__row"><span class="ino-panel-menu__skeleton ino-panel-menu__skeleton--short"></span></li>
+  </ul>
+</nav>
+
+<ng-template #groupList let-items let-level="level" let-parentPath="parentPath">
+  <ul
+    class="ino-panel-menu__list"
+    [class.ino-panel-menu__list--nested]="level > 0"
+    role="list">
+    <li
+      *ngFor="let item of items; let i = index; trackBy: trackByIndex"
+      class="ino-panel-menu__row"
+      [class.ino-panel-menu__row--group]="hasChildren(item)"
+      [style.--ino-panel-menu-level]="level">
+      <ng-container
+        *ngTemplateOutlet="row; context: { $implicit: item, level: level, path: childPath(parentPath, i) }">
+      </ng-container>
+    </li>
+  </ul>
+</ng-template>
+
+<ng-template #row let-item let-level="level" let-path="path">
+  <button
+    *ngIf="hasChildren(item)"
+    type="button"
+    class="ino-panel-menu__header"
+    [class.ino-panel-menu__header--section]="level === 0"
+    [disabled]="item.disabled || null"
+    [attr.aria-expanded]="isExpanded(path)"
+    [attr.aria-controls]="groupContentId(path)"
+    [attr.aria-disabled]="item.disabled ? true : null"
+    (click)="toggle(item, path, level)">
+    <span *ngIf="item.icon" class="ino-panel-menu__icon" aria-hidden="true">{{ item.icon }}</span>
+    <span class="ino-panel-menu__label">{{ item.label }}</span>
+    <span class="ino-panel-menu__chevron" [class.ino-panel-menu__chevron--open]="isExpanded(path)" aria-hidden="true">&#9656;</span>
+  </button>
+
+  <a
+    *ngIf="isNavigable(item)"
+    class="ino-panel-menu__leaf"
+    [routerLink]="item.href"
+    (click)="onLeafClick(item)">
+    <span *ngIf="item.icon" class="ino-panel-menu__icon" aria-hidden="true">{{ item.icon }}</span>
+    <span class="ino-panel-menu__label">{{ item.label }}</span>
+  </a>
+
+  <button
+    *ngIf="isCommand(item)"
+    type="button"
+    class="ino-panel-menu__leaf ino-panel-menu__leaf--command"
+    (click)="onLeafClick(item)">
+    <span *ngIf="item.icon" class="ino-panel-menu__icon" aria-hidden="true">{{ item.icon }}</span>
+    <span class="ino-panel-menu__label">{{ item.label }}</span>
+  </button>
+
+  <span
+    *ngIf="!hasChildren(item) && !isNavigable(item) && !isCommand(item)"
+    class="ino-panel-menu__leaf ino-panel-menu__leaf--inert"
+    [attr.aria-disabled]="item.disabled ? true : null">
+    <span *ngIf="item.icon" class="ino-panel-menu__icon" aria-hidden="true">{{ item.icon }}</span>
+    <span class="ino-panel-menu__label">{{ item.label }}</span>
+  </span>
+
+  <div *ngIf="hasChildren(item) && isExpanded(path)" [id]="groupContentId(path)">
+    <ng-container
+      *ngTemplateOutlet="groupList; context: { $implicit: item.children, level: level + 1, parentPath: path }">
+    </ng-container>
+  </div>
+</ng-template>

@@ -1,0 +1,103 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Variants — accordion-of-menus, nested groups, icons</h3>
+  <p class="demo-section__note">
+    Top-level nodes are accordion panels (section labels); any node may itself carry
+    <code>children</code>, recursing to arbitrary depth — the "Disputes" group below nests one
+    level under "Payments". Activating a leaf navigates within this docs site and fires
+    <code>itemClick</code>, read out below.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">single-open (default)</p>
+      <ino-panel-menu [items]="productMenu" (itemClick)="onItemClick($event)"></ino-panel-menu>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">multiple — both top-level panels can stay open</p>
+      <ino-panel-menu [items]="productMenu" [multiple]="true" (itemClick)="onItemClick($event)"></ino-panel-menu>
+    </div>
+  </div>
+  <p class="demo-live">last itemClick: {{ lastClicked }}</p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States</h3>
+  <p class="demo-section__note">
+    <strong>Default/hover/focus-visible/active</strong> are live on every header/leaf above — tab
+    onto one for the focus ring, or hover for the surface-sunken fill.
+    <strong>Expanded per node</strong> is the accordion behaviour itself: each group header's
+    <code>aria-expanded</code> reflects its own independent state, and collapsing a panel never
+    clears its descendants' expand state (collapse "Payments" above after opening "Disputes", then
+    reopen it). <strong>Disabled</strong> on a group makes its <code>children</code> permanently
+    unreachable — not merely dimmed while still expandable.
+    <strong>Readonly</strong> (whole tree) renders every leaf as inert text while groups stay
+    togglable. <strong>Loading</strong> swaps in skeleton rows with <code>aria-busy="true"</code>.
+    <strong>Empty</strong> renders the <code>emptyLabel</code> message rather than nothing.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">disabled group</p>
+      <ino-panel-menu [items]="withDisabledGroup"></ino-panel-menu>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">readonly (whole tree)</p>
+      <ino-panel-menu [items]="readonlyMenu" [readonly]="true"></ino-panel-menu>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">loading</p>
+      <ino-panel-menu [items]="productMenu" [loading]="true"></ino-panel-menu>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">empty</p>
+      <ino-panel-menu [items]="[]" emptyLabel="No menu items configured"></ino-panel-menu>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Sizing &amp; density</h3>
+  <p class="demo-section__note">
+    "Sizing: compact/comfortable" per the spec row. <code>comfortable</code> (default) reads the
+    unsuffixed <code>--ino-control-*</code> aliases; <code>compact</code> re-points to the
+    <code>-sm</code> tier. Both compose with density — this docs page runs dense (left pane); the
+    right pane overrides to fluid via <code>[data-density="fluid"]</code>.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane" data-density="dense">
+      <p class="demo-pane__label">comfortable, dense</p>
+      <ino-panel-menu [items]="productMenu"></ino-panel-menu>
+    </div>
+    <div class="demo-pane" data-density="fluid">
+      <p class="demo-pane__label">compact, fluid</p>
+      <ino-panel-menu [items]="productMenu" size="compact"></ino-panel-menu>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Labels — section labels and long-label wrapping</h3>
+  <p class="demo-section__note">
+    No <code>required</code>/help-text/error-text inputs apply (a panel menu has no bound value to
+    validate — see the narrative doc's "Deliberate omissions"). Every group's own <code>label</code>
+    doubles as that group's section label (no separate heading input). A long individual leaf label
+    truncates with an ellipsis rather than forcing the row to overflow its container.
+  </p>
+  <div class="demo-col" style="max-width: 320px;">
+    <ino-panel-menu [items]="longLabelMenu"></ino-panel-menu>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Keyboard contract</h3>
+  <p class="demo-section__note">
+    <strong>Tab</strong> moves between group header buttons and leaf links/buttons in document
+    order — a collapsed group's descendants are not in the DOM, so they are simply absent from the
+    tab order until expanded. <strong>Enter</strong>/<strong>Space</strong> toggle a focused group
+    header or activate a focused leaf — native <code>&lt;button&gt;</code>/<code>&lt;a&gt;</code>
+    behaviour, no custom keydown handling (deliberately not a <code>role="tree"</code> single-tab-
+    stop widget — see the narrative doc's accessibility contract).
+  </p>
+</section>
