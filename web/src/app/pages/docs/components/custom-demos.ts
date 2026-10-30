@@ -23,6 +23,8 @@ import { SelectButtonDemoComponent } from './demos/select-button-demo.component'
 import { FieldsetDemoComponent } from './demos/fieldset-demo.component';
 import { ToolbarDemoComponent } from './demos/toolbar-demo.component';
 import { BreadcrumbDemoComponent } from './demos/breadcrumb-demo.component';
+import { PanelDemoComponent } from './demos/panel-demo.component';
+import { PanelMenuDemoComponent } from './demos/panel-menu-demo.component';
 
 /**
  * Slug -> hand-authored demo component, for components whose §2 Component Publish Contract
@@ -96,4 +98,14 @@ export const CUSTOM_DEMOS: Record<string, Type<unknown>> = {
   // `cascade-select` hit (empty array default), and the whole visible surface is driven by that
   // array — the generic renderer would produce a labelled, empty `<nav>` in every section.
   'breadcrumb': BreadcrumbDemoComponent,
+  // The whole visible surface besides `header` is projected content (body + `[ino-panel-footer]`);
+  // same gap `fieldset`/`keyfilter` hit — the generic renderer mounts via `*ngComponentOutlet`
+  // with `inputs` only and cannot project content, so every example would render a labelled empty
+  // box. See `panel/SPEC.md` for the full state/sizing contract this demo exercises.
+  'panel': PanelDemoComponent,
+  // `items: InoPanelMenuItem[]` is the same recursive-array gap `breadcrumb`/`cascade-select` hit
+  // (empty array default), and the whole visible surface — every accordion panel and nested group
+  // — is driven by that array. See `panel-menu/SPEC.md` for the full state/sizing contract this
+  // demo exercises.
+  'panel-menu': PanelMenuDemoComponent,
 };

@@ -8,7 +8,7 @@
     "tablet": "641-900px",
     "desktop": ">900px"
   },
-  "componentCount": 59,
+  "componentCount": 64,
   "components": [
     {
       "name": "ino-alert",
@@ -590,6 +590,112 @@
       ]
     },
     {
+      "name": "ino-command-menu",
+      "slug": "command-menu",
+      "className": "InoCommandMenuComponent",
+      "sourcePath": "web/src/app/components/command-menu/ino-command-menu.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "open",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "'Command menu'",
+          "optional": true
+        },
+        {
+          "name": "searchLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Search commands'",
+          "optional": true
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "values": null,
+          "default": "'Type a command or search…'",
+          "optional": true
+        },
+        {
+          "name": "groups",
+          "type": "InoCommandMenuGroup[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "recentItems",
+          "type": "InoCommandMenuItem[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "recentHeading",
+          "type": "string",
+          "values": null,
+          "default": "'Recent'",
+          "optional": true
+        },
+        {
+          "name": "emptyMessage",
+          "type": "string",
+          "values": null,
+          "default": "'No results found.'",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "closeOnSelect",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "closeOnBackdrop",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "closeOnEscape",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "hotkey",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
       "name": "ino-confirm-dialog",
       "slug": "confirm-dialog",
       "className": "InoConfirmDialogComponent",
@@ -775,6 +881,42 @@
           "type": "boolean",
           "values": null,
           "default": "true",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-context-menu",
+      "slug": "context-menu",
+      "className": "InoContextMenuComponent",
+      "sourcePath": "web/src/app/components/context-menu/ino-context-menu.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "items",
+          "type": "InoContextMenuItem[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Context menu'",
+          "optional": true
+        },
+        {
+          "name": "visible",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
           "optional": true
         }
       ],
@@ -1118,6 +1260,20 @@
           "optional": true
         }
       ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-dynamic-dialog",
+      "slug": "dynamic-dialog",
+      "className": "InoDynamicDialogComponent",
+      "sourcePath": "web/src/app/components/dynamic-dialog/ino-dynamic-dialog.component.ts",
+      "previewPath": null,
+      "inputs": [],
       "variants": null,
       "viewports": [
         "mobile",
@@ -3066,6 +3222,141 @@
           "type": "boolean",
           "values": null,
           "default": "true",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-panel",
+      "slug": "panel",
+      "className": "InoPanelComponent",
+      "sourcePath": "web/src/app/components/panel/ino-panel.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "header",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "'sm' | 'md' | 'lg'",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "'md'",
+          "optional": true
+        },
+        {
+          "name": "collapsible",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "collapsed",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-panel-menu",
+      "slug": "panel-menu",
+      "className": "InoPanelMenuComponent",
+      "sourcePath": "web/src/app/components/panel-menu/ino-panel-menu.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "items",
+          "type": "InoPanelMenuItem[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Panel menu'",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "'compact' | 'comfortable'",
+          "values": [
+            "compact",
+            "comfortable"
+          ],
+          "default": "'comfortable'",
+          "optional": true
+        },
+        {
+          "name": "multiple",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "emptyLabel",
+          "type": "string",
+          "values": null,
+          "default": "'No items'",
           "optional": true
         }
       ],

@@ -3,6 +3,7 @@
 // Slug -> component class lookup for the /docs/components/:slug live-example renderer.
 import { Type } from '@angular/core';
 
+import { InoAccordionComponent } from '../../../../components/accordion/ino-accordion.component';
 import { InoAlertComponent } from '../../../../components/alert/ino-alert.component';
 import { InoAutocompleteComponent } from '../../../../components/autocomplete/ino-autocomplete.component';
 import { InoBreadcrumbComponent } from '../../../../components/breadcrumb/ino-breadcrumb.component';
@@ -10,11 +11,14 @@ import { InoButtonComponent } from '../../../../components/button/ino-button.com
 import { InoCardComponent } from '../../../../components/card/ino-card.component';
 import { InoCascadeSelectComponent } from '../../../../components/cascade-select/ino-cascade-select.component';
 import { InoCheckboxComponent } from '../../../../components/checkbox/ino-checkbox.component';
+import { InoCommandMenuComponent } from '../../../../components/command-menu/ino-command-menu.component';
 import { InoConfirmDialogComponent } from '../../../../components/confirm-dialog/ino-confirm-dialog.component';
 import { InoConfirmPopupComponent } from '../../../../components/confirm-popup/ino-confirm-popup.component';
+import { InoContextMenuComponent } from '../../../../components/context-menu/ino-context-menu.component';
 import { InoDatePickerComponent } from '../../../../components/datepicker/ino-datepicker.component';
 import { InoDividerComponent } from '../../../../components/divider/ino-divider.component';
 import { InoDrawerComponent } from '../../../../components/drawer/ino-drawer.component';
+import { InoDynamicDialogComponent } from '../../../../components/dynamic-dialog/ino-dynamic-dialog.component';
 import { InoFeatureGridComponent } from '../../../../components/feature-grid/ino-feature-grid.component';
 import { InoFieldsetComponent } from '../../../../components/fieldset/ino-fieldset.component';
 import { InoFileUploadComponent } from '../../../../components/file-upload/ino-file-upload.component';
@@ -39,6 +43,8 @@ import { InoModalComponent } from '../../../../components/modal/ino-modal.compon
 import { InoMultiSelectComponent } from '../../../../components/multiselect/ino-multiselect.component';
 import { InoNavComponent } from '../../../../components/nav/ino-nav.component';
 import { InoPaginatorComponent } from '../../../../components/paginator/ino-paginator.component';
+import { InoPanelComponent } from '../../../../components/panel/ino-panel.component';
+import { InoPanelMenuComponent } from '../../../../components/panel-menu/ino-panel-menu.component';
 import { InoPasswordComponent } from '../../../../components/password/ino-password.component';
 import { InoPopoverComponent } from '../../../../components/popover/ino-popover.component';
 import { InoProgressBarComponent } from '../../../../components/progress-bar/ino-progress-bar.component';
@@ -64,6 +70,7 @@ import { InoTreeSelectComponent } from '../../../../components/treeselect/ino-tr
 import { InoVirtualScrollerComponent } from '../../../../components/virtual-scroller/ino-virtual-scroller.component';
 
 export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
+  'accordion': InoAccordionComponent,
   'alert': InoAlertComponent,
   'autocomplete': InoAutocompleteComponent,
   'breadcrumb': InoBreadcrumbComponent,
@@ -71,11 +78,14 @@ export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'card': InoCardComponent,
   'cascade-select': InoCascadeSelectComponent,
   'checkbox': InoCheckboxComponent,
+  'command-menu': InoCommandMenuComponent,
   'confirm-dialog': InoConfirmDialogComponent,
   'confirm-popup': InoConfirmPopupComponent,
+  'context-menu': InoContextMenuComponent,
   'datepicker': InoDatePickerComponent,
   'divider': InoDividerComponent,
   'drawer': InoDrawerComponent,
+  'dynamic-dialog': InoDynamicDialogComponent,
   'feature-grid': InoFeatureGridComponent,
   'fieldset': InoFieldsetComponent,
   'file-upload': InoFileUploadComponent,
@@ -100,6 +110,8 @@ export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'multiselect': InoMultiSelectComponent,
   'nav': InoNavComponent,
   'paginator': InoPaginatorComponent,
+  'panel': InoPanelComponent,
+  'panel-menu': InoPanelMenuComponent,
   'password': InoPasswordComponent,
   'popover': InoPopoverComponent,
   'progress-bar': InoProgressBarComponent,

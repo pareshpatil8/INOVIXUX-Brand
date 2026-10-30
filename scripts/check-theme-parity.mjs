@@ -202,6 +202,9 @@ assert.deepEqual(controlKeys(rawDense), controlKeys(rawFluid),
 const DENSITY_INVARIANT = [
   '--ino-control-font-size-lg', '--ino-control-font-size-sm',   // alias body-lg/body-sm, which no density block overrides
   '--ino-control-gap-default', '--ino-control-gap-sm', '--ino-control-gap-lg', // gap is density-invariant by design, §12
+  // -compact tier (INO-425): ephemeral overlay sizing, never re-resolved per density — see §12.
+  '--ino-control-height-compact', '--ino-control-padding-inline-compact',
+  '--ino-control-font-size-compact', '--ino-control-icon-size-compact', '--ino-control-gap-compact',
 ];
 assert.deepEqual(controlKeys(rawBase).filter(k => !controlKeys(rawDense).includes(k)), DENSITY_INVARIANT.sort(),
   'the set of control tokens a density block leaves to :root changed — update §12 and DENSITY_INVARIANT together');
@@ -753,6 +756,24 @@ const COMPONENT_REGISTRY = [
     ],
   },
   {
+    name: 'fieldset',
+    web: 'web/src/app/components/fieldset',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoFieldset.tsx',
+        roles: ['border', 'danger', 'onSurface', 'onSurfaceMuted', 'surfaceRaised'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_fieldset.dart',
+        roles: ['border', 'danger', 'onSurface', 'onSurfaceMuted', 'surfaceRaised'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['accent', 'accentActive'], reason: "web reads accent for the collapsible legend toggle's hover text colour and accent-active for its pressed colour (ino-fieldset.component.scss .ino-fieldset__toggle). Touch has no hover state and the Pressable's onPress commits the toggle on release with no distinct pressed-text-colour treatment, so neither role is ever reached." },
+      { platform: 'flutter', roles: ['accent', 'accentActive'], reason: 'same as the React Native entry above — the legend row is a plain GestureDetector with no hover/press colour state of its own.' },
+    ],
+  },
+  {
     name: 'file-upload',
     web: 'web/src/app/components/file-upload',
     mobile: {
@@ -1036,6 +1057,24 @@ const COMPONENT_REGISTRY = [
       { platform: 'flutter', roles: ['accentActive'], reason: 'same as the React Native entry above.' },
       { platform: 'reactNative', roles: ['overlayScrim', 'borderSoft'], reason: 'ADDED roles, not dropped ones — same one intentional visual divergence ino-select\'s port declares (INO-258). Web anchors the option panel absolutely under the trigger with no scrim and no sheet chrome; this port presents the same checkbox list in a modal bottom sheet (ConfirmActionSheet.tsx idiom, docs/brand/13-mobile-app-patterns.md §2) for the same reason — an anchored popover under a field collides with the keyboard and the bottom safe area on a phone. overlay-scrim is that sheet backdrop and border-soft its grabber. See web/src/app/components/multiselect/SPEC.md §9.' },
       { platform: 'flutter', roles: ['overlayScrim', 'borderSoft'], reason: 'same as the React Native entry above — showModalBottomSheet barrierColor is overlay-scrim and the grabber is border-soft, matching confirm_action_sheet.dart / ino_select.dart.' },
+    ],
+  },
+  {
+    name: 'panel',
+    web: 'web/src/app/components/panel',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoPanel.tsx',
+        roles: ['border', 'borderSoft', 'onSurface', 'onSurfaceMuted', 'surfaceRaised'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_panel.dart',
+        roles: ['border', 'borderSoft', 'onSurface', 'onSurfaceMuted', 'surfaceRaised'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['accent', 'accentActive'], reason: "web reads accent for the collapsible toggle's hover text colour and accent-active for its pressed colour (ino-panel.component.scss .ino-panel__toggle). Touch has no hover state and the Pressable's onPress commits the toggle on release with no distinct pressed-text-colour treatment, so neither role is ever reached — same rationale the card entry above gives for its own focus/press border roles." },
+      { platform: 'flutter', roles: ['accent', 'accentActive'], reason: 'same as the React Native entry above — the header row is a plain GestureDetector with no hover/press colour state of its own.' },
     ],
   },
   {

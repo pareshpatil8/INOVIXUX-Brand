@@ -741,6 +741,150 @@
         "templates": []
       }
     },
+    "command-menu": {
+      "name": "ino-command-menu",
+      "docPath": null,
+      "a11y": null,
+      "notes": null,
+      "mobile": null,
+      "api": {
+        "props": [
+          {
+            "name": "open",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "values": null,
+            "default": "'Command menu'",
+            "optional": true,
+            "description": "Accessible name for the `dialog` landmark."
+          },
+          {
+            "name": "searchLabel",
+            "type": "string",
+            "values": null,
+            "default": "'Search commands'",
+            "optional": true,
+            "description": "Accessible name for the search `combobox` — the spec row's \"search label\"."
+          },
+          {
+            "name": "placeholder",
+            "type": "string",
+            "values": null,
+            "default": "'Type a command or search…'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "groups",
+            "type": "InoCommandMenuGroup[]",
+            "values": null,
+            "default": "[]",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "recentItems",
+            "type": "InoCommandMenuItem[]",
+            "values": null,
+            "default": "[]",
+            "optional": true,
+            "description": "Shown as a leading, unfiltered group while the query is empty; hidden entirely once the user starts typing. See SPEC.md §2."
+          },
+          {
+            "name": "recentHeading",
+            "type": "string",
+            "values": null,
+            "default": "'Recent'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "emptyMessage",
+            "type": "string",
+            "values": null,
+            "default": "'No results found.'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "loading",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": "Async-datasource hook (mirrors `ino-autocomplete`'s `loading`): suppresses nothing by itself, just swaps the empty-state message to \"Searching…\" while a `search`-triggered fetch is in flight."
+          },
+          {
+            "name": "closeOnSelect",
+            "type": "boolean",
+            "values": null,
+            "default": "true",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "closeOnBackdrop",
+            "type": "boolean",
+            "values": null,
+            "default": "true",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "closeOnEscape",
+            "type": "boolean",
+            "values": null,
+            "default": "true",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "hotkey",
+            "type": "boolean",
+            "values": null,
+            "default": "true",
+            "optional": true,
+            "description": "Registers the document-level ⌘K/Ctrl+K open/close toggle. See the class doc comment."
+          }
+        ],
+        "events": [
+          {
+            "name": "openChange",
+            "type": "boolean",
+            "description": null
+          },
+          {
+            "name": "opened",
+            "type": "void",
+            "description": null
+          },
+          {
+            "name": "closed",
+            "type": "void",
+            "description": null
+          },
+          {
+            "name": "select",
+            "type": "InoCommandMenuItem",
+            "description": "Fires when a row is activated (click, or Enter while active) — payload is the full item, not just its `id`, so the caller never has to re-look it up."
+          },
+          {
+            "name": "search",
+            "type": "string",
+            "description": "Fires `SEARCH_DEBOUNCE_MS` after the last keystroke in the query — the async-datasource hook, same contract as `ino-autocomplete`'s `search` output."
+          }
+        ],
+        "methods": [],
+        "templates": []
+      }
+    },
     "confirm-dialog": {
       "name": "ino-confirm-dialog",
       "docPath": "docs/brand/06-angular-components/confirm-dialog.md",
@@ -1013,6 +1157,99 @@
             "description": null
           }
         ]
+      }
+    },
+    "context-menu": {
+      "name": "ino-context-menu",
+      "docPath": "docs/brand/06-angular-components/context-menu.md",
+      "a11y": "<p><strong>Role / ARIA</strong> — Root overlay is <code>&lt;div role=\"menu\" aria-label=\"Context menu\"&gt;</code> (or the\n<code>ariaLabel</code> override). Menu items are <code>&lt;div role=\"menuitem\"&gt;</code> (or <code>role=\"separator\"</code> for\ndividers). No <code>aria-activedescendant</code> — roving <code>tabindex</code> is used instead (see <code>SPEC.md</code> §6).</p>\n<p><strong>Keyboard</strong> — Arrow keys (Up/Down) move roving focus between navigable items (skipping separators\nand disabled items). Right Arrow opens a submenu (if the focused item has <code>children</code>); Left Arrow\ncloses the current submenu. Home/End jump to the first/last navigable item. Enter/Space activate\nthe focused item. Escape closes the menu (or the current submenu if nested), returning focus to\nthe invoking element.</p>\n<p><strong>Focus trap</strong> — Tab/Shift+Tab cycle within the menu's items rather than escaping to the rest of\nthe page. The menu is the only interactive surface while open (click-outside closes it).</p>\n<p><strong>Focus return</strong> — On close (Escape, click-outside, or item activation), focus explicitly returns\nto the element that invoked the menu — the <code>inoContextMenu</code> directive's host element, captured\nvia <code>document.activeElement</code> before the menu opens. See <code>SPEC.md</code> §3.</p>\n<p><strong>Separators skip navigation</strong> — Items with <code>separator: true</code> are <code>role=\"separator\"</code> and never\nreceive focus. Arrow keys skip over them. See <code>SPEC.md</code> §13.</p>\n<p><strong>Contrast</strong> — Menu background, item colors, hover/focus states, and disabled items all resolve\nthrough tokens audited across all three themes by <code>node scripts/check-theme-parity.mjs</code>.</p>\n<p><strong>RTL</strong> — Logical properties only (<code>inset-inline-start</code>, <code>inset-inline-end</code>,\n<code>padding-inline</code>). No <code>left</code>/<code>right</code> in the stylesheet; submenus anchor to the inline-end edge\n(right in LTR, left in RTL).</p>\n<p><strong>State announcements</strong> — Disabled items (<code>aria-disabled=\"true\"</code>), separators (<code>role=\"separator\"</code>),\nmenu container (<code>aria-label</code> on <code>role=\"menu\"</code>).</p>\n<hr />\n",
+      "notes": "<p><strong>PrimeNG mapping.</strong> PrimeNG 22.1.1 <code>ContextMenu</code>'s <code>model</code> (<code>MenuItem[]</code>) maps directly onto\nthis component's <code>items: InoContextMenuItem[]</code>. PrimeNG's <code>target</code> input (for attaching the menu\nto an element by query selector) is replaced here by the <code>inoContextMenu</code> directive, which is\nmore declarative and type-safe.</p>\n<p><strong>No <code>readonly</code> or <code>loading</code> states.</strong> Context menus are ephemeral overlays triggered by user\naction — they do not have a persistent \"loading items\" or \"display-only\" mode the way form\ncontrols do. See <code>SPEC.md</code> §7.</p>\n<p><strong>No <code>invalid</code>/<code>error</code> state.</strong> A context menu is not a form control and has no bound value to\nvalidate. See <code>SPEC.md</code> §8.</p>\n<p><strong>No TemplateRef support (B2 scope).</strong> The <code>inoContextMenu</code> directive accepts only\n<code>InoContextMenuItem[]</code> arrays in this B2 implementation. PrimeNG's template-driven menu structure\n(<code>ng-template pTemplate=\"item\"</code>) is omitted — the array API covers the primary use case and keeps\nthe directive simple. Template support may be added in a later phase if a product screen requires\ncustom per-item rendering beyond <code>label</code>/<code>icon</code>/<code>children</code>.</p>\n<hr />\n",
+      "mobile": "<p>No mobile ports (per the spec row's \"Web-only\" disposition). Mobile platforms have native\ncontext-menu equivalents (iOS long-press action sheets, Android context menus) that are not\nimplemented as web overlays. See <code>SPEC.md</code> §10 for full rationale.</p>\n<hr />\n",
+      "api": {
+        "props": [
+          {
+            "name": "items",
+            "type": "InoContextMenuItem[]",
+            "values": null,
+            "default": "[]",
+            "optional": true,
+            "description": "Menu items to display"
+          },
+          {
+            "name": "ariaLabel",
+            "type": "string",
+            "values": null,
+            "default": "'Context menu'",
+            "optional": true,
+            "description": "Accessible label for the menu container"
+          },
+          {
+            "name": "visible",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": "Whether the menu is currently visible"
+          }
+        ],
+        "events": [
+          {
+            "name": "visibleChange",
+            "type": "boolean",
+            "description": "Emits when the menu requests to close"
+          }
+        ],
+        "methods": [
+          {
+            "name": "show",
+            "params": "event: MouseEvent, returnFocus: HTMLElement | null = null",
+            "returnType": "void",
+            "description": "Opens the menu at the given coordinates."
+          },
+          {
+            "name": "hide",
+            "params": null,
+            "returnType": "void",
+            "description": "Closes the menu and returns focus to the invoking element."
+          },
+          {
+            "name": "onItemActivate",
+            "params": "event: Event, item: InoContextMenuItem, index: number",
+            "returnType": "void",
+            "description": "Handle item activation (click or Enter/Space)."
+          },
+          {
+            "name": "toggleSubmenu",
+            "params": "item: InoContextMenuItem",
+            "returnType": "void",
+            "description": "Toggle submenu open/closed."
+          },
+          {
+            "name": "onSubmenuMouseEnter",
+            "params": "item: InoContextMenuItem",
+            "returnType": "void",
+            "description": "Handle submenu hover (open after delay)."
+          },
+          {
+            "name": "onSubmenuMouseLeave",
+            "params": "item: InoContextMenuItem",
+            "returnType": "void",
+            "description": "Handle submenu hover exit (close after delay)."
+          },
+          {
+            "name": "isItemFocused",
+            "params": "item: InoContextMenuItem, index: number",
+            "returnType": "boolean",
+            "description": "Check if item is currently focused (for roving tabindex)."
+          },
+          {
+            "name": "trackByIndex",
+            "params": "index: number",
+            "returnType": "number",
+            "description": "Track by function for ngFor."
+          }
+        ],
+        "templates": []
       }
     },
     "datepicker": {
@@ -1423,6 +1660,19 @@
             "description": null
           }
         ]
+      }
+    },
+    "dynamic-dialog": {
+      "name": "ino-dynamic-dialog",
+      "docPath": null,
+      "a11y": null,
+      "notes": null,
+      "mobile": null,
+      "api": {
+        "props": [],
+        "events": [],
+        "methods": [],
+        "templates": []
       }
     },
     "feature-grid": {
@@ -3834,6 +4084,174 @@
           {
             "name": "rowsChange",
             "type": "number",
+            "description": null
+          }
+        ],
+        "methods": [],
+        "templates": []
+      }
+    },
+    "panel": {
+      "name": "ino-panel",
+      "docPath": "docs/brand/06-angular-components/panel.md",
+      "a11y": "<p><strong>Role / ARIA</strong> — <code>role=\"region\"</code> on the host, labelled via <code>aria-labelledby</code> pointing at the\nvisible header element (the toggle button when <code>collapsible</code>, a plain <code>&lt;span id&gt;</code> otherwise) —\nsee <code>SPEC.md</code> §3. <code>aria-disabled=\"true\"</code> reflects <code>disabled</code>; <code>aria-busy=\"true\"</code> reflects\n<code>loading</code>. The toggle carries <code>aria-expanded</code>/<code>aria-controls</code> pointing at the body region's id.</p>\n<p><strong>Keyboard</strong> — When <code>collapsible</code>, the header is a real <code>&lt;button&gt;</code>: Tab reaches it (readonly\ninstances stay reachable too — only <code>disabled</code> removes the tab stop); Enter/Space toggle\n<code>collapsed</code> and emit <code>collapsedChange</code>, via native button activation. When not <code>collapsible</code>, the\nheader has no tab stop at all.</p>\n<p><strong>Contrast</strong> — Border/background/focus-ring pairs resolve through tokens audited across all three\nthemes by <code>node scripts/check-theme-parity.mjs</code>.</p>\n<p><strong>RTL</strong> — Logical properties only (<code>padding-block</code>/<code>-inline</code>, <code>border-block-end</code>/<code>-start</code>,\n<code>text-align: start</code>). No <code>left</code>/<code>right</code>/<code>top</code>/<code>bottom</code> anywhere in the stylesheet.</p>\n<p><strong>State announcements</strong> — <code>aria-expanded</code> (collapsible toggle), <code>aria-disabled</code> (disabled host,\nreadonly toggle), <code>aria-busy</code> (loading).</p>\n<hr />\n",
+      "notes": "<p><strong>No invalid/error state.</strong> The §2 standard state set includes invalid/error, but a panel is a\ngeneric titled container with no bound value to validate — same reasoning <code>&lt;ino-card&gt;</code> records for\nthe same state. Not implemented; see <code>SPEC.md</code> §2.</p>\n<p><strong>No empty state.</strong> Not named in the spec row; same omission <code>&lt;ino-card&gt;</code> makes.</p>\n<p><strong>No <code>[ino-panel-header]</code> content slot.</strong> The spec row's \"Labels: header\" names a single title\nstring, the same shape <code>&lt;ino-fieldset&gt;</code>'s <code>legend</code> already uses — a richer, freeform header slot\nwas not asked for and would duplicate <code>&lt;ino-card&gt;</code>'s <code>[ino-card-header]</code>, a different, more general\ncontainer with no single documented label field. See <code>SPEC.md</code> §4.</p>\n<hr />\n",
+      "mobile": "<p>Both ports ship (per the row's \"Port both (simple)\" disposition):</p>\n<ul>\n<li><strong>React Native</strong> — <code>mobile/react-native/src/components/InoPanel.tsx</code>. Combines <code>&lt;ino-fieldset&gt;</code>\nRN port's collapsible-toggle logic (<code>Pressable</code> + <code>accessibilityState={{ expanded, disabled: readonly }}</code>) with <code>&lt;ino-card&gt;</code> RN port's explicit <code>footer?: ReactNode</code> prop (no content\nprojection in RN).</li>\n<li><strong>Flutter</strong> — <code>mobile/flutter/lib/widgets/ino_panel.dart</code>. Same combination: <code>InoFieldset</code>'s\n<code>GestureDetector</code> + <code>Semantics(button: true, expanded: ...)</code> toggle, <code>InoCard</code>'s explicit\n<code>footer</code> <code>Widget?</code> parameter.</li>\n</ul>\n<p>Neither port carries an animated loading spinner (static ring only), same scope call <code>&lt;ino-card&gt;</code>/\n<code>&lt;ino-fieldset&gt;</code>'s own RN/Flutter ports already made.</p>\n",
+      "api": {
+        "props": [
+          {
+            "name": "header",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "size",
+            "type": "'sm' | 'md' | 'lg'",
+            "values": [
+              "sm",
+              "md",
+              "lg"
+            ],
+            "default": "'md'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "collapsible",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "collapsed",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "readonly",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "loading",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          }
+        ],
+        "events": [
+          {
+            "name": "collapsedChange",
+            "type": "boolean",
+            "description": null
+          }
+        ],
+        "methods": [],
+        "templates": [
+          {
+            "name": "default",
+            "description": null
+          },
+          {
+            "name": "[ino-panel-footer]",
+            "description": null
+          }
+        ]
+      }
+    },
+    "panel-menu": {
+      "name": "ino-panel-menu",
+      "docPath": "docs/brand/06-angular-components/panel-menu.md",
+      "a11y": "<p><strong>Role / ARIA</strong> — <code>nav[aria-label]</code> wraps real nested <code>ul[role=\"list\"]</code>s (one per expanded group,\npresent in the DOM only while expanded). Each group is a WAI-ARIA APG <strong>Disclosure</strong> control:\n<code>button[aria-expanded][aria-controls]</code> pointing at its own content container's id. <strong>Deliberately\nnot</strong> <code>role=\"tree\"</code>/<code>\"treeitem\"</code> — see <code>SPEC.md</code> §4 for the full reasoning (in short: this is a\nnavigation structure with no selection model, not a single-tab-stop picker like <code>ino-treeselect</code>).</p>\n<p><strong>Keyboard</strong> — Native tab order through every header button, leaf link, and leaf command button, in\ndocument order. Enter/Space activate a focused header (toggle) or leaf (navigate/emit) — native\n<code>&lt;button&gt;</code>/<code>&lt;a&gt;</code> behavior, no custom keydown handling. A collapsed group's descendants are not in\nthe DOM, so they are simply absent from the tab order until expanded.</p>\n<p><strong>Contrast</strong> — Header/leaf text, hover, and disabled colors resolve through tokens audited across\nall three themes by <code>node scripts/check-theme-parity.mjs</code>.</p>\n<p><strong>RTL</strong> — Indentation (<code>padding-inline-start</code>) and the nested-group border (<code>border-inline-start</code>)\nare logical properties only; both flip correctly under <code>dir=\"rtl\"</code>.</p>\n<p><strong>State announcements</strong> — <code>aria-expanded</code>/<code>aria-controls</code> per group header, <code>aria-disabled=\"true\"</code>\non a disabled header/leaf, <code>aria-busy=\"true\"</code> on the <code>nav</code> landmark while <code>loading</code>.</p>\n<hr />\n",
+      "notes": "<p><strong>PrimeNG mapping.</strong> PrimeNG 22.1.1 <code>PanelMenu</code>'s <code>model</code> (<code>MenuItem[]</code>) maps onto this component's\n<code>items</code>; PrimeNG's <code>multiple</code> input maps directly onto this component's own <code>multiple</code> input\n(top-level panels only, in both implementations).</p>\n<p><strong>No invalid/error state.</strong> The §2 standard state set includes invalid/error, but a panel menu has\nno bound value to validate — it is a navigation structure, not a form control. Not implemented;\nsee <code>SPEC.md</code> §8 (same reasoning <code>ino-breadcrumb</code>'s <code>SPEC.md</code> §7 recorded).</p>\n<p><strong>No WAI-ARIA Tree View semantics.</strong> See <code>SPEC.md</code> §4 — a deliberate choice, not an omission by\noversight.</p>\n<hr />\n",
+      "mobile": "<p><strong>Web-only</strong> per the spec row's Notes/mobile disposition — the same disposition doc 26 itself gives\nother desktop-idiom components (ContextMenu, Toolbar). No React Native or Flutter port ships with\nthis issue.</p>\n",
+      "api": {
+        "props": [
+          {
+            "name": "items",
+            "type": "InoPanelMenuItem[]",
+            "values": null,
+            "default": "[]",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "ariaLabel",
+            "type": "string",
+            "values": null,
+            "default": "'Panel menu'",
+            "optional": true,
+            "description": "Accessible name for the `nav` landmark."
+          },
+          {
+            "name": "size",
+            "type": "'compact' | 'comfortable'",
+            "values": [
+              "compact",
+              "comfortable"
+            ],
+            "default": "'comfortable'",
+            "optional": true,
+            "description": "`compact | comfortable` — the row's own two-tier scale (doc 26 §5, not the `sm/default/lg` `InoControlSize` scale). Composes with dense/fluid density — see `SPEC.md` §5."
+          },
+          {
+            "name": "multiple",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": "Allows more than one **top-level** panel open at once. Default `false` — opening a top-level panel closes whichever other top-level panel was open, the classic accordion contract. Nested groups below the top level are always independently toggleable regardless of this flag — see `SPEC.md` §3."
+          },
+          {
+            "name": "readonly",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": "Renders every leaf as inert text; group expand/collapse still works so the tree stays browsable. See `SPEC.md` §7."
+          },
+          {
+            "name": "loading",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": "Renders skeleton rows instead of `items`. See `SPEC.md` §8."
+          },
+          {
+            "name": "emptyLabel",
+            "type": "string",
+            "values": null,
+            "default": "'No items'",
+            "optional": true,
+            "description": "Message shown when `items` is empty (and not `loading`)."
+          }
+        ],
+        "events": [
+          {
+            "name": "itemClick",
+            "type": "InoPanelMenuItem",
             "description": null
           }
         ],
