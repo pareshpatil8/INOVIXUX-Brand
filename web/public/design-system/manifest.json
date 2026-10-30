@@ -8,8 +8,64 @@
     "tablet": "641-900px",
     "desktop": ">900px"
   },
-  "componentCount": 65,
+  "componentCount": 67,
   "components": [
+    {
+      "name": "ino-accordion",
+      "slug": "accordion",
+      "className": "InoAccordionComponent",
+      "sourcePath": "web/src/app/components/accordion/ino-accordion.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "multiple",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "'compact' | 'comfortable'",
+          "values": [
+            "compact",
+            "comfortable"
+          ],
+          "default": "'comfortable'",
+          "optional": true
+        },
+        {
+          "name": "iconPosition",
+          "type": "'start' | 'end'",
+          "values": [
+            "start",
+            "end"
+          ],
+          "default": "'start'",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
     {
       "name": "ino-alert",
       "slug": "alert",
@@ -4303,6 +4359,52 @@
           "type": "number | [number, number]",
           "values": null,
           "default": "0",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-splitter",
+      "slug": "splitter",
+      "className": "InoSplitterComponent",
+      "sourcePath": "web/src/app/components/splitter/ino-splitter.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "orientation",
+          "type": "InoSplitterOrientation",
+          "values": [
+            "horizontal",
+            "vertical"
+          ],
+          "default": "'horizontal'",
+          "optional": true
+        },
+        {
+          "name": "resizeStep",
+          "type": "number",
+          "values": null,
+          "default": "5",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
           "optional": true
         }
       ],

@@ -55,6 +55,7 @@ import { InoSelectComponent } from '../../../../components/select/ino-select.com
 import { InoSelectButtonComponent } from '../../../../components/select-button/ino-select-button.component';
 import { InoSkeletonComponent } from '../../../../components/skeleton/ino-skeleton.component';
 import { InoSliderComponent } from '../../../../components/slider/ino-slider.component';
+import { InoSplitterComponent } from '../../../../components/splitter/ino-splitter.component';
 import { InoStepperComponent } from '../../../../components/stepper/ino-stepper.component';
 import { InoTableComponent } from '../../../../components/table/ino-table.component';
 import { InoTabsComponent } from '../../../../components/tabs/ino-tabs.component';
@@ -123,6 +124,7 @@ export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'select-button': InoSelectButtonComponent,
   'skeleton': InoSkeletonComponent,
   'slider': InoSliderComponent,
+  'splitter': InoSplitterComponent,
   'stepper': InoStepperComponent,
   'table': InoTableComponent,
   'tabs': InoTabsComponent,

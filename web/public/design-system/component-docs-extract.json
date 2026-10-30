@@ -4,6 +4,90 @@
   "note": "generated — do not hand-edit",
   "format": "html",
   "components": {
+    "accordion": {
+      "name": "ino-accordion",
+      "docPath": "docs/brand/06-angular-components/accordion.md",
+      "a11y": "<p><strong>Role / ARIA</strong> — Each tab header is a <code>&lt;button&gt;</code> wrapped in a heading element (<code>&lt;h1&gt;</code>-<code>&lt;h6&gt;</code>,\nconfigurable via <code>headingLevel</code>, default <code>&lt;h3&gt;</code>). The heading exists purely for document outline;\nall visual styling is on the button. Button carries <code>aria-expanded</code> (true/false) +\n<code>aria-controls</code> pointing at the panel region's id. Panel region has <code>role=\"region\"</code> +\n<code>aria-labelledby</code> pointing back at the button. Host carries <code>aria-disabled=\"true\"</code> when\n<code>disabled</code>, <code>aria-busy=\"true\"</code> when <code>loading</code>.</p>\n<p><strong>Keyboard</strong> — Tab enters the accordion at the first tab header; once inside, roving tabindex\nkeeps only the focused header tabbable (<code>tabindex=\"0\"</code>), all others are <code>tabindex=\"-1\"</code>. Arrow\nDown/Up move focus to the next/previous tab header (wrapping at ends); Home/End move focus to the\nfirst/last tab header. Enter/Space toggle the focused tab's <code>expanded</code> state and emit\n<code>expandedChange</code>, via native button activation.</p>\n<p><strong>Contrast</strong> — Border/background/focus-ring pairs resolve through tokens audited across all three\nthemes by <code>node scripts/check-theme-parity.mjs</code>.</p>\n<p><strong>RTL</strong> — Logical properties only (<code>padding-block</code>/<code>-inline</code>, <code>border-block-end</code>/<code>-start</code>,\n<code>inset-inline-start</code>/<code>-end</code>). No <code>left</code>/<code>right</code>/<code>top</code>/<code>bottom</code> anywhere in the stylesheet.</p>\n<p><strong>State announcements</strong> — <code>aria-expanded</code> (toggle button), <code>aria-disabled</code> (disabled host or tab),\n<code>aria-busy</code> (loading).</p>\n<hr />\n",
+      "notes": "<p><strong>No readonly state.</strong> The §2 standard state set includes readonly, but an accordion has no \"lock\nall toggles but stay legible\" use case that <code>disabled</code> doesn't already cover; tabs are pure\ndisclosure, not form inputs. Not implemented; see <code>SPEC.md</code> §5.</p>\n<p><strong>No invalid/error state.</strong> An accordion is a structural grouping with no value of its own to fail\nvalidation. Not implemented; see <code>SPEC.md</code> §5.</p>\n<p><strong>No empty state.</strong> Not named in the spec row; see <code>SPEC.md</code> §5.</p>\n<hr />\n",
+      "mobile": "<p>Both ports ship (per the row's \"Port both\" disposition):</p>\n<ul>\n<li><strong>React Native</strong> — <code>mobile/react-native/src/components/InoAccordion.tsx</code> +\n<code>InoAccordionTab.tsx</code>. Uses <code>Pressable</code> for the toggle with <code>accessibilityRole=\"button\"</code>,\n<code>accessibilityState={{ expanded, disabled }}</code>. Omits roving tabindex/Arrow key navigation per\nmobile-first scope (see <code>SPEC.md</code> §10).</li>\n<li><strong>Flutter</strong> — <code>mobile/flutter/lib/widgets/ino_accordion.dart</code>. Uses <code>GestureDetector</code> for the\ntoggle with <code>Semantics(button: true, expanded: ...)</code>. Omits roving tabindex/Arrow key\nnavigation per mobile-first scope (see <code>SPEC.md</code> §10).</li>\n</ul>\n<p>Neither port carries keyboard navigation (roving tabindex, Arrow keys, Home/End) — mobile-first\nscope per the spec row's \"Port both\" directive, same omission <code>&lt;ino-panel&gt;</code>'s RN/Flutter ports\nalready made for their disclosure toggles.</p>\n",
+      "api": {
+        "props": [
+          {
+            "name": "multiple",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "size",
+            "type": "'compact' | 'comfortable'",
+            "values": [
+              "compact",
+              "comfortable"
+            ],
+            "default": "'comfortable'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "iconPosition",
+            "type": "'start' | 'end'",
+            "values": [
+              "start",
+              "end"
+            ],
+            "default": "'start'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "loading",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          }
+        ],
+        "events": [],
+        "methods": [
+          {
+            "name": "onTabOpen",
+            "params": "openingTab: InoAccordionTabComponent",
+            "returnType": "void",
+            "description": "Called by a tab when it wants to expand. In single-expand mode, closes all other tabs first."
+          },
+          {
+            "name": "focusTab",
+            "params": "currentIndex: number, delta: number",
+            "returnType": "void",
+            "description": "Move focus to the next/previous tab header (Arrow keys, APG pattern)."
+          },
+          {
+            "name": "focusFirstTab",
+            "params": null,
+            "returnType": "void",
+            "description": "Move focus to first/last tab (Home/End keys, APG pattern)."
+          }
+        ],
+        "templates": [
+          {
+            "name": "default",
+            "description": null
+          }
+        ]
+      }
+    },
     "alert": {
       "name": "ino-alert",
       "docPath": "docs/brand/06-angular-components/alert.md",
@@ -1667,7 +1751,7 @@
       "docPath": "docs/brand/06-angular-components/dynamic-dialog.md",
       "a11y": "<p>Inherits the full <code>&lt;ino-modal&gt;</code> a11y contract (<code>role=\"dialog\"</code>, labelled by <code>heading</code>,\n<code>[inoFocusTrap]</code> keyboard containment, Escape/backdrop dismissal). The one item the doc 26 §5 spec\nrow calls out explicitly beyond \"inherits modal\": <strong>focus-return for the service flow</strong>.</p>\n<p>No extra code is needed for it. <code>[inoFocusTrap]</code>, placed on <code>&lt;ino-modal&gt;</code>'s panel, captures\n<code>document.activeElement</code> the instant the panel mounts — still inside the synchronous continuation\nof whatever click/keydown handler called <code>dialogService.open(...)</code> — so it captures the control\nthat triggered the call, exactly the guarantee a declarative <code>&lt;ino-modal [(open)]=\"flag\"&gt;</code> caller\nalready relies on. Closing the dialog by any path (<code>ref.close()</code> from the opened component,\n<code>&lt;ino-modal&gt;</code>'s own Escape/backdrop/close-button paths, or a second <code>open()</code> superseding it)\nrestores focus to that same control via the trap's existing teardown. See <code>SPEC.md</code> §4 for the full\nreasoning.</p>\n<p>The opened component receives no implicit a11y wiring beyond what <code>&lt;ino-modal&gt;</code> already provides —\nif it needs its own <code>aria-describedby</code> or form validation messaging, that is the opened component's\nown responsibility, same as any content projected into a declarative <code>&lt;ino-modal&gt;</code>.</p>\n<hr />\n",
       "notes": "<ul>\n<li><strong>No dialog stack.</strong> <code>InoDynamicDialogService</code> tracks a single <code>current</code> entry; a second <code>open()</code>\nsupersedes the first rather than stacking. A dynamic dialog can still appear over a declarative\n<code>&lt;ino-modal&gt;</code> or <code>&lt;ino-confirm-dialog&gt;</code> opened independently — <code>[inoFocusTrap]</code>'s trap stack\nhandles that case by DOM order regardless of which API opened which panel — but two <em>dynamic</em>\ndialogs stacked on each other is out of scope for this minimal API layer. See <code>SPEC.md</code> §3.</li>\n<li><strong>No imperative <code>ViewContainerRef.createComponent()</code>.</strong> The opened component is mounted via\n<code>NgComponentOutlet</code> inside <code>&lt;ino-dynamic-dialog&gt;</code>'s existing template, not a hand-rolled\n<code>ComponentRef</code> lifecycle — see <code>SPEC.md</code> §2 for why that is the simpler, OnPush/zoneless-safe\nchoice here.</li>\n<li><strong>No <code>@Input</code> bound to the opened component.</strong> <code>NgComponentOutlet</code> has no input-binding surface\nfor an arbitrary unknown type; the DI tokens (<code>InoDynamicDialogRef</code>, <code>INO_DYNAMIC_DIALOG_DATA</code>)\nare the entire data-passing contract, the same two-token shape Angular Material's\n<code>MatDialogRef</code>/<code>MAT_DIALOG_DATA</code> use.</li>\n</ul>\n",
-      "mobile": "<p>Web-only — the doc 26 §5 row disposition. No React Native or Flutter port: a service that opens an\narbitrary component by type, backed by Angular DI and <code>NgComponentOutlet</code>, has no analogue in\neither mobile stack's navigation model, where the equivalent is presenting a screen/route rather\nthan opening an overlay component by type. Mirrors <code>ino-command-menu</code>/<code>ino-toolbar</code>'s web-only\ndisposition in the same table.</p>\n<hr />\n",
+      "mobile": null,
       "api": {
         "props": [],
         "events": [],
@@ -2092,7 +2176,7 @@
       "docPath": "docs/brand/06-angular-components/focus-trap.md",
       "a11y": "<p><strong>Role / ARIA.</strong> The trap declares <strong>none of its own</strong>, by design. It is a mechanism, not content.\n<code>role=\"dialog\"</code>, <code>aria-modal=\"true\"</code> and the accessible name belong to the consuming surface — that\nis the element a screen reader announces, and putting a role on the trap would produce a second,\nredundant landmark.</p>\n<p><strong>Keyboard map.</strong></p>\n<table>\n<thead>\n<tr>\n<th>Key</th>\n<th>Result</th>\n</tr>\n</thead>\n<tbody><tr>\n<td><code>Tab</code></td>\n<td>Next tabbable element. From the last, wraps to the first.</td>\n</tr>\n<tr>\n<td><code>Shift+Tab</code></td>\n<td>Previous tabbable element. From the first, wraps to the last.</td>\n</tr>\n<tr>\n<td>everything else</td>\n<td>Untouched — the browser's native tab order and the consumer's own handlers.</td>\n</tr>\n</tbody></table>\n<p>The trap deliberately does <strong>not</strong> handle <code>Esc</code>. Dismissal is the consuming surface's decision and\nits handler, because only the consumer knows whether closing is currently permitted (a\nConfirmDialog mid-submit may refuse).</p>\n<p><strong>SC 2.1.2 (No Keyboard Trap) — both directions.</strong> Focus is <em>contained</em> while the trap is active\nand <em>released</em> when it is disabled or destroyed. The release half is what hand-rolled traps\nusually miss, and it is the half the success criterion is actually named after: a trap with no\nexit is the failure, not the goal. Both directions have tests.</p>\n<p><strong>SC 2.4.3 (Focus Order).</strong> <code>restoreFocus</code> returns focus to the control that opened the surface,\nnot to the top of the document. It restores only if the trap still holds focus — if something else\nhas already moved focus on (a toast action, the next dialog in a wizard), yanking it back would be\nthe bug.</p>\n<p><strong>Sentinels are invisible to assistive tech.</strong> The two tab stops that perform the wrap are\n<code>aria-hidden=\"true\"</code> spans at zero opacity with <code>pointer-events: none</code>. A virtual-cursor user never\nencounters them, and they are not pointer targets — so SC 2.5.8 (target size) has nothing to\nmeasure here.</p>\n<p><strong>Contrast.</strong> Nothing is painted, so there is no text or non-text contrast pair to audit. The trap\nnever touches the focus ring of the elements it contains: those keep whatever <code>--ino-focus-ring</code>\ntheir own component paints, which is how the ring stays correct across dark, light and\nhigh-contrast for free. The single <code>outline: none</code> in the stylesheet is scoped to\n<code>:host([tabindex='-1']:focus)</code> — the programmatic container-fallback focus used when a container\nholds no tabbable content at all, which the user cannot reach by keyboard and has nothing to act on.</p>\n<p><strong>RTL.</strong> The sentinel's structural style uses <code>inset-block-start</code> / <code>inset-inline-start</code>, never\n<code>top</code> / <code>left</code>. There is no other positioned element.</p>\n<hr />\n",
       "notes": null,
-      "mobile": "<p><strong>Web-only</strong>, by explicit decision — not a deferred port. Neither mobile platform has the construct\nthis component exists for: React Native has no DOM tab order (the equivalent is\n<code>accessibilityViewIsModal</code> / <code>importantForAccessibility</code>, declarative flags on the overlay), and\nFlutter scopes focus by construction through <code>FocusScope</code> on a modal route. The mobile counterpart\nis a different component with a different API and gets its own issue in a later wave. Reasoning in\nfull: <code>web/src/app/components/focus-trap/SPEC.md</code> §5.</p>\n<hr />\n",
+      "mobile": null,
       "api": {
         "props": [
           {
@@ -2968,7 +3052,7 @@
       "docPath": "docs/brand/06-angular-components/inputtags.md",
       "a11y": "<p><strong>Role / ARIA:</strong></p>\n<ul>\n<li>Input: <code>role=\"combobox\"</code> with <code>aria-expanded</code> tracking dropdown state</li>\n<li>Chip list: <code>role=\"list\"</code> with each chip as <code>role=\"listitem\"</code></li>\n<li>Suggestions dropdown: <code>role=\"listbox\"</code> with each option as <code>role=\"option\"</code></li>\n<li><code>aria-activedescendant</code> on input points to the active suggestion</li>\n</ul>\n<p><strong>Keyboard support:</strong> See \"Keyboard contract\" above. All navigation, selection, and removal actions\nare keyboard-accessible.</p>\n<p><strong>Screen reader announcements:</strong></p>\n<ul>\n<li>Tag removal: \"Removed {tag label}\" announced via <code>role=\"status\"</code> live region</li>\n<li>Error message: <code>aria-describedby</code> points to error text, <code>aria-invalid=\"true\"</code> when <code>error</code> is set</li>\n</ul>\n<p><strong>Focus indicators:</strong> Focus ring on input field, visible focus on chip remove buttons (<code>:focus-visible</code>).</p>\n<p><strong>WCAG 2.2 AA:</strong></p>\n<ul>\n<li>Contrast: <code>--ino-color-accent</code> / <code>--ino-color-danger</code> / <code>--ino-color-danger-text-safe</code> meet AA in all\nthree themes (gated by <code>check-theme-parity</code>). Re-tokenised in INO-723 — the roles named here before\nthat (<code>--ino-color-primary</code> / <code>--ino-color-error</code>) were never defined in <code>tokens.css</code> at all.</li>\n<li>All interactive elements keyboard-accessible</li>\n<li>All state changes announced to screen readers</li>\n</ul>\n<hr />\n",
       "notes": "<ul>\n<li><strong>No grouping:</strong> Suggestions do not support <code>option.group</code> (unlike <code>ino-autocomplete</code>). The use\ncase for grouped tag suggestions is weak.</li>\n<li><strong>No <code>forceSelection</code>:</strong> All typed input can be added as a tag—there is no mode that rejects\nfree-text and requires picking from suggestions. Use <code>validateTag</code> if you want to mark certain\ntags invalid.</li>\n<li><strong>No built-in async fetch:</strong> Listen to the <code>(search)</code> output and update <code>[suggestions]</code>\nexternally (same contract as <code>ino-autocomplete</code>).</li>\n</ul>\n<hr />\n",
-      "mobile": "<p><strong>React Native:</strong> <code>InoInputTags</code> component in <code>mobile/react-native/src/components/InoInputTags.tsx</code>\n<strong>Flutter:</strong> <code>InoInputTags</code> widget in <code>mobile/flutter/lib/widgets/ino_inputtags.dart</code></p>\n<p>Both ports implement the same tag-add/remove/validate contract with platform-native chips and\naccessibility (TalkBack/VoiceOver).</p>\n<hr />\n",
+      "mobile": null,
       "api": {
         "props": [
           {
@@ -3126,8 +3210,8 @@
       "name": "ino-keyfilter",
       "docPath": "docs/brand/06-angular-components/keyfilter.md",
       "a11y": "<p><strong>Role / ARIA.</strong> None of its own, by design. It is a mechanism, not content — same posture as\n<code>[inoFocusTrap]</code>.</p>\n<p><strong>Must not block IME or assistive-technology input.</strong> Filtering happens <em>only</em> in the <code>keydown</code>\nhandler, and only for a single printable character (<code>event.key.length === 1</code>) with no modifier\nheld (<code>ctrlKey</code>/<code>metaKey</code>/<code>altKey</code>). The handler returns immediately whenever\n<code>event.isComposing</code> — or the legacy <code>keyCode === 229</code> some browsers/WebViews still use instead of\na reliable <code>isComposing</code> — is true. An IME composing non-Latin text is therefore never tested\nagainst the (inherently Latin/numeric) preset regexes, so composition is never interrupted and\nthe composed result is never retroactively stripped. There is deliberately no <code>input</code>-event\nresync filter the way <code>&lt;ino-inputmask&gt;</code> has one — a resync filter is exactly the mechanism that\nwould strip IME-composed text after the fact. Non-printable and modifier-combo keys (Tab,\nBackspace, Delete, arrows, Home/End, Enter, Ctrl/Cmd/Alt shortcuts — copy, paste, undo,\nselect-all, screen-reader command keys) are never intercepted, so assistive technology retains\nevery key it needs.</p>\n<p><strong>Screen-reader behavior on rejection.</strong> Silent by default — no <code>aria-live</code> region announces a\nblocked keystroke, because one owned by this directive would be a second, uncoordinated\nannouncement competing with whatever the host field's own hint/error text already says.\n<code>inoKeyfilterReject</code> exists for a caller that wants its own reaction (an <code>aria-live</code> region, a\nshake animation, a toast):</p>\n<pre><code>&lt;ino-input inoKeyfilter=\"int\" (inoKeyfilterReject)=\"announce($event)\"&gt;&lt;/ino-input&gt;\n&lt;div aria-live=\"polite\" class=\"sr-only\"&gt;{{ liveMessage() }}&lt;/div&gt;\n</code></pre>\n<p><strong>Contrast / target size.</strong> Nothing is painted, so there is no text or non-text contrast pair, and\nno pointer target, to audit — same as <code>[inoFocusTrap]</code>.</p>\n<hr />\n",
-      "notes": "<p><strong>States, Sizing, and Labels</strong> (doc 26 §2 points 2–4) are recorded <code>n/a</code> — see §\"States\" above and\n<code>SPEC.md</code> §2 for the full row-by-row disposition.</p>\n<p><strong>PrimeNG mapping.</strong> <code>pKeyFilter</code>'s five presets map 1:1 onto <code>int</code>/<code>num</code>/<code>alpha</code>/<code>alphanum</code>/custom\nregex above.</p>\n<p><strong>Mobile: ported, as formatters rather than widgets</strong> (doc 26 §2 point 6). Neither mobile platform\nhas an Angular-style attribute directive, so each port is the idiomatic non-visual \"reject this\nedit\" primitive for its runtime instead of a component:</p>\n<ul>\n<li><strong>Flutter</strong> — <code>InoKeyfilterFormatter</code>, a <code>TextInputFormatter</code> passed to a <code>TextField</code>'s\n<code>inputFormatters:</code> list (<code>mobile/flutter/lib/widgets/ino_keyfilter.dart</code>).</li>\n<li><strong>React Native</strong> — <code>useInoKeyfilter(preset, options)</code>, a hook returning a <code>filterChangeText</code>\nfunction wired ahead of the caller's own <code>onChangeText</code>\n(<code>mobile/react-native/src/components/InoKeyfilter.ts</code>).</li>\n</ul>\n<p>Both re-implement the preset semantics rather than importing the web module (neither runtime can\nimport web TypeScript), and both get the IME guarantee for free: a composed run commits as one\nalready-resolved edit on both platforms, so there is no intermediate composing state either port\ncould interrupt. Nothing is deferred or dropped here — the full per-row reasoning is in §\"Mobile parity\"\nbelow and <code>SPEC.md</code> §5.</p>\n<hr />\n",
-      "mobile": "<p><strong>Ported, as formatters, not widgets</strong> — unlike <code>[inoFocusTrap]</code>'s web-only disposition, per the\nspec seed (\"Web directive + RN/Flutter formatter equivalents\"). Neither mobile platform has an\nAngular-style attribute directive, but both have an idiomatic non-visual \"reject this edit\"\nprimitive:</p>\n<ul>\n<li><strong>Flutter</strong>: <code>InoKeyfilterFormatter</code>, a <code>TextInputFormatter</code> passed to a <code>TextField</code>'s\n<code>inputFormatters:</code> list — <code>mobile/flutter/lib/widgets/ino_keyfilter.dart</code>.</li>\n<li><strong>React Native</strong>: <code>useInoKeyfilter(preset, options)</code>, a hook returning a <code>filterChangeText</code>\nfunction wired ahead of the caller's own <code>onChangeText</code> — <code>mobile/react-native/src/components/InoKeyfilter.ts</code>.</li>\n</ul>\n<p>Both re-implement the exact preset semantics above rather than importing the web module (neither\nmobile runtime can import web TypeScript), and both resolve IME composition the same way: a\ncomposed run commits as a single already-resolved edit on both platforms, so there is no\nintermediate composing state either port could see or interrupt — composition can never be\nblocked, by construction, matching the web directive's explicit guard. Full reasoning:\n<code>SPEC.md</code> §5.</p>\n<hr />\n",
+      "notes": "<p><strong>States, Sizing, and Labels</strong> (doc 26 §2 points 2–4) are recorded <code>n/a</code> — see §\"States\" above and\n<code>SPEC.md</code> §2 for the full row-by-row disposition.</p>\n<p><strong>PrimeNG mapping.</strong> <code>pKeyFilter</code>'s five presets map 1:1 onto <code>int</code>/<code>num</code>/<code>alpha</code>/<code>alphanum</code>/custom\nregex above.</p>\n<p><strong>Mobile: ported, as formatters rather than widgets</strong> (doc 26 §2 point 6). Neither mobile platform\nhas an Angular-style attribute directive, so each port is the idiomatic non-visual \"reject this\nedit\" primitive for its runtime instead of a component:</p>\n<ul>\n<li><strong>Flutter</strong> — <code>InoKeyfilterFormatter</code>, a <code>TextInputFormatter</code> passed to a <code>TextField</code>'s\n<code>inputFormatters:</code> list (<code>mobile/flutter/lib/widgets/ino_keyfilter.dart</code>).</li>\n<li><strong>React Native</strong> — <code>useInoKeyfilter(preset, options)</code>, a hook returning a <code>filterChangeText</code>\nfunction wired ahead of the caller's own <code>onChangeText</code>\n(<code>mobile/react-native/src/components/InoKeyfilter.ts</code>).</li>\n</ul>\n<p>Both re-implement the preset semantics rather than importing the web module (neither runtime can\nimport web TypeScript), and both get the IME guarantee for free: a composed run commits as one\nalready-resolved edit on both platforms, so there is no intermediate composing state either port\ncould interrupt. Nothing is deferred or dropped here — the full per-row reasoning is in §\"Mobile\"\nbelow and <code>SPEC.md</code> §5.</p>\n<hr />\n",
+      "mobile": null,
       "api": {
         "props": [
           {
@@ -5391,6 +5475,66 @@
         ],
         "methods": [],
         "templates": []
+      }
+    },
+    "splitter": {
+      "name": "ino-splitter",
+      "docPath": "docs/brand/06-angular-components/splitter.md",
+      "a11y": "<p><strong>Role / ARIA</strong> — each gutter is <code>role=\"separator\"</code>, always in the tab order. <code>aria-orientation</code>\nis the gutter's own rendered line direction — <strong>inverted</strong> from the <code>[orientation]</code> input, which\nnames the panels' flow axis: a horizontal splitter's gutter is a vertical line, so it carries\n<code>aria-orientation=\"vertical\"</code>, and vice versa (SPEC.md §4). <code>aria-valuenow</code>/<code>-valuemin</code>/<code>-valuemax</code>\nare the before-panel's current/min/max share — the same units Home/End/Arrow keys move.</p>\n<p><strong>Keyboard</strong> — on a focused gutter: ArrowLeft/ArrowRight (horizontal) or ArrowUp/ArrowDown\n(vertical) resize by <code>resizeStep</code>; Home collapses the panel before the gutter to its <code>minSize</code>;\nEnd pushes the panel after it down to its own <code>minSize</code>. RTL flips the horizontal mapping to match\nthe visual direction. Collapse toggles are plain <code>&lt;button&gt;</code>s — Tab/Enter/Space, no custom\nhandling.</p>\n<p><strong><code>readonly</code> is <code>data-readonly</code>, not <code>aria-readonly</code>.</strong> Per ARIA 1.2, <code>role=\"separator\"</code> does not\nsupport <code>aria-readonly</code> (nor <code>aria-invalid</code>, nor <code>aria-expanded</code>) — only <code>aria-disabled</code> and the\ngeneric global states. <code>readonly</code> is therefore a plain <code>data-readonly</code> styling/behaviour hook, the\nsame choice <code>ino-tabs.component.html</code>'s own <code>role=\"tablist\"</code> already made for the identical reason\n(SPEC.md §4).</p>\n<p><strong>Contrast</strong> — gutter line/background, focus ring, and collapse-toggle colors all resolve through\ntokens audited across all three themes by <code>node scripts/check-theme-parity.mjs</code>.</p>\n<p><strong>RTL</strong> — logical properties only (<code>inset-inline-start</code>, <code>inset-block-start</code>). No <code>left</code>/<code>right</code>/\n<code>top</code>/<code>bottom</code> in the stylesheet. Drag delta sign and the Arrow-key forward/backward mapping both\nflip under <code>dir=\"rtl\"</code> for a horizontal splitter (vertical orientation has no RTL concern — block\ndirection is unaffected by <code>dir</code>).</p>\n<p><strong>State announcements</strong> — <code>aria-disabled=\"true\"</code> (disabled splitter), <code>aria-valuetext</code> on every\ngutter (e.g. \"40%\"), <code>aria-expanded</code>/<code>aria-label</code> on every collapse toggle.</p>\n<hr />\n",
+      "notes": "<p><strong>PrimeNG mapping.</strong> PrimeNG 22.1.1 <code>Splitter</code>'s <code>layout</code> input maps to <code>orientation</code> here;\n<code>SplitterPanel</code>'s <code>size</code>/<code>minSize</code> map directly onto <code>&lt;ino-splitter-panel&gt;</code>'s own inputs of the\nsame name. PrimeNG's <code>gutterSize</code>/<code>step</code> props are replaced by this component's token-driven\ngutter sizing (Sizing, above) and <code>resizeStep</code>.</p>\n<p><strong>No runtime-safe panel add/remove.</strong> <code>ContentChildren.changes</code> always re-runs the initial\neven/explicit distribution from scratch — a panel added or removed at runtime resets every\nsibling's width rather than preserving an in-progress user resize across the structural change.\nSee <code>SPEC.md</code> §7.</p>\n<p><strong>Dragging a gutter next to a collapsed panel is blocked, not auto-expanding.</strong> The explicit\ncollapse toggle is the one documented way to bring a collapsed panel back.</p>\n<p><strong>No <code>invalid</code>/<code>loading</code> states.</strong> See States, above.</p>\n<hr />\n",
+      "mobile": "<p>No mobile ports (per the spec row's \"Web-only (dashboards)\" disposition). Neither React Native\nnor Flutter ships a resizable-pane idiom for the phone/tablet form factor this catalog's mobile\nports target — a drag-to-resize gutter is a pointer-precision, large-viewport interaction with no\nequivalent touch affordance at typical mobile widths. See <code>SPEC.md</code> §8.</p>\n<hr />\n",
+      "api": {
+        "props": [
+          {
+            "name": "orientation",
+            "type": "InoSplitterOrientation",
+            "values": [
+              "horizontal",
+              "vertical"
+            ],
+            "default": "'horizontal'",
+            "optional": true,
+            "description": "Panel flow direction. `'horizontal'` (default) lays panels out side by side, divided by vertical gutter lines; `'vertical'` stacks them, divided by horizontal gutter lines. Note this names the PANELS' axis, not the gutter's own visual orientation — a horizontal splitter's gutter is a vertical line, per the WAI-ARIA APG `separator` definition (SPEC.md §4), the same inversion `ino-divider`'s own orientation input does not have because a divider has no panels to be \"between.\""
+          },
+          {
+            "name": "resizeStep",
+            "type": "number",
+            "values": null,
+            "default": "5",
+            "optional": true,
+            "description": "Percentage points moved per Arrow-key press on a focused gutter."
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "readonly",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": "Gutters stay focusable (roving-tabindex-free here — every gutter is tab-stoppable, there is no single active one) but drag/keyboard resize/collapse all no-op — the same \"focusable but inert\" contract `ino-tabs`'s own `readonly` documents for a single control."
+          }
+        ],
+        "events": [
+          {
+            "name": "sizesChange",
+            "type": "number[]",
+            "description": "Emits the full panel size array (percentages, index-aligned to panel order) once a resize or collapse/expand settles — on pointerup/keyup/toggle, not on every intermediate pointermove frame, so a consumer persisting layout to a backend isn't spammed mid-drag."
+          }
+        ],
+        "methods": [],
+        "templates": [
+          {
+            "name": "default",
+            "description": null
+          }
+        ]
       }
     },
     "stepper": {

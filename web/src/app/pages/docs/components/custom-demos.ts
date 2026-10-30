@@ -30,6 +30,7 @@ import { MenuDemoComponent } from './demos/menu-demo.component';
 import { DividerDemoComponent } from './demos/divider-demo.component';
 import { AccordionDemoComponent } from './demos/accordion-demo.component';
 import { CommandMenuDemoComponent } from './demos/command-menu-demo.component';
+import { SplitterDemoComponent } from './demos/splitter-demo.component';
 
 /**
  * Slug -> hand-authored demo component, for components whose §2 Component Publish Contract
@@ -139,4 +140,9 @@ export const CUSTOM_DEMOS: Record<string, Type<unknown>> = {
   // the generic renderer would mount a permanently-closed, empty palette with nothing to
   // demonstrate in any section. See `command-menu-demo.component.ts`.
   'command-menu': CommandMenuDemoComponent,
+  // Same gap `panel`/`fieldset`/`accordion`/`toolbar` all hit: the whole visible surface is
+  // content-projected `<ino-splitter-panel>` children, and the generic renderer mounts via
+  // `*ngComponentOutlet` with `[inputs]` only — it can never project content, so every example
+  // would render a zero-height empty shell. See `splitter/SPEC.md` for the full contract.
+  'splitter': SplitterDemoComponent,
 };
