@@ -1,0 +1,68 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Variants — orientation</h3>
+  <p class="demo-section__note">
+    <code>orientation="horizontal"</code> draws a full inline-size line; <code>vertical</code>
+    draws a full block-size line and needs a sized ancestor (SPEC.md §4) — the row below gives it
+    one via <code>align-items: stretch</code> on a fixed-height flex row.
+  </p>
+  <div class="demo-col">
+    <ino-divider></ino-divider>
+  </div>
+  <div class="demo-row" style="align-items: stretch; height: 64px; margin-top: var(--ino-space-4);">
+    <span>Section A</span>
+    <ino-divider orientation="vertical"></ino-divider>
+    <span>Section B</span>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Size axis</h3>
+  <p class="demo-section__note">
+    <code>thickness</code> — the component's only sizing axis (doc 26 §5), reading the shared
+    <code>--ino-border-width-hairline</code> / <code>--ino-border-width-thick</code> tokens
+    rather than a bespoke scale. No separate density axis is demoed here — SPEC.md §3 documents
+    <code>thickness</code> as deliberately <strong>not</strong> density-dependent.
+  </p>
+  <div class="demo-col">
+    <p class="demo-pane__label">hairline (default)</p>
+    <ino-divider thickness="hairline"></ino-divider>
+    <p class="demo-pane__label">thick</p>
+    <ino-divider thickness="thick"></ino-divider>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Labels — centered label, wrapping, RTL</h3>
+  <p class="demo-section__note">
+    <code>label</code> only renders on the horizontal form (SPEC.md §1); the label element is
+    <code>white-space: nowrap</code> and unconstrained, so a label longer than its container
+    overflows rather than wrapping — shown deliberately below, not hidden.
+  </p>
+  <div class="demo-col">
+    <p class="demo-pane__label">short label</p>
+    <ino-divider label="OR"></ino-divider>
+    <p class="demo-pane__label">short label, thick</p>
+    <ino-divider label="Section break" thickness="thick"></ino-divider>
+    <p class="demo-pane__label">long label, constrained width (overflow, not wrap)</p>
+    <div style="max-width: 280px;">
+      <ino-divider
+        label="Linked payment instruments across all connected banks and cards"
+      ></ino-divider>
+    </div>
+  </div>
+  <div class="demo-rtl" dir="rtl" style="margin-top: var(--ino-space-4); max-width: 320px;">
+    <div class="demo-col">
+      <ino-divider label="القسم الأول"></ino-divider>
+      <ino-divider thickness="thick"></ino-divider>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States</h3>
+  <p class="demo-section__note">
+    <code>ino-divider</code> is purely presentational — no hover/focus/disabled styling exists
+    (doc 26 §5 States: <code>n/a</code>), the same contract <code>ino-tag</code> documents for its
+    own non-interactive shape.
+  </p>
+</section>

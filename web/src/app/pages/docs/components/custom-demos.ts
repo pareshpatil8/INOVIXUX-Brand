@@ -27,6 +27,8 @@ import { PanelDemoComponent } from './demos/panel-demo.component';
 import { PanelMenuDemoComponent } from './demos/panel-menu-demo.component';
 import { DynamicDialogDemoComponent } from './demos/dynamic-dialog-demo.component';
 import { MenuDemoComponent } from './demos/menu-demo.component';
+import { DividerDemoComponent } from './demos/divider-demo.component';
+import { AccordionDemoComponent } from './demos/accordion-demo.component';
 
 /**
  * Slug -> hand-authored demo component, for components whose §2 Component Publish Contract
@@ -119,4 +121,16 @@ export const CUSTOM_DEMOS: Record<string, Type<unknown>> = {
   // — is driven by that array. See `menu/SPEC.md` for the full state/sizing contract this demo
   // exercises.
   'menu': MenuDemoComponent,
+  // `size` is the generic renderer's only recognized sizing-axis name; `thickness` isn't it, so
+  // no "Size axis" section ever rendered (INO-789, fixing the INO-442 QA rejection). Same
+  // `defaultValueFor()` gap as `slider`/`password` forces `label` to `''`, so the labelled form
+  // (SPEC.md §1) had zero live coverage either.
+  'divider': DividerDemoComponent,
+  // The whole visible surface besides `header` is projected content (tab body); same gap
+  // `panel`/`fieldset` hit — the generic renderer mounts via `*ngComponentOutlet` with `inputs`
+  // only and cannot project content, so every example would render labelled empty accordion shells.
+  // Additionally, the two-component architecture (container + tab) requires hand-authored composition
+  // to demonstrate single/multiple expand, icon position, nested accordions, and keyboard navigation
+  // per the APG accordion pattern. See `accordion/SPEC.md` for the full state/sizing contract.
+  'accordion': AccordionDemoComponent,
 };
