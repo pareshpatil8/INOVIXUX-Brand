@@ -1,0 +1,74 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Live example — disabled item, separator, nested submenu</h3>
+  <p class="demo-section__note">
+    Right-click the box below to open the menu. Navigate with
+    <kbd>↓</kbd>/<kbd>↑</kbd>/<kbd>Home</kbd>/<kbd>End</kbd>, expand the submenu with
+    <kbd>→</kbd>, collapse with <kbd>←</kbd>, activate with <kbd>Enter</kbd>, close with
+    <kbd>Escape</kbd>. The "Copy (locked)" item is disabled and non-activatable; separators
+    render as divider lines; "More actions" opens a nested submenu.
+  </p>
+  <div
+    class="demo-trigger"
+    [inoContextMenu]="menuItems"
+    inoContextMenuAriaLabel="File actions menu"
+  >
+    <p><strong>Right-click this box</strong> to open the context menu.</p>
+  </div>
+  <p class="demo-live">last action: {{ lastAction }}</p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Sizing &amp; density — compact mode</h3>
+  <p class="demo-section__note">
+    "Sizing: fixed" per the spec row — one footprint, no <code>sm</code>/<code>default</code>/<code>lg</code>
+    axis. The menu composes with density through the shared <code>--ino-control-height</code>/
+    <code>--ino-space-*</code> tokens — left pane runs dense, center pane default, right pane fluid.
+    Right-click each box and observe the menu item row height.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane" data-density="dense">
+      <p class="demo-pane__label">dense</p>
+      <div
+        class="demo-trigger demo-trigger--compact"
+        [inoContextMenu]="menuItems"
+        inoContextMenuAriaLabel="File actions menu (dense)"
+      >
+        Right-click (dense)
+      </div>
+    </div>
+    <div class="demo-pane">
+      <p class="demo-pane__label">default</p>
+      <div
+        class="demo-trigger demo-trigger--compact"
+        [inoContextMenu]="menuItems"
+        inoContextMenuAriaLabel="File actions menu (default)"
+      >
+        Right-click (default)
+      </div>
+    </div>
+    <div class="demo-pane" data-density="fluid">
+      <p class="demo-pane__label">fluid</p>
+      <div
+        class="demo-trigger demo-trigger--compact"
+        [inoContextMenu]="menuItems"
+        inoContextMenuAriaLabel="File actions menu (fluid)"
+      >
+        Right-click (fluid)
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Keyboard contract</h3>
+  <p class="demo-section__note">
+    <strong>Right-click</strong> or <strong>Shift+F10</strong> (browser default) opens the menu.
+    <strong>Arrow Up/Down</strong> move the active row, clamped at the first/last enabled row.
+    <strong>Home</strong>/<strong>End</strong> jump to the first/last enabled row.
+    <strong>Arrow Right</strong> expands a submenu (if the current item has children).
+    <strong>Arrow Left</strong> collapses an open submenu. <strong>Enter</strong> or
+    <strong>Space</strong> activates the active row. <strong>Escape</strong> closes the menu
+    (closes submenu first if one is open, then closes the menu). Focus returns to the trigger
+    element on close.
+  </p>
+</section>

@@ -252,3 +252,33 @@
 .demo-constrained__spacer {
   height: var(--ino-space-7);
 }
+
+// Right-click target for directive-based demos (INO-810: ino-context-menu). Token-bound, same rule
+// as the rest of this file.
+.demo-trigger {
+  border: 2px dashed var(--ino-color-border);
+  border-radius: var(--ino-radius-md);
+  padding: var(--ino-space-5);
+  background: var(--ino-color-surface-raised);
+  color: var(--ino-color-on-surface);
+  cursor: context-menu;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--ino-space-8);
+
+  &:hover {
+    border-color: var(--ino-color-on-surface-subtle);
+    background: var(--ino-color-surface-sunken);
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+.demo-trigger--compact {
+  min-height: var(--ino-space-7);
+  padding: var(--ino-space-3);
+  font-size: var(--ino-type-body-sm-size, 12.5px);
+}

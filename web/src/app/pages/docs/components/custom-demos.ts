@@ -31,6 +31,7 @@ import { DividerDemoComponent } from './demos/divider-demo.component';
 import { AccordionDemoComponent } from './demos/accordion-demo.component';
 import { CommandMenuDemoComponent } from './demos/command-menu-demo.component';
 import { SplitterDemoComponent } from './demos/splitter-demo.component';
+import { ContextMenuDemoComponent } from './demos/context-menu-demo.component';
 
 /**
  * Slug -> hand-authored demo component, for components whose §2 Component Publish Contract
@@ -145,4 +146,9 @@ export const CUSTOM_DEMOS: Record<string, Type<unknown>> = {
   // `*ngComponentOutlet` with `[inputs]` only — it can never project content, so every example
   // would render a zero-height empty shell. See `splitter/SPEC.md` for the full contract.
   'splitter': SplitterDemoComponent,
+  // The component is directive-driven: `[inoContextMenu]` attaches to a separate trigger element
+  // and handles the right-click binding. The generic `*ngComponentOutlet`-with-inputs renderer can
+  // instantiate the component but cannot apply the directive to a host template, so `items` stays
+  // `[]` and `visible` stays `false` → a permanently-closed, empty menu with no right-click target.
+  'context-menu': ContextMenuDemoComponent,
 };
