@@ -140,29 +140,38 @@ export class InoContextMenuComponent implements AfterViewInit {
    * Focus the first non-disabled, non-separator item.
    */
   private focusFirstItem() {
-    const firstIndex = this.getNavigableItems().findIndex((_, i) => i === 0);
-    if (firstIndex >= 0) {
-      this.focusItem(firstIndex);
+    const navigableItems = this.getNavigableItems();
+    if (navigableItems.length > 0) {
+      this.focusItem(0);
     }
   }
 
   /**
-   * Focus item at the given index.
+   * Focus item at the given navigable index (translates to full items index).
    */
-  private focusItem(index: number) {
-    const items = this.getNavigableItems();
-    if (index >= 0 && index < items.length) {
-      this.focusedIndex = index;
-      this.cdr.markForCheck();
+  private focusItem(navigableIndex: number) {
+    const navigableItems = this.getNavigableItems();
+    if (navigableIndex >= 0 && navigableIndex < navigableItems.length) {
+      // Translate navigable index to full items index
+      const targetItem = navigableItems[navigableIndex];
+      const fullIndex = this.items.indexOf(targetItem);
 
-      // Actually focus the DOM element
-      setTimeout(() => {
-        const menuItems =
-          this.elementRef.nativeElement.querySelectorAll('.ino-context-menu__item[tabindex="0"]');
-        if (menuItems[0]) {
-          (menuItems[0] as HTMLElement).focus();
-        }
-      }, 0);
+      if (fullIndex >= 0) {
+        this.focusedIndex = fullIndex;
+        this.cdr.markForCheck();
+
+        // Actually focus the DOM element by resolved index
+        setTimeout(() => {
+          const allItems =
+            this.elementRef.nativeElement.querySelectorAll('.ino-context-menu__item, .ino-context-menu__separator');
+          if (allItems[fullIndex]) {
+            const element = allItems[fullIndex] as HTMLElement;
+            if (element.getAttribute('tabindex') === '0') {
+              element.focus();
+            }
+          }
+        }, 0);
+      }
     }
   }
 
@@ -256,7 +265,8 @@ export class InoContextMenuComponent implements AfterViewInit {
     }
 
     const navigableItems = this.getNavigableItems();
-    const currentIndex = navigableItems.findIndex(
+    // focusedIndex is now in full-items space; find it in navigable space
+    const currentNavigableIndex = navigableItems.findIndex(
       (item) => item === this.items[this.focusedIndex]
     );
 
@@ -274,26 +284,32 @@ export class InoContextMenuComponent implements AfterViewInit {
 
       case 'ArrowDown':
         event.preventDefault();
-        const nextIndex = (currentIndex + 1) % navigableItems.length;
-        this.focusItem(nextIndex);
+        if (navigableItems.length > 0) {
+          const nextNavigableIndex = currentNavigableIndex >= 0
+            ? (currentNavigableIndex + 1) % navigableItems.length
+            : 0;
+          this.focusItem(nextNavigableIndex);
+        }
         break;
 
       case 'ArrowUp':
         event.preventDefault();
-        const prevIndex =
-          (currentIndex - 1 + navigableItems.length) % navigableItems.length;
-        this.focusItem(prevIndex);
+        if (navigableItems.length > 0) {
+          const prevNavigableIndex = currentNavigableIndex >= 0
+            ? (currentNavigableIndex - 1 + navigableItems.length) % navigableItems.length
+            : navigableItems.length - 1;
+          this.focusItem(prevNavigableIndex);
+        }
         break;
 
       case 'ArrowRight':
         event.preventDefault();
         // Open submenu if current item has children
-        if (
-          currentIndex >= 0 &&
-          navigableItems[currentIndex].children &&
-          navigableItems[currentIndex].children!.length > 0
-        ) {
-          this.toggleSubmenu(navigableItems[currentIndex]);
+        if (currentNavigableIndex >= 0) {
+          const currentItem = navigableItems[currentNavigableIndex];
+          if (currentItem.children && currentItem.children.length > 0) {
+            this.toggleSubmenu(currentItem);
+          }
         }
         break;
 
@@ -308,19 +324,25 @@ export class InoContextMenuComponent implements AfterViewInit {
 
       case 'Home':
         event.preventDefault();
-        this.focusItem(0);
+        if (navigableItems.length > 0) {
+          this.focusItem(0);
+        }
         break;
 
       case 'End':
         event.preventDefault();
-        this.focusItem(navigableItems.length - 1);
+        if (navigableItems.length > 0) {
+          this.focusItem(navigableItems.length - 1);
+        }
         break;
 
       case 'Enter':
       case ' ':
         event.preventDefault();
-        if (currentIndex >= 0) {
-          this.onItemActivate(event, navigableItems[currentIndex], currentIndex);
+        if (currentNavigableIndex >= 0) {
+          const currentItem = navigableItems[currentNavigableIndex];
+          const fullIndex = this.items.indexOf(currentItem);
+          this.onItemActivate(event, currentItem, fullIndex);
         }
         break;
     }
