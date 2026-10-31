@@ -1,5 +1,43 @@
 // Dependency-free source-contract audit. Run from any directory with Node.
-import assert from 'node:assert/strict';
+import nodeAssert from 'node:assert/strict';
+// INO-809: aggregate-and-report instead of fail-fast. Every assertion below used to throw on the
+// first failure, which meant ONE red component erased the whole report -- including the
+// WCAG-contrast measurements QA cites as automated evidence (doc 26 section 2 item 5). A failing
+// gate printed zero lines of stdout. This proxy records ERR_ASSERTION failures and lets the run
+// continue, so one red no longer blinds the other checks. Non-assertion errors (e.g. a NaN
+// cascade downstream of a swallowed assert.fail) still abort the run, but the exit handler
+// flushes whatever evidence was already collected, so partial evidence beats none.
+const assertFailures = [];
+const assert = new Proxy(nodeAssert, {
+  get(target, prop) {
+    const v = target[prop];
+    if (typeof v !== 'function') return v;
+    return (...args) => {
+      try { return v.apply(target, args); }
+      catch (e) {
+        if (e && e.code === 'ERR_ASSERTION') { assertFailures.push(e); return undefined; }
+        throw e;
+      }
+    };
+  },
+});
+process.on('exit', () => {
+  if (!assertFailures.length) return;
+  // Group by message: one missing token read from 11 declarations is ONE defect, not 11.
+  const byMessage = new Map();
+  for (const e of assertFailures) {
+    const k = e.message.split('\n')[0];
+    byMessage.set(k, (byMessage.get(k) ?? 0) + 1);
+  }
+  console.error(`\nFAIL: ${assertFailures.length} assertion(s) failed, ${byMessage.size} distinct defect(s):\n`);
+  let n = 0;
+  for (const [msg, count] of byMessage) {
+    console.error(`  ${++n}. ${msg}${count > 1 ? `  [x${count}]` : ''}`);
+  }
+  console.error('\nThese are independent -- fixing the first does not imply the rest pass.');
+  console.error('Contrast measurements on stdout are still valid: they are computed before this report.');
+  process.exitCode = 1;
+});
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 const root = new URL('../', import.meta.url);
@@ -1556,5 +1594,5 @@ for (const entry of COMPONENT_REGISTRY) {
   }
 }
 
-console.log(`PASS: CSS mirrors; Capacitor import; ${colorChecks} color roles across 3 themes × 2 mobile ports; space/radius/targets/durations; Devanagari font pairing + line-height parity; focus-ring shape; invalid-ring shape, never-flatten rule and SC 1.4.11 budget in 3 themes; pressed-accent contrast in 3 themes; control-size scale across 3 densities + ${controlChecks} mobile port values; form-label tokens across 3 themes × 2 densities + RN/Flutter label type-scale parity; elevation scale (6 neutral + 3 brand + 2 inset) across 3 themes; data-viz layer (6 categorical + 8 sequential + 7 diverging, ${vizChecks} checks) across 3 themes; leading/tracking rhythm scale + composite type aliases across 3 densities; component registry (${COMPONENT_REGISTRY.length} components, ${componentChecks} platform checks); reverse coverage against ${webComponentDirs.length} web component directories (${exemptChecks} EXEMPT, see INO-652); ${tokenRefChecks} var(--ino-*) references resolve to a defined property (INO-723).`);
+if (!assertFailures.length) console.log(`PASS: CSS mirrors; Capacitor import; ${colorChecks} color roles across 3 themes × 2 mobile ports; space/radius/targets/durations; Devanagari font pairing + line-height parity; focus-ring shape; invalid-ring shape, never-flatten rule and SC 1.4.11 budget in 3 themes; pressed-accent contrast in 3 themes; control-size scale across 3 densities + ${controlChecks} mobile port values; form-label tokens across 3 themes × 2 densities + RN/Flutter label type-scale parity; elevation scale (6 neutral + 3 brand + 2 inset) across 3 themes; data-viz layer (6 categorical + 8 sequential + 7 diverging, ${vizChecks} checks) across 3 themes; leading/tracking rhythm scale + composite type aliases across 3 densities; component registry (${COMPONENT_REGISTRY.length} components, ${componentChecks} platform checks); reverse coverage against ${webComponentDirs.length} web component directories (${exemptChecks} EXEMPT, see INO-652); ${tokenRefChecks} var(--ino-*) references resolve to a defined property (INO-723).`);
 console.log('High-contrast token pairs (AAA text >=7; non-text borders >=3; excludes disabled/decorative subtle role);\nplus per-theme pressed-accent pairs (INO-123):\n'+measurements.join('\n'));
