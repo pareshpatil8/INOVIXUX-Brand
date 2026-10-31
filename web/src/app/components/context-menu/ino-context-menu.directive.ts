@@ -149,10 +149,9 @@ export class InoContextMenuDirective implements OnDestroy {
       this.clickOutsideListener = null;
     }
 
-    if (this.menuComponentRef) {
-      this.menuComponentRef.instance.hide();
-      this.menuComponentRef.destroy();
-      this.menuComponentRef = null;
-    }
+    // Capture and null the ref BEFORE teardown to prevent reentrancy (INO-816)
+    const ref = this.menuComponentRef;
+    this.menuComponentRef = null;
+    ref?.destroy();
   }
 }
