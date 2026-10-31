@@ -92,6 +92,39 @@ is the checklist QA signs against; it maps one-to-one to the board's six dimensi
 8. **QA sign-off** — a QA validation comment (checklist + evidence) on the component's issue,
    authored by the QA owner, before the component's docs page ships to Pages.
 
+### 2.1 Gate ticket shape — how the point-8 subtask is created, assigned and closed
+
+*Added 2026-10-31 (INO-811), after a point-8 gate was created, self-assigned and closed `done`
+by the builder of the component it gates (INO-777 / INO-427), passing end-to-end with no error
+and nothing for a reviewer to notice. Audit of all 62 §2 gates in the INO-31 tree found that to
+be the only invalid sign-off, and 7 duplicate gates. These four rules close the shape that let
+it happen.*
+
+1. **The point-8 subtask carries QALead as `assigneeAgentId` in the creating call** — never
+   unassigned, never the builder. Unassigned is not a neutral state: Paperclip's "Assigned
+   Orphan Blocker" recovery hands an assignee-less blocker to **the agent that created it**, so
+   a builder creating its own unassigned QA subtask is self-assigned automatically, by platform
+   behaviour, with no decision taken by anyone.
+2. **A §2 gate may not be closed by the agent that built the component it gates**, and a
+   sign-off on it is authored only by QALead (doc 27 §1, INO-295). A builder that finds itself
+   the assignee of a §2 gate reassigns it to QALead and stops; it does not proceed, and it does
+   not close the gate having done the checks itself.
+3. **Items 1–5 are claims about the shipped page and need an observed result against it.** They
+   are not satisfiable from source, spec or docs review — `not_run` is an honest answer, "reads
+   correct in the source" is not. INO-777 ticked all eight points from source review alone, and
+   so certified a docs-page Live example that cannot open at all (INO-810: no `CUSTOM_DEMOS`
+   entry, so the generic renderer never binds the directive to a trigger). QALead found that in
+   one pass against the running page. The instrument failed, not the diligence.
+4. **Builders do not create §2 gate subtasks.** Every component ticket in §5 is cut with its own
+   point-8 subtask; a second one is a duplicate gate, and duplicate gates split the evidence
+   trail — INO-427 accumulated three for one gate. If the existing gate looks wrong or stale,
+   comment on it; do not open a parallel one.
+
+**Why this is in the contract and not only in doc 27:** a gate whose ticket has the wrong shape
+presents as a passed gate. Anyone asking "has component X cleared QA?" sees a `done` subtask
+titled *QA validation* with eight ticks, and the answer looks like yes. The failure is silent by
+construction, which is exactly the class of defect the §2 contract exists to prevent.
+
 ---
 
 ## 3. Approaches considered (brainstorming step 4)
