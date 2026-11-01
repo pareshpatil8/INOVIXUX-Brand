@@ -7,7 +7,16 @@ import nodeAssert from 'node:assert/strict';
 // continue, so one red no longer blinds the other checks. Non-assertion errors (e.g. a NaN
 // cascade downstream of a swallowed assert.fail) still abort the run, but the exit handler
 // flushes whatever evidence was already collected, so partial evidence beats none.
+//
+// INO-809 follow-up: "the exit handler flushes the evidence" was only true of the FAIL report.
+// The contrast block was still printed by the last statement in this file, so a non-assertion
+// abort anywhere above it (measured: a TypeError at the EXEMPT reverse-coverage check) printed
+// the report and zero contrast lines -- while the report asserted the measurements were on
+// stdout. Same erasure INO-809 was filed about, one layer down. The contrast block is now
+// emitted BY the exit handler from a reference registered at the array's declaration, so it
+// survives any abort after that point, and it is labelled partial when the run did not finish.
 const assertFailures = [];
+const evidence = { measurements: null, complete: false };
 const assert = new Proxy(nodeAssert, {
   get(target, prop) {
     const v = target[prop];
@@ -22,6 +31,23 @@ const assert = new Proxy(nodeAssert, {
   },
 });
 process.on('exit', () => {
+  // Contrast evidence first, and unconditionally: this is the artifact QA cites, so it must not
+  // be contingent on the run reaching the bottom of the file.
+  if (evidence.measurements?.length) {
+    console.log(
+      'High-contrast token pairs (AAA text >=7; non-text borders >=3; excludes disabled/decorative subtle role);\n'
+      + 'plus per-theme pressed-accent pairs (INO-123):\n'
+      + evidence.measurements.join('\n')
+    );
+    if (!evidence.complete) {
+      console.log(`\n[PARTIAL] the run aborted before completing; ${evidence.measurements.length} contrast pair(s) were computed before that point. Absence of a pair here is NOT a pass.`);
+    }
+  }
+  // An abort with zero recorded assertion failures used to print nothing but a stack trace, so a
+  // reader could not tell a crashed gate from one that had not been asked to report. Say it.
+  if (!evidence.complete) {
+    console.error('\nINCOMPLETE: the gate aborted before finishing — the checks after the abort point never ran. This is NOT a pass, and the absence of a defect from any report below is not evidence.');
+  }
   if (!assertFailures.length) return;
   // Group by message: one missing token read from 11 declarations is ONE defect, not 11.
   const byMessage = new Map();
@@ -35,7 +61,11 @@ process.on('exit', () => {
     console.error(`  ${++n}. ${msg}${count > 1 ? `  [x${count}]` : ''}`);
   }
   console.error('\nThese are independent -- fixing the first does not imply the rest pass.');
-  console.error('Contrast measurements on stdout are still valid: they are computed before this report.');
+  // Say what is actually on stdout. The previous wording claimed the measurements were there
+  // whether or not they had been computed, which is the one thing a QA reader must not be told.
+  console.error(evidence.measurements?.length
+    ? `Contrast measurements on stdout: ${evidence.measurements.length} pair(s)${evidence.complete ? '' : ' (PARTIAL -- run aborted)'}.`
+    : 'No contrast measurements on stdout: the run aborted before any were computed.');
   process.exitCode = 1;
 });
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
@@ -153,6 +183,9 @@ function luminance(c) {
 function contrast(a,b) { const x=luminance(a), y=luminance(b); return (Math.max(x,y)+.05)/(Math.min(x,y)+.05); }
 const hc = resolved['high-contrast'];
 const measurements = [];
+// Hand the exit handler the array itself (not a copy) so every pair pushed below is visible to
+// it even if the run never reaches the bottom of this file. See the INO-809 follow-up note above.
+evidence.measurements = measurements;
 function pair(fg,bg,min,palette = hc,label = '') {
   const a = palette[fg], b = palette[bg];
   assert.ok(a && b, `${label}${fg}/${bg}: role missing from palette`);
@@ -1497,6 +1530,12 @@ for (const dir of webComponentDirs) {
   if (registryNames.has(n)) continue;
   assert.ok(Object.prototype.hasOwnProperty.call(EXEMPT, dir),
     `${dir}: ships a mobile port (React Native and/or Flutter) with no COMPONENT_REGISTRY entry and no EXEMPT reason — add a registry entry, or EXEMPT['${dir}'] with a written reason, naming why.`);
+  // The next assert DEREFERENCES what the one above only guarantees exists. Under fail-fast that
+  // was safe (the guard threw); under INO-809 aggregation the guard records and falls through, so
+  // an unexempted component reached `undefined.trim()` -- a TypeError that aborted the whole run
+  // and erased every later check plus all 138 contrast pairs. A recorded guard failure must skip
+  // its dependent checks, not feed them invalid state.
+  if (!Object.prototype.hasOwnProperty.call(EXEMPT, dir)) continue;
   assert.ok(EXEMPT[dir].trim(), `EXEMPT['${dir}']: reason must not be blank`);
   exemptChecks++;
 }
@@ -1545,7 +1584,14 @@ for (const dir of webComponentDirs) {
 
 let componentChecks = 0;
 for (const entry of COMPONENT_REGISTRY) {
-  assert.ok(existsSync(new URL(entry.web, root)), `${entry.name}: web path ${entry.web} does not exist`);
+  // Second instance of the guard-then-dereference pattern (see the EXEMPT loop): webColorRoles()
+  // readdirSync's this path, so a recorded "does not exist" used to fall straight through to an
+  // ENOENT that aborted the gate. Reachable from any tree whose component set is behind the
+  // registry -- measured on origin/main, where it produced a stack trace and zero evidence.
+  if (!existsSync(new URL(entry.web, root))) {
+    assert.ok(false, `${entry.name}: web path ${entry.web} does not exist`);
+    continue;
+  }
   const webRoles = webColorRoles(entry.web);
 
   const bothWebOnly = entry.mobile.reactNative === 'web-only' && entry.mobile.flutter === 'web-only';
@@ -1564,8 +1610,17 @@ for (const entry of COMPONENT_REGISTRY) {
       componentChecks++;
       continue;
     }
-    assert.ok(decl?.path, `${entry.name}/${platform}: registry entry must set either "web-only" or { path, roles }`);
-    assert.ok(existsSync(new URL(decl.path, root)), `${entry.name}/${platform}: ${decl.path} does not exist`);
+    // Same pattern again: read(decl.path) below dereferences what these two only guarantee. A
+    // missing or misspelled registry path must be reported as one defect, not become an ENOENT
+    // that erases every later component and the contrast block.
+    if (!decl?.path) {
+      assert.ok(false, `${entry.name}/${platform}: registry entry must set either "web-only" or { path, roles }`);
+      continue;
+    }
+    if (!existsSync(new URL(decl.path, root))) {
+      assert.ok(false, `${entry.name}/${platform}: ${decl.path} does not exist`);
+      continue;
+    }
     const declaredRoles = new Set(decl.roles ?? []);
     const portSource = read(decl.path);
     for (const role of declaredRoles) {
@@ -1595,4 +1650,7 @@ for (const entry of COMPONENT_REGISTRY) {
 }
 
 if (!assertFailures.length) console.log(`PASS: CSS mirrors; Capacitor import; ${colorChecks} color roles across 3 themes × 2 mobile ports; space/radius/targets/durations; Devanagari font pairing + line-height parity; focus-ring shape; invalid-ring shape, never-flatten rule and SC 1.4.11 budget in 3 themes; pressed-accent contrast in 3 themes; control-size scale across 3 densities + ${controlChecks} mobile port values; form-label tokens across 3 themes × 2 densities + RN/Flutter label type-scale parity; elevation scale (6 neutral + 3 brand + 2 inset) across 3 themes; data-viz layer (6 categorical + 8 sequential + 7 diverging, ${vizChecks} checks) across 3 themes; leading/tracking rhythm scale + composite type aliases across 3 densities; component registry (${COMPONENT_REGISTRY.length} components, ${componentChecks} platform checks); reverse coverage against ${webComponentDirs.length} web component directories (${exemptChecks} EXEMPT, see INO-652); ${tokenRefChecks} var(--ino-*) references resolve to a defined property (INO-723).`);
-console.log('High-contrast token pairs (AAA text >=7; non-text borders >=3; excludes disabled/decorative subtle role);\nplus per-theme pressed-accent pairs (INO-123):\n'+measurements.join('\n'));
+// The contrast block is printed by the exit handler, not here -- reaching this line is exactly
+// the condition that could not be relied on. All this does is record that the run DID finish,
+// so the handler can label the evidence complete rather than partial.
+evidence.complete = true;
