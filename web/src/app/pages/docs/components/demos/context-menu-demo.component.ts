@@ -28,20 +28,20 @@ import { InoContextMenuItem } from '../../../../components/context-menu/ino-cont
 })
 export class ContextMenuDemoComponent {
   protected readonly menuItems: InoContextMenuItem[] = [
-    { label: 'Open', icon: 'pi pi-folder-open' },
-    { label: 'Save', icon: 'pi pi-save' },
+    { label: 'Open', icon: '📂' },
+    { label: 'Save', icon: '💾' },
     { separator: true },
-    { label: 'Copy (locked)', icon: 'pi pi-copy', disabled: true },
-    { label: 'Paste', icon: 'pi pi-clipboard' },
+    { label: 'Copy (locked)', icon: '📋', disabled: true },
+    { label: 'Paste', icon: '📄' },
     { separator: true },
     {
       label: 'More actions',
-      icon: 'pi pi-ellipsis-h',
+      icon: '⋯',
       children: [
-        { label: 'Rename', icon: 'pi pi-pencil' },
-        { label: 'Delete', icon: 'pi pi-trash' },
+        { label: 'Rename', icon: '✏' },
+        { label: 'Delete', icon: '🗑' },
         { separator: true },
-        { label: 'Properties', icon: 'pi pi-cog' },
+        { label: 'Properties', icon: '⚙' },
       ],
     },
   ];
