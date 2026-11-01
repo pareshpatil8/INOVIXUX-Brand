@@ -637,6 +637,24 @@ function webColorRoles(dir) {
 
 const COMPONENT_REGISTRY = [
   {
+    name: 'accordion',
+    web: 'web/src/app/components/accordion',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoAccordion.tsx',
+        roles: ['border', 'surfaceRaised'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_accordion.dart',
+        roles: ['border', 'borderSoft', 'onSurface', 'onSurfaceMuted', 'surface', 'surfaceRaised'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['accent', 'accentActive', 'borderSoft', 'onSurface', 'onSurfaceMuted', 'surface', 'surfaceSunken'], reason: "web reads accent/accent-active for the tab header's hover/pressed text color, surface-sunken for its hover/pressed background fill, border-soft for the inter-tab divider, on-surface/on-surface-muted for tab text, and surface for the expanded panel background (ino-accordion-tab.component.scss). RN port (InoAccordion.tsx + InoAccordionTab.tsx) only reads border and surface-raised from the theme; the tab component has hardcoded StyleSheet values instead of theme reads for all other roles. Hover/active states (accent/accent-active/surface-sunken) are pointer/keyboard concepts this port does not reach. The remaining roles (border-soft, on-surface, on-surface-muted, surface) are hardcoded and need to be migrated to theme reads in a follow-up — see InoAccordionTab.tsx:95-135 StyleSheet comments for the intended mappings." },
+      { platform: 'flutter', roles: ['accent', 'accentActive', 'surfaceSunken'], reason: 'web reads accent/accent-active for the tab header hover/pressed text color and surface-sunken for its hover/pressed background fill. Hover and :active are pointer/keyboard concepts this port does not reach — a touch press has no separate hover phase. The port reads border-soft for the inter-tab divider, on-surface/on-surface-muted for tab text, surface for the expanded panel, and surface-raised for the collapsed tab header (ino_accordion.dart).' },
+    ],
+  },
+  {
     name: 'autocomplete',
     web: 'web/src/app/components/autocomplete',
     mobile: {
