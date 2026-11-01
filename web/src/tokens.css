@@ -308,6 +308,8 @@
   --ino-elevation-neutral-5: 0 60px 120px -32px rgba(0, 0, 0, 0.72); /* modal/sheet/popover — == --ino-elevation-2 */
   --ino-elevation-neutral-6: 0 80px 160px -24px rgba(0, 0, 0, 0.8);  /* max depth — full-screen drawer, command palette */
 
+  --ino-shadow-lg: var(--ino-elevation-neutral-3); /* overlay/dropdown shadow alias consumed by ino-context-menu and ino-menu (INO-818) */
+
   --ino-elevation-brand-1: 0 8px 24px -8px color-mix(in srgb, var(--ino-color-accent) 25%, transparent);   /* hovered primary CTA */
   --ino-elevation-brand-2: 0 24px 56px -20px color-mix(in srgb, var(--ino-color-accent) 35%, transparent); /* selected/active tier card */
   --ino-elevation-brand-3: 0 48px 96px -32px color-mix(in srgb, var(--ino-color-accent) 45%, transparent); /* spotlighted hero surface */
@@ -652,6 +654,17 @@
   --ino-control-gap-sm: var(--ino-space-2);
   --ino-control-gap-default: var(--ino-space-2); /* same 8px as -sm on purpose: --ino-space-1 (4px) is a within-component step, and 6px would be a new primitive for a 2px win */
   --ino-control-gap-lg: var(--ino-space-3);
+
+  /* COMPACT CONTROL SCALE — fixed values for space-efficient overlays (context menu, menu).
+     These are not density-composited: spec §9 says compact controls never appear inside a
+     density container, so no re-declaration inside [data-density="dense/fluid"] is needed.
+     INO-818: tokens were consumed by ino-context-menu.component.scss and ino-menu.component.scss
+     but were undefined in tokens.css, collapsing all computed values to empty/invalid. */
+  --ino-control-height-compact: 32px;                           /* dense-default row height — overlay-appropriate */
+  --ino-control-font-size-compact: var(--ino-type-body-sm-size); /* 12.5px */
+  --ino-control-icon-size-compact: 16px;                        /* floor icon size, same as sm/dense */
+  --ino-control-gap-compact: var(--ino-space-2);                /* 8px */
+  --ino-control-padding-inline-compact: var(--ino-space-3);     /* 12px */
 
   /* CONSUMPTION ALIASES — what component CSS actually reads, resolved to
      size="default". A size class re-points them on the host element:
