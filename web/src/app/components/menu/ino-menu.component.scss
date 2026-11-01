@@ -130,7 +130,7 @@
 }
 
 .ino-menu__popup-panel {
-  z-index: var(--ino-z-overlay, 1000);
+  z-index: var(--ino-z-overlay);
 }
 
 // Stacked one level above the panel it opens from, same convention ino-context-menu's own
@@ -138,5 +138,5 @@
 // depth-aware counter, since a submenu never renders behind its own trigger's panel regardless of
 // nesting depth.
 .ino-menu__submenu {
-  z-index: calc(var(--ino-z-overlay, 1000) + 1);
+  z-index: calc(var(--ino-z-overlay) + 1);
 }

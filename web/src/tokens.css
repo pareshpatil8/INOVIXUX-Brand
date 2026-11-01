@@ -217,6 +217,7 @@
 
   --ino-color-border: var(--ino-primitive-line);
   --ino-color-border-soft: var(--ino-primitive-line-soft);
+  --ino-color-border-strong: var(--ino-color-on-surface-muted); /* stronger border for context menus / high-separation overlays, consumed by ino-context-menu (INO-814) */
 
   --ino-color-accent: var(--ino-primitive-violet-500);    /* swap token */
   --ino-color-accent-secondary: var(--ino-primitive-indigo-500);
@@ -758,6 +759,16 @@
   --ino-invalid-ring: 0 0 0 2px var(--ino-color-danger); /* light mode inherits this unchanged: the
                                                             weight is right on both surfaces and the
                                                             colour re-themes through the role */
+
+  /* ---------------------------------------------------------------------
+   * 12b. Z-INDEX SCALE — overlay stacking (INO-814). One value for now:
+   *      overlays (menu, context-menu, popover) above page content but
+   *      below toasts/modals/drawers. Components must use this shared
+   *      value instead of hardcoding 1000/1100 literals to prevent
+   *      stacking conflicts (a menu was rendering BELOW a popover because
+   *      the fallback diverged from popover's hardcoded literal).
+   * ------------------------------------------------------------------- */
+  --ino-z-overlay: 1100; /* menu, context-menu, popover — all three must agree */
 }
 
 /* ---------------------------------------------------------------------

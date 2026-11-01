@@ -8,7 +8,7 @@
 
 .ino-context-menu__overlay {
   position: fixed;
-  z-index: var(--ino-z-overlay, 1000);
+  z-index: var(--ino-z-overlay);
   min-width: 12rem;
   max-width: 20rem;
 
@@ -104,7 +104,7 @@
 // Submenu (rendered as sibling, positioned absolutely)
 .ino-context-menu__submenu {
   position: fixed;
-  z-index: calc(var(--ino-z-overlay, 1000) + 1);
+  z-index: calc(var(--ino-z-overlay) + 1);
 
   min-width: 12rem;
   max-width: 20rem;
