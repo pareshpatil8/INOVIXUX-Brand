@@ -51,8 +51,14 @@ export class InoContextMenuComponent implements AfterViewInit {
   /** Index of the currently focused item (roving tabindex) */
   private focusedIndex = -1;
 
+  /** Index of the currently focused submenu item (roving tabindex) */
+  private focusedSubmenuIndex = -1;
+
   /** Currently open submenu item (for nested menus) */
   openSubmenu: InoContextMenuItem | null = null;
+
+  /** Position for the submenu */
+  submenuPosition: { top: string; left: string } = { top: '0px', left: '0px' };
 
   /** Submenu hover delay timers */
   private submenuOpenTimer: any;
@@ -211,21 +217,95 @@ export class InoContextMenuComponent implements AfterViewInit {
   toggleSubmenu(item: InoContextMenuItem) {
     if (this.openSubmenu === item) {
       this.openSubmenu = null;
+      this.focusedSubmenuIndex = -1;
     } else {
       this.openSubmenu = item;
+      this.focusedSubmenuIndex = -1;
+      const itemIndex = this.items.indexOf(item);
+      this.calculateSubmenuPosition(itemIndex);
     }
     this.cdr.markForCheck();
   }
 
   /**
+   * Focus submenu item at the given index (translates to navigable submenu items).
+   */
+  private focusSubmenuItem(navigableIndex: number) {
+    if (!this.openSubmenu || !this.openSubmenu.children) {
+      return;
+    }
+
+    const navigableSubmenuItems = this.openSubmenu.children.filter(
+      (child) => !child.separator && !child.disabled
+    );
+
+    if (navigableIndex >= 0 && navigableIndex < navigableSubmenuItems.length) {
+      // Translate navigable index to full submenu items index
+      const targetItem = navigableSubmenuItems[navigableIndex];
+      const fullIndex = this.openSubmenu.children.indexOf(targetItem);
+
+      if (fullIndex >= 0) {
+        this.focusedSubmenuIndex = fullIndex;
+        this.cdr.markForCheck();
+
+        // Actually focus the DOM element
+        setTimeout(() => {
+          const submenuItems = this.elementRef.nativeElement.querySelectorAll(
+            '.ino-context-menu__submenu .ino-context-menu__item, .ino-context-menu__submenu .ino-context-menu__separator'
+          );
+          if (submenuItems[fullIndex]) {
+            const element = submenuItems[fullIndex] as HTMLElement;
+            if (element.getAttribute('tabindex') === '0') {
+              element.focus();
+            }
+          }
+        }, 0);
+      }
+    }
+  }
+
+  /**
+   * Check if currently in a submenu (based on active element).
+   */
+  private isInSubmenu(): boolean {
+    const activeElement = document.activeElement;
+    return !!(
+      activeElement &&
+      this.elementRef.nativeElement
+        .querySelector('.ino-context-menu__submenu')
+        ?.contains(activeElement)
+    );
+  }
+
+  /**
    * Handle submenu hover (open after delay).
    */
-  onSubmenuMouseEnter(item: InoContextMenuItem) {
+  onSubmenuMouseEnter(item: InoContextMenuItem, itemIndex: number) {
     this.clearSubmenuTimers();
     this.submenuOpenTimer = setTimeout(() => {
       this.openSubmenu = item;
+      this.focusedSubmenuIndex = -1; // Reset submenu focus when opening
+      this.calculateSubmenuPosition(itemIndex);
       this.cdr.markForCheck();
     }, 200);
+  }
+
+  /**
+   * Calculate submenu position relative to parent item.
+   */
+  private calculateSubmenuPosition(parentIndex: number) {
+    const parentElement = this.elementRef.nativeElement.querySelector(
+      `#ino-menu-item-${parentIndex}`
+    ) as HTMLElement;
+
+    if (parentElement) {
+      const parentRect = parentElement.getBoundingClientRect();
+      // Position submenu to the right of parent, aligned to top
+      this.submenuPosition = {
+        top: `${parentRect.top - (this.menuRoot?.nativeElement.getBoundingClientRect().top || 0)}px`,
+        left: `${parentRect.width}px`,
+      };
+    }
   }
 
   /**
@@ -284,7 +364,20 @@ export class InoContextMenuComponent implements AfterViewInit {
 
       case 'ArrowDown':
         event.preventDefault();
-        if (navigableItems.length > 0) {
+        if (this.isInSubmenu() && this.openSubmenu?.children) {
+          // Navigate within submenu
+          const navigableSubmenuItems = this.openSubmenu.children.filter(
+            (child) => !child.separator && !child.disabled
+          );
+          const currentSubmenuNavigableIndex = navigableSubmenuItems.findIndex(
+            (item) => item === this.openSubmenu!.children![this.focusedSubmenuIndex]
+          );
+          const nextNavigableIndex = currentSubmenuNavigableIndex >= 0
+            ? (currentSubmenuNavigableIndex + 1) % navigableSubmenuItems.length
+            : 0;
+          this.focusSubmenuItem(nextNavigableIndex);
+        } else if (navigableItems.length > 0) {
+          // Navigate within main menu
           const nextNavigableIndex = currentNavigableIndex >= 0
             ? (currentNavigableIndex + 1) % navigableItems.length
             : 0;
@@ -294,7 +387,20 @@ export class InoContextMenuComponent implements AfterViewInit {
 
       case 'ArrowUp':
         event.preventDefault();
-        if (navigableItems.length > 0) {
+        if (this.isInSubmenu() && this.openSubmenu?.children) {
+          // Navigate within submenu
+          const navigableSubmenuItems = this.openSubmenu.children.filter(
+            (child) => !child.separator && !child.disabled
+          );
+          const currentSubmenuNavigableIndex = navigableSubmenuItems.findIndex(
+            (item) => item === this.openSubmenu!.children![this.focusedSubmenuIndex]
+          );
+          const prevNavigableIndex = currentSubmenuNavigableIndex >= 0
+            ? (currentSubmenuNavigableIndex - 1 + navigableSubmenuItems.length) % navigableSubmenuItems.length
+            : navigableSubmenuItems.length - 1;
+          this.focusSubmenuItem(prevNavigableIndex);
+        } else if (navigableItems.length > 0) {
+          // Navigate within main menu
           const prevNavigableIndex = currentNavigableIndex >= 0
             ? (currentNavigableIndex - 1 + navigableItems.length) % navigableItems.length
             : navigableItems.length - 1;
@@ -304,21 +410,42 @@ export class InoContextMenuComponent implements AfterViewInit {
 
       case 'ArrowRight':
         event.preventDefault();
-        // Open submenu if current item has children
+        // Open submenu if current item has children and focus first submenu item
         if (currentNavigableIndex >= 0) {
           const currentItem = navigableItems[currentNavigableIndex];
           if (currentItem.children && currentItem.children.length > 0) {
-            this.toggleSubmenu(currentItem);
+            if (this.openSubmenu !== currentItem) {
+              const itemIndex = this.items.indexOf(currentItem);
+              this.openSubmenu = currentItem;
+              this.calculateSubmenuPosition(itemIndex);
+              this.cdr.markForCheck();
+            }
+            // Focus first submenu item
+            this.focusSubmenuItem(0);
           }
         }
         break;
 
       case 'ArrowLeft':
         event.preventDefault();
-        // Close submenu if open
+        // Close submenu if open and return focus to parent item
         if (this.openSubmenu) {
           this.openSubmenu = null;
+          this.focusedSubmenuIndex = -1;
           this.cdr.markForCheck();
+          // Return focus to the parent item
+          setTimeout(() => {
+            const allItems =
+              this.elementRef.nativeElement.querySelectorAll(
+                '.ino-context-menu__overlay > .ino-context-menu__item, .ino-context-menu__overlay > .ino-context-menu__separator'
+              );
+            if (allItems[this.focusedIndex]) {
+              const element = allItems[this.focusedIndex] as HTMLElement;
+              if (element.getAttribute('tabindex') === '0') {
+                element.focus();
+              }
+            }
+          }, 0);
         }
         break;
 
@@ -339,7 +466,20 @@ export class InoContextMenuComponent implements AfterViewInit {
       case 'Enter':
       case ' ':
         event.preventDefault();
-        if (currentNavigableIndex >= 0) {
+        if (this.isInSubmenu() && this.openSubmenu?.children) {
+          // Activate submenu item
+          const navigableSubmenuItems = this.openSubmenu.children.filter(
+            (child) => !child.separator && !child.disabled
+          );
+          const currentSubmenuNavigableIndex = navigableSubmenuItems.findIndex(
+            (item) => item === this.openSubmenu!.children![this.focusedSubmenuIndex]
+          );
+          if (currentSubmenuNavigableIndex >= 0) {
+            const currentItem = navigableSubmenuItems[currentSubmenuNavigableIndex];
+            this.onItemActivate(event, currentItem, this.focusedSubmenuIndex);
+          }
+        } else if (currentNavigableIndex >= 0) {
+          // Activate main menu item
           const currentItem = navigableItems[currentNavigableIndex];
           const fullIndex = this.items.indexOf(currentItem);
           this.onItemActivate(event, currentItem, fullIndex);
@@ -353,6 +493,13 @@ export class InoContextMenuComponent implements AfterViewInit {
    */
   isItemFocused(item: InoContextMenuItem, index: number): boolean {
     return this.focusedIndex === index;
+  }
+
+  /**
+   * Check if submenu item is currently focused (for roving tabindex in submenu).
+   */
+  isSubmenuItemFocused(child: InoContextMenuItem, index: number): boolean {
+    return this.focusedSubmenuIndex === index;
   }
 
   /**

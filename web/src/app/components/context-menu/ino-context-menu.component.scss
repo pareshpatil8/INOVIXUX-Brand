@@ -13,9 +13,10 @@
   max-width: 20rem;
 
   background: var(--ino-color-surface);
-  border: 1px solid var(--ino-color-border);
+  // Stronger border for WCAG 1.4.11 contrast when shadow is unavailable
+  border: 1px solid var(--ino-color-border-strong, var(--ino-color-on-surface-muted));
   border-radius: var(--ino-radius-md);
-  box-shadow: var(--ino-shadow-lg);
+  box-shadow: var(--ino-shadow-lg, 0 4px 12px rgba(0, 0, 0, 0.15));
 
   padding-block: var(--ino-control-gap-compact);
 
@@ -100,20 +101,19 @@
   background: var(--ino-color-border);
 }
 
-// Nested submenu
+// Submenu (rendered as sibling, positioned absolutely)
 .ino-context-menu__submenu {
-  position: absolute;
-  top: 0;
-  inset-inline-start: 100%; // Anchors to right edge of parent (flips in RTL)
+  position: fixed;
   z-index: calc(var(--ino-z-overlay, 1000) + 1);
 
   min-width: 12rem;
   max-width: 20rem;
 
   background: var(--ino-color-surface);
-  border: 1px solid var(--ino-color-border);
+  // Stronger border for WCAG 1.4.11 contrast when shadow is unavailable
+  border: 1px solid var(--ino-color-border-strong, var(--ino-color-on-surface-muted));
   border-radius: var(--ino-radius-md);
-  box-shadow: var(--ino-shadow-lg);
+  box-shadow: var(--ino-shadow-lg, 0 4px 12px rgba(0, 0, 0, 0.15));
 
   padding-block: var(--ino-control-gap-compact);
 

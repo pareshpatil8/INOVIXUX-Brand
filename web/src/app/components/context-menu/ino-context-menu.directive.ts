@@ -4,6 +4,7 @@ import {
   HostListener,
   ElementRef,
   OnDestroy,
+  OnInit,
   ViewContainerRef,
   ComponentRef,
   TemplateRef,
@@ -24,7 +25,7 @@ import { InoContextMenuItem, InoContextMenuContext } from './ino-context-menu.ty
   selector: '[inoContextMenu]',
   standalone: true,
 })
-export class InoContextMenuDirective implements OnDestroy {
+export class InoContextMenuDirective implements OnInit, OnDestroy {
   /**
    * Menu items or template to display.
    * Can be:
@@ -49,6 +50,15 @@ export class InoContextMenuDirective implements OnDestroy {
     private elementRef: ElementRef<HTMLElement>,
     private viewContainerRef: ViewContainerRef
   ) {}
+
+  ngOnInit() {
+    // Make host element programmatically focusable if not already
+    // This ensures focus can return to the trigger element after menu closes
+    const hostElement = this.elementRef.nativeElement;
+    if (!hostElement.hasAttribute('tabindex')) {
+      hostElement.setAttribute('tabindex', '-1');
+    }
+  }
 
   ngOnDestroy() {
     this.destroyMenu();
