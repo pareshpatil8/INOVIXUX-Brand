@@ -14,8 +14,8 @@ import { InoButtonComponent } from '../../../../components/button/ino-button.com
   imports: [CommonModule, InoToolbarComponent, InoButtonComponent],
   template: `
     <div class="demo-section">
-      <h3 class="demo-heading">Basic Layout (Comfortable)</h3>
-      <ino-toolbar ariaLabel="Main toolbar" density="comfortable">
+      <h3 class="demo-heading">Basic Layout</h3>
+      <ino-toolbar ariaLabel="Main toolbar">
         <div slot="start">
           <button ino-button variant="secondary" size="default">Menu</button>
           <button ino-button variant="ghost" size="default">New</button>
@@ -31,24 +31,26 @@ import { InoButtonComponent } from '../../../../components/button/ino-button.com
     </div>
 
     <div class="demo-section">
-      <h3 class="demo-heading">Dense Mode</h3>
-      <ino-toolbar ariaLabel="Dense toolbar" density="dense">
-        <div slot="start">
-          <button ino-button variant="secondary" size="sm">Back</button>
-        </div>
-        <div slot="center">
-          <h3 class="toolbar-title">Document Editor</h3>
-        </div>
-        <div slot="end">
-          <button ino-button variant="ghost" size="sm">Share</button>
-          <button ino-button variant="primary" size="sm">Publish</button>
-        </div>
-      </ino-toolbar>
+      <h3 class="demo-heading">Dense Mode (via data-density)</h3>
+      <div data-density="dense">
+        <ino-toolbar ariaLabel="Dense toolbar">
+          <div slot="start">
+            <button ino-button variant="secondary" size="sm">Back</button>
+          </div>
+          <div slot="center">
+            <h3 class="toolbar-title">Document Editor</h3>
+          </div>
+          <div slot="end">
+            <button ino-button variant="ghost" size="sm">Share</button>
+            <button ino-button variant="primary" size="sm">Publish</button>
+          </div>
+        </ino-toolbar>
+      </div>
     </div>
 
     <div class="demo-section">
       <h3 class="demo-heading">Start Slot Only</h3>
-      <ino-toolbar ariaLabel="Navigation toolbar" density="comfortable">
+      <ino-toolbar ariaLabel="Navigation toolbar">
         <div slot="start">
           <button ino-button variant="ghost" size="default">Dashboard</button>
           <button ino-button variant="ghost" size="default">Reports</button>
@@ -59,7 +61,7 @@ import { InoButtonComponent } from '../../../../components/button/ino-button.com
 
     <div class="demo-section">
       <h3 class="demo-heading">End Slot Only</h3>
-      <ino-toolbar ariaLabel="Actions toolbar" density="comfortable">
+      <ino-toolbar ariaLabel="Actions toolbar">
         <div slot="end">
           <button ino-button variant="ghost" size="default">Help</button>
           <button ino-button variant="secondary" size="default">Log Out</button>
@@ -69,7 +71,7 @@ import { InoButtonComponent } from '../../../../components/button/ino-button.com
 
     <div class="demo-section">
       <h3 class="demo-heading">All Three Slots</h3>
-      <ino-toolbar ariaLabel="Full toolbar" density="comfortable">
+      <ino-toolbar ariaLabel="Full toolbar">
         <div slot="start">
           <button ino-button variant="ghost" size="default">☰</button>
           <button ino-button variant="ghost" size="default">←</button>
@@ -91,7 +93,7 @@ import { InoButtonComponent } from '../../../../components/button/ino-button.com
         Tab into the toolbar below, then use <kbd>←</kbd> / <kbd>→</kbd> arrow keys to move focus
         between toolbar items. <kbd>Home</kbd> moves to the first item, <kbd>End</kbd> to the last.
       </p>
-      <ino-toolbar ariaLabel="Keyboard navigation example" density="comfortable">
+      <ino-toolbar ariaLabel="Keyboard navigation example">
         <div slot="start">
           <button ino-button variant="secondary" size="default">First</button>
           <button ino-button variant="secondary" size="default">Second</button>
@@ -105,7 +107,7 @@ import { InoButtonComponent } from '../../../../components/button/ino-button.com
     <div class="demo-section">
       <h3 class="demo-heading">Overflow Scrolling</h3>
       <div style="max-width: 400px">
-        <ino-toolbar ariaLabel="Overflow example" density="comfortable">
+        <ino-toolbar ariaLabel="Overflow example">
           <div slot="start">
             <button ino-button variant="ghost" size="default">Item 1</button>
             <button ino-button variant="ghost" size="default">Item 2</button>
@@ -121,20 +123,20 @@ import { InoButtonComponent } from '../../../../components/button/ino-button.com
   styles: [
     `
       .demo-section {
-        margin-block-end: var(--ino-spacing-6);
+        margin-block-end: var(--ino-space-6);
       }
 
       .demo-heading {
         margin-block-start: 0;
-        margin-block-end: var(--ino-spacing-3);
+        margin-block-end: var(--ino-space-3);
         font-size: var(--ino-font-size-md);
         font-weight: var(--ino-font-weight-semibold);
         color: var(--ino-color-on-surface);
       }
 
       .demo-note {
-        margin-block-end: var(--ino-spacing-3);
-        padding: var(--ino-spacing-3);
+        margin-block-end: var(--ino-space-3);
+        padding: var(--ino-space-3);
         background-color: var(--ino-color-surface-sunken);
         border-radius: var(--ino-radius-sm);
         font-size: var(--ino-font-size-sm);
@@ -158,7 +160,7 @@ import { InoButtonComponent } from '../../../../components/button/ino-button.com
       }
 
       .toolbar-search {
-        padding: var(--ino-spacing-2) var(--ino-spacing-3);
+        padding: var(--ino-space-2) var(--ino-space-3);
         background-color: var(--ino-color-surface-sunken);
         border: 1px solid var(--ino-color-border);
         border-radius: var(--ino-radius-sm);

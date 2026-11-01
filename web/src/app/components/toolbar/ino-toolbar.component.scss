@@ -1,23 +1,18 @@
 :host {
-  --toolbar-padding-block: var(--ino-spacing-4);
+  --toolbar-padding-block: var(--ino-space-4);
   --toolbar-min-height: var(--ino-row-min-height);
 
   display: block;
-
-  &.ino-toolbar--dense {
-    --toolbar-padding-block: var(--ino-spacing-2);
-    --toolbar-min-height: 32px;
-  }
 }
 
 .ino-toolbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--ino-spacing-4);
+  gap: var(--ino-space-4);
   min-height: var(--toolbar-min-height);
   padding-block: var(--toolbar-padding-block);
-  padding-inline: var(--ino-spacing-4);
+  padding-inline: var(--ino-space-4);
   background-color: var(--ino-color-surface);
   border-block-end: 1px solid var(--ino-color-border);
   overflow-x: auto;
@@ -28,7 +23,7 @@
 .ino-toolbar__end {
   display: flex;
   align-items: center;
-  gap: var(--ino-spacing-2);
+  gap: var(--ino-space-2);
 }
 
 .ino-toolbar__start {

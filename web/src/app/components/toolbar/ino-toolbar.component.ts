@@ -11,9 +11,12 @@ import { CommonModule } from '@angular/common';
  * Toolbar component providing start/center/end content distribution with
  * dense/comfortable sizing and ARIA toolbar pattern keyboard navigation.
  *
+ * Density is controlled by the [data-density] attribute on a parent container
+ * (typically <body> or a feature root), not by a component input.
+ *
  * @example
  * ```html
- * <ino-toolbar ariaLabel="Main toolbar" density="comfortable">
+ * <ino-toolbar ariaLabel="Main toolbar">
  *   <div slot="start">
  *     <button ino-button>Action</button>
  *   </div>
@@ -32,9 +35,6 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule],
   templateUrl: './ino-toolbar.component.html',
   styleUrls: ['./ino-toolbar.component.scss'],
-  host: {
-    '[class.ino-toolbar--dense]': 'density === "dense"',
-  },
 })
 export class InoToolbarComponent implements AfterContentInit {
   /**
@@ -42,13 +42,6 @@ export class InoToolbarComponent implements AfterContentInit {
    * Maps to aria-label on the toolbar container.
    */
   @Input({ required: true }) ariaLabel!: string;
-
-  /**
-   * Sizing density mode.
-   * - comfortable: 44px min-height, 16px vertical padding (default)
-   * - dense: 32px min-height, 8px vertical padding
-   */
-  @Input() density: 'comfortable' | 'dense' = 'comfortable';
 
   /** Whether the start slot has projected content */
   hasStartContent = false;

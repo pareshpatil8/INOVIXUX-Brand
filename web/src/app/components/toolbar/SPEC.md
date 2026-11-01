@@ -48,39 +48,45 @@ platform-native navigation patterns (app bars, navigation bars) instead.
 
 ## 2. Sizing — dense/comfortable (§2 contract, DoD row 3)
 
-The toolbar supports two density modes via the `density` input:
+The toolbar supports two density modes via the `[data-density]` attribute on a parent
+container (typically `<body>` or a feature root), not via a component-level input:
 
-- **comfortable** (default) — `--ino-spacing-4` (16px) vertical padding, 
-  `--ino-row-min-height` (44px) minimum height
-- **dense** — `--ino-spacing-2` (8px) vertical padding, 32px minimum height
+- **comfortable** (default when no `[data-density]` is set) — `--ino-space-4` (16px)
+  vertical padding, `--ino-row-min-height` (44px) minimum height
+- **dense** (when `[data-density="dense"]` on an ancestor) — `--ino-space-4` resolves
+  differently in the dense context, and `--ino-row-min-height` becomes 32px per
+  tokens.css §10
 
-Horizontal padding is `--ino-spacing-4` (16px) at both densities; only the block-axis
+Horizontal padding is `--ino-space-4` (16px) at both densities; only the block-axis
 spacing changes. The minimum height ensures touch targets meet WCAG 2.2 SC 2.5.8 (24×24px)
 in both modes — the comfortable floor is the standing `--ino-row-min-height` / 
 `--ino-target-comfortable` token (44px), while dense floors to 32px per the INO-407/INO-729
 precedent (same as sm-sized controls in dense mode).
 
-**API:** `density: 'comfortable' | 'dense' = 'comfortable'`
+**API:** No density input. Density is controlled by the `[data-density]` attribute on a
+parent element, which re-resolves the `--ino-row-min-height` and spacing tokens per
+tokens.css §10.
 
-**CSS:** The host element reads the token directly via a CSS custom property, with the
-dense override applied via a `.ino-toolbar--dense` class:
+**CSS:** The host element reads tokens directly, which automatically resolve to different
+values under `[data-density="dense"]`:
 
 ```scss
 :host {
-  --toolbar-padding-block: var(--ino-spacing-4);
+  --toolbar-padding-block: var(--ino-space-4);
   --toolbar-min-height: var(--ino-row-min-height);
-  
-  &.ino-toolbar--dense {
-    --toolbar-padding-block: var(--ino-spacing-2);
-    --toolbar-min-height: 32px;
-  }
+  display: block;
 }
 
 .ino-toolbar {
   min-height: var(--toolbar-min-height);
-  padding: var(--toolbar-padding-block) var(--ino-spacing-4);
+  padding-block: var(--toolbar-padding-block);
+  padding-inline: var(--ino-space-4);
 }
 ```
+
+When an ancestor has `[data-density="dense"]`, tokens.css §10 re-resolves
+`--ino-row-min-height` to 32px and spacing tokens accordingly. No component-level
+override needed.
 
 ---
 
@@ -217,9 +223,12 @@ which auto-adjusts to meet 3:1 contrast in the high-contrast theme per the exist
 
 **Inputs:**
 - `ariaLabel: string` — **required**; accessible name for the toolbar. No default.
-- `density: 'comfortable' | 'dense' = 'comfortable'` — sizing mode (§2)
 
 **Outputs:** None. The toolbar is a structural container with no events of its own.
+
+**Density:** Controlled via `[data-density]` attribute on a parent container (typically
+`<body>` or a feature root), not via a component input. The toolbar automatically responds
+to density changes through CSS custom property resolution.
 
 **Slots (via `ng-content select`):**
 - `[slot="start"]` — left-aligned content
@@ -264,8 +273,8 @@ ControlValueAccessor, emit change events, or carry validation state.
 PrimeNG's `Toolbar` component provides the same three-slot structure (start/center/end)
 with no overflow handling beyond the container's own width. INOVIXUX's implementation adds:
 
-1. **Explicit density API** — PrimeNG toolbar height is controlled via custom CSS; this
-   component exposes `density` as a first-class input with token-driven heights.
+1. **Token-driven density** — PrimeNG toolbar height is controlled via custom CSS; this
+   component uses `--ino-row-min-height` which auto-adjusts under `[data-density]`.
 2. **Arrow-key roving focus** — PrimeNG does not implement the APG toolbar keyboard
    pattern; this component does.
 3. **Required `ariaLabel`** — PrimeNG's toolbar has no accessibility contract documented;
