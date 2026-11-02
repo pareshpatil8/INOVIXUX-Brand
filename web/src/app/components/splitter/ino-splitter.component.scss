@@ -93,7 +93,7 @@
 
 .ino-splitter__gutter:hover,
 .ino-splitter__gutter:focus-visible {
-  background: var(--ino-color-surface-hover);
+  background: var(--ino-color-surface-sunken);
 }
 
 .ino-splitter__gutter:focus-visible {
@@ -105,7 +105,7 @@
 /* Active/dragging (spec row's additional state beyond the §2 standard set). */
 .ino-splitter__gutter--dragging,
 .ino-splitter__gutter:active {
-  background: var(--ino-color-surface-active);
+  background: var(--ino-color-surface-sunken);
 }
 
 .ino-splitter__gutter--dragging .ino-splitter__gutter-line,
