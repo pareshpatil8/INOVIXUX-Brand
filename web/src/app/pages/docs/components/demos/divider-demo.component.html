@@ -32,6 +32,26 @@
 </section>
 
 <section class="demo-section">
+  <h3 class="demo-section__title">Density axis — dense vs. fluid</h3>
+  <p class="demo-section__note">
+    <code>thickness</code> is deliberately <strong>not</strong> density-dependent (SPEC.md §3); the
+    two panes below render the same <code>hairline</code> divider under
+    <code>[data-density="dense"]</code> and <code>[data-density="fluid"]</code> to demonstrate that
+    invariance on the page rather than only documenting it in source.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane" data-density="dense">
+      <p class="demo-pane__label">dense</p>
+      <ino-divider thickness="hairline"></ino-divider>
+    </div>
+    <div class="demo-pane" data-density="fluid">
+      <p class="demo-pane__label">fluid</p>
+      <ino-divider thickness="hairline"></ino-divider>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
   <h3 class="demo-section__title">Labels — centered label, wrapping, RTL</h3>
   <p class="demo-section__note">
     <code>label</code> only renders on the horizontal form (SPEC.md §1); the label element is

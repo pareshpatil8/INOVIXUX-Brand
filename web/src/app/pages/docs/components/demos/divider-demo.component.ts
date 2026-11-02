@@ -11,9 +11,9 @@ import { InoDividerComponent } from '../../../../components/divider/ino-divider.
  * `@Input` to `''`, so `label` never rendered either — both are real, documented variants
  * (SPEC.md §1, §3) with zero live coverage. Mounted via `CUSTOM_DEMOS` (`../custom-demos.ts`).
  *
- * Density is deliberately not demoed here — SPEC.md §3 documents `thickness` as not
- * density-dependent by design, so a density-axis section would misrepresent the contract rather
- * than fill a gap.
+ * The "Density axis" section demonstrates that `thickness` is invariant across
+ * `[data-density]` (SPEC.md §3) by rendering the same divider in both registers, per doc 26 §2
+ * row 3 (INO-838).
  */
 @Component({
   selector: 'app-divider-demo',
