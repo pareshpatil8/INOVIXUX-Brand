@@ -143,7 +143,8 @@ export class InoContextMenuDirective implements OnInit, OnDestroy {
       this.clickOutsideListener = (event: MouseEvent) => {
         const menuElement = this.menuComponentRef?.location.nativeElement;
         if (menuElement && !menuElement.contains(event.target as Node)) {
-          this.destroyMenu();
+          // Call component's hide() to restore focus, not destroyMenu() directly
+          this.menuComponentRef?.instance.hide();
         }
       };
       document.addEventListener('click', this.clickOutsideListener);
