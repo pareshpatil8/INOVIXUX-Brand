@@ -499,6 +499,48 @@ export class InoContextMenuComponent implements AfterViewInit {
           this.onItemActivate(event, currentItem, fullIndex);
         }
         break;
+
+      case 'Tab':
+        event.preventDefault();
+        if (this.isInSubmenu() && this.openSubmenu?.children) {
+          // Tab within submenu: forward if Tab, backward if Shift+Tab
+          const navigableSubmenuItems = this.openSubmenu.children.filter(
+            (child) => !child.separator && !child.disabled
+          );
+          const currentSubmenuNavigableIndex = navigableSubmenuItems.findIndex(
+            (item) => item === this.openSubmenu!.children![this.focusedSubmenuIndex]
+          );
+
+          if (event.shiftKey) {
+            // Shift+Tab: move backward with wrap
+            const prevNavigableIndex = currentSubmenuNavigableIndex >= 0
+              ? (currentSubmenuNavigableIndex - 1 + navigableSubmenuItems.length) % navigableSubmenuItems.length
+              : navigableSubmenuItems.length - 1;
+            this.focusSubmenuItem(prevNavigableIndex);
+          } else {
+            // Tab: move forward with wrap
+            const nextNavigableIndex = currentSubmenuNavigableIndex >= 0
+              ? (currentSubmenuNavigableIndex + 1) % navigableSubmenuItems.length
+              : 0;
+            this.focusSubmenuItem(nextNavigableIndex);
+          }
+        } else if (navigableItems.length > 0) {
+          // Tab within main menu: forward if Tab, backward if Shift+Tab
+          if (event.shiftKey) {
+            // Shift+Tab: move backward with wrap
+            const prevNavigableIndex = currentNavigableIndex >= 0
+              ? (currentNavigableIndex - 1 + navigableItems.length) % navigableItems.length
+              : navigableItems.length - 1;
+            this.focusItem(prevNavigableIndex);
+          } else {
+            // Tab: move forward with wrap
+            const nextNavigableIndex = currentNavigableIndex >= 0
+              ? (currentNavigableIndex + 1) % navigableItems.length
+              : 0;
+            this.focusItem(nextNavigableIndex);
+          }
+        }
+        break;
     }
   }
 
