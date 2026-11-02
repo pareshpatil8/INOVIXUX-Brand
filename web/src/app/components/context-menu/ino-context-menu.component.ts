@@ -356,7 +356,21 @@ export class InoContextMenuComponent implements AfterViewInit {
         // If submenu is open, close it first
         if (this.openSubmenu) {
           this.openSubmenu = null;
+          this.focusedSubmenuIndex = -1;
           this.cdr.markForCheck();
+          // Return focus to the parent item
+          setTimeout(() => {
+            const allItems =
+              this.elementRef.nativeElement.querySelectorAll(
+                '.ino-context-menu__overlay > .ino-context-menu__item, .ino-context-menu__overlay > .ino-context-menu__separator'
+              );
+            if (allItems[this.focusedIndex]) {
+              const element = allItems[this.focusedIndex] as HTMLElement;
+              if (element.getAttribute('tabindex') === '0') {
+                element.focus();
+              }
+            }
+          }, 0);
         } else {
           this.hide();
         }
