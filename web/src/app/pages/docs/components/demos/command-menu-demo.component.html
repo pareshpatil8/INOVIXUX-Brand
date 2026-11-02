@@ -40,6 +40,7 @@
         (openChange)="emptyResultsOpen = $event"
         [groups]="[]"
         [recentItems]="[]"
+        [hotkey]="false"
       ></ino-command-menu>
     </div>
     <div class="demo-pane">
@@ -53,6 +54,7 @@
         [groups]="[]"
         [recentItems]="[]"
         [loading]="true"
+        [hotkey]="false"
       ></ino-command-menu>
     </div>
   </div>
@@ -77,6 +79,7 @@
         (openChange)="densityDenseOpen = $event"
         [groups]="groups"
         [recentItems]="recentItems"
+        [hotkey]="false"
       ></ino-command-menu>
     </div>
     <div class="demo-pane" data-density="fluid">
@@ -89,6 +92,7 @@
         (openChange)="densityFluidOpen = $event"
         [groups]="groups"
         [recentItems]="recentItems"
+        [hotkey]="false"
       ></ino-command-menu>
     </div>
   </div>
