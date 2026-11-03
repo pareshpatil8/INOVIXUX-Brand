@@ -175,13 +175,13 @@ export class InoPickListComponent {
       case 'ArrowRight':
         if (alt && pane === 'source') {
           event.preventDefault();
-          this.moveToTarget(option);
+          this.moveToTarget(this.sourceSelection.includes(option.value) ? undefined : option);
         }
         break;
       case 'ArrowLeft':
         if (alt && pane === 'target') {
           event.preventDefault();
-          this.moveToSource(option);
+          this.moveToSource(this.targetSelection.includes(option.value) ? undefined : option);
         }
         break;
     }
@@ -243,9 +243,9 @@ export class InoPickListComponent {
     return this.interactive && this.target.some((o) => !o.disabled);
   }
 
-  /** `single` overload lets `Alt+ArrowRight` move just the focused row even when it isn't part
-   *  of the current selection (matches the button's "move the checked rows" behaviour when
-   *  there IS a selection, same dual mode `ino-orderlist`'s button-vs-keyboard paths share). */
+  /** `single` moves just that row; omitting it moves the whole current-pane selection (same as
+   *  the button). `onOptionKeydown` picks which one to pass: if the focused row is part of the
+   *  selection, Alt+ArrowRight/Left moves the whole selection — otherwise just that row. */
   protected moveToTarget(single?: InoPickListOption): void {
     if (!this.interactive) {
       return;

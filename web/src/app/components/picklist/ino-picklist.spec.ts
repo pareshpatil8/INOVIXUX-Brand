@@ -105,6 +105,34 @@ describe('InoPickListComponent', () => {
     expect(host.target.map((o) => o.value)).toEqual(['date', 'apple']);
   });
 
+  it('Alt+ArrowRight on a focused row that is part of a multi-row selection moves the whole selection', () => {
+    rowByLabel('Apple').click();
+    fixture.detectChanges();
+    rowByLabel('Banana').click();
+    fixture.detectChanges();
+    rowByLabel('Banana').dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', altKey: true }));
+    fixture.detectChanges();
+    expect(host.source.map((o) => o.value)).toEqual(['cherry']);
+    expect(host.target.map((o) => o.value)).toEqual(['date', 'apple', 'banana']);
+    expect(host.sourceSelection).toEqual([]);
+  });
+
+  it('Alt+ArrowLeft on a focused row that is part of a multi-row target selection moves the whole selection', () => {
+    rowByLabel('Apple').click();
+    fixture.detectChanges();
+    button('To Selected').click();
+    fixture.detectChanges();
+    rowByLabel('Date').click();
+    fixture.detectChanges();
+    rowByLabel('Apple').click();
+    fixture.detectChanges();
+    rowByLabel('Apple').dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', altKey: true }));
+    fixture.detectChanges();
+    expect(host.target.map((o) => o.value)).toEqual([]);
+    expect(host.source.map((o) => o.value)).toEqual(['banana', 'cherry', 'date', 'apple']);
+    expect(host.targetSelection).toEqual([]);
+  });
+
   it('flashes the arrival pane after a transfer, then clears it', async () => {
     rowByLabel('Banana').click();
     fixture.detectChanges();
