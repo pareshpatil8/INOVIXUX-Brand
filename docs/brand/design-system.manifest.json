@@ -8,7 +8,7 @@
     "tablet": "641-900px",
     "desktop": ">900px"
   },
-  "componentCount": 74,
+  "componentCount": 73,
   "components": [
     {
       "name": "ino-accordion",
@@ -265,120 +265,57 @@
       ]
     },
     {
-      "name": "ino-avatar",
-      "slug": "avatar",
-      "className": "InoAvatarComponent",
-      "sourcePath": "web/src/app/components/avatar/ino-avatar.component.ts",
+      "name": "ino-badge",
+      "slug": "badge",
+      "className": "InoBadgeComponent",
+      "sourcePath": "web/src/app/components/badge/ino-badge.component.ts",
       "previewPath": null,
       "inputs": [
         {
-          "name": "image",
-          "type": "string",
-          "values": null,
-          "default": "''",
-          "optional": true
-        },
-        {
-          "name": "initials",
-          "type": "string",
-          "values": null,
-          "default": "''",
-          "optional": true
-        },
-        {
-          "name": "alt",
-          "type": "string",
-          "values": null,
-          "default": "''",
-          "optional": true
-        },
-        {
-          "name": "ariaLabel",
-          "type": "string",
-          "values": null,
-          "default": "''",
-          "optional": true
-        },
-        {
-          "name": "shape",
-          "type": "InoAvatarShape",
+          "name": "variant",
+          "type": "InoBadgeVariant",
           "values": [
-            "circle",
-            "square"
+            "dot",
+            "count",
+            "status"
           ],
-          "default": "'circle'",
+          "default": "'count'",
           "optional": true
         },
         {
           "name": "size",
-          "type": "InoAvatarSize",
+          "type": "InoBadgeSize",
           "values": [
-            "xs",
             "sm",
-            "default",
-            "lg",
-            "xl"
+            "md"
           ],
-          "default": "'default'",
+          "default": "'md'",
           "optional": true
         },
         {
-          "name": "decorative",
-          "type": "boolean",
-          "values": null,
-          "default": "false",
-          "optional": true
-        }
-      ],
-      "variants": null,
-      "viewports": [
-        "mobile",
-        "tablet",
-        "desktop"
-      ]
-    },
-    {
-      "name": "ino-avatar-group",
-      "slug": "avatar-group",
-      "className": "InoAvatarGroupComponent",
-      "sourcePath": "web/src/app/components/avatar-group/ino-avatar-group.component.ts",
-      "previewPath": null,
-      "inputs": [
-        {
-          "name": "avatars",
-          "type": "InoAvatarGroupItem[]",
-          "values": null,
-          "default": "[]",
+          "name": "severity",
+          "type": "InoBadgeSeverity",
+          "values": [
+            "info",
+            "success",
+            "warning",
+            "danger"
+          ],
+          "default": "'info'",
           "optional": true
         },
         {
-          "name": "max",
-          "type": "number | null",
+          "name": "value",
+          "type": "number",
           "values": null,
           "default": "null",
           "optional": true
         },
         {
-          "name": "shape",
-          "type": "InoAvatarShape",
-          "values": [
-            "circle",
-            "square"
-          ],
-          "default": "'circle'",
-          "optional": true
-        },
-        {
-          "name": "size",
-          "type": "InoAvatarSize",
-          "values": [
-            "xs",
-            "sm",
-            "default",
-            "lg",
-            "xl"
-          ],
-          "default": "'default'",
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "''",
           "optional": true
         },
         {
@@ -389,7 +326,11 @@
           "optional": true
         }
       ],
-      "variants": null,
+      "variants": [
+        "dot",
+        "count",
+        "status"
+      ],
       "viewports": [
         "mobile",
         "tablet",
