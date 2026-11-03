@@ -282,3 +282,42 @@
   padding: var(--ino-space-3);
   font-size: var(--ino-type-body-sm-size, 12.5px);
 }
+
+// ino-dataview demo item templates (INO-454) — token-bound only, same rule as the rest of this file.
+.dataview-demo__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ino-space-3);
+  padding: var(--ino-space-2) var(--ino-space-3);
+  border-radius: var(--ino-radius-md);
+  background: var(--ino-color-surface-raised);
+}
+
+.dataview-demo__row-name {
+  color: var(--ino-color-on-surface);
+}
+
+.dataview-demo__row-status {
+  color: var(--ino-color-on-surface-muted);
+  font-size: var(--ino-type-body-sm-size, 12.5px);
+}
+
+.dataview-demo__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ino-space-2);
+  padding: var(--ino-space-4);
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-md);
+  background: var(--ino-color-surface-raised);
+}
+
+.dataview-demo__card-name {
+  color: var(--ino-color-on-surface);
+}
+
+.dataview-demo__card-status {
+  color: var(--ino-color-on-surface-muted);
+  font-size: var(--ino-type-body-sm-size, 12.5px);
+}

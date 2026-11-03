@@ -1,0 +1,7 @@
+// Behaviour, not surface — no colour, spacing, radius, elevation, duration or type to contribute.
+// `display: block` (not `contents`) matches `[inoFocusTrap]`'s own reasoning: `contents` removes
+// the element from layout entirely, which also removes it as a containing block in some engines.
+// There are no theme branches here and nothing for `check-theme-parity.mjs` to resolve.
+:host {
+  display: block;
+}

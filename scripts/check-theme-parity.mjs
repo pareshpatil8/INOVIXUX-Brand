@@ -673,6 +673,24 @@ const COMPONENT_REGISTRY = [
     ],
   },
   {
+    name: 'autofocus',
+    web: 'web/src/app/components/autofocus',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoAutofocus.ts',
+        roles: [],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_autofocus.dart',
+        roles: [],
+      },
+    },
+    // Not a "roles: []" oversight — autofocus is behaviour-only (contributes no colour, spacing,
+    // radius, elevation, duration or type). web reads zero --ino-color-* roles, and both mobile
+    // ports (RN hook / Flutter FocusNode) are focus-placement mechanisms with no rendering of
+    // their own, so there is no role set for either side to diverge on. See SPEC.md §2.
+  },
+  {
     name: 'breadcrumb',
     web: 'web/src/app/components/breadcrumb',
     mobile: {

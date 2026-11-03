@@ -36,6 +36,8 @@ import { OrderListDemoComponent } from './demos/orderlist-demo.component';
 import { PickListDemoComponent } from './demos/picklist-demo.component';
 import { TreeTableDemoComponent } from './demos/treetable-demo.component';
 import { BadgeDemoComponent } from './demos/badge-demo.component';
+import { DataViewDemoComponent } from './demos/dataview-demo.component';
+import { AutofocusDemoComponent } from './demos/autofocus-demo.component';
 
 /**
  * Slug -> hand-authored demo component, for components whose §2 Component Publish Contract
@@ -175,4 +177,15 @@ export const CUSTOM_DEMOS: Record<string, Type<unknown>> = {
   // modes, the sm/md sizing matrix, and the severity color palette all require hand-authored
   // composition to demonstrate live. See `badge/SPEC.md` for the full contract.
   'badge': BadgeDemoComponent,
+  // `value: readonly unknown[]` hits the same `defaultValueFor()` empty-array gap `menu`/
+  // `breadcrumb`/`panel-menu` hit, and the item rendering itself is two `ng-template` structural
+  // directives (`inoDataViewListItem`/`inoDataViewGridItem`) — the generic `*ngComponentOutlet`-
+  // with-inputs renderer can never project template content, so every example would render a
+  // labelled, permanently-empty list. See `dataview/SPEC.md` for the full state/sizing contract.
+  'dataview': DataViewDemoComponent,
+  // Behaviour-only directive: its whole template is `<ng-content>`, so the generic renderer mounts
+  // it and shows nothing at all — the same disposition `keyfilter` records. The demo has to compose
+  // real focusable targets to show placement, `inoAutofocusDelay` and the opt-out. See
+  // `autofocus/SPEC.md` §2.
+  'autofocus': AutofocusDemoComponent,
 };

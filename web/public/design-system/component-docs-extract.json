@@ -345,6 +345,64 @@
         "templates": []
       }
     },
+    "autofocus": {
+      "name": "ino-autofocus",
+      "docPath": "docs/brand/06-angular-components/autofocus.md",
+      "a11y": "<p><strong>Role / ARIA.</strong> None of its own — a mechanism, not content.</p>\n<p><strong>Interplay with <code>[inoFocusTrap]</code> — read this before combining them.</strong> If the host sits inside an\nancestor <code>[inoFocusTrap]</code> / <code>&lt;ino-focus-trap&gt;</code> (found via <code>closest()</code>), <code>[inoAutofocus]</code> is a\n<strong>no-op, unconditionally — including while that trap is <code>disabled</code>.</strong> Both primitives defer their\nfirst focus move to the same microtask tick; running both inside the same trap would make the\noutcome a race, not a contract. <strong>Point the trap's own <code>inoFocusTrapInitialFocus</code> at the element\nyou would otherwise have put <code>[inoAutofocus]</code> on</strong> instead of stacking both — it performs the\nidentical lookup and already re-runs on every trap re-activation.</p>\n<p><strong>Interplay with route changes — WCAG 2.2 SC 2.4.3 (Focus Order).</strong> Angular's <code>Router</code> does not\nmove focus on navigation, and <code>ngOnInit</code> alone cannot close that gap: the router <strong>reuses</strong> a\ncomponent instance across a navigation that re-resolves the same route (a detail page keyed by a\npath parameter, a tab inside a persistent shell), so <code>ngOnInit</code> runs exactly once no matter how\nmany times the user navigates through it. Bind <code>inoAutofocusTrigger</code> to a value that changes on\nevery navigation worth re-focusing for — a <code>Router.events</code> <code>NavigationEnd</code> id, the resolved url, a\nroute param — and the directive re-runs focus placement on every change after the first, the same\nreset a full page load gives a document for free.</p>\n<p><strong>What it deliberately does not check.</strong> It does not check whether something else already holds\nfocus before moving it, and it does not walk visibility. Native <code>autofocus</code> makes neither check\neither — a hidden or already-focused target silently declining to move focus would be a harder\ndefect to notice during development than focus visibly landing somewhere unexpected. Gate\n<code>inoAutofocus</code> (or the trigger value) on whatever condition makes \"move focus now\" correct.</p>\n<p><strong>No dismissal keys.</strong> There is nothing to dismiss — this directive performs one focus move per\nactivation and then does nothing else. Compare <code>[inoFocusTrap]</code>, which owns containment for as\nlong as it is active and therefore does need a suspend/resume/restore lifecycle.</p>\n<p><strong>Contrast / RTL.</strong> Nothing is painted, so there is no text or non-text contrast pair to audit, and\nno positioned element to get RTL-wrong. The directive never touches the focus ring of whatever it\nfocuses — that element keeps whatever <code>--ino-focus-ring</code> it already paints.</p>\n<hr />\n",
+      "notes": "<p>States, sizing and labels — n/a (directive).</p>\n<p>Recorded, not omitted (doc 26 §2 row 6; full reasoning in <code>SPEC.md</code> §2). This is a behaviour-only\nprimitive with no hover / focus-visible / active / disabled / readonly / invalid / loading state of\nits own, no size scale, and no label API — every one of those belongs to whatever element ends up\nfocused. Same disposition <code>[inoFocusTrap]</code> and <code>[inoKeyfilter]</code> record, for the same reason.</p>\n<hr />\n",
+      "mobile": "<p><strong>Ported</strong> — the one disposition that differs from <code>[inoFocusTrap]</code>'s explicit web-only decision.\nNeither mobile platform has an Angular-style attribute directive, but both have an idiomatic\nnon-visual focus-placement primitive:</p>\n<ul>\n<li><strong>React Native</strong>: <code>useInoAutofocus(ref, options)</code>, a hook that focuses <code>ref.current</code> on mount and\nagain whenever <code>options.trigger</code> changes — the same route-change mechanism, since React\nNavigation reuses screen instances across param-only navigations the way Angular's <code>Router</code>\nreuses component instances. <code>mobile/react-native/src/components/InoAutofocus.ts</code>.</li>\n<li><strong>Flutter</strong>: <code>InoAutofocus</code>, a small widget wrapping a <code>FocusNode</code> that requests focus in\n<code>initState</code> and again in <code>didUpdateWidget</code> when its <code>trigger</code> changes. Flutter's own\n<code>autofocus: true</code> property only ever fires once, on first build — this port exists to close\nexactly that gap. <code>mobile/flutter/lib/widgets/ino_autofocus.dart</code>.</li>\n</ul>\n<p>Neither port carries a focus-trap interplay rule: <code>[inoFocusTrap]</code> itself was never ported to\neither platform (React Native has no DOM tab order; Flutter scopes focus by construction through\n<code>FocusScope</code>), so there is no ancestor-trap race for a mobile port to guard against. Full reasoning:\n<code>web/src/app/components/autofocus/SPEC.md</code> §5.</p>\n<hr />\n",
+      "api": {
+        "props": [
+          {
+            "name": "inoAutofocus",
+            "type": "boolean",
+            "values": null,
+            "default": "true",
+            "optional": true,
+            "description": "Selector and on/off switch in one: the bare attribute defaults `true`. Set `false` rather than removing the directive to suppress a single instance without restructuring the template (e.g. a shared row template used both for \"new\" and \"edit\", where only \"new\" should focus)."
+          },
+          {
+            "name": "target",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": "CSS selector resolved within the host. Falls back to the host itself if omitted, then to the host's first focusable descendant — see the class doc for why that covers both forms `[inoFocusTrap]` needs two components for."
+          },
+          {
+            "name": "preventScroll",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": "Forwarded to the native `focus({ preventScroll })` option, for a target already inside the viewport where the browser's default scroll-into-view would otherwise jump the page."
+          },
+          {
+            "name": "trigger",
+            "type": "unknown",
+            "values": null,
+            "default": "undefined",
+            "optional": true,
+            "description": "Changing this value after the first activation re-runs focus placement — the route-change mechanism described in the class doc. Unused on the very first activation, which `ngOnInit` already owns; see `ngOnChanges`."
+          }
+        ],
+        "events": [],
+        "methods": [
+          {
+            "name": "focusNow",
+            "params": null,
+            "returnType": "void",
+            "description": "Re-runs focus placement on demand. Delegates to the directive."
+          }
+        ],
+        "templates": [
+          {
+            "name": "default",
+            "description": null
+          }
+        ]
+      }
+    },
     "avatar": {
       "name": "ino-avatar",
       "docPath": "docs/brand/06-angular-components/avatar.md",
@@ -1486,6 +1544,179 @@
             "description": "Track by function for ngFor."
           }
         ],
+        "templates": []
+      }
+    },
+    "dataview": {
+      "name": "ino-dataview",
+      "docPath": "docs/brand/06-angular-components/dataview.md",
+      "a11y": "<p><strong>Role / ARIA</strong> — the items container is <code>role=\"list\"</code>; every item (including skeleton\nplaceholders) is <code>role=\"listitem\"</code>, in both <code>list</code> and <code>grid</code> layout — the spec names exactly these\ntwo roles, not a 2-D <code>role=\"grid\"</code>. <code>aria-labelledby</code> points at the visible <code>label</code> when given,\notherwise <code>aria-label</code> falls back to the <code>ariaLabel</code> input.</p>\n<p><strong>Layout toggle announced</strong> — the built-in <code>&lt;ino-select-button&gt;</code> carries its own <code>radiogroup</code>/\n<code>radio</code> semantics. On top of that, a transient <code>role=\"status\" aria-live=\"polite\"</code> region speaks\n\"List view\" / \"Grid view\" on every change and clears after 1s, narrating the <em>effect</em> of the choice\non the content below in addition to the control's own native announcement.</p>\n<p><strong>Keyboard</strong> — every interactive element (the layout switch's radios, the paginator's controls) is\ncovered by that sub-component's own keyboard contract; this component adds no key handling of its\nown.</p>\n<p><strong>RTL</strong> — logical properties only; the header row and the <code>auto-fill</code>/<code>minmax</code> grid both reflow for\nthe inline axis automatically. No physical-direction glyph exception exists in this component.</p>\n<hr />\n",
+      "notes": "<p>Recorded here rather than silently dropped (full detail in <code>SPEC.md</code>):</p>\n<ul>\n<li><strong><code>role=\"grid\"</code> / 2-D cell navigation.</strong> Not carried — the spec row names <code>role=list/listitem</code>\nonly; <code>ino-treetable</code>'s <code>role=treegrid</code> is the component that owns 2-D grid semantics.</li>\n<li><strong>Invalid / disabled / readonly states.</strong> Not carried — see <a href=\"#states\">States</a> above.</li>\n<li><strong>Grid-mode mobile port.</strong> Not carried — see Mobile parity below.</li>\n</ul>\n",
+      "mobile": "<p><strong>Web-first; mobile ships list mode only.</strong> The doc 26 §5 Notes column reads \"Port both (list\nmode)\" — the RN and Flutter ports are a styled <code>FlatList</code>/<code>ListView.builder</code> over the same item\nshape, with no grid layout, no layout switch, and no ported paginator (both mobile tracks already\nanswer \"get more data\" with native infinite scroll, the same reasoning <code>ino-paginator</code>'s <code>SPEC.md</code>\n§1 records for its own mobile counterpart). A grid-mode mobile port is a different component and\ngets its own issue in a later wave if a product screen needs one. Full reasoning: <code>SPEC.md</code> §7.</p>\n<hr />\n",
+      "api": {
+        "props": [
+          {
+            "name": "value",
+            "type": "readonly unknown[]",
+            "values": null,
+            "default": "[]",
+            "optional": true,
+            "description": "Items for the current page. In `lazy` mode this already holds only the loaded window — the same `<ino-paginator>`-controlled-component convention `ino-table`'s `value`/`lazy` pair uses."
+          },
+          {
+            "name": "trackBy",
+            "type": "((index: number, item: unknown)",
+            "values": null,
+            "default": "> unknown) | null = null",
+            "optional": true,
+            "description": "Identity for `@for` tracking. Defaults to the absolute index."
+          },
+          {
+            "name": "layout",
+            "type": "InoDataViewLayout",
+            "values": [
+              "list",
+              "grid"
+            ],
+            "default": "'list'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "showLayoutSwitcher",
+            "type": "boolean",
+            "values": null,
+            "default": "true",
+            "optional": true,
+            "description": "Built-in `<ino-select-button>` toggle. Set `false` when a host page drives `[layout]` from its own control and wants no duplicate switch rendered."
+          },
+          {
+            "name": "paginator",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "rows",
+            "type": "number",
+            "values": null,
+            "default": "10",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "first",
+            "type": "number",
+            "values": null,
+            "default": "0",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "rowsPerPageOptions",
+            "type": "number[]",
+            "values": null,
+            "default": "[]",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "lazy",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": "`true`: `value` already holds only the current page, and `totalRecords` is the real count."
+          },
+          {
+            "name": "totalRecords",
+            "type": "number",
+            "values": null,
+            "default": "0",
+            "optional": true,
+            "description": "Lazy mode only: the true collection length. Ignored (derived from `value.length`) otherwise."
+          },
+          {
+            "name": "size",
+            "type": "InoControlSize",
+            "values": [
+              "sm",
+              "default",
+              "lg"
+            ],
+            "default": "'default'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "gridMinColumnWidth",
+            "type": "string",
+            "values": null,
+            "default": "'220px'",
+            "optional": true,
+            "description": "CSS `grid-template-columns` track size for `layout=\"grid\"` — content-dependent (card width), not part of the Wave 0 control-size scale, so it stays a free input rather than a token. The *gap* between cells does scale with `size` — see `SPEC.md` §3."
+          },
+          {
+            "name": "loading",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "skeletonItemCount",
+            "type": "number",
+            "values": null,
+            "default": "0",
+            "optional": true,
+            "description": "Placeholder cards/rows drawn while `loading` is true. 0 falls back to `rows` (or 6 outside paging), matching `ino-table`'s `skeletonRowCount` idiom."
+          },
+          {
+            "name": "emptyMessage",
+            "type": "string",
+            "values": null,
+            "default": "'No records found.'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": "Visible caption for the whole region — the \"list label\" doc 26 §5 calls out, same role a table caption plays. Empty (default): the region falls back to a plain `ariaLabel`."
+          },
+          {
+            "name": "ariaLabel",
+            "type": "string",
+            "values": null,
+            "default": "'Data view'",
+            "optional": true,
+            "description": "Accessible name when no visible `label` is given."
+          }
+        ],
+        "events": [
+          {
+            "name": "layoutChange",
+            "type": "InoDataViewLayout",
+            "description": null
+          },
+          {
+            "name": "page",
+            "type": "InoPaginatorPageEvent",
+            "description": null
+          },
+          {
+            "name": "firstChange",
+            "type": "number",
+            "description": null
+          }
+        ],
+        "methods": [],
         "templates": []
       }
     },

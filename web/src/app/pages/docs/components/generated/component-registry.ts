@@ -6,6 +6,7 @@ import { Type } from '@angular/core';
 import { InoAccordionComponent } from '../../../../components/accordion/ino-accordion.component';
 import { InoAlertComponent } from '../../../../components/alert/ino-alert.component';
 import { InoAutocompleteComponent } from '../../../../components/autocomplete/ino-autocomplete.component';
+import { InoAutofocusComponent } from '../../../../components/autofocus/ino-autofocus.component';
 import { InoBadgeComponent } from '../../../../components/badge/ino-badge.component';
 import { InoBreadcrumbComponent } from '../../../../components/breadcrumb/ino-breadcrumb.component';
 import { InoButtonComponent } from '../../../../components/button/ino-button.component';
@@ -16,6 +17,7 @@ import { InoCommandMenuComponent } from '../../../../components/command-menu/ino
 import { InoConfirmDialogComponent } from '../../../../components/confirm-dialog/ino-confirm-dialog.component';
 import { InoConfirmPopupComponent } from '../../../../components/confirm-popup/ino-confirm-popup.component';
 import { InoContextMenuComponent } from '../../../../components/context-menu/ino-context-menu.component';
+import { InoDataViewComponent } from '../../../../components/dataview/ino-dataview.component';
 import { InoDatePickerComponent } from '../../../../components/datepicker/ino-datepicker.component';
 import { InoDividerComponent } from '../../../../components/divider/ino-divider.component';
 import { InoDrawerComponent } from '../../../../components/drawer/ino-drawer.component';
@@ -81,6 +83,7 @@ export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'accordion': InoAccordionComponent,
   'alert': InoAlertComponent,
   'autocomplete': InoAutocompleteComponent,
+  'autofocus': InoAutofocusComponent,
   'badge': InoBadgeComponent,
   'breadcrumb': InoBreadcrumbComponent,
   'button': InoButtonComponent,
@@ -91,6 +94,7 @@ export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'confirm-dialog': InoConfirmDialogComponent,
   'confirm-popup': InoConfirmPopupComponent,
   'context-menu': InoContextMenuComponent,
+  'dataview': InoDataViewComponent,
   'datepicker': InoDatePickerComponent,
   'divider': InoDividerComponent,
   'drawer': InoDrawerComponent,

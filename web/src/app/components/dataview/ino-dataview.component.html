@@ -1,0 +1,68 @@
+@if (label || showLayoutSwitcher) {
+  <div class="ino-dataview__header">
+    @if (label) {
+      <span [id]="labelId" class="ino-dataview__label">{{ label }}</span>
+    }
+
+    @if (showLayoutSwitcher) {
+      <ino-select-button
+        class="ino-dataview__switcher"
+        [options]="layoutOptions"
+        [value]="layout"
+        [size]="size"
+        [iconOnly]="true"
+        groupLabel="Layout"
+        (valueChange)="onLayoutValueChange($event)"
+      ></ino-select-button>
+    }
+  </div>
+}
+
+@if (isEmpty) {
+  <div class="ino-dataview__empty">
+    @if (emptyDef) {
+      <ng-container *ngTemplateOutlet="emptyDef.template"></ng-container>
+    } @else {
+      <p class="ino-dataview__empty-message">{{ emptyMessage }}</p>
+    }
+  </div>
+} @else {
+  <div
+    class="ino-dataview__items"
+    [class.ino-dataview__items--grid]="isGrid"
+    role="list"
+    [attr.aria-labelledby]="effectiveLabelledby"
+    [attr.aria-label]="effectiveAriaLabel"
+    [style.grid-template-columns]="isGrid ? 'repeat(auto-fill, minmax(' + gridMinColumnWidth + ', 1fr))' : null"
+  >
+    @if (loading) {
+      @for (i of skeletonRows; track i) {
+        <div class="ino-dataview__item ino-dataview__item--skeleton" role="listitem" aria-hidden="true">
+          <span class="ino-dataview__skeleton-bar"></span>
+        </div>
+      }
+    } @else {
+      @for (item of windowedItems; track trackItem($index, item)) {
+        <div class="ino-dataview__item" role="listitem">
+          <ng-container *ngTemplateOutlet="activeItemTemplate ?? null; context: itemContext(item, $index)"></ng-container>
+        </div>
+      }
+    }
+  </div>
+}
+
+@if (paginator) {
+  <div class="ino-dataview__footer">
+    <ino-paginator
+      [totalRecords]="totalRowsForPaginator"
+      [rows]="rows"
+      [first]="first"
+      [rowsPerPageOptions]="rowsPerPageOptions"
+      [size]="size"
+      [loading]="loading"
+      (pageChange)="onPageChange($event)"
+    ></ino-paginator>
+  </div>
+}
+
+<div #announcer class="ino-dataview__sr-only" role="status" aria-live="polite"></div>

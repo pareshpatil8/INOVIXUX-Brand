@@ -1,0 +1,153 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Two forms, one implementation</h3>
+  <p class="demo-section__note">
+    The directive form, <code>[inoAutofocus]</code>, attaches to a field you already own — the
+    preferred shape, no wrapper node. The element form, <code>&lt;ino-autofocus&gt;</code>, wraps
+    projected content and finds the first focusable element inside it for you. Reload this page
+    (or revisit it) and focus lands on the directive-form field below; both forms run the identical
+    <code>resolveTarget()</code> lookup, so there is nothing to compare beyond which element ends
+    up focused first in document order.
+  </p>
+  <div class="demo-row">
+    <div class="demo-col">
+      <p class="demo-pane__label">Directive form — <code>[inoAutofocus]</code></p>
+      <ino-input
+        label="Account holder"
+        hint="Focused on load via [inoAutofocus] directly on this field."
+        [value]="directiveFormValue"
+        (valueChange)="directiveFormValue = $event"
+        inoAutofocus
+      ></ino-input>
+    </div>
+    <div class="demo-col">
+      <p class="demo-pane__label">Element form — <code>&lt;ino-autofocus&gt;</code></p>
+      <ino-autofocus [inoAutofocus]="false">
+        <ino-input
+          label="Reference code"
+          hint="Wrapped in <ino-autofocus>, which finds this field as its first focusable descendant."
+          [value]="elementFormValue"
+          (valueChange)="elementFormValue = $event"
+        ></ino-input>
+      </ino-autofocus>
+    </div>
+  </div>
+  <p class="demo-section__note">
+    The element form above is mounted with <code>[inoAutofocus]="false"</code> so opening this page
+    doesn't fight the directive-form field for initial focus — two autofocus targets on one page is
+    exactly the ambiguity this directive exists to avoid within a single container, not something
+    to demonstrate twice at once.
+  </p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Route change — <code>inoAutofocusTrigger</code></h3>
+  <p class="demo-section__note">
+    Angular's <code>Router</code> never moves focus on navigation, and a reused component instance
+    (same route, new params) never re-runs <code>ngOnInit</code> — so neither gives this directive a
+    second activation for free. Bind <code>inoAutofocusTrigger</code> to a value that changes on
+    every navigation worth re-focusing for (a <code>NavigationEnd</code> id, in real use); "Simulate
+    navigation" below stands in for that. Tab away from the field, then click it.
+  </p>
+  <div class="demo-col" style="max-width: 360px;">
+    <ino-input
+      label="Search"
+      hint="Refocused every time the trigger below changes, even after you tab away."
+      [value]="routedValue"
+      (valueChange)="routedValue = $event"
+      inoAutofocus
+      [inoAutofocusTrigger]="navCount()"
+    ></ino-input>
+    <button type="button" ino-button variant="secondary" (click)="simulateNavigation()">
+      Simulate navigation (count: {{ navCount() }})
+    </button>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Explicit target — <code>inoAutofocusTarget</code></h3>
+  <p class="demo-section__note">
+    Without a target, the directive focuses the host if it's focusable, else the host's first
+    focusable descendant. <code>inoAutofocusTarget</code> overrides that lookup with a CSS selector
+    resolved within the host — useful when the first field in document order is not the one that
+    should receive focus (a prefilled field ahead of the one the user still needs to complete).
+  </p>
+  <div
+    class="demo-pane"
+    inoAutofocus
+    [inoAutofocusTarget]="targetSelector()"
+    [inoAutofocusTrigger]="targetSelector()"
+  >
+    <div class="demo-row">
+      <ino-input
+        id="target-first"
+        label="Prefilled (first in document order)"
+        [value]="targetFirstValue"
+        (valueChange)="targetFirstValue = $event"
+      ></ino-input>
+      <ino-input
+        id="target-second"
+        label="Needs input (the actual target)"
+        [value]="targetSecondValue"
+        (valueChange)="targetSecondValue = $event"
+      ></ino-input>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Interplay with <code>[inoFocusTrap]</code></h3>
+  <p class="demo-section__note">
+    SPEC.md §3: inside an ancestor <code>[inoFocusTrap]</code>, this directive is a no-op —
+    unconditionally, even while the trap is disabled. The trap's own
+    <code>inoFocusTrapInitialFocus</code> owns initial placement instead. Toggle the trap below and
+    tab away, then toggle it back: with the trap present, the field below is <em>not</em>
+    re-focused on toggle, because <code>[inoAutofocus]</code> defers to the trap the moment it finds
+    one as an ancestor.
+  </p>
+  <button
+    type="button"
+    ino-button
+    variant="secondary"
+    [attr.aria-pressed]="trapPresent()"
+    (click)="trapPresent.set(!trapPresent())"
+  >
+    {{ trapPresent() ? 'Remove ancestor trap' : 'Add ancestor trap (disabled)' }}
+  </button>
+  <div class="demo-pane" style="margin-top: var(--ino-space-3);">
+    <ng-container *ngIf="trapPresent(); else noTrap">
+      <div inoFocusTrap [inoFocusTrapDisabled]="true" [inoFocusTrapAutoFocus]="false">
+        <ino-input
+          label="Inside a disabled ancestor trap"
+          hint="[inoAutofocus] here is a no-op regardless of the trap's own disabled state."
+          [value]="trapInterplayValue"
+          (valueChange)="trapInterplayValue = $event"
+          inoAutofocus
+          [inoAutofocusTrigger]="trapPresent()"
+        ></ino-input>
+      </div>
+    </ng-container>
+    <ng-template #noTrap>
+      <ino-input
+        label="No ancestor trap"
+        hint="Same [inoAutofocus] field, now with no trap above it — it runs normally."
+        [value]="trapInterplayValue"
+        (valueChange)="trapInterplayValue = $event"
+        inoAutofocus
+        [inoAutofocusTrigger]="trapPresent()"
+      ></ino-input>
+    </ng-template>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States, sizing and labels — <code>n/a (directive)</code></h3>
+  <p class="demo-section__note">
+    Recorded, not omitted (doc 26 §2 row 6; see <code>SPEC.md</code> §2). This is a behaviour-only
+    primitive: it paints nothing, so it has no hover / focus-visible / active / disabled / readonly
+    / invalid / loading state of its own, no size scale, and no label API — every one of those
+    belongs to whatever element ends up focused, exactly as <code>[inoFocusTrap]</code> and
+    <code>[inoKeyfilter]</code> record for the same reason. The one real, binary state is
+    <code>inoAutofocus</code> itself (on/off), demonstrated throughout this page via
+    <code>[inoAutofocus]="false"</code> on the element-form example above.
+  </p>
+</section>
