@@ -16,11 +16,16 @@ import {
   Output,
   EventEmitter,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   OnInit,
   OnChanges,
   SimpleChanges,
   HostBinding,
   HostListener,
+  ViewChildren,
+  QueryList,
+  ElementRef,
+  AfterViewInit,
 } from '@angular/core';
 import {
   InoTreeTableRow,
@@ -43,7 +48,7 @@ import {
   styleUrl: './ino-treetable.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class InoTreeTableComponent implements OnInit, OnChanges {
+export class InoTreeTableComponent implements OnInit, OnChanges, AfterViewInit {
   // ========== INPUTS ==========
 
   /**
@@ -156,6 +161,14 @@ export class InoTreeTableComponent implements OnInit, OnChanges {
    */
   @Output() expandedRowValuesChange = new EventEmitter<Set<string>>();
 
+  // ========== VIEW QUERIES ==========
+
+  /**
+   * All gridcell elements for keyboard navigation focus management.
+   */
+  @ViewChildren('[role="gridcell"]', { read: ElementRef })
+  gridCells!: QueryList<ElementRef<HTMLElement>>;
+
   // ========== INTERNAL STATE ==========
 
   /**
@@ -254,11 +267,22 @@ export class InoTreeTableComponent implements OnInit, OnChanges {
     return this.sortDirection ?? this._internalSortDirection;
   }
 
+  // ========== CONSTRUCTOR ==========
+
+  constructor(private cdr: ChangeDetectorRef) {}
+
   // ========== LIFECYCLE ==========
 
   ngOnInit(): void {
     this.recomputeRows();
     this.initializeActiveCell();
+  }
+
+  ngAfterViewInit(): void {
+    // Focus the initial active cell after view is ready
+    if (this.activeCell) {
+      this.focusActiveCell();
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -469,10 +493,12 @@ export class InoTreeTableComponent implements OnInit, OnChanges {
   /**
    * Updates tabindex attributes: activeCell gets 0, all others get -1.
    * Called after every navigation.
+   *
+   * Note: No implementation needed - template reactively binds [tabindex]
+   * via getCellTabindex(), which automatically updates when activeCell changes.
    */
   private updateTabindices(): void {
-    // TODO: Implement via @ViewChildren or directive on <td> elements
-    // For now, this is a placeholder - template will bind [tabindex] reactively
+    // No-op: Angular change detection handles tabindex updates via getCellTabindex()
   }
 
   /**
@@ -690,11 +716,31 @@ export class InoTreeTableComponent implements OnInit, OnChanges {
 
   /**
    * Focuses the DOM element corresponding to activeCell.
-   * TODO: Implement via ViewChild/ElementRef.
+   * Uses ViewChildren to find the cell matching activeCell coordinates.
    */
   private focusActiveCell(): void {
-    // Placeholder - template will need to expose cells via @ViewChildren
-    // For now, rely on tabindex binding to guide screen readers
+    if (!this.activeCell || !this.gridCells) return;
+
+    const { rowIndex, columnIndex } = this.activeCell;
+
+    // Mark for change detection to update tabindex bindings
+    this.cdr.markForCheck();
+
+    // Use requestAnimationFrame to ensure DOM is updated after expand/collapse
+    requestAnimationFrame(() => {
+      // Find the cell element with matching data attributes
+      const cellElement = this.gridCells.find((el) => {
+        const elem = el.nativeElement;
+        return (
+          elem.getAttribute('data-row-index') === String(rowIndex) &&
+          elem.getAttribute('data-col-index') === String(columnIndex)
+        );
+      });
+
+      if (cellElement) {
+        cellElement.nativeElement.focus();
+      }
+    });
   }
 
   // ========== SORTING (SPEC §5) ==========

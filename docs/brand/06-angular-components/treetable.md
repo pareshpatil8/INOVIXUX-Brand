@@ -277,7 +277,7 @@ See `web/src/app/components/treetable/SPEC.md` for full architectural decisions,
 
 ## Testing Notes
 
-- **Keyboard navigation**: All arrow keys, Home/End, PageUp/Down, Ctrl+Home/End tested across tree levels
+- **Keyboard navigation**: Implementation completed in INO-882. Requires QA validation of all arrow keys, Home/End, PageUp/Down, Ctrl+Home/End across tree levels
 - **Screen reader**: Verified NVDA/JAWS announcement of tree structure, expansion state, sort direction
 - **Touch targets**: All interactive elements (chevrons, sort buttons) measured ≥24×24px
 - **Contrast**: All text/border/background combinations verified ≥4.5:1 (AA) or ≥3:1 (large text)
