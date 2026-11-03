@@ -1,6 +1,6 @@
 {
   "generatedFrom": "previews/*.html @dsCard markers",
-  "cardCount": 50,
+  "cardCount": 54,
   "cards": [
     {
       "id": "button",
@@ -9,10 +9,22 @@
       "doc": "button.md"
     },
     {
+      "id": "orderlist",
+      "group": "Data",
+      "preview": "previews/orderlist.html",
+      "doc": "orderlist.md"
+    },
+    {
       "id": "paginator",
       "group": "Data",
       "preview": "previews/paginator.html",
       "doc": "paginator.md"
+    },
+    {
+      "id": "picklist",
+      "group": "Data",
+      "preview": "previews/picklist.html",
+      "doc": "picklist.md"
     },
     {
       "id": "table",
@@ -183,6 +195,12 @@
       "doc": "form-label-tokens.md"
     },
     {
+      "id": "accordion",
+      "group": "Layout",
+      "preview": "previews/accordion.html",
+      "doc": "accordion.md"
+    },
+    {
       "id": "card",
       "group": "Layout",
       "preview": "previews/card.html",
@@ -199,6 +217,12 @@
       "group": "Media",
       "preview": "previews/imagery-illustration.html",
       "doc": "imagery-illustration.md"
+    },
+    {
+      "id": "context-menu",
+      "group": "Menus",
+      "preview": "previews/context-menu.html",
+      "doc": "context-menu.md"
     },
     {
       "id": "alert",

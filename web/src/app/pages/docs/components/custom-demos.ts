@@ -32,6 +32,8 @@ import { AccordionDemoComponent } from './demos/accordion-demo.component';
 import { CommandMenuDemoComponent } from './demos/command-menu-demo.component';
 import { SplitterDemoComponent } from './demos/splitter-demo.component';
 import { ContextMenuDemoComponent } from './demos/context-menu-demo.component';
+import { OrderListDemoComponent } from './demos/orderlist-demo.component';
+import { PickListDemoComponent } from './demos/picklist-demo.component';
 
 /**
  * Slug -> hand-authored demo component, for components whose §2 Component Publish Contract
@@ -151,4 +153,13 @@ export const CUSTOM_DEMOS: Record<string, Type<unknown>> = {
   // instantiate the component but cannot apply the directive to a host template, so `items` stays
   // `[]` and `visible` stays `false` → a permanently-closed, empty menu with no right-click target.
   'context-menu': ContextMenuDemoComponent,
+  // `options`/`value` (order + selection) can't be seeded by the generic renderer's
+  // `defaultValueFor()` (empty array), and the move-button/reorder flow needs real data plus
+  // two-way wiring of `optionsChange`/`valueChange` to be exercisable at all. See
+  // `orderlist/SPEC.md`.
+  'orderlist': OrderListDemoComponent,
+  // Two paired array inputs (`source`/`target`) plus two selection arrays — the generic
+  // single-axis `@Input` grid has no concept of a component with two independently-bound list
+  // inputs. See `picklist/SPEC.md`.
+  'picklist': PickListDemoComponent,
 };

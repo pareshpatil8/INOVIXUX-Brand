@@ -1310,7 +1310,7 @@
           },
           {
             "name": "onSubmenuMouseEnter",
-            "params": "item: InoContextMenuItem",
+            "params": "item: InoContextMenuItem, itemIndex: number",
             "returnType": "void",
             "description": "Handle submenu hover (open after delay)."
           },
@@ -1325,6 +1325,12 @@
             "params": "item: InoContextMenuItem, index: number",
             "returnType": "boolean",
             "description": "Check if item is currently focused (for roving tabindex)."
+          },
+          {
+            "name": "isSubmenuItemFocused",
+            "params": "child: InoContextMenuItem, index: number",
+            "returnType": "boolean",
+            "description": "Check if submenu item is currently focused (for roving tabindex in submenu)."
           },
           {
             "name": "trackByIndex",
@@ -4131,6 +4137,114 @@
         ]
       }
     },
+    "orderlist": {
+      "name": "ino-orderlist",
+      "docPath": "docs/brand/06-angular-components/orderlist.md",
+      "a11y": "<p><strong>Role / ARIA</strong> — <code>role=\"listbox\"</code> <code>aria-multiselectable=\"true\"</code> container; each row\n<code>role=\"option\"</code> with <code>aria-selected</code> reflecting its checked state; <code>aria-disabled</code>/<code>aria-busy</code>\nmirror <code>disabled</code>/<code>loading</code>.</p>\n<p><strong>Keyboard</strong> —</p>\n<table>\n<thead>\n<tr>\n<th>Key</th>\n<th>Action</th>\n</tr>\n</thead>\n<tbody><tr>\n<td><code>Tab</code> / <code>Shift+Tab</code></td>\n<td>Moves focus onto/off the one row carrying <code>tabindex=\"0\"</code>, and through the button rail</td>\n</tr>\n<tr>\n<td><code>ArrowDown</code> / <code>ArrowUp</code></td>\n<td>Move the roving tab stop (focus only — does not change selection)</td>\n</tr>\n<tr>\n<td><code>Home</code> / <code>End</code></td>\n<td>Jump focus to the first/last row</td>\n</tr>\n<tr>\n<td><code>Space</code> / <code>Enter</code></td>\n<td>Toggle the focused row's checked state</td>\n</tr>\n<tr>\n<td><code>Alt+ArrowUp</code> / <code>Alt+ArrowDown</code></td>\n<td>Move the checked row(s) up/down one position — same as the <code>Up</code>/<code>Down</code> buttons</td>\n</tr>\n<tr>\n<td><code>Alt+Home</code> / <code>Alt+End</code></td>\n<td>Move the checked row(s) to the top/bottom — same as the <code>Top</code>/<code>Bottom</code> buttons</td>\n</tr>\n</tbody></table>\n<p><strong>Contrast</strong> — selected-row text (<code>--ino-color-accent-text-safe</code>) and the moved-flash outline\n(<code>--ino-color-accent</code>) are existing audited roles (<code>check-theme-parity.mjs</code>), across all 3 themes.</p>\n<p><strong>Target size</strong> — every row and button clears <code>min-block-size</code>/<code>--ino-target-comfortable</code> at every\nsize rung.</p>\n<p><strong>RTL</strong> — logical properties only (<code>padding-inline</code>, <code>inset-inline-*</code>); no <code>left</code>/<code>right</code> anywhere\nin the stylesheet.</p>\n<hr />\n",
+      "notes": "<ul>\n<li><strong>Native HTML5 drag-and-drop.</strong> The button rail + <code>Alt+Arrow</code> keyboard shortcuts are the\ncomplete reorder implementation, not a fallback for a drag interaction this component doesn't\nbuild. See <code>SPEC.md</code> §1.</li>\n<li><strong>Filter box / virtualization.</strong> Both exist on <code>ino-listbox</code> (this component's structural core)\nbut are deliberately not carried over — a filter that hides rows mid-reorder makes \"move up\"\nambiguous. See <code>SPEC.md</code> §3.</li>\n<li><strong>Mobile port.</strong> Doc 26 §5 marks this row Web-only; no React Native / Flutter implementation.</li>\n</ul>\n",
+      "mobile": "<p>Not ported — doc 26 §5 disposition for this row is explicitly Web-only.</p>\n",
+      "api": {
+        "props": [
+          {
+            "name": "label",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "options",
+            "type": "InoOrderListOption[]",
+            "values": null,
+            "default": "[]",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "value",
+            "type": "string[]",
+            "values": null,
+            "default": "[]",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "hint",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "error",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "size",
+            "type": "'compact' | 'comfortable'",
+            "values": [
+              "compact",
+              "comfortable"
+            ],
+            "default": "'comfortable'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "required",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "readonly",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "loading",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          }
+        ],
+        "events": [
+          {
+            "name": "valueChange",
+            "type": "string[]",
+            "description": null
+          },
+          {
+            "name": "optionsChange",
+            "type": "InoOrderListOption[]",
+            "description": null
+          }
+        ],
+        "methods": [],
+        "templates": []
+      }
+    },
     "paginator": {
       "name": "ino-paginator",
       "docPath": "docs/brand/06-angular-components/paginator.md",
@@ -4573,6 +4687,148 @@
         "templates": []
       }
     },
+    "picklist": {
+      "name": "ino-picklist",
+      "docPath": "docs/brand/06-angular-components/picklist.md",
+      "a11y": "<p><strong>Role / ARIA</strong> — each pane is its own <code>role=\"listbox\"</code> <code>aria-multiselectable=\"true\"</code> container;\neach row is <code>role=\"option\"</code> with <code>aria-selected</code> reflecting its pane's checked state.</p>\n<p><strong>Keyboard</strong> —</p>\n<table>\n<thead>\n<tr>\n<th>Key</th>\n<th>Action</th>\n</tr>\n</thead>\n<tbody><tr>\n<td><code>Tab</code> / <code>Shift+Tab</code></td>\n<td>Moves focus between the two panes' roving tab stops and the button rail</td>\n</tr>\n<tr>\n<td><code>ArrowDown</code> / <code>ArrowUp</code></td>\n<td>Move the roving tab stop within the focused pane (focus only)</td>\n</tr>\n<tr>\n<td><code>Home</code> / <code>End</code></td>\n<td>Jump focus to the first/last row in the focused pane</td>\n</tr>\n<tr>\n<td><code>Space</code> / <code>Enter</code></td>\n<td>Toggle the focused row's checked state</td>\n</tr>\n<tr>\n<td><code>Alt+ArrowRight</code> (source row)</td>\n<td>Move that row — or the whole source selection if the focused row is part of it — to the target pane</td>\n</tr>\n<tr>\n<td><code>Alt+ArrowLeft</code> (target row)</td>\n<td>Same, in reverse</td>\n</tr>\n</tbody></table>\n<p><strong>Contrast</strong> — selected-row text (<code>--ino-color-accent-text-safe</code>) and the moved-flash outline\n(<code>--ino-color-accent</code>) are existing audited roles (<code>check-theme-parity.mjs</code>), across all 3 themes.</p>\n<p><strong>Target size</strong> — every row and button clears <code>min-block-size</code>/<code>--ino-target-comfortable</code> at every\nsize rung.</p>\n<p><strong>RTL</strong> — logical properties only (<code>padding-inline</code>, <code>inset-inline-*</code>, <code>min-inline-size</code>); no\n<code>left</code>/<code>right</code> anywhere in the stylesheet.</p>\n<hr />\n",
+      "notes": "<ul>\n<li><strong>Native HTML5 drag-and-drop.</strong> Same reasoning as <code>ino-orderlist</code> — see <code>SPEC.md</code> §1.</li>\n<li><strong>Composing two <code>&lt;ino-listbox&gt;</code> instances.</strong> Re-implemented directly to colocate per-pane roving\nfocus, selection, and moved-flash state in one component. See <code>SPEC.md</code> §2.</li>\n<li><strong>Mobile port.</strong> Doc 26 §5 marks this row Web-only; no React Native / Flutter implementation.</li>\n</ul>\n",
+      "mobile": "<p>Not ported — doc 26 §5 disposition for this row is explicitly Web-only.</p>\n",
+      "api": {
+        "props": [
+          {
+            "name": "sourceLabel",
+            "type": "string",
+            "values": null,
+            "default": "'Available'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "targetLabel",
+            "type": "string",
+            "values": null,
+            "default": "'Selected'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "source",
+            "type": "InoPickListOption[]",
+            "values": null,
+            "default": "[]",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "target",
+            "type": "InoPickListOption[]",
+            "values": null,
+            "default": "[]",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "sourceSelection",
+            "type": "string[]",
+            "values": null,
+            "default": "[]",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "targetSelection",
+            "type": "string[]",
+            "values": null,
+            "default": "[]",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "hint",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "error",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "size",
+            "type": "'compact' | 'comfortable'",
+            "values": [
+              "compact",
+              "comfortable"
+            ],
+            "default": "'comfortable'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "required",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "readonly",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "loading",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          }
+        ],
+        "events": [
+          {
+            "name": "sourceChange",
+            "type": "InoPickListOption[]",
+            "description": null
+          },
+          {
+            "name": "targetChange",
+            "type": "InoPickListOption[]",
+            "description": null
+          },
+          {
+            "name": "sourceSelectionChange",
+            "type": "string[]",
+            "description": null
+          },
+          {
+            "name": "targetSelectionChange",
+            "type": "string[]",
+            "description": null
+          }
+        ],
+        "methods": [],
+        "templates": []
+      }
+    },
     "popover": {
       "name": "ino-popover",
       "docPath": "docs/brand/06-angular-components/popover.md",
@@ -4948,6 +5204,73 @@
             "params": "value: string, checked: boolean",
             "returnType": "void",
             "description": "`<ino-radio>`'s `checkedChange` only ever fires `true` for a user click (native radios can't be unchecked by clicking the checked one), but the guard is explicit rather than assumed."
+          }
+        ],
+        "templates": []
+      }
+    },
+    "scrolltop": {
+      "name": "ino-scrolltop",
+      "docPath": null,
+      "a11y": null,
+      "notes": null,
+      "mobile": null,
+      "api": {
+        "props": [
+          {
+            "name": "target",
+            "type": "InoScrolltopTarget",
+            "values": [
+              "window",
+              "parent"
+            ],
+            "default": "'window'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "threshold",
+            "type": "number",
+            "values": null,
+            "default": "400",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "behavior",
+            "type": "InoScrolltopBehavior",
+            "values": [
+              "smooth",
+              "auto"
+            ],
+            "default": "'smooth'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "ariaLabel",
+            "type": "string",
+            "values": null,
+            "default": "'Scroll to top'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "focusTarget",
+            "type": "string | null",
+            "values": null,
+            "default": "null",
+            "optional": true,
+            "description": "CSS selector for the element to focus after activation. Falls back to `<body>`."
+          }
+        ],
+        "events": [],
+        "methods": [
+          {
+            "name": "activate",
+            "params": null,
+            "returnType": "void",
+            "description": "Scroll the configured target to its origin, honouring `prefers-reduced-motion`."
           }
         ],
         "templates": []
@@ -6700,19 +7023,7 @@
       "notes": null,
       "mobile": null,
       "api": {
-        "props": [
-          {
-            "name": "density",
-            "type": "'comfortable' | 'dense'",
-            "values": [
-              "comfortable",
-              "dense"
-            ],
-            "default": "'comfortable'",
-            "optional": true,
-            "description": "Sizing density mode. - comfortable: 44px min-height, 16px vertical padding (default) - dense: 32px min-height, 8px vertical padding"
-          }
-        ],
+        "props": [],
         "events": [],
         "methods": [],
         "templates": [

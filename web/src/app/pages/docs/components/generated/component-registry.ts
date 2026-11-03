@@ -43,14 +43,17 @@ import { InoMetricPanelComponent } from '../../../../components/metric-panel/ino
 import { InoModalComponent } from '../../../../components/modal/ino-modal.component';
 import { InoMultiSelectComponent } from '../../../../components/multiselect/ino-multiselect.component';
 import { InoNavComponent } from '../../../../components/nav/ino-nav.component';
+import { InoOrderListComponent } from '../../../../components/orderlist/ino-orderlist.component';
 import { InoPaginatorComponent } from '../../../../components/paginator/ino-paginator.component';
 import { InoPanelComponent } from '../../../../components/panel/ino-panel.component';
 import { InoPanelMenuComponent } from '../../../../components/panel-menu/ino-panel-menu.component';
 import { InoPasswordComponent } from '../../../../components/password/ino-password.component';
+import { InoPickListComponent } from '../../../../components/picklist/ino-picklist.component';
 import { InoPopoverComponent } from '../../../../components/popover/ino-popover.component';
 import { InoProgressBarComponent } from '../../../../components/progress-bar/ino-progress-bar.component';
 import { InoProgressSpinnerComponent } from '../../../../components/progress-spinner/ino-progress-spinner.component';
 import { InoRadioGroupComponent } from '../../../../components/radio-group/ino-radio-group.component';
+import { InoScrolltopComponent } from '../../../../components/scrolltop/ino-scrolltop.component';
 import { InoSelectComponent } from '../../../../components/select/ino-select.component';
 import { InoSelectButtonComponent } from '../../../../components/select-button/ino-select-button.component';
 import { InoSkeletonComponent } from '../../../../components/skeleton/ino-skeleton.component';
@@ -112,14 +115,17 @@ export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'modal': InoModalComponent,
   'multiselect': InoMultiSelectComponent,
   'nav': InoNavComponent,
+  'orderlist': InoOrderListComponent,
   'paginator': InoPaginatorComponent,
   'panel': InoPanelComponent,
   'panel-menu': InoPanelMenuComponent,
   'password': InoPasswordComponent,
+  'picklist': InoPickListComponent,
   'popover': InoPopoverComponent,
   'progress-bar': InoProgressBarComponent,
   'progress-spinner': InoProgressSpinnerComponent,
   'radio-group': InoRadioGroupComponent,
+  'scrolltop': InoScrolltopComponent,
   'select': InoSelectComponent,
   'select-button': InoSelectButtonComponent,
   'skeleton': InoSkeletonComponent,

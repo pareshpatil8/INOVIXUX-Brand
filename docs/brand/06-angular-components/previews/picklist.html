@@ -1,0 +1,260 @@
+<!-- @dsCard group="Data" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ino-picklist — dual-list transfer, move buttons + Alt+Arrow keyboard (INO-456)</title>
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-eyebrow-size);
+    letter-spacing: var(--ino-type-eyebrow-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 60ch; }
+
+  .theme-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); }
+  .theme-pane {
+    flex: 1 1 320px;
+    padding: var(--ino-space-5);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-xl);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+  }
+  .theme-pane > h3 {
+    margin: 0 0 var(--ino-space-4);
+    font-size: var(--ino-type-body-sm-size);
+    color: var(--ino-color-on-surface-muted);
+    font-weight: 600;
+  }
+
+  .row { display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--ino-space-5); }
+
+  /* Mirrors web/src/app/components/picklist/ino-picklist.component.scss — same class names and
+     token bindings, so a divergence between this preview and the shipped component is visible. */
+  .ino-field { display: flex; flex-direction: column; gap: var(--ino-space-2); }
+  .ino-field--disabled .ino-picklist__list { opacity: 0.5; }
+  .ino-field__label { font-size: var(--ino-type-body-sm-size); font-weight: 600; color: var(--ino-color-on-surface); }
+  .ino-field__required { color: var(--ino-color-danger); }
+
+  .ino-picklist__body { display: flex; align-items: flex-start; gap: var(--ino-space-3); }
+  .ino-picklist__pane { flex: 1 1 0; min-width: 160px; display: flex; flex-direction: column; gap: var(--ino-space-2); }
+  .ino-picklist__list {
+    margin: 0;
+    padding: var(--ino-space-1) 0;
+    list-style: none;
+    block-size: calc(var(--ino-control-height-default) * 4);
+    overflow-y: auto;
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-md);
+    background: var(--ino-color-surface-sunken);
+  }
+  .ino-picklist__list--compact { block-size: calc(var(--ino-control-height-sm) * 4); }
+  .ino-picklist__option {
+    padding: 0 var(--ino-space-4);
+    min-block-size: var(--ino-control-height-default);
+    display: flex;
+    align-items: center;
+    gap: var(--ino-space-3);
+    color: var(--ino-color-on-surface);
+    cursor: pointer;
+  }
+  .ino-picklist__option--compact { min-block-size: var(--ino-control-height-sm); }
+  .ino-picklist__option:hover:not(.ino-picklist__option--disabled) { background: var(--ino-color-surface-raised); }
+  .ino-picklist__option:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: calc(-1 * var(--ino-focus-ring-offset));
+    background: var(--ino-color-surface-raised);
+  }
+  .ino-picklist__option--selected { color: var(--ino-color-accent-text-safe); font-weight: 600; background: var(--ino-color-surface-raised); }
+  .ino-picklist__option--disabled { color: var(--ino-color-on-surface-subtle); cursor: not-allowed; }
+  .ino-picklist__option--moved-flash { background: var(--ino-color-surface-raised); box-shadow: inset 0 0 0 1px var(--ino-color-accent); }
+  .ino-picklist__checkbox { inline-size: 16px; block-size: 16px; flex: 0 0 auto; accent-color: var(--ino-color-accent); pointer-events: none; }
+  .ino-picklist__controls { display: flex; flex-direction: column; gap: var(--ino-space-2); flex: 0 0 auto; align-self: center; }
+  .ino-picklist__controls button {
+    font: inherit;
+    padding: var(--ino-space-1) var(--ino-space-3);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-sm);
+    background: var(--ino-color-surface-raised);
+    color: var(--ino-color-on-surface);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .ino-picklist__controls button:disabled { opacity: 0.5; cursor: not-allowed; }
+  .ino-picklist__hint { margin: 0; font-size: var(--ino-type-body-sm-size); color: var(--ino-color-on-surface-muted); }
+  .ino-picklist__error { margin: 0; font-size: var(--ino-type-body-sm-size); color: var(--ino-color-danger); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<h1>PickList — dual-list transfer</h1>
+<p class="lede">
+  Two independent checkbox-listbox panes with a four-button transfer rail between them (or
+  <code>Alt+ArrowRight</code>/<code>Alt+ArrowLeft</code> on a focused row). No drag-and-drop —
+  see <code>SPEC.md</code> §1.
+</p>
+
+<h2>Theme × default</h2>
+<div class="theme-row">
+
+  <div class="theme-pane">
+    <h3>dark — :root (default)</h3>
+    <div class="ino-field">
+      <div class="ino-picklist__body">
+        <div class="ino-picklist__pane">
+          <span class="ino-field__label">Available checks</span>
+          <ul class="ino-picklist__list" role="listbox" aria-multiselectable="true" aria-label="Available checks">
+            <li class="ino-picklist__option" role="option" tabindex="0" aria-selected="false">Aadhaar verification</li>
+            <li class="ino-picklist__option ino-picklist__option--selected" role="option" tabindex="-1" aria-selected="true">
+              <input class="ino-picklist__checkbox" type="checkbox" tabindex="-1" aria-hidden="true" checked />GSTIN lookup
+            </li>
+            <li class="ino-picklist__option ino-picklist__option--disabled" role="option" aria-disabled="true" aria-selected="false">Director KYC (locked)</li>
+          </ul>
+        </div>
+        <div class="ino-picklist__controls">
+          <button type="button">To Selected →</button>
+          <button type="button">All →</button>
+          <button type="button" disabled>← All</button>
+          <button type="button" disabled>← To Available</button>
+        </div>
+        <div class="ino-picklist__pane">
+          <span class="ino-field__label">Selected checks</span>
+          <ul class="ino-picklist__list" role="listbox" aria-multiselectable="true" aria-label="Selected checks">
+            <li class="ino-picklist__option" role="option" tabindex="0" aria-selected="false">PAN validation</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="light">
+    <h3>light — [data-theme="light"]</h3>
+    <div class="ino-field">
+      <div class="ino-picklist__body">
+        <div class="ino-picklist__pane">
+          <span class="ino-field__label">Available checks</span>
+          <ul class="ino-picklist__list" role="listbox" aria-multiselectable="true" aria-label="Available checks">
+            <li class="ino-picklist__option" role="option" tabindex="0" aria-selected="false">Bank statement parse</li>
+          </ul>
+        </div>
+        <div class="ino-picklist__controls">
+          <button type="button" disabled>To Selected →</button>
+          <button type="button">All →</button>
+          <button type="button">← All</button>
+          <button type="button" disabled>← To Available</button>
+        </div>
+        <div class="ino-picklist__pane">
+          <span class="ino-field__label">Selected checks — moved-flash</span>
+          <ul class="ino-picklist__list" role="listbox" aria-multiselectable="true" aria-label="Selected checks">
+            <li class="ino-picklist__option ino-picklist__option--moved-flash" role="option" tabindex="0" aria-selected="false">PAN validation</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="high-contrast">
+    <h3>high-contrast — [data-theme="high-contrast"]</h3>
+    <div class="ino-field">
+      <div class="ino-picklist__body">
+        <div class="ino-picklist__pane">
+          <span class="ino-field__label">Available checks</span>
+          <ul class="ino-picklist__list" role="listbox" aria-multiselectable="true" aria-label="Available checks" aria-describedby="picklist-error-demo">
+            <li class="ino-picklist__option" role="option" tabindex="0" aria-selected="false">Aadhaar verification</li>
+          </ul>
+        </div>
+        <div class="ino-picklist__controls">
+          <button type="button" disabled>To Selected →</button>
+          <button type="button">All →</button>
+          <button type="button" disabled>← All</button>
+          <button type="button" disabled>← To Available</button>
+        </div>
+        <div class="ino-picklist__pane">
+          <span class="ino-field__label">Selected checks — invalid</span>
+          <ul class="ino-picklist__list" role="listbox" aria-multiselectable="true" aria-label="Selected checks"></ul>
+        </div>
+      </div>
+      <p class="ino-picklist__error" id="picklist-error-demo" role="alert">Select at least one check.</p>
+    </div>
+  </div>
+
+</div>
+
+<h2>Sizing — compact / comfortable</h2>
+<div class="row">
+  <div class="ino-field">
+    <div class="ino-picklist__body">
+      <div class="ino-picklist__pane">
+        <span class="ino-field__label">Compact — source</span>
+        <ul class="ino-picklist__list ino-picklist__list--compact" role="listbox" aria-multiselectable="true" aria-label="Compact source">
+          <li class="ino-picklist__option ino-picklist__option--compact" role="option" tabindex="0" aria-selected="false">Row 1</li>
+        </ul>
+      </div>
+      <div class="ino-picklist__pane">
+        <span class="ino-field__label">Compact — target</span>
+        <ul class="ino-picklist__list ino-picklist__list--compact" role="listbox" aria-multiselectable="true" aria-label="Compact target"></ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>States</h2>
+<div class="row">
+  <div class="ino-field ino-field--disabled">
+    <span class="ino-field__label">Disabled</span>
+    <ul class="ino-picklist__list" role="listbox" aria-multiselectable="true" aria-label="Disabled" aria-disabled="true">
+      <li class="ino-picklist__option" role="option" aria-selected="false">Row 1</li>
+    </ul>
+  </div>
+  <div class="ino-field">
+    <span class="ino-field__label">Loading</span>
+    <ul class="ino-picklist__list" role="listbox" aria-multiselectable="true" aria-label="Loading" aria-busy="true">
+      <li class="ino-picklist__option" role="option" tabindex="0" aria-selected="false">Row 1</li>
+    </ul>
+  </div>
+  <div class="ino-field">
+    <span class="ino-field__label">Required<span class="ino-field__required" aria-hidden="true"> *</span></span>
+    <ul class="ino-picklist__list" role="listbox" aria-multiselectable="true" aria-label="Required">
+      <li class="ino-picklist__option" role="option" tabindex="0" aria-selected="false">Row 1</li>
+    </ul>
+  </div>
+</div>
+
+<h2>RTL</h2>
+<div class="row" dir="rtl">
+  <div class="ino-field">
+    <div class="ino-picklist__body">
+      <div class="ino-picklist__pane">
+        <span class="ino-field__label">المتاحة</span>
+        <ul class="ino-picklist__list" role="listbox" aria-multiselectable="true" aria-label="المتاحة">
+          <li class="ino-picklist__option ino-picklist__option--selected" role="option" tabindex="0" aria-selected="true">التحقق من آدهار</li>
+        </ul>
+      </div>
+      <div class="ino-picklist__controls">
+        <button type="button">المحددة ←</button>
+      </div>
+      <div class="ino-picklist__pane">
+        <span class="ino-field__label">المحددة</span>
+        <ul class="ino-picklist__list" role="listbox" aria-multiselectable="true" aria-label="المحددة"></ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

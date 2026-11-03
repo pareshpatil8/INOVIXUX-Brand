@@ -1,0 +1,48 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Default (comfortable)</h3>
+  <p class="demo-section__note">
+    Check one or more rows (click/<code>Space</code>), then use the Top/Up/Down/Bottom buttons —
+    or <code>Alt+ArrowUp</code>/<code>Alt+ArrowDown</code>/<code>Alt+Home</code>/<code>Alt+End</code>
+    on a focused row — to reorder. The moved row(s) briefly show the <code>moved-flash</code> state.
+    "Compliance sign-off" is disabled and cannot be selected or moved.
+  </p>
+  <div class="demo-row">
+    <ino-orderlist
+      label="Queue order"
+      [options]="comfortableOptions"
+      [value]="comfortableValue"
+      (optionsChange)="onComfortableOptionsChange($event)"
+      (valueChange)="onComfortableValueChange($event)"
+    ></ino-orderlist>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Sizing — compact</h3>
+  <p class="demo-section__note">
+    <code>size="compact"</code> re-points the row-height/padding/font-size aliases to the `-sm`
+    tier (doc 26 §5: "compact/comfortable"), same axis <code>ino-accordion</code>/
+    <code>ino-panel-menu</code> use.
+  </p>
+  <div class="demo-row">
+    <ino-orderlist
+      label="Queue order (compact)"
+      size="compact"
+      [options]="compactOptions"
+      [value]="compactValue"
+      (optionsChange)="onCompactOptionsChange($event)"
+      (valueChange)="onCompactValueChange($event)"
+    ></ino-orderlist>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States</h3>
+  <p class="demo-section__note">Disabled, readonly, loading, and invalid (error text) states.</p>
+  <div class="demo-row">
+    <ino-orderlist label="Disabled" disabled [options]="disabledOptions" [value]="disabledValue"></ino-orderlist>
+    <ino-orderlist label="Readonly" readonly [options]="disabledOptions" [value]="disabledValue"></ino-orderlist>
+    <ino-orderlist label="Loading" loading [options]="disabledOptions" [value]="disabledValue"></ino-orderlist>
+    <ino-orderlist label="Invalid" error="Select at least one item to continue." [options]="disabledOptions" [value]="[]"></ino-orderlist>
+  </div>
+</section>
