@@ -124,7 +124,7 @@ Follows WAI-ARIA APG treegrid pattern with roving tabindex (only one cell in the
 
 ---
 
-## Accessibility
+## Accessibility contract
 
 - **Role**: `role=treegrid` on container (composite of `role=grid` + `role=tree`)
 - **Row roles**: `role=row` on each `<tr>`
@@ -265,13 +265,25 @@ See `web/src/app/components/treetable/SPEC.md` for full architectural decisions,
 
 ---
 
-## Known Limitations
+## Deliberate omissions
 
-1. **Web-only** — Mobile port deferred per spec row (complex touch gestures for 2D navigation TBD)
-2. **No row selection** — Multi-select checkbox pattern deferred (requires ARIA `aria-multiselectable`)
-3. **No cell editing** — Inline edit deferred (requires `role=gridcell` → focused edit control handoff)
-4. **No column reordering** — Drag-to-reorder deferred (requires accessible drag pattern)
-5. **Client-side sort only** — Server-side sort requires external state management via `sort` event
+- **Row selection (multi-select checkbox pattern)** — deferred per `SPEC.md` §8. Requires `aria-multiselectable="true"` on the `treegrid` root and `aria-selected` on every `row`, plus a shift-click / Ctrl+A selection model. Out of scope for this phase; the `cellActivate` event gives consumers a hook to build their own selection overlay if needed now.
+- **Cell editing** — deferred per `SPEC.md` §8. Inline edit requires handing focus from `role=gridcell` to a contained edit control, then restoring the roving tabindex on commit/cancel. No design-approved inline-edit pattern exists yet.
+- **Column reordering** — deferred per `SPEC.md` §8. Accessible drag-to-reorder (pointer + keyboard drag) is a design-system-level pattern not yet specified; frozen-column logic would need to account for reorder.
+- **Server-side sort** — not a component-level feature by design. The `sort` event gives the consumer full control over data; the component only tracks and displays the sort direction indicator. Consumers who need server-side sort manage it externally.
+- **`aria-readonly` on the treegrid root** — `role=treegrid` does not support `aria-readonly` (the attribute is only valid on `role=combobox`/`listbox`/`radiogroup`/`spinbutton`/`textbox`). The `readonly` input is a visual-state-only guard; screen-reader users must rely on focus order and element-level announcements within cells.
+
+**PrimeNG mapping:** PrimeNG `TreeTable` → `ino-treetable`. The core API (`value`, `columns`, `lazy`, sort) is covered. Features deliberately cut from this phase are noted above. Full table: `SPEC.md` §9.
+
+---
+
+## Mobile parity
+
+| Track | Status | Notes |
+|---|---|---|
+| Capacitor | Not a port | Renders the same Angular component and the same CSS (INO-31 plan rev 9 §5 rule) — done the moment the web component passes. |
+| React Native | Not ported | Web-only per doc 26 §5 row specification. 2D keyboard grid navigation and multi-level tree expansion have no idiomatic touch equivalent in this phase; deferred to a future spec row. |
+| Flutter | Not ported | Web-only per doc 26 §5 row specification. Same reasoning as React Native: no Flutter primitive maps cleanly to the treegrid ARIA pattern and pointer-or-keyboard 2D navigation model. |
 
 ---
 
