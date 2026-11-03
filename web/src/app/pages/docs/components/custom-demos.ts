@@ -38,6 +38,7 @@ import { TreeTableDemoComponent } from './demos/treetable-demo.component';
 import { BadgeDemoComponent } from './demos/badge-demo.component';
 import { DataViewDemoComponent } from './demos/dataview-demo.component';
 import { AutofocusDemoComponent } from './demos/autofocus-demo.component';
+import { TreeDemoComponent } from './demos/tree-demo.component';
 
 /**
  * Slug -> hand-authored demo component, for components whose §2 Component Publish Contract
@@ -188,4 +189,9 @@ export const CUSTOM_DEMOS: Record<string, Type<unknown>> = {
   // real focusable targets to show placement, `inoAutofocusDelay` and the opt-out. See
   // `autofocus/SPEC.md` §2.
   'autofocus': AutofocusDemoComponent,
+  // `nodes: InoTreeNode[]` is the same recursive-array gap `treetable`/`menu`/`panel-menu`/
+  // `breadcrumb`/`cascade-select` hit (empty array default), and the whole visible surface —
+  // tree structure, expand/collapse, basic/checkbox selection, lazy loading, filter — is driven by
+  // that array. See `tree/SPEC.md` for the full state/sizing contract.
+  'tree': TreeDemoComponent,
 };

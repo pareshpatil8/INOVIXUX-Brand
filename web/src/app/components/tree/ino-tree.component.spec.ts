@@ -154,6 +154,10 @@ describe('InoTreeComponent', () => {
   });
 
   it('filter narrows to matching branches and auto-expands them', () => {
+    // Fresh fixture: `filter` must be set before the *first* `detectChanges()` — same pattern
+    // `ino-listbox`'s own filter-mode spec uses (a second `detectChanges()` on an already-rendered
+    // OnPush fixture does not re-run `ngOnChanges` here).
+    fixture = TestBed.createComponent(HostComponent);
     fixture.componentInstance.filter = true;
     fixture.detectChanges();
 
@@ -167,6 +171,7 @@ describe('InoTreeComponent', () => {
   });
 
   it('filter with zero matches renders the empty state', () => {
+    fixture = TestBed.createComponent(HostComponent);
     fixture.componentInstance.filter = true;
     fixture.detectChanges();
 
@@ -179,6 +184,7 @@ describe('InoTreeComponent', () => {
   });
 
   it('expanding a lazy node with hasChildren and no loaded children emits loadChildren', () => {
+    fixture = TestBed.createComponent(HostComponent);
     fixture.componentInstance.nodes = [{ label: 'Archive', value: 'archive', hasChildren: true }];
     fixture.detectChanges();
 

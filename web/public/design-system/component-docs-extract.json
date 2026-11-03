@@ -403,92 +403,8 @@
         ]
       }
     },
-    "avatar": {
-      "name": "ino-avatar",
-      "docPath": "docs/brand/06-angular-components/avatar.md",
-      "a11y": "<p><strong>Decorative vs. informative</strong> (doc 26 §5 a11y row, named explicitly):</p>\n<ul>\n<li><strong><code>decorative=\"true\"</code></strong> — <code>aria-hidden=\"true\"</code> on the host regardless of content form; no\naccessible name anywhere. For an avatar beside text that already announces the same\ninformation.</li>\n<li><strong><code>image</code> form, not decorative</strong> — the native <code>&lt;img alt&gt;</code> carries the accessible name; no\n<code>role</code>/<code>aria-label</code> added to the host (would be a redundant duplicate node).</li>\n<li><strong><code>initials</code>/icon form, not decorative</strong> — the host gets <code>role=\"img\"</code> + <code>aria-label</code>, resolved\n<code>ariaLabel</code> → <code>alt</code> → a generic <code>'Avatar'</code> fallback, so the host is never silently unlabeled.\nThe visible initials text / icon itself is always <code>aria-hidden</code>, so nothing double-announces.</li>\n</ul>\n<p><strong><code>&lt;ino-avatar-group&gt;</code></strong> — <code>role=\"group\"</code> with an <code>aria-label</code> auto-generated as <code>\"N avatars\"</code>\n(or a caller override). Per-item avatars are individually <code>decorative</code> unless that item supplied\nits own <code>alt</code> — a group of named people still announces each name on request; an unnamed\ndecorative cluster relies on the group's one-line count instead of N redundant \"Avatar\"\nannouncements. The trailing surplus avatar is never decorative — it gets <code>aria-label=\"N more\"</code>,\nsince that's new information the count summary doesn't carry.</p>\n<p><strong>Contrast</strong> — initials/fallback-icon/separator-ring colors (<code>--ino-color-on-surface</code> /\n<code>--ino-color-on-surface-muted</code> / <code>--ino-color-surface-raised</code> on <code>--ino-color-surface-sunken</code>)\nare existing roles audited in every theme by <code>node scripts/check-theme-parity.mjs</code>.</p>\n<p><strong>Target size</strong> — SC 2.5.8 does not apply; never in the tab order.</p>\n<p><strong>RTL</strong> — logical properties only (<code>inline-size</code>/<code>block-size</code>, <code>margin-inline-start</code>, non-directional\n<code>border</code>); no <code>left</code>/<code>right</code>/<code>top</code>/<code>bottom</code>/<code>width</code>/<code>height</code> anywhere in either stylesheet.</p>\n<hr />\n",
-      "notes": "<p><strong>No automatic initials derivation from <code>alt</code>/a name string.</strong> Extracting \"JD\" from \"Jane Doe\" is\na locale-sensitive operation (word order, which word counts as \"first\") that belongs to the\ncaller's data layer. Full reasoning: <code>SPEC.md</code> §1.</p>\n<p><strong>No <code>icon</code> form on <code>&lt;ino-avatar-group&gt;</code> items.</strong> <code>InoAvatarGroupItem</code> is\n<code>{ image?, initials?, alt? }</code> only — a plain data array has no slot for arbitrary projected markup\nper row without <code>ng-template</code> context-binding machinery, and the spec row's \"group\" use case is\npeople/entity clusters, not an icon-mix. Full reasoning: <code>SPEC.md</code> §5.</p>\n<p><strong>No <code>loading</code> state.</strong> A caller loading a user record renders <code>ino-skeleton</code> (<code>shape=\"circle\"</code>,\nalready documented as the avatar-placeholder shape) until data arrives, then mounts\n<code>&lt;ino-avatar&gt;</code> — two components in sequence rather than a <code>loading</code> flag on this one. Full\nreasoning: <code>SPEC.md</code> §3.</p>\n<hr />\n",
-      "mobile": "<p><strong>Port both</strong> (doc 26 §5 row) — React Native and Flutter, both widgets.</p>\n<ul>\n<li><strong>Capacitor</strong>: not a separate port — the same Angular component/CSS render inside the Capacitor\nWebView (plan rev 9 §5, \"Capacitor is not a port\").</li>\n<li><strong>React Native</strong>: <code>mobile/react-native/src/components/InoAvatar.tsx</code> + <code>InoAvatarGroup.tsx</code>.\nSame content-form priority, same five-step size scale (mobile is always fluid — no density\nsplit to reconcile), same decorative/informative accessibility contract via\n<code>accessibilityElementsHidden</code>/<code>accessibilityLabel</code>.</li>\n<li><strong>Flutter</strong>: <code>mobile/flutter/lib/widgets/ino_avatar.dart</code> (both widgets, one file — the same\n\"ticket-scoped file\" organization <code>ino_dataview.dart</code> uses), via <code>Semantics(label:, excludeSemantics:)</code>.</li>\n</ul>\n<p>Full reasoning: <code>SPEC.md</code> §7.</p>\n",
-      "api": {
-        "props": [
-          {
-            "name": "image",
-            "type": "string",
-            "values": null,
-            "default": "''",
-            "optional": true,
-            "description": "Image URL. Takes priority over `initials`/`icon` until it fails to load (§ `imageFailed` below) — doc 26 §5's \"image-error fallback\" state."
-          },
-          {
-            "name": "initials",
-            "type": "string",
-            "values": null,
-            "default": "''",
-            "optional": true,
-            "description": "Explicit initials text, e.g. `'JD'`. Never derived from `alt` automatically — locale-aware \"first letter of each word\" extraction is a caller decision, not this component's; see SPEC.md §1."
-          },
-          {
-            "name": "alt",
-            "type": "string",
-            "values": null,
-            "default": "''",
-            "optional": true,
-            "description": "Accessible name for the `image` form (native `<img alt>`) and the fallback accessible name for the `initials`/`icon` forms when `ariaLabel` is not set. See SPEC.md §4."
-          },
-          {
-            "name": "ariaLabel",
-            "type": "string",
-            "values": null,
-            "default": "''",
-            "optional": true,
-            "description": "Explicit accessible name override for the `initials`/`icon` forms, e.g. `'Jane Doe, offline'` when the initials alone don't carry enough context. Ignored for the `image` form (native `alt` already carries the name there) and when `decorative` is set."
-          },
-          {
-            "name": "shape",
-            "type": "InoAvatarShape",
-            "values": [
-              "circle",
-              "square"
-            ],
-            "default": "'circle'",
-            "optional": true,
-            "description": null
-          },
-          {
-            "name": "size",
-            "type": "InoAvatarSize",
-            "values": [
-              "xs",
-              "sm",
-              "default",
-              "lg",
-              "xl"
-            ],
-            "default": "'default'",
-            "optional": true,
-            "description": null
-          },
-          {
-            "name": "decorative",
-            "type": "boolean",
-            "values": null,
-            "default": "false",
-            "optional": true,
-            "description": "Marks the avatar purely decorative — `aria-hidden`, no accessible name in any form. For an avatar sitting next to a name/label that already announces the same information (e.g. a table row's own text column), so the avatar doesn't double-announce it. See SPEC.md §4."
-          }
-        ],
-        "events": [],
-        "methods": [],
-        "templates": [
-          {
-            "name": "[icon]",
-            "description": null
-          }
-        ]
-      }
-    },
-    "avatar-group": {
-      "name": "ino-avatar-group",
+    "badge": {
+      "name": "ino-badge",
       "docPath": null,
       "a11y": null,
       "notes": null,
@@ -496,45 +412,56 @@
       "api": {
         "props": [
           {
-            "name": "avatars",
-            "type": "InoAvatarGroupItem[]",
-            "values": null,
-            "default": "[]",
+            "name": "variant",
+            "type": "InoBadgeVariant",
+            "values": [
+              "dot",
+              "count",
+              "status"
+            ],
+            "default": "'count'",
             "optional": true,
-            "description": null
+            "description": "Badge variant — `dot` (indicator only), `count` (numeric), `status` (labeled with severity)."
           },
           {
-            "name": "max",
+            "name": "size",
+            "type": "InoBadgeSize",
+            "values": [
+              "sm",
+              "md"
+            ],
+            "default": "'md'",
+            "optional": true,
+            "description": "Size — `sm` (dense mode, 16px height) or `md` (fluid mode, 20px height)."
+          },
+          {
+            "name": "severity",
+            "type": "InoBadgeSeverity",
+            "values": [
+              "info",
+              "success",
+              "warning",
+              "danger"
+            ],
+            "default": "'info'",
+            "optional": true,
+            "description": "Severity color for `status` variant — maps to semantic `--ino-color-*` roles. Ignored for `dot` and `count` variants (those use fixed colors)."
+          },
+          {
+            "name": "value",
             "type": "number | null",
             "values": null,
             "default": "null",
             "optional": true,
-            "description": "Caps the number of avatars rendered; the rest collapse into one trailing \"+N\" surplus avatar. `null` (default) renders every item with no cap."
+            "description": "Numeric value for `count` variant. Displays \"99+\" when value ≥ 100 (doc 26 §5 \"max+ overflow\"). Ignored for `dot` and `status` variants."
           },
           {
-            "name": "shape",
-            "type": "InoAvatarShape",
-            "values": [
-              "circle",
-              "square"
-            ],
-            "default": "'circle'",
+            "name": "label",
+            "type": "string",
+            "values": null,
+            "default": "''",
             "optional": true,
-            "description": null
-          },
-          {
-            "name": "size",
-            "type": "InoAvatarSize",
-            "values": [
-              "xs",
-              "sm",
-              "default",
-              "lg",
-              "xl"
-            ],
-            "default": "'default'",
-            "optional": true,
-            "description": null
+            "description": "Status label text for `status` variant (e.g. \"Active\", \"Pending\"). Ignored for `dot` and `count` variants."
           },
           {
             "name": "ariaLabel",
@@ -542,7 +469,7 @@
             "values": null,
             "default": "''",
             "optional": true,
-            "description": "Accessible name override for the group's `role=\"group\"` host; defaults to an auto-generated count summary (`accessibleLabel` below) — see `../avatar/SPEC.md` §5."
+            "description": "Accessible label — **required for `count` variant** (e.g. \"3 new notifications\"), optional for `dot` (makes it informative instead of decorative), ignored for `status` (visible label is already accessible text)."
           }
         ],
         "events": [],
@@ -7512,10 +7439,10 @@
     },
     "tree": {
       "name": "ino-tree",
-      "docPath": null,
-      "a11y": null,
-      "notes": null,
-      "mobile": null,
+      "docPath": "docs/brand/06-angular-components/tree.md",
+      "a11y": "<p><strong>Role / ARIA</strong> — always-rendered <code>role=\"tree\"</code> (<code>aria-label</code>, <code>aria-multiselectable</code> when\n<code>checkbox</code> or <code>multiple</code>, <code>aria-busy</code>, <code>aria-invalid</code>, <code>aria-describedby</code>). Each row is\n<code>role=\"treeitem\"</code> with <code>aria-level</code> (1-based depth) and, when it has children, <code>aria-expanded</code>.\n<code>'basic'</code> mode sets <code>aria-selected</code>; <code>'checkbox'</code> mode sets <code>aria-checked</code>\n(<code>\"true\"</code>/<code>\"false\"</code>/<code>\"mixed\"</code>) instead. Roving <code>tabindex</code> — exactly one row carries <code>tabindex=\"0\"</code>\nat a time; <code>aria-activedescendant</code> is never used, because real DOM focus is always on a row (or the\nfilter input).</p>\n<p><strong>Keyboard</strong> — see SPEC.md §2 for the full table; summary:</p>\n<table>\n<thead>\n<tr>\n<th>Key</th>\n<th>Action</th>\n</tr>\n</thead>\n<tbody><tr>\n<td><code>ArrowDown</code>/<code>ArrowUp</code></td>\n<td>Move the roving tab stop to the next/previous enabled row (clamped, no wrap)</td>\n</tr>\n<tr>\n<td><code>ArrowRight</code></td>\n<td>Expand a collapsed branch, or move into its first child if already expanded</td>\n</tr>\n<tr>\n<td><code>ArrowLeft</code></td>\n<td>Collapse an expanded branch, or move to its parent</td>\n</tr>\n<tr>\n<td><code>Home</code>/<code>End</code></td>\n<td>Jump to the first/last visible row</td>\n</tr>\n<tr>\n<td><code>Enter</code>/<code>Space</code></td>\n<td>Activate the row (select/toggle/check depending on <code>selectionMode</code>)</td>\n</tr>\n</tbody></table>\n<p><strong>Contrast</strong> — selected-row text (<code>--ino-color-accent-text-safe</code>) and empty/muted message colors\nare existing audited roles (<code>check-theme-parity.mjs</code>), not new values, across all 3 themes.</p>\n<p><strong>Target size</strong> — every row clears <code>min-block-size: var(--ino-target-comfortable)</code>; the expand\ntoggle is <code>var(--ino-target-min)</code>.</p>\n<p><strong>RTL</strong> — logical properties only (<code>inline-size</code>, <code>padding-inline-*</code>, <code>inset-inline-*</code>); no\n<code>left</code>/<code>right</code>/<code>top</code>/<code>bottom</code> anywhere in the stylesheet.</p>\n<hr />\n",
+      "notes": "<ul>\n<li><strong>No typeahead.</strong> The always-available <code>filter</code> box already covers find-by-label across the\nwhole loaded tree; a tree's typeahead would have to decide whether to search only visible rows,\nan ambiguity the filter box sidesteps. See SPEC.md §6.</li>\n<li><strong>No drag-reorder.</strong> Explicitly out of scope per the doc 26 §5 row.</li>\n<li><strong>Checking a lazy branch does not retroactively cascade to children that load afterward.</strong> See\nSPEC.md §3 for why, and what a caller that wants that behavior has to do instead.</li>\n<li><strong>No virtual scrolling.</strong> Doc 26 §5's row doesn't call for it, and lazy loading already bounds\nhow much of a large tree is ever materialized at once.</li>\n</ul>\n",
+      "mobile": "<ul>\n<li><strong>Capacitor</strong> — not a separate port; the same Angular component/CSS render in the Capacitor\nWebView.</li>\n<li><strong>React Native / Flutter</strong> — no dedicated port. Doc 26 §5 names mobile as web-first for this\ncomponent: native apps render the same hierarchical data as a plain nested/indented list rather\nthan this component's roving-tabindex <code>role=\"tree\"</code> model. See SPEC.md §7.</li>\n</ul>\n",
       "api": {
         "props": [
           {
