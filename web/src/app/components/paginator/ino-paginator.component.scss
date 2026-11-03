@@ -177,9 +177,14 @@
   }
 }
 
+/* --ino-color-accent is non-text-safe (3:1 floor, not 4.5:1 — see tokens.css) — it fails AA here
+   at 4.38:1 in dark AND light (same violet-500 primitive both themes, INO-871). Use
+   --ino-color-accent-active instead, the same token ino-button's pressed state already relies on
+   for a guaranteed-legible flat fill under --ino-color-on-accent: 5.83:1 dark, 8.07:1 light,
+   11.56:1 high-contrast (unaffected, already passing). */
 .ino-paginator__btn--page.ino-paginator__btn--active,
 .ino-paginator__btn--page.ino-paginator__btn--active:hover:not(:disabled) {
-  background: var(--ino-color-accent);
+  background: var(--ino-color-accent-active);
   color: var(--ino-color-on-accent);
 }
 
