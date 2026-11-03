@@ -345,6 +345,153 @@
         "templates": []
       }
     },
+    "avatar": {
+      "name": "ino-avatar",
+      "docPath": "docs/brand/06-angular-components/avatar.md",
+      "a11y": "<p><strong>Decorative vs. informative</strong> (doc 26 §5 a11y row, named explicitly):</p>\n<ul>\n<li><strong><code>decorative=\"true\"</code></strong> — <code>aria-hidden=\"true\"</code> on the host regardless of content form; no\naccessible name anywhere. For an avatar beside text that already announces the same\ninformation.</li>\n<li><strong><code>image</code> form, not decorative</strong> — the native <code>&lt;img alt&gt;</code> carries the accessible name; no\n<code>role</code>/<code>aria-label</code> added to the host (would be a redundant duplicate node).</li>\n<li><strong><code>initials</code>/icon form, not decorative</strong> — the host gets <code>role=\"img\"</code> + <code>aria-label</code>, resolved\n<code>ariaLabel</code> → <code>alt</code> → a generic <code>'Avatar'</code> fallback, so the host is never silently unlabeled.\nThe visible initials text / icon itself is always <code>aria-hidden</code>, so nothing double-announces.</li>\n</ul>\n<p><strong><code>&lt;ino-avatar-group&gt;</code></strong> — <code>role=\"group\"</code> with an <code>aria-label</code> auto-generated as <code>\"N avatars\"</code>\n(or a caller override). Per-item avatars are individually <code>decorative</code> unless that item supplied\nits own <code>alt</code> — a group of named people still announces each name on request; an unnamed\ndecorative cluster relies on the group's one-line count instead of N redundant \"Avatar\"\nannouncements. The trailing surplus avatar is never decorative — it gets <code>aria-label=\"N more\"</code>,\nsince that's new information the count summary doesn't carry.</p>\n<p><strong>Contrast</strong> — initials/fallback-icon/separator-ring colors (<code>--ino-color-on-surface</code> /\n<code>--ino-color-on-surface-muted</code> / <code>--ino-color-surface-raised</code> on <code>--ino-color-surface-sunken</code>)\nare existing roles audited in every theme by <code>node scripts/check-theme-parity.mjs</code>.</p>\n<p><strong>Target size</strong> — SC 2.5.8 does not apply; never in the tab order.</p>\n<p><strong>RTL</strong> — logical properties only (<code>inline-size</code>/<code>block-size</code>, <code>margin-inline-start</code>, non-directional\n<code>border</code>); no <code>left</code>/<code>right</code>/<code>top</code>/<code>bottom</code>/<code>width</code>/<code>height</code> anywhere in either stylesheet.</p>\n<hr />\n",
+      "notes": "<p><strong>No automatic initials derivation from <code>alt</code>/a name string.</strong> Extracting \"JD\" from \"Jane Doe\" is\na locale-sensitive operation (word order, which word counts as \"first\") that belongs to the\ncaller's data layer. Full reasoning: <code>SPEC.md</code> §1.</p>\n<p><strong>No <code>icon</code> form on <code>&lt;ino-avatar-group&gt;</code> items.</strong> <code>InoAvatarGroupItem</code> is\n<code>{ image?, initials?, alt? }</code> only — a plain data array has no slot for arbitrary projected markup\nper row without <code>ng-template</code> context-binding machinery, and the spec row's \"group\" use case is\npeople/entity clusters, not an icon-mix. Full reasoning: <code>SPEC.md</code> §5.</p>\n<p><strong>No <code>loading</code> state.</strong> A caller loading a user record renders <code>ino-skeleton</code> (<code>shape=\"circle\"</code>,\nalready documented as the avatar-placeholder shape) until data arrives, then mounts\n<code>&lt;ino-avatar&gt;</code> — two components in sequence rather than a <code>loading</code> flag on this one. Full\nreasoning: <code>SPEC.md</code> §3.</p>\n<hr />\n",
+      "mobile": "<p><strong>Port both</strong> (doc 26 §5 row) — React Native and Flutter, both widgets.</p>\n<ul>\n<li><strong>Capacitor</strong>: not a separate port — the same Angular component/CSS render inside the Capacitor\nWebView (plan rev 9 §5, \"Capacitor is not a port\").</li>\n<li><strong>React Native</strong>: <code>mobile/react-native/src/components/InoAvatar.tsx</code> + <code>InoAvatarGroup.tsx</code>.\nSame content-form priority, same five-step size scale (mobile is always fluid — no density\nsplit to reconcile), same decorative/informative accessibility contract via\n<code>accessibilityElementsHidden</code>/<code>accessibilityLabel</code>.</li>\n<li><strong>Flutter</strong>: <code>mobile/flutter/lib/widgets/ino_avatar.dart</code> (both widgets, one file — the same\n\"ticket-scoped file\" organization <code>ino_dataview.dart</code> uses), via <code>Semantics(label:, excludeSemantics:)</code>.</li>\n</ul>\n<p>Full reasoning: <code>SPEC.md</code> §7.</p>\n",
+      "api": {
+        "props": [
+          {
+            "name": "image",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": "Image URL. Takes priority over `initials`/`icon` until it fails to load (§ `imageFailed` below) — doc 26 §5's \"image-error fallback\" state."
+          },
+          {
+            "name": "initials",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": "Explicit initials text, e.g. `'JD'`. Never derived from `alt` automatically — locale-aware \"first letter of each word\" extraction is a caller decision, not this component's; see SPEC.md §1."
+          },
+          {
+            "name": "alt",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": "Accessible name for the `image` form (native `<img alt>`) and the fallback accessible name for the `initials`/`icon` forms when `ariaLabel` is not set. See SPEC.md §4."
+          },
+          {
+            "name": "ariaLabel",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": "Explicit accessible name override for the `initials`/`icon` forms, e.g. `'Jane Doe, offline'` when the initials alone don't carry enough context. Ignored for the `image` form (native `alt` already carries the name there) and when `decorative` is set."
+          },
+          {
+            "name": "shape",
+            "type": "InoAvatarShape",
+            "values": [
+              "circle",
+              "square"
+            ],
+            "default": "'circle'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "size",
+            "type": "InoAvatarSize",
+            "values": [
+              "xs",
+              "sm",
+              "default",
+              "lg",
+              "xl"
+            ],
+            "default": "'default'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "decorative",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": "Marks the avatar purely decorative — `aria-hidden`, no accessible name in any form. For an avatar sitting next to a name/label that already announces the same information (e.g. a table row's own text column), so the avatar doesn't double-announce it. See SPEC.md §4."
+          }
+        ],
+        "events": [],
+        "methods": [],
+        "templates": [
+          {
+            "name": "[icon]",
+            "description": null
+          }
+        ]
+      }
+    },
+    "avatar-group": {
+      "name": "ino-avatar-group",
+      "docPath": null,
+      "a11y": null,
+      "notes": null,
+      "mobile": null,
+      "api": {
+        "props": [
+          {
+            "name": "avatars",
+            "type": "InoAvatarGroupItem[]",
+            "values": null,
+            "default": "[]",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "max",
+            "type": "number | null",
+            "values": null,
+            "default": "null",
+            "optional": true,
+            "description": "Caps the number of avatars rendered; the rest collapse into one trailing \"+N\" surplus avatar. `null` (default) renders every item with no cap."
+          },
+          {
+            "name": "shape",
+            "type": "InoAvatarShape",
+            "values": [
+              "circle",
+              "square"
+            ],
+            "default": "'circle'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "size",
+            "type": "InoAvatarSize",
+            "values": [
+              "xs",
+              "sm",
+              "default",
+              "lg",
+              "xl"
+            ],
+            "default": "'default'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "ariaLabel",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": "Accessible name override for the group's `role=\"group\"` host; defaults to an auto-generated count summary (`accessibleLabel` below) — see `../avatar/SPEC.md` §5."
+          }
+        ],
+        "events": [],
+        "methods": [],
+        "templates": []
+      }
+    },
     "breadcrumb": {
       "name": "ino-breadcrumb",
       "docPath": "docs/brand/06-angular-components/breadcrumb.md",
@@ -7132,6 +7279,162 @@
         "templates": []
       }
     },
+    "tree": {
+      "name": "ino-tree",
+      "docPath": null,
+      "a11y": null,
+      "notes": null,
+      "mobile": null,
+      "api": {
+        "props": [
+          {
+            "name": "label",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "nodes",
+            "type": "InoTreeNode[]",
+            "values": null,
+            "default": "[]",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "value",
+            "type": "string | string[]",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": "`string` when `multiple` is `false` (default) and `selectionMode` is `'basic'`, `string[]` otherwise (`multiple` `'basic'`, or any `'checkbox'`). See SPEC.md §3."
+          },
+          {
+            "name": "selectionMode",
+            "type": "'basic' | 'checkbox'",
+            "values": [
+              "basic",
+              "checkbox"
+            ],
+            "default": "'basic'",
+            "optional": true,
+            "description": "Doc 26 §5's \"basic/checkbox selection\" structure variant. `'basic'` — plain row selection/highlight, no cascade to descendants or ancestors; `multiple` (below) picks single vs. multi membership within this mode, reusing `ino-listbox`'s flag. `'checkbox'` — always multi, cascades to every *loaded* descendant and re-derives each ancestor's membership (full/partial/none) — doc 26 §5's \"partial-checked\" state."
+          },
+          {
+            "name": "multiple",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": "`'basic'` mode only — toggle-without-losing-other-rows membership instead of single replace-on-activate. No effect in `'checkbox'` mode, which is always multi. Reuses `ino-listbox`'s own flag verbatim rather than inventing a third `selectionMode` value the doc 26 §5 row never names. See SPEC.md §3."
+          },
+          {
+            "name": "hint",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "error",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "size",
+            "type": "'compact' | 'comfortable'",
+            "values": [
+              "compact",
+              "comfortable"
+            ],
+            "default": "'comfortable'",
+            "optional": true,
+            "description": "Doc 26 §5: \"compact/comfortable\", not the sm/default/lg control-size scale — a two-value padding axis independent of `[data-density]`, same idiom `<ino-accordion>`/`<ino-fieldset>` use. See SPEC.md §2."
+          },
+          {
+            "name": "required",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "readonly",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "loading",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": "Component-level async flag — suppresses *committing* a selection while an unrelated fetch is in flight; the tree stays rendered and interactive-looking (`aria-busy`). Distinct from a per-node `loading` (lazy children fetch) — see SPEC.md §5."
+          },
+          {
+            "name": "filter",
+            "type": "boolean",
+            "values": null,
+            "default": "true",
+            "optional": true,
+            "description": "Always-visible search box above the tree (doc 26 §5 names \"filter\" as baseline structure, not an opt-in extra — same call `ino-listbox` makes for its own filter box). Searches the whole *loaded* tree, not just visible rows; see SPEC.md §6."
+          },
+          {
+            "name": "filterLabel",
+            "type": "string",
+            "values": null,
+            "default": "'Filter'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "filterPlaceholder",
+            "type": "string",
+            "values": null,
+            "default": "'Filter…'",
+            "optional": true,
+            "description": null
+          }
+        ],
+        "events": [
+          {
+            "name": "valueChange",
+            "type": "string | string[]",
+            "description": null
+          },
+          {
+            "name": "filterChange",
+            "type": "string",
+            "description": null
+          },
+          {
+            "name": "loadChildren",
+            "type": "InoTreeNode",
+            "description": "Fires when a lazy node (`hasChildren: true`, `children` still empty/undefined) is expanded — the hook a parent uses to fetch and push that node's children back in. See SPEC.md §4."
+          }
+        ],
+        "methods": [],
+        "templates": []
+      }
+    },
     "treeselect": {
       "name": "ino-treeselect",
       "docPath": "docs/brand/06-angular-components/treeselect.md",
@@ -7292,6 +7595,221 @@
           }
         ],
         "methods": [],
+        "templates": []
+      }
+    },
+    "treetable": {
+      "name": "ino-treetable",
+      "docPath": "docs/brand/06-angular-components/treetable.md",
+      "a11y": null,
+      "notes": null,
+      "mobile": null,
+      "api": {
+        "props": [
+          {
+            "name": "data",
+            "type": "InoTreeTableRow[]",
+            "values": null,
+            "default": "[]",
+            "optional": true,
+            "description": "Tree-structured data rows."
+          },
+          {
+            "name": "columns",
+            "type": "InoTreeTableColumn[]",
+            "values": null,
+            "default": "[]",
+            "optional": true,
+            "description": "Column definitions. First column is the tree column by default."
+          },
+          {
+            "name": "caption",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": "Table caption (accessible name). Required for a11y."
+          },
+          {
+            "name": "size",
+            "type": "InoTreeTableSize",
+            "values": [
+              "sm",
+              "default",
+              "lg"
+            ],
+            "default": "'default'",
+            "optional": true,
+            "description": "Size variant: sm/default/lg. Controls header control sizes (sort buttons, resize handles)."
+          },
+          {
+            "name": "density",
+            "type": "InoTreeTableDensity",
+            "values": [
+              "dense",
+              "fluid"
+            ],
+            "default": "'fluid'",
+            "optional": true,
+            "description": "Density mode: dense/fluid. Controls row height (--ino-row-min-height)."
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": "Disabled state. Prevents all interaction."
+          },
+          {
+            "name": "readonly",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": "Readonly state. Controls visible but interaction is blocked."
+          },
+          {
+            "name": "invalid",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": "Invalid state. Renders danger-colored border."
+          },
+          {
+            "name": "loading",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": "Component-level loading state. Renders skeleton rows."
+          },
+          {
+            "name": "emptyMessage",
+            "type": "string",
+            "values": null,
+            "default": "'No data available'",
+            "optional": true,
+            "description": "Empty message when data is []."
+          },
+          {
+            "name": "skeletonRowCount",
+            "type": "number",
+            "values": null,
+            "default": "5",
+            "optional": true,
+            "description": "Skeleton row count (when loading)."
+          },
+          {
+            "name": "resizableColumns",
+            "type": "boolean",
+            "values": null,
+            "default": "true",
+            "optional": true,
+            "description": "Whether columns are resizable. Default: true."
+          },
+          {
+            "name": "reorderableColumns",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": "Whether columns are reorderable. Default: false (harder than resize, defer to v2)."
+          },
+          {
+            "name": "expandedRowValues",
+            "type": "Set<string>",
+            "values": null,
+            "default": null,
+            "optional": true,
+            "description": "Initial expanded row values (Set<string> of row.value). Controlled externally for full control, or leave undefined for internal state."
+          },
+          {
+            "name": "sortColumn",
+            "type": "number",
+            "values": null,
+            "default": null,
+            "optional": true,
+            "description": "Initial sort column index."
+          },
+          {
+            "name": "sortDirection",
+            "type": "InoTreeTableSortDirection",
+            "values": null,
+            "default": "null",
+            "optional": true,
+            "description": "Initial sort direction."
+          },
+          {
+            "name": "rememberFocus",
+            "type": "boolean",
+            "values": null,
+            "default": "true",
+            "optional": true,
+            "description": "Whether to remember last focused cell on blur/refocus."
+          }
+        ],
+        "events": [
+          {
+            "name": "sort",
+            "type": "InoTreeTableSortEvent",
+            "description": "Emitted when a sortable column header is clicked."
+          },
+          {
+            "name": "loadChildren",
+            "type": "InoTreeTableLoadChildrenEvent",
+            "description": "Emitted when a lazy-loadable branch (children: undefined) is expanded."
+          },
+          {
+            "name": "cellActivate",
+            "type": "InoTreeTableCellActivateEvent",
+            "description": "Emitted when a cell is activated (click or Enter/Space)."
+          },
+          {
+            "name": "expandedRowValuesChange",
+            "type": "Set<string>",
+            "description": "Emitted when expandedRowValues changes (for two-way binding)."
+          }
+        ],
+        "methods": [
+          {
+            "name": "toggleExpand",
+            "params": "row: InoTreeTableRow",
+            "returnType": "void",
+            "description": "Toggles a row's expanded state."
+          },
+          {
+            "name": "onSortClick",
+            "params": "columnIndex: number",
+            "returnType": "void",
+            "description": "Handles sort header click."
+          },
+          {
+            "name": "getAriaLevel",
+            "params": "row: InoTreeTableFlattenedRow",
+            "returnType": "number",
+            "description": "Gets aria-level for a row (1-indexed per APG)."
+          },
+          {
+            "name": "getAriaExpanded",
+            "params": "row: InoTreeTableFlattenedRow",
+            "returnType": "boolean | null",
+            "description": "Gets aria-expanded for a row (only branches have this attribute)."
+          },
+          {
+            "name": "getCellValue",
+            "params": "row: InoTreeTableRow, field: string",
+            "returnType": "any",
+            "description": "Gets cell value for a given row and column field."
+          },
+          {
+            "name": "getCellTabindex",
+            "params": "rowIndex: number, columnIndex: number",
+            "returnType": "number",
+            "description": "Gets tabindex for a cell (0 if active, -1 otherwise)."
+          }
+        ],
         "templates": []
       }
     },

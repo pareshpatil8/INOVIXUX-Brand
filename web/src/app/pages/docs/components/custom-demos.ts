@@ -34,6 +34,7 @@ import { SplitterDemoComponent } from './demos/splitter-demo.component';
 import { ContextMenuDemoComponent } from './demos/context-menu-demo.component';
 import { OrderListDemoComponent } from './demos/orderlist-demo.component';
 import { PickListDemoComponent } from './demos/picklist-demo.component';
+import { TreetableDemoComponent } from './demos/treetable-demo.component';
 
 /**
  * Slug -> hand-authored demo component, for components whose §2 Component Publish Contract
@@ -162,4 +163,9 @@ export const CUSTOM_DEMOS: Record<string, Type<unknown>> = {
   // single-axis `@Input` grid has no concept of a component with two independently-bound list
   // inputs. See `picklist/SPEC.md`.
   'picklist': PickListDemoComponent,
+  // `data: InoTreeTableNode[]` is the same recursive-array gap `menu`/`breadcrumb`/`panel-menu` hit
+  // (empty array default), and the whole visible surface — tree structure, expand/collapse, frozen
+  // columns, 2D navigation — is driven by that array. Additionally, implements WAI-ARIA treegrid
+  // pattern (role=treegrid) requiring keyboard navigation examples. See `treetable/SPEC.md`.
+  'treetable': TreetableDemoComponent,
 };

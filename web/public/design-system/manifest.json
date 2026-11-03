@@ -8,7 +8,7 @@
     "tablet": "641-900px",
     "desktop": ">900px"
   },
-  "componentCount": 70,
+  "componentCount": 74,
   "components": [
     {
       "name": "ino-accordion",
@@ -254,6 +254,138 @@
           "type": "number",
           "values": null,
           "default": "100",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-avatar",
+      "slug": "avatar",
+      "className": "InoAvatarComponent",
+      "sourcePath": "web/src/app/components/avatar/ino-avatar.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "initials",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "alt",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "shape",
+          "type": "InoAvatarShape",
+          "values": [
+            "circle",
+            "square"
+          ],
+          "default": "'circle'",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "InoAvatarSize",
+          "values": [
+            "xs",
+            "sm",
+            "default",
+            "lg",
+            "xl"
+          ],
+          "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "decorative",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-avatar-group",
+      "slug": "avatar-group",
+      "className": "InoAvatarGroupComponent",
+      "sourcePath": "web/src/app/components/avatar-group/ino-avatar-group.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "avatars",
+          "type": "InoAvatarGroupItem[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "max",
+          "type": "number | null",
+          "values": null,
+          "default": "null",
+          "optional": true
+        },
+        {
+          "name": "shape",
+          "type": "InoAvatarShape",
+          "values": [
+            "circle",
+            "square"
+          ],
+          "default": "'circle'",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "InoAvatarSize",
+          "values": [
+            "xs",
+            "sm",
+            "default",
+            "lg",
+            "xl"
+          ],
+          "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "values": null,
+          "default": "''",
           "optional": true
         }
       ],
@@ -5674,6 +5806,132 @@
       ]
     },
     {
+      "name": "ino-tree",
+      "slug": "tree",
+      "className": "InoTreeComponent",
+      "sourcePath": "web/src/app/components/tree/ino-tree.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "nodes",
+          "type": "InoTreeNode[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "value",
+          "type": "string | string[]",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "selectionMode",
+          "type": "'basic' | 'checkbox'",
+          "values": [
+            "basic",
+            "checkbox"
+          ],
+          "default": "'basic'",
+          "optional": true
+        },
+        {
+          "name": "multiple",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "hint",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "'compact' | 'comfortable'",
+          "values": [
+            "compact",
+            "comfortable"
+          ],
+          "default": "'comfortable'",
+          "optional": true
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "filter",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "filterLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Filter'",
+          "optional": true
+        },
+        {
+          "name": "filterPlaceholder",
+          "type": "string",
+          "values": null,
+          "default": "'Filter…'",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
       "name": "ino-treeselect",
       "slug": "treeselect",
       "className": "InoTreeSelectComponent",
@@ -5791,6 +6049,147 @@
           "type": "string",
           "values": null,
           "default": "'Filter…'",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-treetable",
+      "slug": "treetable",
+      "className": "InoTreeTableComponent",
+      "sourcePath": "web/src/app/components/treetable/ino-treetable.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "data",
+          "type": "InoTreeTableRow[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "columns",
+          "type": "InoTreeTableColumn[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "caption",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "InoTreeTableSize",
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
+          "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "density",
+          "type": "InoTreeTableDensity",
+          "values": [
+            "dense",
+            "fluid"
+          ],
+          "default": "'fluid'",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "invalid",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "emptyMessage",
+          "type": "string",
+          "values": null,
+          "default": "'No data available'",
+          "optional": true
+        },
+        {
+          "name": "skeletonRowCount",
+          "type": "number",
+          "values": null,
+          "default": "5",
+          "optional": true
+        },
+        {
+          "name": "resizableColumns",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "reorderableColumns",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "expandedRowValues",
+          "type": "Set<string>",
+          "values": null,
+          "default": null,
+          "optional": true
+        },
+        {
+          "name": "sortColumn",
+          "type": "number",
+          "values": null,
+          "default": null,
+          "optional": true
+        },
+        {
+          "name": "sortDirection",
+          "type": "InoTreeTableSortDirection",
+          "values": null,
+          "default": "null",
+          "optional": true
+        },
+        {
+          "name": "rememberFocus",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
           "optional": true
         }
       ],
