@@ -6,8 +6,6 @@ import { Type } from '@angular/core';
 import { InoAccordionComponent } from '../../../../components/accordion/ino-accordion.component';
 import { InoAlertComponent } from '../../../../components/alert/ino-alert.component';
 import { InoAutocompleteComponent } from '../../../../components/autocomplete/ino-autocomplete.component';
-import { InoAvatarComponent } from '../../../../components/avatar/ino-avatar.component';
-import { InoAvatarGroupComponent } from '../../../../components/avatar-group/ino-avatar-group.component';
 import { InoBreadcrumbComponent } from '../../../../components/breadcrumb/ino-breadcrumb.component';
 import { InoButtonComponent } from '../../../../components/button/ino-button.component';
 import { InoCardComponent } from '../../../../components/card/ino-card.component';
@@ -73,7 +71,6 @@ import { InoToggleComponent } from '../../../../components/toggle/ino-toggle.com
 import { InoToggleButtonComponent } from '../../../../components/toggle-button/ino-toggle-button.component';
 import { InoToolbarComponent } from '../../../../components/toolbar/ino-toolbar.component';
 import { InoTooltipComponent } from '../../../../components/tooltip/ino-tooltip.component';
-import { InoTreeComponent } from '../../../../components/tree/ino-tree.component';
 import { InoTreeSelectComponent } from '../../../../components/treeselect/ino-treeselect.component';
 import { InoTreeTableComponent } from '../../../../components/treetable/ino-treetable.component';
 import { InoVirtualScrollerComponent } from '../../../../components/virtual-scroller/ino-virtual-scroller.component';
@@ -82,8 +79,6 @@ export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'accordion': InoAccordionComponent,
   'alert': InoAlertComponent,
   'autocomplete': InoAutocompleteComponent,
-  'avatar': InoAvatarComponent,
-  'avatar-group': InoAvatarGroupComponent,
   'breadcrumb': InoBreadcrumbComponent,
   'button': InoButtonComponent,
   'card': InoCardComponent,
@@ -149,7 +144,6 @@ export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'toggle-button': InoToggleButtonComponent,
   'toolbar': InoToolbarComponent,
   'tooltip': InoTooltipComponent,
-  'tree': InoTreeComponent,
   'treeselect': InoTreeSelectComponent,
   'treetable': InoTreeTableComponent,
   'virtual-scroller': InoVirtualScrollerComponent,

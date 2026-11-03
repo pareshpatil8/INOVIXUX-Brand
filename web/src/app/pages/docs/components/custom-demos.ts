@@ -34,7 +34,8 @@ import { SplitterDemoComponent } from './demos/splitter-demo.component';
 import { ContextMenuDemoComponent } from './demos/context-menu-demo.component';
 import { OrderListDemoComponent } from './demos/orderlist-demo.component';
 import { PickListDemoComponent } from './demos/picklist-demo.component';
-import { TreetableDemoComponent } from './demos/treetable-demo.component';
+import { TreeTableDemoComponent } from './demos/treetable-demo.component';
+import { BadgeDemoComponent } from './demos/badge-demo.component';
 
 /**
  * Slug -> hand-authored demo component, for components whose §2 Component Publish Contract
@@ -167,5 +168,11 @@ export const CUSTOM_DEMOS: Record<string, Type<unknown>> = {
   // (empty array default), and the whole visible surface — tree structure, expand/collapse, frozen
   // columns, 2D navigation — is driven by that array. Additionally, implements WAI-ARIA treegrid
   // pattern (role=treegrid) requiring keyboard navigation examples. See `treetable/SPEC.md`.
-  'treetable': TreetableDemoComponent,
+  'treetable': TreeTableDemoComponent,
+  // Three variants with fundamentally different semantics and a11y contracts (INO-460): `dot`
+  // (decorative vs informative with ariaLabel), `count` (with 99+ overflow and required ariaLabel),
+  // `status` (labeled with severity colors). Additionally, the positioned-on-child vs standalone
+  // modes, the sm/md sizing matrix, and the severity color palette all require hand-authored
+  // composition to demonstrate live. See `badge/SPEC.md` for the full contract.
+  'badge': BadgeDemoComponent,
 };
