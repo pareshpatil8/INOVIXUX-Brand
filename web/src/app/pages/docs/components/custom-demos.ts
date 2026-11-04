@@ -42,6 +42,9 @@ import { TreeDemoComponent } from './demos/tree-demo.component';
 import { AvatarDemoComponent } from './demos/avatar-demo.component';
 import { AvatarGroupDemoComponent } from './demos/avatar-group-demo.component';
 import { ChipDemoComponent } from './demos/chip-demo.component';
+import { ImageDemoComponent } from './demos/image-demo.component';
+import { SpeedDialDemoComponent } from './demos/speeddial-demo.component';
+import { CarouselDemoComponent } from './demos/carousel-demo.component';
 
 /**
  * Slug -> hand-authored demo component, for components whose §2 Component Publish Contract
@@ -209,4 +212,17 @@ export const CUSTOM_DEMOS: Record<string, Type<unknown>> = {
   // `[icon]`/`[avatar]` content slots or exercise the live removable-chip-list / interactive
   // toggle-chip behavior — the same content-projection gap `keyfilter` hit. See `chip/SPEC.md`.
   'chip': ChipDemoComponent,
+  // `src`/`alt` are plain strings with no enum `values`, and the loading/error-fallback/zoomed
+  // states plus the lightbox itself need deliberately-triggered conditions (a broken URL, an
+  // opened dialog) the generic single-axis renderer can't produce. See `image/SPEC.md`.
+  'image': ImageDemoComponent,
+  // `items: InoSpeedDialItem[]` hits the array-input gap (empty array default → the dial opens
+  // onto an empty menu), and the layout axes (type × direction × radius × mask) need composed
+  // examples with expansion room the single-axis grid cannot stage. See `speeddial/SPEC.md`.
+  'speeddial': SpeedDialDemoComponent,
+  // The whole component is built from content-projected `<ino-carousel-item>` children (same gap
+  // `toolbar`/`accordion`/`splitter` hit), and the N-visible/step sliding window, circular wrap,
+  // autoplay opt-in, and size-driven item gap all need composed examples the single-axis
+  // `@Input` grid cannot stage. See `carousel/SPEC.md` for the full contract.
+  'carousel': CarouselDemoComponent,
 };

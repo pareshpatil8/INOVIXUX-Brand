@@ -844,6 +844,131 @@
         ]
       }
     },
+    "carousel": {
+      "name": "ino-carousel",
+      "docPath": "docs/brand/06-angular-components/carousel.md",
+      "a11y": "<p><strong>Role / ARIA</strong></p>\n<ul>\n<li><code>role=\"region\"</code> + <code>aria-roledescription=\"carousel\"</code> + <code>aria-label</code> on the host — the APG\ncarousel pattern's triple.</li>\n<li>Each <code>&lt;ino-carousel-item&gt;</code> is <code>role=\"group\"</code> + <code>aria-roledescription=\"slide\"</code> +\n<code>aria-label=\"n of total\"</code>.</li>\n<li>Indicators are a <code>role=\"group\"</code> labelled \"Choose slide\"; the active one carries\n<code>aria-current=\"true\"</code>.</li>\n</ul>\n<p><strong>Keyboard</strong></p>\n<table>\n<thead>\n<tr>\n<th>Key</th>\n<th>Action</th>\n</tr>\n</thead>\n<tbody><tr>\n<td><code>Tab</code></td>\n<td>Moves focus into the track (single stop), then to nav/pause/indicator buttons in DOM order</td>\n</tr>\n<tr>\n<td><code>ArrowRight</code> / <code>ArrowLeft</code> (horizontal)</td>\n<td>Move the window forward/back by <code>step</code>; flips under RTL</td>\n</tr>\n<tr>\n<td><code>ArrowDown</code> / <code>ArrowUp</code> (vertical)</td>\n<td>Move the window forward/back by <code>step</code></td>\n</tr>\n<tr>\n<td><code>Home</code> / <code>End</code></td>\n<td>Jump to the first / last reachable stop</td>\n</tr>\n</tbody></table>\n<p><strong>Reduced motion</strong> — <code>prefers-reduced-motion: reduce</code> prevents autoplay from starting at all,\nregardless of the <code>autoplay</code> input — not merely instant transitions. This is a hard gate read via\n<code>matchMedia</code> in <code>ngAfterContentInit</code>/<code>play()</code>, the same idiom <code>ino-tabs</code> uses for its own\nscript-driven scroll behavior.</p>\n<p><strong>Visible pause control</strong> — whenever <code>autoplay</code> is <code>true</code>, a real, always-visible button (never\nhover/focus-revealed) toggles play/pause — required by the APG carousel pattern so autoplay can\nbe stopped by any user regardless of pointer capability.</p>\n<p><strong>Contrast</strong> — nav/pause/indicator surfaces resolve through <code>--ino-color-surface-raised</code> /\n<code>--ino-color-on-surface</code> / <code>--ino-color-border</code>, audited WCAG 2.2 AA pairs in all 3 themes\n(<code>check-theme-parity</code>).</p>\n<p><strong>Targets</strong> — nav and pause buttons are <code>--ino-target-min</code> (24px) square; indicator dots are\nvisually 8px but their hit box is grown to the same floor via a transparent pseudo-element\n(SC 2.5.8).</p>\n<p><strong>RTL</strong> — uses <code>padding-inline</code>/<code>inset</code> logical properties throughout; the ‹/› nav glyphs mirror\nunder <code>:dir(rtl)</code> the same way <code>ino-tabs</code>'s scroll buttons do.</p>\n<hr />\n",
+      "notes": "<ul>\n<li><strong>Off-window slides are <code>[hidden]</code>, not CSS-clipped.</strong> No slide-transition animation ships —\nswitching the window swaps which items are hidden instantly. A caller that wants an animated\nslide transition is explicitly out of scope here; see SPEC.md §2 for the reasoning (the\naccessibility surface staying exactly as large as the visible window at every instant was\njudged more valuable than a transition effect).</li>\n<li><strong>Autoplay timer is Angular-owned on web, host-owned on mobile.</strong> The mobile ports do not run\ntheir own timer — see Mobile parity below and SPEC.md §6.</li>\n<li><strong>Roving tabindex across individual slides</strong> was considered and rejected: keyboard navigation\nmoves the <em>window</em>, not focus between individual slide elements, matching the APG carousel\nexample's own keyboard model (a carousel is not a tablist).</li>\n</ul>\n<hr />\n",
+      "mobile": "<table>\n<thead>\n<tr>\n<th>Track</th>\n<th>Status</th>\n<th>Notes</th>\n</tr>\n</thead>\n<tbody><tr>\n<td>Capacitor</td>\n<td>Not a port</td>\n<td>Renders the same Angular component and CSS — done the moment the web component passes.</td>\n</tr>\n<tr>\n<td>React Native</td>\n<td>Ported</td>\n<td><code>InoCarousel.tsx</code> — controlled-only, index-based, same <code>visibleCount</code>/<code>step</code>/<code>circular</code>/<code>activeIndex</code> surface. Autoplay is driven by the host app's own timer, not a timer owned by the component (SPEC.md §6).</td>\n</tr>\n<tr>\n<td>Flutter</td>\n<td>Ported</td>\n<td><code>ino_carousel.dart</code> — same controlled-only, index-based contract as the React Native port.</td>\n</tr>\n</tbody></table>\n",
+      "api": {
+        "props": [
+          {
+            "name": "orientation",
+            "type": "InoCarouselOrientation",
+            "values": [
+              "horizontal",
+              "vertical"
+            ],
+            "default": "'horizontal'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "size",
+            "type": "InoControlSize",
+            "values": [
+              "sm",
+              "default",
+              "lg"
+            ],
+            "default": "'default'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "visibleCount",
+            "type": "number",
+            "values": null,
+            "default": "1",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "step",
+            "type": "number",
+            "values": null,
+            "default": "1",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "autoplay",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "autoplayInterval",
+            "type": "number",
+            "values": null,
+            "default": "5000",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "circular",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "showIndicators",
+            "type": "boolean",
+            "values": null,
+            "default": "true",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "showNavigation",
+            "type": "boolean",
+            "values": null,
+            "default": "true",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "ariaLabel",
+            "type": "string",
+            "values": null,
+            "default": "'Carousel'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "activeIndex",
+            "type": "number",
+            "values": null,
+            "default": null,
+            "optional": true,
+            "description": null
+          }
+        ],
+        "events": [
+          {
+            "name": "activeIndexChange",
+            "type": "number",
+            "description": null
+          },
+          {
+            "name": "playingChange",
+            "type": "boolean",
+            "description": null
+          }
+        ],
+        "methods": [],
+        "templates": [
+          {
+            "name": "default",
+            "description": null
+          }
+        ]
+      }
+    },
     "cascade-select": {
       "name": "ino-cascade-select",
       "docPath": "docs/brand/06-angular-components/cascade-select.md",
@@ -2987,6 +3112,105 @@
         "templates": [
           {
             "name": "default",
+            "description": null
+          }
+        ]
+      }
+    },
+    "image": {
+      "name": "ino-image",
+      "docPath": "docs/brand/06-angular-components/image.md",
+      "a11y": "<ul>\n<li><p><strong>Lightbox = dialog</strong> (doc 26 §5's own a11y row) — <code>role=\"dialog\"</code> + <code>aria-modal=\"true\"</code> +\n<code>aria-label</code> (from <code>alt</code>), with <code>[inoFocusTrap]</code> containing Tab/Shift+Tab, same primitive\n<code>ino-modal</code> uses.</p>\n</li>\n<li><p><strong>Zoom keys, documented</strong> (doc 26 §5's own a11y row):</p>\n<table>\n<thead>\n<tr>\n<th>Key</th>\n<th>Action</th>\n</tr>\n</thead>\n<tbody><tr>\n<td><code>Escape</code></td>\n<td>Close the lightbox</td>\n</tr>\n<tr>\n<td><code>+</code> / <code>=</code></td>\n<td>Zoom in</td>\n</tr>\n<tr>\n<td><code>-</code> / <code>_</code></td>\n<td>Zoom out</td>\n</tr>\n<tr>\n<td><code>0</code></td>\n<td>Reset zoom + rotation</td>\n</tr>\n<tr>\n<td><code>r</code></td>\n<td>Rotate clockwise</td>\n</tr>\n<tr>\n<td><code>R</code></td>\n<td>Rotate counter-clockwise</td>\n</tr>\n</tbody></table>\n</li>\n<li><p><strong>Trigger button</strong> — <code>aria-label=\"Open full-size preview: {alt}\"</code>; the image inside it is not\nindependently labeled, avoiding a double announcement.</p>\n</li>\n<li><p><strong>Fallback slot</strong> — <code>role=\"img\"</code> + <code>aria-label</code> (<code>alt</code>, falling back to <code>'Image unavailable'</code>).</p>\n</li>\n<li><p><strong>Contrast</strong> — every colour is an existing role audited in every theme by\n<code>node scripts/check-theme-parity.mjs</code>.</p>\n</li>\n</ul>\n<p>Full reasoning: <code>SPEC.md</code> §6.</p>\n<hr />\n",
+      "notes": "<p><strong>No reserved loading-state space in intrinsic mode.</strong> The <code>loading</code> skeleton only has a box to\npaint when <code>width</code>/<code>height</code> are set — in intrinsic mode the frame has no rendered size until the\nimage loads. Callers that want a reserved-space loading state set <code>width</code>/<code>height</code>. Full\nreasoning: <code>SPEC.md</code> §3.</p>\n<p><strong>No automatic initials/placeholder derivation.</strong> Unlike <code>ino-avatar</code>, there is no secondary\ncontent form besides the projected <code>[fallback]</code>/built-in glyph — a photo has no \"initials\"\nequivalent.</p>\n<hr />\n",
+      "mobile": "<p><strong>Port both — base render only, lightbox web-only</strong> (doc 26 §5 row).</p>\n<ul>\n<li><strong>Capacitor</strong>: not a separate port — the same Angular component/CSS render inside the\nCapacitor WebView (plan rev 9 §5, \"Capacitor is not a port\").</li>\n<li><strong>React Native</strong>: <code>mobile/react-native/src/components/InoImage.tsx</code> — loading placeholder,\nerror-fallback, caption, intrinsic/fit sizing. No lightbox (no RN focus-trap primitive in this\ncodebase, and the spec row scopes it to web).</li>\n<li><strong>Flutter</strong>: <code>mobile/flutter/lib/widgets/ino_image.dart</code> — same base-render-only scope.</li>\n</ul>\n<p>Full reasoning: <code>SPEC.md</code> §8.</p>\n",
+      "api": {
+        "props": [
+          {
+            "name": "src",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": "Image URL."
+          },
+          {
+            "name": "alt",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": "Accessible name for the `<img>` — required by the §2 Labels contract (doc 26 §5 row \"`alt` required\"); not type-enforced (same convention as `ino-avatar`'s `alt`), but an empty value is a contract violation a caller must fix, not a decorative-image signal — this component has no `decorative` input."
+          },
+          {
+            "name": "fit",
+            "type": "InoImageFit",
+            "values": [
+              "cover",
+              "contain",
+              "fill",
+              "none",
+              "scale-down"
+            ],
+            "default": "'cover'",
+            "optional": true,
+            "description": "`object-fit`, applied only when `width` and/or `height` constrain the box away from the image's own intrinsic aspect ratio. See SPEC.md §2."
+          },
+          {
+            "name": "width",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": "CSS length, e.g. `'320px'` / `'100%'`. Unset (default): the image renders at its intrinsic size — doc 26 §5's \"intrinsic\" sizing mode."
+          },
+          {
+            "name": "height",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": "CSS length override, independent of `width`."
+          },
+          {
+            "name": "loading",
+            "type": "'lazy' | 'eager'",
+            "values": [
+              "lazy",
+              "eager"
+            ],
+            "default": "'lazy'",
+            "optional": true,
+            "description": "Native `loading` attribute — doc 26 §5's \"lazy load\" row. `'eager'` for above-the-fold callers (e.g. a hero image) that would otherwise pay a layout-shift tax waiting on an IntersectionObserver that fires immediately anyway."
+          },
+          {
+            "name": "previewable",
+            "type": "boolean",
+            "values": null,
+            "default": "true",
+            "optional": true,
+            "description": "Enables the click-to-open zoom/rotate lightbox — doc 26 §5's \"preview-on-click lightbox\" row. Off for thumbnails in a context that already has its own larger-preview affordance (e.g. a table cell), so this component never fights a caller's own click handler."
+          }
+        ],
+        "events": [
+          {
+            "name": "opened",
+            "type": "void",
+            "description": null
+          },
+          {
+            "name": "closed",
+            "type": "void",
+            "description": null
+          }
+        ],
+        "methods": [],
+        "templates": [
+          {
+            "name": "[fallback]",
+            "description": null
+          },
+          {
+            "name": "[caption]",
             "description": null
           }
         ]
@@ -6363,6 +6587,155 @@
           }
         ],
         "methods": [],
+        "templates": []
+      }
+    },
+    "speeddial": {
+      "name": "ino-speeddial",
+      "docPath": "docs/brand/06-angular-components/speeddial.md",
+      "a11y": "<p><strong>Role / ARIA</strong></p>\n<ul>\n<li>FAB: native <code>&lt;button&gt;</code> with <code>aria-haspopup=\"menu\"</code>, <code>aria-expanded</code>, <code>aria-controls</code> pointing\nat the menu's id, named by <code>ariaLabel</code></li>\n<li>Menu: <code>role=\"menu\"</code> (named by the same <code>ariaLabel</code>); actions are native <code>&lt;button role=\"menuitem\"&gt;</code> elements named by <code>item.label</code> via <code>aria-label</code></li>\n<li>The visible label chip and the icons are <code>aria-hidden</code> — the menuitem's <code>aria-label</code> carries\nthe same text, so nothing is double-announced</li>\n<li>The menu is permanently mounted; the closed state is <code>visibility: hidden</code> + <code>aria-hidden</code> +\nno tab stops, never <code>*ngIf</code>, so the accessibility tree keeps one stable node and open/close\ntransitions can run</li>\n</ul>\n<p><strong>Keyboard</strong> — see the table above; full menu-button pattern with Esc-close and focus return.</p>\n<p><strong>Contrast</strong> — FAB is <code>--ino-gradient-accent</code> / <code>--ino-color-on-accent</code> (audited pair, 4.79:1+);\nactions and label chips are <code>--ino-color-surface</code> / <code>--ino-color-on-surface</code> with a\n<code>--ino-color-border-strong</code> 1px border for WCAG 1.4.11 non-text contrast when the shadow is\ninvisible; the mask uses <code>--ino-color-overlay-scrim</code> and never carries text.</p>\n<p><strong>Targets</strong> — smallest interactive element is the 36px action button (SC 2.5.8 floor is 24px);\nthe sm FAB is also 36px.</p>\n<p><strong>Motion</strong> — open/close stagger, icon rotation, and label fades are all gated behind\n<code>prefers-reduced-motion: no-preference</code>; with reduced motion everything snaps instantly.</p>\n<p><strong>RTL</strong> — internal spacing uses logical properties; centering transforms are symmetric.\nExpansion directions are deliberately physical — a FAB anchors to a screen corner, not text\nflow — so an RTL layout passes the mirrored <code>direction</code> value at the call site.</p>\n<hr />\n",
+      "notes": "<ul>\n<li><strong><code>semi-circle</code> type.</strong> PrimeNG offers linear / circle / semi-circle / quarter-circle; the\ndoc 26 §5 row specifies \"linear/circle/quarter directions\", so semi-circle is out of scope.\nThe arc math generalizes if a future row reinstates it.</li>\n<li><strong>Focus trap.</strong> An open dial is a transient APG menu, not a modal: Tab moves on (closing the\ndial), and the optional mask is a click target, not a focus boundary. Trapping focus would\ncontradict the menu-button pattern.</li>\n<li><strong>Tooltip component reuse.</strong> Action labels are rendered inline by the dial rather than through\n<code>ino-tooltip</code>, because the label must also appear on keyboard focus of a roving-tabindex\nmenuitem and follow the dial's own placement logic (side for vertical layouts, below for\nhorizontal ones) — a positioning contract the generic tooltip directive does not carry.</li>\n<li><strong>Viewport collision handling.</strong> The dial expands where the consumer pointed it; it does not\nflip direction at viewport edges. The consumer anchors a FAB to a corner and picks the\ndirection that opens into the page — same contract as PrimeNG's SpeedDial.</li>\n</ul>\n<hr />\n",
+      "mobile": "<table>\n<thead>\n<tr>\n<th>Track</th>\n<th>Status</th>\n<th>Notes</th>\n</tr>\n</thead>\n<tbody><tr>\n<td>Capacitor</td>\n<td>Not a port</td>\n<td>Renders the same Angular component and the same CSS (INO-31 plan rev 9 §5 rule) — done the moment the web component passes.</td>\n</tr>\n<tr>\n<td>React Native</td>\n<td>Not ported</td>\n<td>Web-only per doc 26 §5 row — mobile uses native FAB patterns.</td>\n</tr>\n<tr>\n<td>Flutter</td>\n<td>Not ported</td>\n<td>Web-only per doc 26 §5 row — mobile uses native FAB patterns.</td>\n</tr>\n</tbody></table>\n",
+      "api": {
+        "props": [
+          {
+            "name": "items",
+            "type": "InoSpeedDialItem[]",
+            "values": null,
+            "default": "[]",
+            "optional": true,
+            "description": "Action items revealed when the dial opens"
+          },
+          {
+            "name": "type",
+            "type": "InoSpeedDialType",
+            "values": [
+              "linear",
+              "circle",
+              "quarter-circle"
+            ],
+            "default": "'linear'",
+            "optional": true,
+            "description": "Expansion layout: straight line, full circle, or 90° arc"
+          },
+          {
+            "name": "direction",
+            "type": "InoSpeedDialDirection",
+            "values": null,
+            "default": "'up'",
+            "optional": true,
+            "description": "Expansion direction (linear: up/down/left/right; quarter-circle: corner values)"
+          },
+          {
+            "name": "radius",
+            "type": "number",
+            "values": null,
+            "default": "80",
+            "optional": true,
+            "description": "Distance in px from FAB center to action centers (circle / quarter-circle only)"
+          },
+          {
+            "name": "mask",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": "Renders a full-viewport scrim behind the open dial; clicking it closes the dial"
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": "Disables the FAB trigger entirely"
+          },
+          {
+            "name": "size",
+            "type": "InoSpeedDialSize",
+            "values": [
+              "sm",
+              "md",
+              "lg"
+            ],
+            "default": "'md'",
+            "optional": true,
+            "description": "FAB size (sm 36px / md 44px / lg 52px); actions stay one fixed size"
+          },
+          {
+            "name": "ariaLabel",
+            "type": "string",
+            "values": null,
+            "default": "'Speed dial'",
+            "optional": true,
+            "description": "Accessible name for the FAB trigger and the action menu"
+          },
+          {
+            "name": "icon",
+            "type": "string",
+            "values": null,
+            "default": "'+'",
+            "optional": true,
+            "description": "Glyph shown on the FAB; rotates 45° while open to read as a close affordance"
+          }
+        ],
+        "events": [
+          {
+            "name": "openChange",
+            "type": "boolean",
+            "description": "Emits when the dial opens or closes"
+          }
+        ],
+        "methods": [
+          {
+            "name": "onFabClick",
+            "params": null,
+            "returnType": "void",
+            "description": "Mouse toggle. Keyboard open goes through onFabKeydown so it can move focus."
+          },
+          {
+            "name": "onFabKeydown",
+            "params": "event: KeyboardEvent",
+            "returnType": "void",
+            "description": "APG menu-button pattern: Enter/Space/ArrowDown open and focus the first action; ArrowUp opens and focuses the last. preventDefault on Enter/Space stops the synthetic click from immediately re-toggling."
+          },
+          {
+            "name": "show",
+            "params": null,
+            "returnType": "void",
+            "description": "Opens the dial without moving focus (mouse path)."
+          },
+          {
+            "name": "close",
+            "params": "returnFocus: boolean",
+            "returnType": "void",
+            "description": "Closes the dial; returns focus to the FAB when the close was keyboard-initiated."
+          },
+          {
+            "name": "onMenuKeydown",
+            "params": "event: KeyboardEvent",
+            "returnType": "void",
+            "description": "Menu keyboard map: arrows cycle, Home/End jump, Escape closes + focus return, Tab closes."
+          },
+          {
+            "name": "tabindexFor",
+            "params": "item: InoSpeedDialItem, index: number",
+            "returnType": "string | null",
+            "description": "Roving tabindex: only the focus target (or the first navigable item at rest) is tabbable."
+          },
+          {
+            "name": "actionTransform",
+            "params": "index: number",
+            "returnType": "string | null",
+            "description": "Per-action transform for circle / quarter-circle layouts: each action sits on an arc of `radius` px around the FAB center. Linear layouts use flex flow instead and return null."
+          },
+          {
+            "name": "actionDelay",
+            "params": "index: number",
+            "returnType": "string",
+            "description": "Stagger reveal: 30ms per action while opening, reversed while closing."
+          }
+        ],
         "templates": []
       }
     },

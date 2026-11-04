@@ -13,6 +13,7 @@ import { InoBadgeComponent } from '../../../../components/badge/ino-badge.compon
 import { InoBreadcrumbComponent } from '../../../../components/breadcrumb/ino-breadcrumb.component';
 import { InoButtonComponent } from '../../../../components/button/ino-button.component';
 import { InoCardComponent } from '../../../../components/card/ino-card.component';
+import { InoCarouselComponent } from '../../../../components/carousel/ino-carousel.component';
 import { InoCascadeSelectComponent } from '../../../../components/cascade-select/ino-cascade-select.component';
 import { InoCheckboxComponent } from '../../../../components/checkbox/ino-checkbox.component';
 import { InoChipComponent } from '../../../../components/chip/ino-chip.component';
@@ -34,6 +35,7 @@ import { InoFooterComponent } from '../../../../components/footer/ino-footer.com
 import { InoHeroComponent } from '../../../../components/hero/ino-hero.component';
 import { InoIconFieldComponent } from '../../../../components/icon-field/ino-icon-field.component';
 import { InoIftaLabelComponent } from '../../../../components/iftalabel/ino-iftalabel.component';
+import { InoImageComponent } from '../../../../components/image/ino-image.component';
 import { InoInputComponent } from '../../../../components/input/ino-input.component';
 import { InoInputGroupComponent } from '../../../../components/input-group/ino-input-group.component';
 import { InoInputOtpComponent } from '../../../../components/input-otp/ino-input-otp.component';
@@ -64,6 +66,7 @@ import { InoSelectComponent } from '../../../../components/select/ino-select.com
 import { InoSelectButtonComponent } from '../../../../components/select-button/ino-select-button.component';
 import { InoSkeletonComponent } from '../../../../components/skeleton/ino-skeleton.component';
 import { InoSliderComponent } from '../../../../components/slider/ino-slider.component';
+import { InoSpeedDialComponent } from '../../../../components/speeddial/ino-speeddial.component';
 import { InoSplitterComponent } from '../../../../components/splitter/ino-splitter.component';
 import { InoStepperComponent } from '../../../../components/stepper/ino-stepper.component';
 import { InoTableComponent } from '../../../../components/table/ino-table.component';
@@ -93,6 +96,7 @@ export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'breadcrumb': InoBreadcrumbComponent,
   'button': InoButtonComponent,
   'card': InoCardComponent,
+  'carousel': InoCarouselComponent,
   'cascade-select': InoCascadeSelectComponent,
   'checkbox': InoCheckboxComponent,
   'chip': InoChipComponent,
@@ -114,6 +118,7 @@ export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'hero': InoHeroComponent,
   'icon-field': InoIconFieldComponent,
   'iftalabel': InoIftaLabelComponent,
+  'image': InoImageComponent,
   'input': InoInputComponent,
   'input-group': InoInputGroupComponent,
   'input-otp': InoInputOtpComponent,
@@ -144,6 +149,7 @@ export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'select-button': InoSelectButtonComponent,
   'skeleton': InoSkeletonComponent,
   'slider': InoSliderComponent,
+  'speeddial': InoSpeedDialComponent,
   'splitter': InoSplitterComponent,
   'stepper': InoStepperComponent,
   'table': InoTableComponent,

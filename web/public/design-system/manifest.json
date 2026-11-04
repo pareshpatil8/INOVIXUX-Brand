@@ -8,7 +8,7 @@
     "tablet": "641-900px",
     "desktop": ">900px"
   },
-  "componentCount": 78,
+  "componentCount": 81,
   "components": [
     {
       "name": "ino-accordion",
@@ -695,6 +695,105 @@
         "sunken",
         "overlay"
       ],
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-carousel",
+      "slug": "carousel",
+      "className": "InoCarouselComponent",
+      "sourcePath": "web/src/app/components/carousel/ino-carousel.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "orientation",
+          "type": "InoCarouselOrientation",
+          "values": [
+            "horizontal",
+            "vertical"
+          ],
+          "default": "'horizontal'",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "InoControlSize",
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
+          "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "visibleCount",
+          "type": "number",
+          "values": null,
+          "default": "1",
+          "optional": true
+        },
+        {
+          "name": "step",
+          "type": "number",
+          "values": null,
+          "default": "1",
+          "optional": true
+        },
+        {
+          "name": "autoplay",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "autoplayInterval",
+          "type": "number",
+          "values": null,
+          "default": "5000",
+          "optional": true
+        },
+        {
+          "name": "circular",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "showIndicators",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "showNavigation",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Carousel'",
+          "optional": true
+        },
+        {
+          "name": "activeIndex",
+          "type": "number",
+          "values": null,
+          "default": null,
+          "optional": true
+        }
+      ],
+      "variants": null,
       "viewports": [
         "mobile",
         "tablet",
@@ -2323,6 +2422,79 @@
           "type": "boolean",
           "values": null,
           "default": "false",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-image",
+      "slug": "image",
+      "className": "InoImageComponent",
+      "sourcePath": "web/src/app/components/image/ino-image.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "src",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "alt",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "fit",
+          "type": "InoImageFit",
+          "values": [
+            "cover",
+            "contain",
+            "fill",
+            "none",
+            "scale-down"
+          ],
+          "default": "'cover'",
+          "optional": true
+        },
+        {
+          "name": "width",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "height",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "'lazy' | 'eager'",
+          "values": [
+            "lazy",
+            "eager"
+          ],
+          "default": "'lazy'",
+          "optional": true
+        },
+        {
+          "name": "previewable",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
           "optional": true
         }
       ],
@@ -5076,6 +5248,92 @@
           "type": "number | [number, number]",
           "values": null,
           "default": "0",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-speeddial",
+      "slug": "speeddial",
+      "className": "InoSpeedDialComponent",
+      "sourcePath": "web/src/app/components/speeddial/ino-speeddial.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "items",
+          "type": "InoSpeedDialItem[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "type",
+          "type": "InoSpeedDialType",
+          "values": [
+            "linear",
+            "circle",
+            "quarter-circle"
+          ],
+          "default": "'linear'",
+          "optional": true
+        },
+        {
+          "name": "direction",
+          "type": "InoSpeedDialDirection",
+          "values": null,
+          "default": "'up'",
+          "optional": true
+        },
+        {
+          "name": "radius",
+          "type": "number",
+          "values": null,
+          "default": "80",
+          "optional": true
+        },
+        {
+          "name": "mask",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "InoSpeedDialSize",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "'md'",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Speed dial'",
+          "optional": true
+        },
+        {
+          "name": "icon",
+          "type": "string",
+          "values": null,
+          "default": "'+'",
           "optional": true
         }
       ],

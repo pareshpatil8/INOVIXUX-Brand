@@ -1,0 +1,286 @@
+/*
+ * <ino-speeddial> — INO-493 / INO-31 B5. No literal colour/space — every declaration resolves
+ * through tokens.css (px literals below are geometry only: FAB/action diameters and arc math).
+ *
+ * The host is placed by the consumer (typically a fixed screen corner); the component itself
+ * never fixes to the viewport, so it composes inside docs demos, cards, and app shells alike.
+ * Directions are physical (a FAB is anchored to a screen corner, not a text flow) — an RTL
+ * layout picks the mirrored `direction` value at the call site (SPEC.md §4).
+ */
+:host {
+  display: inline-block;
+}
+
+.ino-speeddial {
+  position: relative;
+  display: inline-block;
+
+  &--open {
+    z-index: calc(var(--ino-z-overlay) + 1);
+  }
+}
+
+.ino-speeddial__mask {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: var(--ino-color-overlay-scrim);
+}
+
+.ino-speeddial__fab {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: var(--ino-gradient-accent);
+  color: var(--ino-color-on-accent);
+  box-shadow: var(--ino-elevation-neutral-3);
+  cursor: pointer;
+
+  // fab md (default) — 44px, the fluid control height. Fixed px like ino-scrolltop's 44px:
+  // a FAB is not a form row, so the dense register's --ino-control-height-* remap (which
+  // would shrink sm to 28px on docs pages) must not resize it.
+  inline-size: 44px;
+  block-size: 44px;
+
+  &:hover:not(:disabled) {
+    filter: brightness(1.08);
+  }
+
+  &:active:not(:disabled) {
+    background: var(--ino-color-accent-active);
+    filter: none;
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+
+  &:disabled {
+    background: var(--ino-color-surface-sunken);
+    color: var(--ino-color-on-surface-muted);
+    box-shadow: none;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
+// fab sm/lg (doc 26 §5 row) — fixed diameters matching the fluid control scale
+.ino-speeddial[data-size='sm'] .ino-speeddial__fab {
+  inline-size: 36px;
+  block-size: 36px;
+}
+
+.ino-speeddial[data-size='lg'] .ino-speeddial__fab {
+  inline-size: 52px;
+  block-size: 52px;
+}
+
+.ino-speeddial__fab-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.ino-speeddial[data-size='sm'] .ino-speeddial__fab-icon {
+  font-size: 16px;
+}
+
+.ino-speeddial[data-size='lg'] .ino-speeddial__fab-icon {
+  font-size: 24px;
+}
+
+.ino-speeddial--open .ino-speeddial__fab-icon {
+  transform: rotate(45deg);
+}
+
+.ino-speeddial__menu {
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  gap: var(--ino-space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.ino-speeddial--open .ino-speeddial__menu {
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* Linear placements — first item nearest the FAB. Centering uses physical
+   left/top + translate (symmetric, so RTL-safe); see header note on direction. */
+.ino-speeddial[data-type='linear'][data-direction='up'] .ino-speeddial__menu {
+  flex-direction: column-reverse;
+  inset-block-end: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding-block-end: var(--ino-space-3);
+}
+
+.ino-speeddial[data-type='linear'][data-direction='down'] .ino-speeddial__menu {
+  flex-direction: column;
+  inset-block-start: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding-block-start: var(--ino-space-3);
+}
+
+.ino-speeddial[data-type='linear'][data-direction='left'] .ino-speeddial__menu {
+  flex-direction: row-reverse;
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  padding-inline-end: var(--ino-space-3);
+}
+
+.ino-speeddial[data-type='linear'][data-direction='right'] .ino-speeddial__menu {
+  flex-direction: row;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  padding-inline-start: var(--ino-space-3);
+}
+
+/* Circle / quarter-circle: the menu collapses to the FAB's center point and each
+   action is placed on the arc by the inline transform computed in the component. */
+.ino-speeddial[data-type='circle'] .ino-speeddial__menu,
+.ino-speeddial[data-type='quarter-circle'] .ino-speeddial__menu {
+  top: 50%;
+  left: 50%;
+  inline-size: 0;
+  block-size: 0;
+  gap: 0;
+}
+
+.ino-speeddial[data-type='circle'] .ino-speeddial__action,
+.ino-speeddial[data-type='quarter-circle'] .ino-speeddial__action {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.ino-speeddial__action {
+  position: relative;
+  opacity: 0;
+}
+
+.ino-speeddial[data-type='linear'] .ino-speeddial__action {
+  transform: scale(0.4);
+}
+
+.ino-speeddial--open .ino-speeddial__action {
+  opacity: 1;
+}
+
+.ino-speeddial--open[data-type='linear'] .ino-speeddial__action {
+  transform: scale(1);
+}
+
+.ino-speeddial__action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  // One fixed action size on every fab size (doc 26 §5 row scales the FAB only);
+  // 36px clears the SC 2.5.8 24px target floor with margin. Fixed px for the same
+  // density-immunity reason as the FAB diameters above.
+  inline-size: 36px;
+  block-size: 36px;
+  border: 1px solid var(--ino-color-border-strong, var(--ino-color-on-surface-muted));
+  border-radius: 50%;
+  background: var(--ino-color-surface);
+  color: var(--ino-color-on-surface);
+  box-shadow: var(--ino-elevation-neutral-3);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--ino-color-surface-sunken);
+    color: var(--ino-color-accent);
+  }
+
+  &:active {
+    color: var(--ino-color-accent-active);
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+}
+
+.ino-speeddial__action--disabled .ino-speeddial__action-btn {
+  color: var(--ino-color-on-surface-muted);
+  opacity: 0.6;
+  cursor: not-allowed;
+
+  &:hover {
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface-muted);
+  }
+}
+
+.ino-speeddial__action-icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* Tooltip-style label, shown for the hovered/focused action only. aria-hidden —
+   the menuitem's aria-label already carries the same text. */
+.ino-speeddial__action-label {
+  position: absolute;
+  inset-inline-end: calc(100% + var(--ino-space-2));
+  top: 50%;
+  transform: translateY(-50%);
+  padding-block: var(--ino-space-1);
+  padding-inline: var(--ino-space-2);
+  border: 1px solid var(--ino-color-border-strong, var(--ino-color-on-surface-muted));
+  border-radius: var(--ino-radius-sm);
+  background: var(--ino-color-surface);
+  color: var(--ino-color-on-surface);
+  box-shadow: var(--ino-elevation-neutral-2);
+  font-size: var(--ino-control-font-size-compact);
+  line-height: 1.4;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Horizontal rows would overlap a side label onto the neighbouring action, so
+   left/right linear dials show labels below the action instead. */
+.ino-speeddial[data-type='linear'][data-direction='left'] .ino-speeddial__action-label,
+.ino-speeddial[data-type='linear'][data-direction='right'] .ino-speeddial__action-label {
+  inset-inline-end: auto;
+  top: calc(100% + var(--ino-space-2));
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.ino-speeddial__action:hover .ino-speeddial__action-label,
+.ino-speeddial__action:focus-within .ino-speeddial__action-label {
+  opacity: 1;
+  visibility: visible;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ino-speeddial__fab-icon {
+    transition: transform var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+  }
+
+  .ino-speeddial__action {
+    transition:
+      opacity var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+      transform var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+      visibility 0s;
+  }
+
+  .ino-speeddial__action-label {
+    transition: opacity var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+  }
+}
