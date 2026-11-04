@@ -176,6 +176,15 @@ export class InoTreeComponent implements OnChanges {
     return `${this.treeId}-row-${index}`;
   }
 
+  /** Keyed on `node.value` (globally unique — `parentOf`/`findNodeByValue`/`setActiveByValue`
+   *  already assume this) so expand/collapse only inserts/removes the affected rows' `<li>`s
+   *  instead of Angular's default identity differ tearing down and rebuilding every row —
+   *  that teardown destroyed the focused `<li>` out from under `focusActiveRow()` before its
+   *  `querySelector` ran, dropping DOM focus to `<body>` (INO-892). */
+  protected trackRow(_index: number, row: InoTreeRow): string {
+    return row.node.value;
+  }
+
   protected isActiveTabStop(index: number): boolean {
     return index === this.activeIndex;
   }

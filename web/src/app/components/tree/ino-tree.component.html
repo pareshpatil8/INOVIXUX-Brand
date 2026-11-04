@@ -30,7 +30,7 @@
         [attr.aria-describedby]="error ? errorId : (hint ? hintId : null)"
       >
         <li
-          *ngFor="let row of rows"
+          *ngFor="let row of rows; trackBy: trackRow"
           [id]="rowId(row.index)"
           role="treeitem"
           class="ino-field__treeitem"
