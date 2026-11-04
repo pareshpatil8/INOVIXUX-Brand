@@ -13,6 +13,7 @@ import { InoButtonComponent } from '../../../../components/button/ino-button.com
 import { InoCardComponent } from '../../../../components/card/ino-card.component';
 import { InoCascadeSelectComponent } from '../../../../components/cascade-select/ino-cascade-select.component';
 import { InoCheckboxComponent } from '../../../../components/checkbox/ino-checkbox.component';
+import { InoChipComponent } from '../../../../components/chip/ino-chip.component';
 import { InoCommandMenuComponent } from '../../../../components/command-menu/ino-command-menu.component';
 import { InoConfirmDialogComponent } from '../../../../components/confirm-dialog/ino-confirm-dialog.component';
 import { InoConfirmPopupComponent } from '../../../../components/confirm-popup/ino-confirm-popup.component';
@@ -90,6 +91,7 @@ export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'card': InoCardComponent,
   'cascade-select': InoCascadeSelectComponent,
   'checkbox': InoCheckboxComponent,
+  'chip': InoChipComponent,
   'command-menu': InoCommandMenuComponent,
   'confirm-dialog': InoConfirmDialogComponent,
   'confirm-popup': InoConfirmPopupComponent,

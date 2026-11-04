@@ -1,0 +1,158 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Variants / Structure — label, icon, avatar</h3>
+  <p class="demo-section__note">
+    Three content forms (doc 26 §5 "label+icon+avatar"): plain label, label with a projected
+    <code>[icon]</code>, and label with a projected <code>[avatar]</code> (here an
+    <code>&lt;ino-avatar&gt;</code>). All static — no interaction, no remove button.
+  </p>
+  <div class="demo-row">
+    <ino-chip label="Label only"></ino-chip>
+
+    <ino-chip label="With icon">
+      <svg icon viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <path d="M12 8v4l3 3"></path>
+      </svg>
+    </ino-chip>
+
+    <ino-chip label="With avatar">
+      <ino-avatar avatar size="xs" initials="JD" decorative></ino-avatar>
+    </ino-chip>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Static vs. interactive</h3>
+  <p class="demo-section__note">
+    A static chip (<code>interactive="false"</code>, the default) renders a non-interactive
+    <code>&lt;span&gt;</code> — same precedent as <code>ino-tag</code>. An interactive chip renders
+    a real <code>&lt;button&gt;</code> and emits <code>(chipClick)</code>. Click the interactive
+    chip below — the count increments.
+  </p>
+  <div class="demo-row">
+    <ino-chip label="Static (no interaction)"></ino-chip>
+
+    <ino-chip
+      label="Interactive — click me"
+      [interactive]="true"
+      (chipClick)="onChipClick()"
+    ></ino-chip>
+
+    <span class="demo-pane__label">clicked {{ clickCount }} time(s)</span>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Interactive + pressable (filter-chip toggle)</h3>
+  <p class="demo-section__note">
+    <code>pressable</code> turns an interactive chip into a WAI-ARIA toggle button
+    (<code>aria-pressed</code>), the same pattern <code>ino-toggle-button</code> uses. Click any
+    chip below to toggle it independently — selected chips take the accent tint.
+  </p>
+  <div class="demo-row">
+    <ino-chip
+      *ngFor="let key of ['open', 'closed', 'archived']"
+      [label]="key"
+      [interactive]="true"
+      [pressable]="true"
+      [pressed]="filters[key]"
+      (pressedChange)="onToggleFilter(key, $event)"
+    ></ino-chip>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Removable (button-in-group)</h3>
+  <p class="demo-section__note">
+    <code>removable="true"</code> adds a trailing remove button, wrapped with the main content in
+    a <code>role="group"</code> — the same button-in-group contract <code>ino-inputtags</code>'
+    per-tag chips already use (a <code>&lt;button&gt;</code> cannot contain another
+    <code>&lt;button&gt;</code>). Click the × to remove a chip, or focus a chip and press
+    <strong>Delete</strong>/<strong>Backspace</strong>. Removal fades the chip out before it
+    actually leaves the list — watch the transition.
+  </p>
+  <div class="demo-row">
+    <ino-chip
+      *ngFor="let chip of removableChips"
+      [label]="chip.label"
+      [removable]="true"
+      (remove)="onRemove(chip.id)"
+    ></ino-chip>
+
+    <span class="demo-pane__label" *ngIf="removableChips.length === 0">
+      All chips removed — reload the page to reset.
+    </span>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Removable + interactive (two sibling buttons)</h3>
+  <p class="demo-section__note">
+    When both <code>interactive</code> and <code>removable</code> are set, the main button and
+    the remove button render as siblings inside the same group — never nested.
+  </p>
+  <div class="demo-row">
+    <ino-chip
+      label="Click me, or remove me"
+      [interactive]="true"
+      [removable]="true"
+      (chipClick)="onChipClick()"
+    ></ino-chip>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States</h3>
+  <p class="demo-section__note">
+    Default, disabled, and readonly snapshots. Disabled dims and blocks all interaction; readonly
+    dims less (the label is still meant to be read) and blocks removal but not focus.
+  </p>
+  <div class="demo-row">
+    <ino-chip label="Default" [removable]="true"></ino-chip>
+    <ino-chip label="Disabled" [removable]="true" [disabled]="true"></ino-chip>
+    <ino-chip label="Readonly" [removable]="true" [readonly]="true"></ino-chip>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Sizing</h3>
+  <p class="demo-section__note">
+    Three sizes: <code>size="sm"</code>, <code>size="default"</code>, and <code>size="lg"</code>.
+  </p>
+  <div class="demo-row">
+    <ino-chip label="Small" size="sm" [removable]="true"></ino-chip>
+    <ino-chip label="Default" size="default" [removable]="true"></ino-chip>
+    <ino-chip label="Large" size="lg" [removable]="true"></ino-chip>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Density — dense vs. fluid</h3>
+  <p class="demo-section__note">
+    This docs page renders in the dense register by default (<code>[data-density="dense"]</code>
+    on the layout host); the pane on the right overrides to the fluid row-height floor to show the
+    contrast.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane" data-density="dense">
+      <p class="demo-pane__label">dense</p>
+      <ino-chip label="Dense row" [removable]="true"></ino-chip>
+    </div>
+    <div class="demo-pane" data-density="fluid">
+      <p class="demo-pane__label">fluid</p>
+      <ino-chip label="Fluid row" [removable]="true"></ino-chip>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Keyboard interaction</h3>
+  <p class="demo-section__note">
+    Focus any removable or interactive chip above and try these keyboard shortcuts:
+  </p>
+  <ul style="color: var(--ino-color-on-surface-muted); font-size: var(--ino-type-body-sm-size, 12.5px); margin: 0; padding-left: var(--ino-space-5);">
+    <li><strong>Tab:</strong> moves between the main chip and its remove button independently</li>
+    <li><strong>Enter / Space:</strong> activates whichever button has focus</li>
+    <li><strong>Delete / Backspace</strong> (main chip focused, removable): removes the chip</li>
+  </ul>
+</section>

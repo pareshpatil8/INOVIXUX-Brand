@@ -1104,6 +1104,120 @@
         "templates": []
       }
     },
+    "chip": {
+      "name": "ino-chip",
+      "docPath": "docs/brand/06-angular-components/chip.md",
+      "a11y": "<p><strong>Roles:</strong></p>\n<ul>\n<li>Static, non-removable: plain <code>&lt;span&gt;</code>, no role, no tabindex.</li>\n<li>Removable: outer <code>&lt;span role=\"group\" aria-label=\"{label}\"&gt;</code> wrapping the main content/button and\nthe remove <code>&lt;button aria-label=\"Remove {label}\"&gt;</code>.</li>\n<li>Interactive, non-removable: <code>&lt;button type=\"button\" aria-pressed=\"…\"&gt;</code> (when <code>pressable</code>).</li>\n</ul>\n<p><strong>Keyboard map:</strong></p>\n<ul>\n<li><strong>Tab</strong> — moves focus to the main button (if <code>interactive</code>) and/or the remove button (if\n<code>removable</code>) independently; both are plain tab stops, not a roving-tabindex composite.</li>\n<li><strong>Enter / Space</strong> — activates whichever button has focus (native button semantics).</li>\n<li><strong>Delete / Backspace</strong> — when the main chip element has focus and <code>removable</code> is true, triggers\nthe same removal path as clicking the remove button (mirrors <code>&lt;ino-inputtags&gt;</code>'s existing\nBackspace-removes-last-tag pattern, applied per-chip).</li>\n</ul>\n<p><strong>Screen reader announcements:</strong></p>\n<ul>\n<li>Removal: \"Removing {label}\" announced via <code>role=\"status\" aria-live=\"polite\"</code> the moment the\nremoving transition starts.</li>\n<li>Accessible names never rely on visual-only icon content — the remove button's\n<code>aria-label=\"Remove {label}\"</code> and the group wrapper's <code>aria-label=\"{label}\"</code> both carry the\nlabel text explicitly.</li>\n</ul>\n<p><strong>WCAG 2.2 AA:</strong></p>\n<ul>\n<li>Contrast: <code>--ino-color-on-surface</code> / <code>--ino-color-accent</code> on <code>--ino-color-surface-raised</code>,\nverified AA in all 3 themes by <code>check-theme-parity</code>.</li>\n<li>Target size: the <code>--ino-row-min-height</code> floor plus <code>--ino-target-min</code> (24px) on the remove\nbutton meet the §2.5.8 minimum.</li>\n<li>Focus indicators: <code>--ino-focus-ring</code> / <code>--ino-focus-ring-offset</code> on every real button in the\ncomponent — never on the non-interactive <code>role=\"group\"</code> wrapper itself.</li>\n</ul>\n<hr />\n",
+      "notes": "<ul>\n<li><strong>No drag-to-reorder.</strong> A chip is a display/removal primitive, not a sortable list item. If\nordering matters, the caller's own array order is authoritative.</li>\n<li><strong>No built-in overflow/\"+N more\" collapsing.</strong> <code>&lt;ino-chip&gt;</code> renders exactly one chip; a\nwrapping/overflow chip <em>group</em> is a separate, not-yet-built component. Callers lay out multiple\nchips with their own flex-wrap container (the same pattern <code>&lt;ino-inputtags&gt;</code>'s internal tag list\nalready uses).</li>\n<li><strong>No roving-tabindex composite widget.</strong> Two independent tab stops (main, remove) rather than\none ARIA-managed composite — matches <code>&lt;ino-inputtags&gt;</code>'s existing per-tag shape.</li>\n</ul>\n<h3>Contrast with PrimeNG Chip</h3>\n<ul>\n<li>PrimeNG <code>removable</code> → same name here. PrimeNG <code>(onRemove)</code> → our <code>remove</code> (fires after the\nremoving transition completes, not synchronously on click).</li>\n<li>PrimeNG's Chip has no <code>interactive</code>/toggle-button mode; that half of this component's contract\nhas no direct PrimeNG analogue and is modeled on <code>&lt;ino-toggle-button&gt;</code>'s <code>aria-pressed</code> pattern\ninstead.</li>\n</ul>\n<hr />\n",
+      "mobile": "<p><strong>Port both</strong> (doc 26 §5): React Native (<code>mobile/react-native/src/components/InoChip.tsx</code>) and\nFlutter (<code>mobile/flutter/lib/widgets/ino_chip.dart</code>) implementations carry the same\nlabel/icon/avatar/removable/interactive contract. Mobile platforms get:</p>\n<ul>\n<li>Native chip rendering (Material <code>Chip</code> idiom on Android, iOS-native chip affordance)</li>\n<li>Platform touch-target sizing — each port uses its own platform minimum (the web\n<code>--ino-row-min-height</code> tokens don't exist on mobile), documented in the port's own file header</li>\n<li>Accessibility: TalkBack/VoiceOver announce the remove action and, for interactive chips, the\npressed state</li>\n</ul>\n",
+      "api": {
+        "props": [
+          {
+            "name": "label",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "size",
+            "type": "InoControlSize",
+            "values": [
+              "sm",
+              "default",
+              "lg"
+            ],
+            "default": "'default'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "interactive",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "removable",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "pressable",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": "Only meaningful when `interactive`. See SPEC.md §7."
+          },
+          {
+            "name": "pressed",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "readonly",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          }
+        ],
+        "events": [
+          {
+            "name": "chipClick",
+            "type": "void",
+            "description": null
+          },
+          {
+            "name": "pressedChange",
+            "type": "boolean",
+            "description": null
+          },
+          {
+            "name": "remove",
+            "type": "void",
+            "description": null
+          }
+        ],
+        "methods": [
+          {
+            "name": "onMainKeyDown",
+            "params": "event: KeyboardEvent",
+            "returnType": "void",
+            "description": "Delete/Backspace on the main chip element — mirrors `ino-inputtags`' Backspace-removes-last pattern, applied per-chip. See SPEC.md §5."
+          }
+        ],
+        "templates": [
+          {
+            "name": "[icon]",
+            "description": null
+          },
+          {
+            "name": "[avatar]",
+            "description": null
+          }
+        ]
+      }
+    },
     "command-menu": {
       "name": "ino-command-menu",
       "docPath": "docs/brand/06-angular-components/command-menu.md",
