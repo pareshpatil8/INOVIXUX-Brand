@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 
 import { InoCarouselComponent } from './ino-carousel.component';
 import { InoCarouselItemComponent } from './ino-carousel-item.component';
