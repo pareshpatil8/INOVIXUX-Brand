@@ -8,7 +8,7 @@
     "tablet": "641-900px",
     "desktop": ">900px"
   },
-  "componentCount": 81,
+  "componentCount": 83,
   "components": [
     {
       "name": "ino-accordion",
@@ -1057,6 +1057,132 @@
           "type": "boolean",
           "values": null,
           "default": "false",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-colorpicker",
+      "slug": "colorpicker",
+      "className": "InoColorPickerComponent",
+      "sourcePath": "web/src/app/components/colorpicker/ino-colorpicker.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "hint",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "values": null,
+          "default": "'Select color'",
+          "optional": true
+        },
+        {
+          "name": "swatchSize",
+          "type": "InoColorPickerSwatchSize",
+          "values": [
+            "sm",
+            "md"
+          ],
+          "default": "'md'",
+          "optional": true
+        },
+        {
+          "name": "inline",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "showAlpha",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "presets",
+          "type": "string[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "value",
+          "type": "string | null",
+          "values": null,
+          "default": "null",
+          "optional": true
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "closeOnEscape",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "closeOnBackdrop",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "appendTo",
+          "type": "'self' | 'body'",
+          "values": [
+            "self",
+            "body"
+          ],
+          "default": "'self'",
           "optional": true
         }
       ],
@@ -2286,6 +2412,88 @@
           "type": "InoFooterColumn[]",
           "values": null,
           "default": "[]",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-galleria",
+      "slug": "galleria",
+      "className": "InoGalleriaComponent",
+      "sourcePath": "web/src/app/components/galleria/ino-galleria.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "size",
+          "type": "InoControlSize",
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
+          "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "autoplay",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "autoplayInterval",
+          "type": "number",
+          "values": null,
+          "default": "5000",
+          "optional": true
+        },
+        {
+          "name": "showThumbnails",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "showIndicators",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "showFullscreen",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Gallery'",
+          "optional": true
+        },
+        {
+          "name": "activeIndex",
+          "type": "number",
+          "values": null,
+          "default": null,
           "optional": true
         }
       ],

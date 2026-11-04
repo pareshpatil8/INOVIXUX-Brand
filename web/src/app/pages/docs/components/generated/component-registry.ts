@@ -17,6 +17,7 @@ import { InoCarouselComponent } from '../../../../components/carousel/ino-carous
 import { InoCascadeSelectComponent } from '../../../../components/cascade-select/ino-cascade-select.component';
 import { InoCheckboxComponent } from '../../../../components/checkbox/ino-checkbox.component';
 import { InoChipComponent } from '../../../../components/chip/ino-chip.component';
+import { InoColorPickerComponent } from '../../../../components/colorpicker/ino-colorpicker.component';
 import { InoCommandMenuComponent } from '../../../../components/command-menu/ino-command-menu.component';
 import { InoConfirmDialogComponent } from '../../../../components/confirm-dialog/ino-confirm-dialog.component';
 import { InoConfirmPopupComponent } from '../../../../components/confirm-popup/ino-confirm-popup.component';
@@ -32,6 +33,7 @@ import { InoFileUploadComponent } from '../../../../components/file-upload/ino-f
 import { InoFloatLabelComponent } from '../../../../components/floatlabel/ino-floatlabel.component';
 import { InoFocusTrapComponent } from '../../../../components/focus-trap/ino-focus-trap.component';
 import { InoFooterComponent } from '../../../../components/footer/ino-footer.component';
+import { InoGalleriaComponent } from '../../../../components/galleria/ino-galleria.component';
 import { InoHeroComponent } from '../../../../components/hero/ino-hero.component';
 import { InoIconFieldComponent } from '../../../../components/icon-field/ino-icon-field.component';
 import { InoIftaLabelComponent } from '../../../../components/iftalabel/ino-iftalabel.component';
@@ -100,6 +102,7 @@ export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'cascade-select': InoCascadeSelectComponent,
   'checkbox': InoCheckboxComponent,
   'chip': InoChipComponent,
+  'colorpicker': InoColorPickerComponent,
   'command-menu': InoCommandMenuComponent,
   'confirm-dialog': InoConfirmDialogComponent,
   'confirm-popup': InoConfirmPopupComponent,
@@ -115,6 +118,7 @@ export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'floatlabel': InoFloatLabelComponent,
   'focus-trap': InoFocusTrapComponent,
   'footer': InoFooterComponent,
+  'galleria': InoGalleriaComponent,
   'hero': InoHeroComponent,
   'icon-field': InoIconFieldComponent,
   'iftalabel': InoIftaLabelComponent,

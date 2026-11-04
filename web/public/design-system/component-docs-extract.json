@@ -1343,6 +1343,157 @@
         ]
       }
     },
+    "colorpicker": {
+      "name": "ino-colorpicker",
+      "docPath": "docs/brand/06-angular-components/colorpicker.md",
+      "a11y": "<p><strong>Dialog/combobox hybrid</strong> (doc 26 §5 a11y row, named explicitly):</p>\n<ul>\n<li>The trigger's hex text field is <code>role=\"combobox\"</code>, <code>aria-haspopup=\"dialog\"</code>, <code>aria-expanded</code> —\ntypeable directly, and focusing it opens the panel, the same idiom <code>ino-autocomplete</code>'s input\nuses for its own listbox.</li>\n<li>The trigger's swatch button is the primary <code>aria-haspopup=\"dialog\"</code> / <code>aria-expanded</code> /\n<code>aria-controls</code> trigger; the panel is <code>role=\"dialog\"</code> with <code>aria-modal=\"true\"</code>, composing\n<code>InoFocusTrapDirective</code> for Tab containment and return-focus-on-close (the same primitive\n<code>ino-datepicker</code>/<code>ino-modal</code>/<code>ino-popover</code>/<code>ino-confirm-dialog</code> already use).</li>\n</ul>\n<p><strong>Slider semantics per bar</strong> (doc 26 §5 a11y row, named explicitly):</p>\n<ul>\n<li>Hue bar: <code>role=\"slider\"</code>, <code>aria-valuemin=\"0\"</code>, <code>aria-valuemax=\"360\"</code>, <code>aria-valuenow</code>,\n<code>aria-label=\"Hue\"</code>. Keyboard: Arrow Left/Down −1, Right/Up +1, PageDown/PageUp ∓/±10, Home/End\nto 0/360.</li>\n<li>Alpha bar: <code>role=\"slider\"</code>, <code>aria-valuemin=\"0\"</code>, <code>aria-valuemax=\"100\"</code>, <code>aria-valuenow</code>,\n<code>aria-label=\"Alpha\"</code>. Keyboard: Arrow Left/Down −1, Right/Up +1, Home/End to 0/100.</li>\n<li>Saturation/brightness panel: the same <code>role=\"slider\"</code> treatment, with <code>aria-valuetext</code>\ncarrying both axes (\"Saturation N%, brightness N%\") since <code>aria-valuenow</code> can only hold one\nnumber. Deliberately not <code>role=\"application\"</code> — see <code>SPEC.md</code> §6 for why. Keyboard: Arrow\nLeft/Right adjust saturation ∓/±1, Up/Down adjust brightness ±1/∓1, Home sets both to 0, End\nsets both to 100.</li>\n</ul>\n<p><strong>Value announced on commit</strong> (doc 26 §5 a11y row, named explicitly): a visually-hidden\n<code>aria-live=\"polite\"</code> region announces \"Color set to #…\" exactly once per commit — drag release,\nkeyboard step, hex/RGB field blur, or preset click — never per intermediate drag pixel. Full\nreasoning: <code>SPEC.md</code> §5.</p>\n<p><strong>Contrast</strong> — every static (non-data) color in this component reads an existing role audited in\nevery theme by <code>node scripts/check-theme-parity.mjs</code>. The dynamic swatch/thumb/gradient fills are\nthe caller/user's own picked color; their contrast is a data-entry concern, not a themed-role\nquestion this component audits (same as native <code>&lt;input type=\"color\"&gt;</code>'s own swatch).</p>\n<p><strong>RTL</strong> — logical properties only (<code>inline-size</code>/<code>block-size</code>/<code>inset-inline-*</code>/<code>inset-block-*</code>);\nno <code>left</code>/<code>right</code>/<code>top</code>/<code>bottom</code>/<code>width</code>/<code>height</code> anywhere in the stylesheet.</p>\n<hr />\n",
+      "notes": "<p><strong>No default <code>presets</code> array.</strong> A brand preset palette is an admin/theming-surface decision for\nthe caller to supply; this component does not bake one in — doing so would also mean hardcoding\nraw colour literals in this component's own source. Full reasoning: <code>SPEC.md</code> §4 and §8.</p>\n<p><strong>No <code>rgb()</code>/<code>hsl()</code> CSS color functions anywhere in this component's source</strong>, including for the\nhue-bar rainbow gradient, which a typical implementation would write as <code>hsl()</code> stops. Every\ndynamic fill is computed to a hex string instead, so the design-system-adherence lint's raw-colour\nscan — a plain text match with no way to distinguish a hardcoded brand decision from a\nruntime-computed, caller/user-chosen value — has nothing to flag. Full reasoning: <code>SPEC.md</code> §8.</p>\n<p><strong>No general CSS-color-string parser.</strong> Preset swatches accept any CSS color for display and\nselection, but only a hex preset re-derives the SB/hue/alpha thumb positions; a named color or\n<code>rgb()</code> string preset is still selectable and emitted, just without moving the thumbs. Full\nreasoning: <code>SPEC.md</code> §4.</p>\n<p><strong>No continuous <code>valueChange</code> during drag.</strong> A deliberate divergence from <code>&lt;ino-slider&gt;</code>'s\ncontinuous-commit convention — see <a href=\"#states\">States</a> and <code>SPEC.md</code> §5.</p>\n<hr />\n",
+      "mobile": "<p><strong>Web-only</strong> (doc 26 §5 row disposition: \"Web-only (theming/admin surfaces)\"). An HSB color\npicker with hue/alpha drag bars is an admin/theming-surface control, not part of this repo's\nported mobile component set — no RN/Flutter component in this design system exposes raw color\nauthoring today. Mirrors <code>ino-command-menu</code>/<code>ino-dynamic-dialog</code>/<code>ino-toolbar</code>'s web-only\ndisposition in the same table.</p>\n",
+      "api": {
+        "props": [
+          {
+            "name": "label",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "hint",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "error",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "placeholder",
+            "type": "string",
+            "values": null,
+            "default": "'Select color'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "swatchSize",
+            "type": "InoColorPickerSwatchSize",
+            "values": [
+              "sm",
+              "md"
+            ],
+            "default": "'md'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "inline",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "showAlpha",
+            "type": "boolean",
+            "values": null,
+            "default": "true",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "presets",
+            "type": "string[]",
+            "values": null,
+            "default": "[]",
+            "optional": true,
+            "description": "Any CSS color string — hex is the primary, round-trippable format (parsed back into the HSB model so dragging afterwards starts from the right place); a non-hex value is still rendered and still emitted on selection, just without updating the drag thumbs. SPEC.md §4. No default array: a brand preset palette is an admin/theming decision for the caller to supply, not one this component bakes in (also sidesteps hardcoding raw colors — SPEC.md §8)."
+          },
+          {
+            "name": "value",
+            "type": "string | null",
+            "values": null,
+            "default": "null",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "required",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "readonly",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "closeOnEscape",
+            "type": "boolean",
+            "values": null,
+            "default": "true",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "closeOnBackdrop",
+            "type": "boolean",
+            "values": null,
+            "default": "true",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "appendTo",
+            "type": "'self' | 'body'",
+            "values": [
+              "self",
+              "body"
+            ],
+            "default": "'self'",
+            "optional": true,
+            "description": "`'body'` reparents the overlay to `document.body` — see the class doc comment's \"Overlay\" paragraph and `ino-datepicker`'s identical input for the full positioning rationale."
+          }
+        ],
+        "events": [
+          {
+            "name": "valueChange",
+            "type": "string | null",
+            "description": null
+          },
+          {
+            "name": "openChange",
+            "type": "boolean",
+            "description": null
+          }
+        ],
+        "methods": [],
+        "templates": []
+      }
+    },
     "command-menu": {
       "name": "ino-command-menu",
       "docPath": "docs/brand/06-angular-components/command-menu.md",
