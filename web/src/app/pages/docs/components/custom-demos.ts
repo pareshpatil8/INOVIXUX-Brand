@@ -45,6 +45,8 @@ import { ChipDemoComponent } from './demos/chip-demo.component';
 import { ImageDemoComponent } from './demos/image-demo.component';
 import { SpeedDialDemoComponent } from './demos/speeddial-demo.component';
 import { CarouselDemoComponent } from './demos/carousel-demo.component';
+import { ColorpickerDemoComponent } from './demos/colorpicker-demo.component';
+import { GalleriaDemoComponent } from './demos/galleria-demo.component';
 
 /**
  * Slug -> hand-authored demo component, for components whose §2 Component Publish Contract
@@ -225,4 +227,15 @@ export const CUSTOM_DEMOS: Record<string, Type<unknown>> = {
   // autoplay opt-in, and size-driven item gap all need composed examples the single-axis
   // `@Input` grid cannot stage. See `carousel/SPEC.md` for the full contract.
   'carousel': CarouselDemoComponent,
+  // The whole component is built from content-projected `<ino-galleria-item>` children (same gap
+  // as `carousel`/`toolbar`/`accordion`), and the thumbnail strip, fullscreen dialog, autoplay,
+  // captions, loading state, and density variants all need composed examples the single-axis
+  // `@Input` grid cannot stage. See `galleria/SPEC.md` for the full contract.
+  'galleria': GalleriaDemoComponent,
+  // `value: string | null` is free-form, not an enum `STATE_INPUT_NAMES` can drive; `presets` is
+  // an array input (same empty-default gap `treetable`/`tree`/`avatar-group` hit), and the
+  // inline/popover structural variant plus the drag/keyboard SB-panel and hue/alpha bars need
+  // composed, deliberately-triggered examples the single-axis grid cannot stage. See
+  // `colorpicker/SPEC.md` for the full contract.
+  'colorpicker': ColorpickerDemoComponent,
 };
