@@ -140,9 +140,9 @@ function inferTypeFromDefault(defaultValue) {
 function parseProps(source, ranges, aliases = findLocalTypeAliases(source)) {
   const props = [];
   const re =
-    /@Input\((?:'([^']*)'|\{[^}]*\})?\)\s*(?:readonly\s+)?(\w+)(\?)?\s*(?::\s*([^=;]+?))?\s*(?:=\s*([^;]+))?;/g;
+    /@Input\((?:'([^']*)'|\{[^}]*\})?\)\s*(?:readonly\s+)?(\w+)([?!])?\s*(?::\s*([^=;]+?))?\s*(?:=\s*([^;]+))?;/g;
   for (const m of maskComments(source, ranges).matchAll(re)) {
-    const [, publicName, fieldName, optionalMark, typeRaw, defaultRaw] = m;
+    const [, publicName, fieldName, modifier, typeRaw, defaultRaw] = m;
     const name = publicName || fieldName;
     const defaultValue = defaultRaw?.trim() ?? null;
     const type = typeRaw?.trim() ?? inferTypeFromDefault(defaultValue);
@@ -157,7 +157,7 @@ function parseProps(source, ranges, aliases = findLocalTypeAliases(source)) {
       type,
       values,
       default: defaultValue,
-      optional: Boolean(optionalMark) || defaultValue !== null,
+      optional: Boolean(modifier === '?') || defaultValue !== null,
       description: jsDocBefore(source, m.index, ranges),
     });
   }

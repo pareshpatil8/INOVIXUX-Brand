@@ -691,6 +691,36 @@ const COMPONENT_REGISTRY = [
     // their own, so there is no role set for either side to diverge on. See SPEC.md §2.
   },
   {
+    name: 'avatar',
+    web: 'web/src/app/components/avatar',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoAvatar.tsx',
+        roles: ['onSurface', 'onSurfaceMuted', 'surfaceSunken'],
+      },
+      flutter: {
+        // InoAvatarGroup lives in the same file, same "ticket-scoped file" organisation
+        // ino_dataview.dart uses — see the 'avatar-group' entry below for its own roles.
+        path: 'mobile/flutter/lib/widgets/ino_avatar.dart',
+        roles: ['onSurface', 'onSurfaceMuted', 'surfaceSunken'],
+      },
+    },
+  },
+  {
+    name: 'avatar-group',
+    web: 'web/src/app/components/avatar-group',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoAvatarGroup.tsx',
+        roles: ['surfaceRaised'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_avatar.dart',
+        roles: ['surfaceRaised'],
+      },
+    },
+  },
+  {
     name: 'badge',
     web: 'web/src/app/components/badge',
     mobile: {

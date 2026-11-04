@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="">
+  <!-- INO-458 avatar-demo sample image. Static asset, not component source: the
+       §2 "image" content-form demo needs something to load with no network fetch,
+       and a generic silhouette carries no brand/theme meaning of its own — same
+       reasoning as favicon.svg, which is why both are plain hex here, not tokens. -->
+  <rect width="64" height="64" fill="#7C5CFC"/>
+  <circle cx="32" cy="24" r="12" fill="#FFFFFF"/>
+  <path d="M8 60c0-13 11-20 24-20s24 7 24 20" fill="#FFFFFF"/>
+</svg>

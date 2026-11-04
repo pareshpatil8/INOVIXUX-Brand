@@ -39,6 +39,8 @@ import { BadgeDemoComponent } from './demos/badge-demo.component';
 import { DataViewDemoComponent } from './demos/dataview-demo.component';
 import { AutofocusDemoComponent } from './demos/autofocus-demo.component';
 import { TreeDemoComponent } from './demos/tree-demo.component';
+import { AvatarDemoComponent } from './demos/avatar-demo.component';
+import { AvatarGroupDemoComponent } from './demos/avatar-group-demo.component';
 import { ChipDemoComponent } from './demos/chip-demo.component';
 
 /**
@@ -195,6 +197,14 @@ export const CUSTOM_DEMOS: Record<string, Type<unknown>> = {
   // tree structure, expand/collapse, basic/checkbox selection, lazy loading, filter — is driven by
   // that array. See `tree/SPEC.md` for the full state/sizing contract.
   'tree': TreeDemoComponent,
+  // `image`/`initials` are plain strings with no enum `values`, so the generic renderer would only
+  // ever show empty circles — the same "generic demo ships empty" gap `badge`/`dataview` hit. See
+  // `avatar/SPEC.md` for the full content-form/state/sizing contract.
+  'avatar': AvatarDemoComponent,
+  // `avatars: InoAvatarGroupItem[]` hits the same array-input gap `treetable`/`tree`/`menu` hit
+  // (empty array default) — the whole visible surface (overlap, surplus count) is driven by that
+  // array. See `avatar/SPEC.md` §5 for the full contract.
+  'avatar-group': AvatarGroupDemoComponent,
   // Generic renderer mounts via `*ngComponentOutlet` with `inputs` only and can never project the
   // `[icon]`/`[avatar]` content slots or exercise the live removable-chip-list / interactive
   // toggle-chip behavior — the same content-projection gap `keyfilter` hit. See `chip/SPEC.md`.

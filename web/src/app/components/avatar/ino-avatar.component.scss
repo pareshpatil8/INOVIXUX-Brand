@@ -1,0 +1,103 @@
+/*
+ * <ino-avatar> — INO-458 / INO-31 Phase B4.
+ *
+ * No literal colour/duration — every colour resolves through a semantic role in tokens.css.
+ * Logical properties only (RTL is one code path, see SPEC.md §6).
+ *
+ * Size API (SPEC.md §2) — a dedicated 5-step `inline-size`/`block-size` scale, deliberately NOT
+ * the shared Wave 0 control-size scale (sm/default/lg): `inline-size`/`block-size` are not
+ * governed by the space/control-height lint (unlike `padding`/`margin`/`gap`), so these literals
+ * are a legal, auditable choice here — same reasoning `ino-tag`'s SPEC.md §3 already recorded for
+ * declining `--ino-control-height`.
+ */
+:host {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+  vertical-align: middle;
+  background: var(--ino-color-surface-sunken);
+  color: var(--ino-color-on-surface);
+  font-family: var(--ino-font-display);
+  font-weight: 500;
+  line-height: 1;
+  user-select: none;
+}
+
+:host([data-shape='circle']) {
+  border-radius: 50%;
+}
+
+:host([data-shape='square']) {
+  border-radius: var(--ino-radius-md);
+}
+
+:host([data-size='xs']) {
+  inline-size: 24px;
+  block-size: 24px;
+  font-size: var(--ino-type-caption-size);
+}
+
+:host([data-size='sm']) {
+  inline-size: 32px;
+  block-size: 32px;
+  font-size: var(--ino-type-label-sm-size);
+}
+
+:host([data-size='default']) {
+  inline-size: 40px;
+  block-size: 40px;
+  font-size: var(--ino-type-body-size);
+}
+
+:host([data-size='lg']) {
+  inline-size: 48px;
+  block-size: 48px;
+  font-size: var(--ino-type-h3-size);
+}
+
+:host([data-size='xl']) {
+  inline-size: 64px;
+  block-size: 64px;
+  font-size: var(--ino-type-body-lg-size);
+}
+
+.ino-avatar__image {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+.ino-avatar__initials {
+  text-transform: uppercase;
+  letter-spacing: 0;
+}
+
+.ino-avatar__icon,
+.ino-avatar__fallback-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 100%;
+  block-size: 100%;
+  color: var(--ino-color-on-surface-muted);
+}
+
+.ino-avatar__icon svg,
+.ino-avatar__fallback-icon svg {
+  inline-size: 55%;
+  block-size: 55%;
+}
+
+/* Projected `[icon]` content wins when present; the built-in person glyph only ever shows when
+ * nothing was projected into that slot. Pure CSS, no ContentChild/Renderer2 query needed — the
+ * same `:empty` idiom `ino-tag__icon` already uses, extended with a general-sibling fallback. */
+.ino-avatar__icon:empty {
+  display: none;
+}
+
+.ino-avatar__icon:not(:empty) ~ .ino-avatar__fallback-icon {
+  display: none;
+}

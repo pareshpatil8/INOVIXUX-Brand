@@ -1,0 +1,18 @@
+<ino-avatar
+  *ngFor="let item of visibleAvatars"
+  class="ino-avatar-group__item"
+  [image]="item.image || ''"
+  [initials]="item.initials || ''"
+  [alt]="item.alt || ''"
+  [decorative]="!item.alt"
+  [shape]="shape"
+  [size]="size"
+></ino-avatar>
+<ino-avatar
+  *ngIf="surplusCount > 0"
+  class="ino-avatar-group__item ino-avatar-group__surplus"
+  [initials]="'+' + surplusCount"
+  [ariaLabel]="surplusCount + ' more'"
+  [shape]="shape"
+  [size]="size"
+></ino-avatar>

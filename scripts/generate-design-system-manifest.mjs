@@ -63,14 +63,19 @@ function inferTypeFromDefault(defaultValue) {
 function parseInputs(source, aliases) {
   const clean = stripComments(source);
   const inputs = [];
-  // Bare `@Input()`, the explicit-public-name form `@Input('for')`, or the coercion form
-  // `@Input({ transform: booleanAttribute | numberAttribute })`. When a public name is given it —
+  // Bare `@Input()`, the explicit-public-name form `@Input('for')`, the coercion form
+  // `@Input({ transform: booleanAttribute | numberAttribute })`, or the required form
+  // `@Input({ required: true })`. When a public name is given it —
   // not the field name — is what callers bind to, so that is what the manifest records.
-  const decoratorRe = /@Input\(\s*(?:'([^']*)'|\{\s*transform:\s*(booleanAttribute|numberAttribute)\s*\})?\s*\)\s*(\w+)(\??)\s*(?=[:=;])/g;
+  const decoratorRe = /@Input\(\s*(?:'([^']*)'|\{[^}]*\})?\s*\)\s*(\w+)([?!])?\s*(?=[:=;])/g;
   let m;
   while ((m = decoratorRe.exec(clean))) {
-    const [, publicName, transform, fieldName, optional] = m;
+    const [, publicName, fieldName, modifier] = m;
     const name = publicName || fieldName;
+    // Extract transform if present
+    const fullMatch = m[0];
+    const transformMatch = fullMatch.match(/transform:\s*(booleanAttribute|numberAttribute)/);
+    const transform = transformMatch ? transformMatch[1] : null;
     const afterName = m.index + m[0].length;
 
     let rawType = null;
@@ -113,7 +118,7 @@ function parseInputs(source, aliases) {
       type: trimmedType,
       values,
       default: defaultValue,
-      optional: Boolean(optional) || defaultValue !== null,
+      optional: Boolean(modifier === '?') || defaultValue !== null,
     });
   }
   return inputs;

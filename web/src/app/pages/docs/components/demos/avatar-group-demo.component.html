@@ -1,0 +1,102 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Group overlap + surplus count</h3>
+  <p class="demo-section__note">
+    Doc 26 §5 row "group overlap + surplus count". Each avatar beyond the first overlaps the one
+    before it with a separator ring; when <code>avatars.length</code> exceeds <code>max</code>,
+    the remainder collapse into one trailing <code>+N</code> avatar. See
+    <code>../avatar/SPEC.md</code> §5.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">no cap — all 5 shown</p>
+      <ino-avatar-group [avatars]="namedPeople"></ino-avatar-group>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">max=3 — 2 collapse into "+2"</p>
+      <ino-avatar-group [avatars]="namedPeople" [max]="3"></ino-avatar-group>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">max=1 — 4 collapse into "+4"</p>
+      <ino-avatar-group [avatars]="namedPeople" [max]="1"></ino-avatar-group>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Shapes</h3>
+  <div class="demo-grid">
+    @for (shape of shapes; track shape) {
+      <div class="demo-pane">
+        <p class="demo-pane__label">{{ shape }}</p>
+        <ino-avatar-group [avatars]="namedPeople" [max]="3" [shape]="shape"></ino-avatar-group>
+      </div>
+    }
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Sizing — xs through xl</h3>
+  <p class="demo-section__note">
+    The group's <code>size</code> input applies the same five-step scale to every avatar it
+    renders, plus a matching overlap amount per tier. See <code>../avatar/SPEC.md</code> §2/§5.
+  </p>
+  <div class="demo-grid">
+    @for (size of sizes; track size) {
+      <div class="demo-pane">
+        <p class="demo-pane__label">{{ size }}</p>
+        <ino-avatar-group [avatars]="namedPeople" [max]="3" [size]="size"></ino-avatar-group>
+      </div>
+    }
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Accessibility contract</h3>
+  <p class="demo-section__note">
+    <code>role="group"</code> with an auto-generated <code>"N avatars"</code> label (or a caller
+    override). Per-item avatars are individually decorative unless that item supplied its own
+    <code>alt</code>. See <code>../avatar/SPEC.md</code> §4.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">named people — each item announces its own name on request</p>
+      <ino-avatar-group [avatars]="namedPeople" [max]="3"></ino-avatar-group>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">unnamed cluster — relies on the group's own count summary</p>
+      <ino-avatar-group [avatars]="unnamedCluster"></ino-avatar-group>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">custom group label override</p>
+      <ino-avatar-group [avatars]="namedPeople" [max]="3" ariaLabel="Project reviewers"></ino-avatar-group>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">RTL</h3>
+  <p class="demo-section__note">
+    <code>margin-inline-start</code>, not a directional property, so the overlap direction
+    mirrors correctly under <code>dir="rtl"</code>.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane" dir="rtl">
+      <p class="demo-pane__label">RTL — overlap mirrors</p>
+      <ino-avatar-group [avatars]="namedPeople" [max]="3"></ino-avatar-group>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Mobile — React Native + Flutter ports</h3>
+  <p class="demo-section__note">
+    Per doc 26 §5 "Port both" — <code>InoAvatarGroup</code> ships for React Native
+    (<code>mobile/react-native/src/components/InoAvatarGroup.tsx</code>) and Flutter
+    (<code>mobile/flutter/lib/widgets/ino_avatar.dart</code>) with the same overlap/surplus-count
+    behaviour as web.
+  </p>
+</section>

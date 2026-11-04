@@ -7,6 +7,8 @@ import { InoAccordionComponent } from '../../../../components/accordion/ino-acco
 import { InoAlertComponent } from '../../../../components/alert/ino-alert.component';
 import { InoAutocompleteComponent } from '../../../../components/autocomplete/ino-autocomplete.component';
 import { InoAutofocusComponent } from '../../../../components/autofocus/ino-autofocus.component';
+import { InoAvatarComponent } from '../../../../components/avatar/ino-avatar.component';
+import { InoAvatarGroupComponent } from '../../../../components/avatar-group/ino-avatar-group.component';
 import { InoBadgeComponent } from '../../../../components/badge/ino-badge.component';
 import { InoBreadcrumbComponent } from '../../../../components/breadcrumb/ino-breadcrumb.component';
 import { InoButtonComponent } from '../../../../components/button/ino-button.component';
@@ -85,6 +87,8 @@ export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'alert': InoAlertComponent,
   'autocomplete': InoAutocompleteComponent,
   'autofocus': InoAutofocusComponent,
+  'avatar': InoAvatarComponent,
+  'avatar-group': InoAvatarGroupComponent,
   'badge': InoBadgeComponent,
   'breadcrumb': InoBreadcrumbComponent,
   'button': InoButtonComponent,
