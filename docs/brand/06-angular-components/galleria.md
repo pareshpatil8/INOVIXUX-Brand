@@ -109,7 +109,7 @@ Stage always contains the image without stretching (`object-fit: contain`); aspe
 
 ---
 
-## Accessibility
+## Accessibility contract
 
 **Keyboard navigation** (APG carousel pattern):
 
@@ -131,7 +131,7 @@ Autoplay respects `prefers-reduced-motion: reduce` and will not start under that
 
 ---
 
-## Notes
+## Deliberate omissions
 
 - **Web-first component** — no React Native or Flutter ports. Mobile apps use platform native gallery patterns.
 - **Non-circular by default** — autoplay pauses at the last image; user can press Play to cycle again or navigate manually.
@@ -139,7 +139,7 @@ Autoplay respects `prefers-reduced-motion: reduce` and will not start under that
 
 ---
 
-## Mobile disposition
+## Mobile parity
 
 Web component only. Mobile apps (React Native, Flutter) use platform native gallery patterns:
 
