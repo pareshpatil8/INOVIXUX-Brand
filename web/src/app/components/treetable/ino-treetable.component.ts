@@ -166,7 +166,7 @@ export class InoTreeTableComponent implements OnInit, OnChanges, AfterViewInit {
   /**
    * All gridcell elements for keyboard navigation focus management.
    */
-  @ViewChildren('[role="gridcell"]', { read: ElementRef })
+  @ViewChildren('gridcell', { read: ElementRef })
   gridCells!: QueryList<ElementRef<HTMLElement>>;
 
   // ========== INTERNAL STATE ==========
@@ -485,9 +485,8 @@ export class InoTreeTableComponent implements OnInit, OnChanges, AfterViewInit {
 
     this.activeCell = { rowIndex: clampedRow, columnIndex: clampedCol };
 
-    // TODO: Actually focus the DOM cell (via ViewChild or getElementById)
-    // For now, just update the tabindex state
     this.updateTabindices();
+    this.focusActiveCell();
   }
 
   /**

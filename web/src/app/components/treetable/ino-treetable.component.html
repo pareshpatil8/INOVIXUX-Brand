@@ -110,6 +110,7 @@
         [attr.aria-busy]="row.loading ? true : null"
       >
         <td
+          #gridcell
           *ngFor="let column of columns; let colIndex = index"
           role="gridcell"
           class="ino-treetable__cell"
