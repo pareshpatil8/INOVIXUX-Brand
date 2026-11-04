@@ -691,6 +691,26 @@ const COMPONENT_REGISTRY = [
     // their own, so there is no role set for either side to diverge on. See SPEC.md §2.
   },
   {
+    name: 'badge',
+    web: 'web/src/app/components/badge',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoBadge.tsx',
+        roles: ['accent', 'danger', 'info', 'onAccent', 'onDanger', 'onInfo', 'onSuccess', 'onWarning', 'success', 'warning'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_badge.dart',
+        roles: ['accent', 'danger', 'info', 'onAccent', 'onDanger', 'onInfo', 'onSuccess', 'onWarning', 'success', 'warning'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['surface'], reason: "web's status variant uses `color-mix(in srgb, var(--ino-color-{severity}) 12%, var(--ino-color-surface))` to create a tinted background (ino-badge.component.scss). RN has no built-in color-blend function, so the port uses the full severity color as background with `on{Severity}` text instead — a visual divergence but equivalent contrast (severity background + on-severity text = full semantic pairing)." },
+      { platform: 'flutter', roles: ['surface'], reason: 'same as the React Native entry above — Flutter port uses full severity color backgrounds with on-severity text, while web uses color-mix tinting.' },
+      { platform: 'reactNative', roles: ['onDanger', 'onInfo', 'onSuccess', 'onWarning'], reason: "ADDED roles, not dropped ones. Web's status variant uses tinted backgrounds (color-mix) with the severity color as text; mobile uses full severity backgrounds with on-severity text. Both achieve WCAG AA contrast, just via different pairing strategies." },
+      { platform: 'flutter', roles: ['onDanger', 'onInfo', 'onSuccess', 'onWarning'], reason: 'same as the React Native entry above.' },
+    ],
+  },
+  {
     name: 'breadcrumb',
     web: 'web/src/app/components/breadcrumb',
     mobile: {
@@ -868,11 +888,11 @@ const COMPONENT_REGISTRY = [
     mobile: {
       reactNative: {
         path: 'mobile/react-native/src/components/InoFieldset.tsx',
-        roles: ['border', 'danger', 'onSurface', 'onSurfaceMuted', 'surfaceRaised'],
+        roles: ['border', 'danger', 'dangerTextSafe', 'onSurface', 'onSurfaceMuted', 'surfaceRaised'],
       },
       flutter: {
         path: 'mobile/flutter/lib/widgets/ino_fieldset.dart',
-        roles: ['border', 'danger', 'onSurface', 'onSurfaceMuted', 'surfaceRaised'],
+        roles: ['border', 'danger', 'dangerTextSafe', 'onSurface', 'onSurfaceMuted', 'surfaceRaised'],
       },
     },
     divergences: [

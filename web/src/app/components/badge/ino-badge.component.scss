@@ -41,7 +41,7 @@
 .ino-badge__dot {
   display: block;
   border-radius: 50%;
-  background: var(--ino-color-primary);
+  background: var(--ino-color-accent);
 }
 
 :host([data-variant='dot'][data-size='sm']) .ino-badge__dot {
@@ -59,22 +59,22 @@
   min-inline-size: var(--ino-badge-count-min-width);
   padding-inline: var(--ino-badge-count-padding-inline);
   border-radius: var(--ino-badge-count-border-radius);
-  background: var(--ino-color-primary);
-  color: var(--ino-color-on-primary);
+  background: var(--ino-color-accent);
+  color: var(--ino-color-on-accent);
 }
 
 :host([data-variant='count'][data-size='sm']) {
   --ino-badge-count-min-width: 16px;
-  --ino-badge-count-padding-inline: var(--ino-space-xs);
-  --ino-badge-count-border-radius: var(--ino-radius-full);
+  --ino-badge-count-padding-inline: var(--ino-space-2);
+  --ino-badge-count-border-radius: var(--ino-radius-pill);
   block-size: 16px;
   font-size: var(--ino-type-caption-size);
 }
 
 :host([data-variant='count'][data-size='md']) {
   --ino-badge-count-min-width: 20px;
-  --ino-badge-count-padding-inline: var(--ino-space-sm);
-  --ino-badge-count-border-radius: var(--ino-radius-full);
+  --ino-badge-count-padding-inline: var(--ino-space-3);
+  --ino-badge-count-border-radius: var(--ino-radius-pill);
   block-size: 20px;
   font-size: var(--ino-type-label-sm-size);
 }
@@ -85,20 +85,20 @@
 
 /* Status variant — labeled indicator with severity colors */
 :host([data-variant='status']) {
-  gap: var(--ino-space-xs);
+  gap: var(--ino-space-2);
   padding-inline: var(--ino-badge-status-padding-inline);
   border-radius: var(--ino-radius-md);
   border: 1px solid currentColor;
 }
 
 :host([data-variant='status'][data-size='sm']) {
-  --ino-badge-status-padding-inline: var(--ino-space-sm);
+  --ino-badge-status-padding-inline: var(--ino-space-3);
   block-size: 20px;
   font-size: var(--ino-type-caption-size);
 }
 
 :host([data-variant='status'][data-size='md']) {
-  --ino-badge-status-padding-inline: var(--ino-space-md);
+  --ino-badge-status-padding-inline: var(--ino-space-4);
   block-size: 24px;
   font-size: var(--ino-type-label-sm-size);
 }
@@ -107,23 +107,25 @@
   display: block;
 }
 
-/* Severity color mapping for status variant */
+/* Severity color mapping for status variant — tinted background (12% severity color on surface)
+ * + colored text + colored border. The tint percentage is chosen to provide subtle differentiation
+ * while maintaining readability in all three themes (dark/light/high-contrast). */
 :host([data-variant='status'][data-severity='info']) {
-  background: var(--ino-color-info-surface);
+  background: color-mix(in srgb, var(--ino-color-info) 12%, var(--ino-color-surface));
   color: var(--ino-color-info);
 }
 
 :host([data-variant='status'][data-severity='success']) {
-  background: var(--ino-color-success-surface);
+  background: color-mix(in srgb, var(--ino-color-success) 12%, var(--ino-color-surface));
   color: var(--ino-color-success);
 }
 
 :host([data-variant='status'][data-severity='warning']) {
-  background: var(--ino-color-warning-surface);
+  background: color-mix(in srgb, var(--ino-color-warning) 12%, var(--ino-color-surface));
   color: var(--ino-color-warning);
 }
 
 :host([data-variant='status'][data-severity='danger']) {
-  background: var(--ino-color-danger-surface);
+  background: color-mix(in srgb, var(--ino-color-danger) 12%, var(--ino-color-surface));
   color: var(--ino-color-danger);
 }
