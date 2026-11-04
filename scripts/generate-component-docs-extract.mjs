@@ -273,6 +273,7 @@ function parseComponentApi(sourcePath) {
 const DOC_FILE_OVERRIDES = {
   nav: 'ino-nav.md',
   'toast-container': 'alert.md', // Toast shares the Message/alert doc
+  'avatar-group': 'avatar.md', // Avatar group shares the Avatar doc
 };
 
 function docFileFor(slug) {
