@@ -844,6 +844,24 @@ const COMPONENT_REGISTRY = [
     ],
   },
   {
+    name: 'chip',
+    web: 'web/src/app/components/chip',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoChip.tsx',
+        roles: ['accent', 'border', 'onAccent', 'onSurface', 'surfaceRaised'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_chip.dart',
+        roles: ['accent', 'border', 'onAccent', 'onSurface', 'surfaceRaised'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['surfaceSunken'], reason: 'web reserves surface-sunken for the hover/pointer-down flash on the interactive button form (`:hover`/`:active`, ino-chip.component.scss lines 47-57). A touch tap has no hover phase and commits on release, not on press-down, so InoChip.tsx never reads this role — same rationale the checkbox entry above gives for dropping accent-active.' },
+      { platform: 'flutter', roles: ['surfaceSunken'], reason: 'same as the React Native entry above — ino_chip.dart has no hover/pointer-down intermediate state to paint.' },
+    ],
+  },
+  {
     name: 'confirm-dialog',
     web: 'web/src/app/components/confirm-dialog',
     mobile: { reactNative: 'web-only', flutter: 'web-only' },

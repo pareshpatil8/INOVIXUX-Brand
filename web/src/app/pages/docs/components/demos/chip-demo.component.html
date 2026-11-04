@@ -146,6 +146,26 @@
 </section>
 
 <section class="demo-section">
+  <h3 class="demo-section__title">Labels — RTL</h3>
+  <p class="demo-section__note">
+    No left/right literals in the stylesheet — flex layout and logical <code>padding-inline</code>
+    only — so the component mirrors correctly under <code>dir="rtl"</code>. The remove button
+    follows DOM order and moves to the chip's leading edge instead of staying pinned to the right.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane" dir="rtl">
+      <p class="demo-pane__label">RTL — label only</p>
+      <ino-chip label="مفلتر"></ino-chip>
+    </div>
+
+    <div class="demo-pane" dir="rtl">
+      <p class="demo-pane__label">RTL — removable (× mirrors to leading edge)</p>
+      <ino-chip label="المستخدمون النشطون" [removable]="true"></ino-chip>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
   <h3 class="demo-section__title">Keyboard interaction</h3>
   <p class="demo-section__note">
     Focus any removable or interactive chip above and try these keyboard shortcuts:
