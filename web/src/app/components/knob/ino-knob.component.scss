@@ -1,0 +1,149 @@
+/*
+ * <ino-knob> — INO-469 (INO-31 Phase B5, doc 26 §5 row `ino-knob`).
+ *
+ * No literal colour/space/radius/duration/font-size — every declaration resolves through a
+ * semantic role in tokens.css, logical properties only. The dial is a square SVG, so the three
+ * size rungs are single custom-property assignments; the SVG's unit-space geometry scales with
+ * no size-dependent math (see the .ts class doc comment).
+ *
+ * Dial diameters reuse the frozen Wave 0 space scale directly (tokens.css is frozen after
+ * Wave 0, same constraint `ino-slider` worked under): sm = --ino-space-9 (56px),
+ * md = --ino-space-10 (80px), lg = --ino-space-11 (96px). Stroke widths and the indicator radius
+ * are SVG user units inside the 100-unit viewBox — they scale with the dial and are not CSS
+ * lengths, so they are not token-eligible (same exemption the docs anatomy SVGs use).
+ */
+
+.ino-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ino-space-2);
+  inline-size: fit-content;
+}
+
+/* Dial-size API — §2 contract row 3 ("dial sm/md/lg"). See `InoKnobSize` in the .ts for why this
+   is a local scale and not `InoControlSize`. */
+:host {
+  --ino-knob-dial: var(--ino-space-10);
+}
+
+:host([data-size='sm']) {
+  --ino-knob-dial: var(--ino-space-9);
+}
+
+:host([data-size='lg']) {
+  --ino-knob-dial: var(--ino-space-11);
+}
+
+.ino-knob__dial {
+  inline-size: var(--ino-knob-dial);
+  block-size: var(--ino-knob-dial);
+  touch-action: none;
+  cursor: pointer;
+  overflow: visible;
+}
+
+:host(.ino-knob--disabled) .ino-knob__dial,
+:host(.ino-knob--readonly) .ino-knob__dial {
+  cursor: default;
+}
+
+:host(.ino-knob--disabled) {
+  opacity: 0.5;
+}
+
+.ino-knob__range {
+  fill: none;
+  stroke: var(--ino-color-surface-sunken);
+  stroke-width: 10;
+  stroke-linecap: round;
+}
+
+.ino-knob__value {
+  fill: none;
+  stroke: var(--ino-color-accent);
+  stroke-width: 10;
+  stroke-linecap: round;
+  transition: stroke var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+:host(.ino-knob--dragging) .ino-knob__value,
+.ino-knob__dial:hover .ino-knob__value {
+  stroke: var(--ino-color-accent-active);
+}
+
+.ino-knob__handle {
+  outline: none;
+}
+
+.ino-knob__indicator {
+  fill: var(--ino-color-on-accent);
+  stroke: var(--ino-color-accent);
+  stroke-width: 2;
+  transition: stroke var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+:host(.ino-knob--dragging) .ino-knob__indicator,
+:host(.ino-knob--at-min) .ino-knob__indicator,
+:host(.ino-knob--at-max) .ino-knob__indicator {
+  stroke: var(--ino-color-accent-active);
+}
+
+/* SVG has no outline box that follows a <g>, so the focus ring is drawn on the indicator dot:
+   a second stroke ring in the accent role, matching the --ino-focus-ring colour contract. The
+   ring colour and the 3px high-contrast override both come from the token (the token is a
+   shorthand `2px solid <color>`; SVG strokes can't consume a shorthand, so the component reads
+   the ring via `outline` on the dial's wrapping element instead — see below). */
+.ino-knob__handle:focus-visible .ino-knob__indicator {
+  stroke: var(--ino-color-accent);
+  stroke-width: 4;
+}
+
+/* The whole dial also shows the standard focus ring, so keyboard focus is visible at every dial
+   size without relying on the small indicator dot alone. */
+.ino-knob__dial:has(.ino-knob__handle:focus-visible) {
+  outline: var(--ino-focus-ring);
+  outline-offset: var(--ino-focus-ring-offset);
+  border-radius: var(--ino-radius-pill);
+}
+
+/* State — invalid. Non-text 3:1 boundary on the range track, matching `ino-slider`'s
+   invalid-state precedent. */
+:host(.ino-knob--invalid) .ino-knob__range {
+  stroke: var(--ino-color-danger);
+}
+
+.ino-knob__text {
+  fill: var(--ino-color-on-surface);
+  font-family: var(--ino-font-display);
+  /* CSS px on SVG content resolve in the local user coordinate system, so this token-sized text
+     still scales with the dial across sm/md/lg — 17 user units inside the 100-unit viewBox. */
+  font-size: var(--ino-type-body-lg-size);
+  font-weight: 600;
+  pointer-events: none;
+  user-select: none;
+}
+
+:host(.ino-knob--readonly) .ino-knob__text {
+  fill: var(--ino-color-on-surface-muted);
+}
+
+.ino-field__hint {
+  margin: 0;
+  font-size: var(--ino-type-body-sm-size);
+  color: var(--ino-color-on-surface-muted);
+}
+
+.ino-field__error {
+  margin: 0;
+  font-size: var(--ino-type-body-sm-size);
+  color: var(--ino-color-danger);
+  font-weight: 600;
+}
