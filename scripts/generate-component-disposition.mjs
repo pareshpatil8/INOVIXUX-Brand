@@ -74,59 +74,61 @@ const ROWS = [
 //   build(phase, target, note?) — committed to a doc 26 §5 phase, with its spec row written.
 //   covered(by, why)            — an alias row: PrimeNG's name for capability we already ship.
 //                                 `by` is the one-line "covered by X" the ledger closes with.
-const shipped = (target, issue) => ({ kind: 'Shipped', target, issue });
+const shipped = (target, issue, closure) => ({ kind: 'Shipped', target, issue, closure });
 const build = (phase, target, note = null) => ({ kind: 'Committed', phase, target, note });
 const covered = (by, why) => ({ kind: 'Covered', by, why });
 
 const REV2 = {
   // Shipped since the audit snapshot — doc 24 F-1, the five doc-17 Tier-1 commitments, all built.
-  ProgressBar: shipped('ino-progress-bar', 'INO-318'),
-  IconField: shipped('ino-icon-field', 'INO-318'),
-  InputGroup: shipped('ino-input-group', 'INO-318'),
-  Tabs: shipped('ino-tabs', 'INO-318'),
-  Stepper: shipped('ino-stepper', 'INO-318'),
+  ProgressBar: shipped('ino-progress-bar', 'INO-318', 'the doc-17 Tier-1 commitment is closed (doc 24 F-1)'),
+  IconField: shipped('ino-icon-field', 'INO-318', 'the doc-17 Tier-1 commitment is closed (doc 24 F-1)'),
+  InputGroup: shipped('ino-input-group', 'INO-318', 'the doc-17 Tier-1 commitment is closed (doc 24 F-1)'),
+  Tabs: shipped('ino-tabs', 'INO-318', 'the doc-17 Tier-1 commitment is closed (doc 24 F-1)'),
+  Stepper: shipped('ino-stepper', 'INO-318', 'the doc-17 Tier-1 commitment is closed (doc 24 F-1)'),
 
-  // Phase B1 — Form & input (12).
-  AutoComplete: build('B1', 'ino-autocomplete'),
-  'InputNumber*': build('B1', 'ino-inputnumber', 'promotes the `<ino-input type=number>` partial to a dedicated component'),
-  InputMask: build('B1', 'ino-inputmask'),
-  'InputPassword*': build('B1', 'ino-password', 'promotes the `<ino-input type=password>` partial to a dedicated component'),
-  Slider: build('B1', 'ino-slider'),
-  SelectButton: build('B1', 'ino-select-button'),
-  ToggleButton: build('B1', 'ino-toggle-button'),
-  Listbox: build('B1', 'ino-listbox'),
-  TreeSelect: build('B1', 'ino-treeselect'),
-  InputTags: build('B1', 'ino-inputtags'),
-  KeyFilter: build('B1', 'ino-keyfilter'),
-  CascadeSelect: build('B1', 'ino-cascade-select'),
+  // Phase B1 — Form & input (12). QA-signed 2026-11-05: gate INO-424 closed (done); the doc 26
+  // §5 build commitment has landed, not merely been written up.
+  AutoComplete: shipped('ino-autocomplete', 'INO-424', 'Phase B1 build landed and QA-signed (gate INO-424 done)'),
+  'InputNumber*': shipped('ino-inputnumber', 'INO-424', 'Phase B1 build landed and QA-signed (gate INO-424 done)'),
+  InputMask: shipped('ino-inputmask', 'INO-424', 'Phase B1 build landed and QA-signed (gate INO-424 done)'),
+  'InputPassword*': shipped('ino-password', 'INO-424', 'Phase B1 build landed and QA-signed (gate INO-424 done)'),
+  Slider: shipped('ino-slider', 'INO-424', 'Phase B1 build landed and QA-signed (gate INO-424 done)'),
+  SelectButton: shipped('ino-select-button', 'INO-424', 'Phase B1 build landed and QA-signed (gate INO-424 done)'),
+  ToggleButton: shipped('ino-toggle-button', 'INO-424', 'Phase B1 build landed and QA-signed (gate INO-424 done)'),
+  Listbox: shipped('ino-listbox', 'INO-424', 'Phase B1 build landed and QA-signed (gate INO-424 done)'),
+  TreeSelect: shipped('ino-treeselect', 'INO-424', 'Phase B1 build landed and QA-signed (gate INO-424 done)'),
+  InputTags: shipped('ino-inputtags', 'INO-424', 'Phase B1 build landed and QA-signed (gate INO-424 done)'),
+  KeyFilter: shipped('ino-keyfilter', 'INO-424', 'Phase B1 build landed and QA-signed (gate INO-424 done)'),
+  CascadeSelect: shipped('ino-cascade-select', 'INO-424', 'Phase B1 build landed and QA-signed (gate INO-424 done)'),
 
-  // Phase B2 — Menus, panels, structure (12).
-  Menu: build('B2', 'ino-menu', 'absorbs PrimeNG TieredMenu as its nested-submenu variant'),
-  ContextMenu: build('B2', 'ino-context-menu'),
-  Breadcrumb: build('B2', 'ino-breadcrumb'),
-  PanelMenu: build('B2', 'ino-panel-menu'),
-  CommandMenu: build('B2', 'ino-command-menu'),
-  Accordion: build('B2', 'ino-accordion'),
-  Panel: build('B2', 'ino-panel'),
-  Fieldset: build('B2', 'ino-fieldset'),
-  Divider: build('B2', 'ino-divider'),
-  Toolbar: build('B2', 'ino-toolbar'),
-  Splitter: build('B2', 'ino-splitter'),
-  DynamicDialog: build('B2', 'ino-dynamic-dialog'),
+  // Phase B2 — Menus, panels, structure (12). QA-signed 2026-11-05: gate INO-449 closed (done).
+  Menu: shipped('ino-menu', 'INO-449', 'Phase B2 build landed and QA-signed (gate INO-449 done); absorbs PrimeNG TieredMenu as its nested-submenu variant'),
+  ContextMenu: shipped('ino-context-menu', 'INO-449', 'Phase B2 build landed and QA-signed (gate INO-449 done)'),
+  Breadcrumb: shipped('ino-breadcrumb', 'INO-449', 'Phase B2 build landed and QA-signed (gate INO-449 done)'),
+  PanelMenu: shipped('ino-panel-menu', 'INO-449', 'Phase B2 build landed and QA-signed (gate INO-449 done)'),
+  CommandMenu: shipped('ino-command-menu', 'INO-449', 'Phase B2 build landed and QA-signed (gate INO-449 done)'),
+  Accordion: shipped('ino-accordion', 'INO-449', 'Phase B2 build landed and QA-signed (gate INO-449 done)'),
+  Panel: shipped('ino-panel', 'INO-449', 'Phase B2 build landed and QA-signed (gate INO-449 done)'),
+  Fieldset: shipped('ino-fieldset', 'INO-449', 'Phase B2 build landed and QA-signed (gate INO-449 done)'),
+  Divider: shipped('ino-divider', 'INO-449', 'Phase B2 build landed and QA-signed (gate INO-449 done)'),
+  Toolbar: shipped('ino-toolbar', 'INO-449', 'Phase B2 build landed and QA-signed (gate INO-449 done)'),
+  Splitter: shipped('ino-splitter', 'INO-449', 'Phase B2 build landed and QA-signed (gate INO-449 done)'),
+  DynamicDialog: shipped('ino-dynamic-dialog', 'INO-449', 'Phase B2 build landed and QA-signed (gate INO-449 done)'),
 
-  // Phase B3 — Data display (5 rows; orderlist + picklist share one spec row).
-  Tree: build('B3', 'ino-tree'),
-  TreeTable: build('B3', 'ino-treetable'),
-  DataView: build('B3', 'ino-dataview'),
-  OrderList: build('B3', 'ino-orderlist'),
-  PickList: build('B3', 'ino-picklist'),
+  // Phase B3 — Data display (5 rows; orderlist + picklist share one spec row). QA-signed
+  // 2026-11-05: gate INO-468 closed (done).
+  Tree: shipped('ino-tree', 'INO-468', 'Phase B3 build landed and QA-signed (gate INO-468 done)'),
+  TreeTable: shipped('ino-treetable', 'INO-468', 'Phase B3 build landed and QA-signed (gate INO-468 done)'),
+  DataView: shipped('ino-dataview', 'INO-468', 'Phase B3 build landed and QA-signed (gate INO-468 done)'),
+  OrderList: shipped('ino-orderlist', 'INO-468', 'Phase B3 build landed and QA-signed (gate INO-468 done)'),
+  PickList: shipped('ino-picklist', 'INO-468', 'Phase B3 build landed and QA-signed (gate INO-468 done)'),
 
-  // Phase B4 — Misc primitives (5).
-  Avatar: build('B4', 'ino-avatar'),
-  Badge: build('B4', 'ino-badge'),
-  Chip: build('B4', 'ino-chip'),
-  ScrollTop: build('B4', 'ino-scrolltop'),
-  AutoFocus: build('B4', 'ino-autofocus'),
+  // Phase B4 — Misc primitives (5). QA-signed 2026-11-05: gate INO-468 closed (done).
+  Avatar: shipped('ino-avatar', 'INO-468', 'Phase B4 build landed and QA-signed (gate INO-468 done)'),
+  Badge: shipped('ino-badge', 'INO-468', 'Phase B4 build landed and QA-signed (gate INO-468 done)'),
+  Chip: shipped('ino-chip', 'INO-468', 'Phase B4 build landed and QA-signed (gate INO-468 done)'),
+  ScrollTop: shipped('ino-scrolltop', 'INO-468', 'Phase B4 build landed and QA-signed (gate INO-468 done)'),
+  AutoFocus: shipped('ino-autofocus', 'INO-468', 'Phase B4 build landed and QA-signed (gate INO-468 done)'),
 
   // Phase B5 — reinstated full-catalog rows (17), rev-2 amendment.
   Knob: build('B5', 'ino-knob'),
@@ -173,7 +175,7 @@ const REV2 = {
 function describe(rev2) {
   switch (rev2.kind) {
     case 'Shipped':
-      return `Shipped — built as \`${rev2.target}\` under ${rev2.issue}; the doc-17 Tier-1 commitment is closed (doc 24 F-1).`;
+      return `Shipped — built as \`${rev2.target}\` under ${rev2.issue}; ${rev2.closure}.`;
     case 'Committed':
       return (
         `Committed — Phase ${rev2.phase} build as \`${rev2.target}\`, spec row written in doc 26 §5` +
