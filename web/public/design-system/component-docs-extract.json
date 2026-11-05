@@ -3883,6 +3883,123 @@
         "templates": []
       }
     },
+    "inputcolor": {
+      "name": "ino-inputcolor",
+      "docPath": "docs/brand/06-angular-components/inputcolor.md",
+      "a11y": "<p><strong>Role / ARIA</strong> — the swatch is a native <code>input[type=color]</code> (implicit role, OS-owned picker\ndialog); <code>aria-label</code> is built from <code>label</code>/<code>ariaLabel</code> plus the current hex (e.g. \"Brand colour,\n#7c5cfc\") or \"no colour selected\", so a screen reader announces identity and state without\nneeding the hex field focused first. The hex field carries <code>aria-invalid</code> (true when\n<code>invalid-hex</code> or <code>error</code>) and shares the same <code>aria-describedby</code> target as the swatch.</p>\n<p><strong>Keyboard</strong> — Tab moves focus between the swatch and the hex field in document order; Enter/\nSpace on the focused swatch opens the native OS picker (standard native-control behavior, not\ncustom-bound). The hex field is a plain text input — full native text-editing keyboard support,\nno custom key handling.</p>\n<p><strong>Focus behavior</strong> — <code>:focus-visible</code> on either control draws the standard <code>--ino-focus-ring</code>\noutline.</p>\n<p><strong>SR announcements</strong> — the hex field's <code>aria-invalid</code>/adjoining <code>role=\"alert\"</code> message announce\nthe moment a blur commits or rejects typed text; the native OS picker dialog's own announcements\nare outside this component's control.</p>\n<p><strong>Contrast</strong> — WCAG 2.2 AA in all 3 themes for every static (non-data) colour, gated by\n<code>check-theme-parity</code>. The dynamic swatch/preset fills are, by construction, whatever colour the\ncaller/user picked — not a themed-role contrast question this component can audit.</p>\n<p><strong>RTL</strong> — logical properties only in CSS (<code>inline-size</code>/<code>block-size</code>/<code>inset-inline-*</code>); no\nphysical <code>left</code>/<code>right</code>/<code>width</code>/<code>height</code> anywhere in the stylesheet.</p>\n<p>Full contract: <code>SPEC.md</code> §8.</p>\n<hr />\n",
+      "notes": "<ul>\n<li><strong>No alpha channel</strong> — <code>input[type=color]</code> has none; <code>&lt;ino-colorpicker&gt;</code> is the component for\nalpha-capable picking.</li>\n<li><strong>No inline/popover structural variant</strong> — there is no custom overlay here; the browser's own\ndialog is the only \"panel\".</li>\n<li><strong>No HSB/RGB model or drag interaction</strong> — delegated to the native control by design (the spec\nrow's own wording: \"styled <strong>native</strong> color input\").</li>\n<li><strong>No form <code>ControlValueAccessor</code></strong> — matches every other INO-31 control to date\n(<code>value</code>/<code>valueChange</code> two-way binding only); CVA adoption is a fleet-wide decision, not a\nper-component one.</li>\n</ul>\n<p><strong>PrimeNG mapping:</strong> PrimeNG has no direct <code>InputColor</code> equivalent — its <code>ColorPicker</code> component\nmaps to <code>&lt;ino-colorpicker&gt;</code> instead. This component has no PrimeNG precedent; it is a from-scratch\nwrapper around the native <code>&lt;input type=\"color\"&gt;</code> element.</p>\n<hr />\n",
+      "mobile": "<ul>\n<li><strong>Disposition: web-only</strong> (doc 26 §5 row: \"Web-only\"). No React Native or Flutter port is\nbuilt, deliberately — §2 point 7 applies only to rows whose disposition is \"port\".</li>\n<li><strong>Capacitor</strong> — the same Angular component/CSS render in the Capacitor WebView unchanged,\nincluding the native OS colour-picker sheet the mobile WebView's own <code>input[type=color]</code>\nsupport opens.</li>\n<li><strong>Native alternatives</strong> — neither React Native nor Flutter has a direct analogue of\n<code>input[type=color]</code>; a mobile form that needs colour entry should reach for a platform colour\npicker library, or the custom HSB approach <code>&lt;ino-colorpicker&gt;</code>'s web implementation takes\n(currently web-only itself — see that component's own mobile disposition) if parity is\nrequired.</li>\n</ul>\n",
+      "api": {
+        "props": [
+          {
+            "name": "label",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "hint",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "error",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "ariaLabel",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": "Explicit accessible name for the swatch when no visible `label` is wanted; `label` wins when both are set — same fallback order `ino-knob`'s `ariaLabel` uses."
+          },
+          {
+            "name": "size",
+            "type": "InoControlSize",
+            "values": [
+              "sm",
+              "default",
+              "lg"
+            ],
+            "default": "'default'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "presets",
+            "type": "string[]",
+            "values": null,
+            "default": "[]",
+            "optional": true,
+            "description": "Any `#rgb`/`#rrggbb` hex string. No default array — a brand preset palette is a caller/theming decision, not one this component bakes in (also sidesteps hardcoding a raw colour literal in this file — same reasoning as `ino-colorpicker`'s `presets`, SPEC.md §4). A preset that fails {@link HEX_RE} is a caller error and is silently ignored on click: the native control has no way to represent an arbitrary CSS colour string the way `ino-colorpicker`'s HSB model can fall back to."
+          },
+          {
+            "name": "value",
+            "type": "string | null",
+            "values": null,
+            "default": "null",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "required",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "readonly",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          }
+        ],
+        "events": [
+          {
+            "name": "valueChange",
+            "type": "string | null",
+            "description": null
+          }
+        ],
+        "methods": [
+          {
+            "name": "onSwatchInput",
+            "params": "event: Event",
+            "returnType": "void",
+            "description": "The native picker's own dialog has no cancel this component sees separately — `input` already only fires with a valid `#rrggbb` string, so every event here is a commit."
+          },
+          {
+            "name": "onSwatchClick",
+            "params": "event: Event",
+            "returnType": "void",
+            "description": "readonly blocks the native picker outright — `readonly` has no effect on `input[type=color]` (the same text-input-only IDL-attribute gap `ino-checkbox` documents for its own native control), so intercepting `click` is the only way to make this actually behave read-only rather than merely announce it. Space/Enter-triggered activation fires a `click` event in every evergreen browser, so this alone covers mouse and keyboard."
+          }
+        ],
+        "templates": []
+      }
+    },
     "inputmask": {
       "name": "ino-inputmask",
       "docPath": "docs/brand/06-angular-components/inputmask.md",
