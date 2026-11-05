@@ -1,0 +1,100 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Variants — toolbar presets (basic / full)</h3>
+  <div class="demo-col">
+    <ino-editor label="Basic preset" preset="basic" [(value)]="basicValue"></ino-editor>
+    <ino-editor label="Full preset" preset="full" [(value)]="fullValue"></ino-editor>
+  </div>
+  <p class="demo-section__note">
+    <code>basic</code> carries inline styles (bold/italic/underline) and lists; <code>full</code>
+    adds headings (H2/H3), a code block, link/unlink and clear formatting. Re-activating the
+    current block format (e.g. H2 on an H2 line) reverts the line to a paragraph. Links prompt
+    for a URL and reject anything that is not <code>http(s):</code> or <code>mailto:</code>.
+  </p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States</h3>
+  <div class="demo-col">
+    <ino-editor label="Default" [(value)]="defaultValue"></ino-editor>
+    <ino-editor label="Disabled" [disabled]="true" [(value)]="disabledValue"></ino-editor>
+    <ino-editor label="Readonly" [readonly]="true" preset="full" [(value)]="readonlyValue"></ino-editor>
+    <ino-editor label="Required (empty)" [required]="true" placeholder="Start typing…" [(value)]="requiredValue"></ino-editor>
+    <ino-editor label="Invalid" error="Description must mention the affected component" [(value)]="invalidValue"></ino-editor>
+    <ino-editor
+      label="At limit"
+      [maxLength]="40"
+      [showCount]="true"
+      hint="The counter goes danger at the cap; typing is blocked, deletion isn't"
+      [(value)]="atLimitValue"
+    ></ino-editor>
+  </div>
+  <p class="demo-section__note">
+    Hover, focus-visible and the pressed format-toggle treatment are interaction-driven — tab into
+    the toolbar (one tab stop, arrows rove) and the content area to see the focus rings; place the
+    caret in bold text to see the toggle's <code>aria-pressed</code> state follow the selection.
+    At-limit is a counter-only signal — it is not the invalid state.
+  </p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Sizing — min-height scales (sm / default / lg)</h3>
+  <div class="demo-col">
+    <ino-editor label="Small" size="sm" placeholder="min-height 3 × control-height-sm" [(value)]="smValue"></ino-editor>
+    <ino-editor label="Default" placeholder="min-height 3 × control-height-default" [(value)]="defaultSizeValue"></ino-editor>
+    <ino-editor label="Large" size="lg" placeholder="min-height 3 × control-height-lg" [(value)]="lgValue"></ino-editor>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Density</h3>
+  <div class="demo-grid">
+    <div class="demo-pane" data-density="dense">
+      <p class="demo-pane__label">dense</p>
+      <ino-editor label="Dense" placeholder="Dense re-points the same tokens" [(value)]="denseValue"></ino-editor>
+    </div>
+    <div class="demo-pane" data-density="fluid">
+      <p class="demo-pane__label">fluid</p>
+      <ino-editor label="Fluid" placeholder="Fluid keeps the :root scale" [(value)]="fluidValue"></ino-editor>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Labels</h3>
+  <div class="demo-col">
+    <ino-editor label="Label + help text" hint="Help text is announced via aria-describedby" [(value)]="labelledValue"></ino-editor>
+    <ino-editor label="Label + error" error="This field is required" [required]="true" [(value)]="errorValue"></ino-editor>
+    <ino-editor ariaLabel="Meeting notes (no visible label)" placeholder="aria-label only" [(value)]="ariaOnlyValue"></ino-editor>
+  </div>
+  <p class="demo-section__note">
+    A contenteditable region is not labelable by <code>label[for]</code>, so the visible label is
+    wired with <code>aria-labelledby</code> and clicking it still focuses the editor.
+  </p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Sanitized paste + char limit</h3>
+  <div class="demo-col">
+    <ino-editor
+      label="Paste target"
+      preset="full"
+      [maxLength]="280"
+      [showCount]="true"
+      hint="Paste from Word/Docs: allowed formatting survives, styling junk and scripts don't"
+      [(value)]="limitValue"
+    ></ino-editor>
+  </div>
+  <p class="demo-section__note">
+    Paste is intercepted and rebuilt against an allowlist (<code>p, br, strong, em, u, h2, h3,
+    ul, ol, li, pre, code, a</code>); <code>b/i/h1/div</code> normalize to
+    <code>strong/em/h2/p</code>, every attribute is stripped except a protocol-checked
+    <code>href</code>, and a paste that would overflow the budget is trimmed to plain text.
+  </p>
+</section>
+
+<section class="demo-section" dir="rtl">
+  <h3 class="demo-section__title">RTL spot-check</h3>
+  <div class="demo-col">
+    <ino-editor label="محرر" preset="full" hint="تدفق الأدوات والمحتوى ينعكس منطقيًا" [(value)]="rtlValue"></ino-editor>
+  </div>
+</section>

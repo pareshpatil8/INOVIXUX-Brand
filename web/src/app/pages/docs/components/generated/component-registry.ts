@@ -27,6 +27,7 @@ import { InoDatePickerComponent } from '../../../../components/datepicker/ino-da
 import { InoDividerComponent } from '../../../../components/divider/ino-divider.component';
 import { InoDrawerComponent } from '../../../../components/drawer/ino-drawer.component';
 import { InoDynamicDialogComponent } from '../../../../components/dynamic-dialog/ino-dynamic-dialog.component';
+import { InoEditorComponent } from '../../../../components/editor/ino-editor.component';
 import { InoFeatureGridComponent } from '../../../../components/feature-grid/ino-feature-grid.component';
 import { InoFieldsetComponent } from '../../../../components/fieldset/ino-fieldset.component';
 import { InoFileUploadComponent } from '../../../../components/file-upload/ino-file-upload.component';
@@ -41,11 +42,11 @@ import { InoImageComponent } from '../../../../components/image/ino-image.compon
 import { InoInputComponent } from '../../../../components/input/ino-input.component';
 import { InoInputGroupComponent } from '../../../../components/input-group/ino-input-group.component';
 import { InoInputOtpComponent } from '../../../../components/input-otp/ino-input-otp.component';
-import { InoInputColorComponent } from '../../../../components/inputcolor/ino-inputcolor.component';
 import { InoInputMaskComponent } from '../../../../components/inputmask/ino-inputmask.component';
 import { InoInputNumberComponent } from '../../../../components/inputnumber/ino-inputnumber.component';
 import { InoInputTagsComponent } from '../../../../components/inputtags/ino-inputtags.component';
 import { InoKeyfilterComponent } from '../../../../components/keyfilter/ino-keyfilter.component';
+import { InoKnobComponent } from '../../../../components/knob/ino-knob.component';
 import { InoLabelComponent } from '../../../../components/label/ino-label.component';
 import { InoListboxComponent } from '../../../../components/listbox/ino-listbox.component';
 import { InoMenuComponent } from '../../../../components/menu/ino-menu.component';
@@ -114,6 +115,7 @@ export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'divider': InoDividerComponent,
   'drawer': InoDrawerComponent,
   'dynamic-dialog': InoDynamicDialogComponent,
+  'editor': InoEditorComponent,
   'feature-grid': InoFeatureGridComponent,
   'fieldset': InoFieldsetComponent,
   'file-upload': InoFileUploadComponent,
@@ -128,11 +130,11 @@ export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'input': InoInputComponent,
   'input-group': InoInputGroupComponent,
   'input-otp': InoInputOtpComponent,
-  'inputcolor': InoInputColorComponent,
   'inputmask': InoInputMaskComponent,
   'inputnumber': InoInputNumberComponent,
   'inputtags': InoInputTagsComponent,
   'keyfilter': InoKeyfilterComponent,
+  'knob': InoKnobComponent,
   'label': InoLabelComponent,
   'listbox': InoListboxComponent,
   'menu': InoMenuComponent,

@@ -1,0 +1,260 @@
+/* Shared `.ino-field` shell re-declared per control (matches `ino-input`/`ino-textarea` — this
+   repo has no shared SCSS-include infra yet, see ino-input.component.scss's own note). */
+.ino-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ino-space-2);
+}
+
+/* Size API — the same three-alias re-point every sized control uses. Min-height derives from
+   `--ino-control-height` (SPEC.md §7), so one multiplier scales across sm/default/lg AND the
+   dense re-point of the same tokens (tokens.css §12). */
+:host([data-size='sm']) {
+  --ino-control-height: var(--ino-control-height-sm);
+  --ino-control-padding-inline: var(--ino-control-padding-inline-sm);
+  --ino-control-font-size: var(--ino-control-font-size-sm);
+}
+
+:host([data-size='lg']) {
+  --ino-control-height: var(--ino-control-height-lg);
+  --ino-control-padding-inline: var(--ino-control-padding-inline-lg);
+  --ino-control-font-size: var(--ino-control-font-size-lg);
+}
+
+.ino-editor__label {
+  inline-size: fit-content;
+}
+
+/* Toolbar + content render as ONE bordered unit (SPEC.md §6) — the frame carries the border,
+   hover and invalid treatments so the two regions never show seams or double borders. */
+.ino-editor__frame {
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-md);
+  background: var(--ino-color-surface-sunken);
+  overflow: hidden;
+  transition: border-color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+:host(:not(.ino-editor--disabled):not(.ino-editor--readonly)) .ino-editor__frame:hover {
+  border-color: var(--ino-color-on-surface-muted);
+}
+
+:host(.ino-editor--invalid) .ino-editor__frame {
+  border-color: var(--ino-color-danger);
+}
+
+:host(.ino-editor--readonly) .ino-editor__frame {
+  background: var(--ino-color-surface-raised);
+}
+
+:host(.ino-editor--disabled) .ino-editor__frame {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ino-editor__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ino-space-1);
+  padding: var(--ino-space-2);
+  border-block-end: 1px solid var(--ino-color-border);
+  background: var(--ino-color-surface-raised);
+}
+
+/* Toolbar buttons sit on the compact rung — the strip is chrome, not a form row (SPEC.md §7);
+   the §12 dense floor keeps the target above the WCAG 2.5.8 24px minimum in both registers. */
+.ino-editor__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-inline-size: var(--ino-control-height-compact);
+  block-size: var(--ino-control-height-compact);
+  padding-inline: var(--ino-space-1);
+  border: none;
+  border-radius: var(--ino-radius-sm);
+  background: transparent;
+  color: var(--ino-color-on-surface-muted);
+  font-family: var(--ino-font-display);
+  font-size: var(--ino-control-font-size-compact);
+  cursor: pointer;
+  transition: background var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+    color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+
+  &:hover:not(:disabled) {
+    background: var(--ino-color-surface-sunken);
+    color: var(--ino-color-on-surface);
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+/* Pressed format toggle (SPEC.md §6 "active"): the same accent-fill + on-accent pairing
+   ino-toggle-button's checked state uses — AA-guaranteed in all 3 themes by construction. */
+.ino-editor__btn--pressed {
+  background: var(--ino-gradient-accent);
+  color: var(--ino-color-on-accent);
+
+  &:hover:not(:disabled) {
+    background: var(--ino-gradient-accent);
+    color: var(--ino-color-on-accent);
+  }
+}
+
+.ino-editor__glyph {
+  pointer-events: none;
+
+  &[data-glyph='bold'] {
+    font-weight: 700;
+  }
+
+  &[data-glyph='italic'] {
+    font-style: italic;
+  }
+
+  &[data-glyph='underline'] {
+    text-decoration: underline;
+  }
+
+  &[data-glyph='h2'],
+  &[data-glyph='h3'] {
+    font-weight: 600;
+  }
+
+  &[data-glyph='pre'] {
+    font-family: var(--ino-font-mono);
+  }
+}
+
+.ino-editor__divider {
+  inline-size: 1px;
+  align-self: stretch;
+  margin-block: var(--ino-space-1);
+  background: var(--ino-color-border);
+}
+
+.ino-editor__content {
+  /* "min-height scales" (SPEC.md §7): 3 × the size-resolved control height — 108/132/156 fluid,
+     84/96/120 dense — layout math on a token, not a hardcoded design value. */
+  min-block-size: calc(var(--ino-control-height, var(--ino-control-height-default)) * 3);
+  padding-block: var(--ino-space-3);
+  padding-inline: var(--ino-control-padding-inline, var(--ino-space-4));
+  color: var(--ino-color-on-surface);
+  font-family: var(--ino-font-display);
+  font-size: var(--ino-control-font-size, var(--ino-type-body-size));
+  line-height: var(--ino-leading-8);
+
+  &:focus-visible {
+    /* Negative offset keeps the ring inside the shared frame instead of colliding with it. */
+    outline: var(--ino-focus-ring);
+    outline-offset: calc(-1 * var(--ino-focus-ring-offset));
+  }
+}
+
+:host(.ino-editor--readonly) .ino-editor__content {
+  cursor: default;
+}
+
+:host(.ino-editor--disabled) .ino-editor__content {
+  cursor: not-allowed;
+  user-select: none;
+}
+
+/* contenteditable has no native placeholder (SPEC.md §6 "empty"). */
+.ino-editor__content--empty::before {
+  content: attr(data-placeholder);
+  color: var(--ino-color-on-surface-subtle);
+  pointer-events: none;
+}
+
+/* Authored-content typography — token rungs only, scoped to the textbox. */
+.ino-editor__content {
+  h2 {
+    margin-block: var(--ino-space-2);
+    font: var(--ino-type-h3);
+    letter-spacing: var(--ino-type-h3-tracking);
+  }
+
+  h3 {
+    margin-block: var(--ino-space-2);
+    font-size: var(--ino-type-body-size);
+    font-weight: 600;
+  }
+
+  p {
+    margin-block: 0 var(--ino-space-2);
+  }
+
+  ul,
+  ol {
+    margin-block: var(--ino-space-2);
+    padding-inline-start: var(--ino-space-6);
+  }
+
+  pre {
+    margin-block: var(--ino-space-2);
+    padding: var(--ino-space-3);
+    border-radius: var(--ino-radius-sm);
+    background: var(--ino-color-surface-raised);
+    font-family: var(--ino-font-mono);
+    font-size: var(--ino-type-body-sm-size);
+    white-space: pre-wrap;
+  }
+
+  a {
+    color: var(--ino-color-accent-text-safe);
+    text-decoration: underline;
+  }
+}
+
+.ino-field__meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--ino-space-3);
+}
+
+.ino-field__hint,
+.ino-field__error {
+  margin: 0;
+  font-size: var(--ino-type-body-sm-size);
+}
+
+.ino-field__hint {
+  color: var(--ino-color-on-surface-muted);
+}
+
+.ino-field__error {
+  color: var(--ino-color-danger-text-safe);
+  font-weight: 600;
+}
+
+.ino-field__counter {
+  margin: 0;
+  margin-inline-start: auto;
+  font-size: var(--ino-type-body-sm-size);
+  color: var(--ino-color-on-surface-muted);
+  white-space: nowrap;
+}
+
+/* at-limit (SPEC.md §5): counter-only danger treatment — at-limit is not invalid. */
+.ino-field__counter--limit {
+  color: var(--ino-color-danger-text-safe);
+  font-weight: 600;
+}
