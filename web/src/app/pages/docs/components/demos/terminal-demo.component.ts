@@ -21,7 +21,7 @@ import { InoTerminalComponent } from '../../../../components/terminal/ino-termin
         #terminal1
         ariaLabel="Basic terminal"
         prompt="$ "
-        [welcomeMessage]="['Welcome to the demo terminal', 'Type "help", "echo", or "error" for examples.']"
+        [welcomeMessage]="['Welcome to the demo terminal', 'Type &quot;help&quot;, &quot;echo&quot;, or &quot;error&quot; for examples.']"
         (commandSubmit)="handleCommand(terminal1, $event)"
       ></ino-terminal>
     </div>
@@ -65,7 +65,7 @@ import { InoTerminalComponent } from '../../../../components/terminal/ino-termin
         ariaLabel="Busy state demo"
         prompt="$ "
         [busy]="busyState"
-        [welcomeMessage]="['Task manager demo. Click "Start Task" to begin.']"
+        [welcomeMessage]="['Task manager demo. Click &quot;Start Task&quot; to begin.']"
         (commandSubmit)="handleCommand(terminal4, $event)"
       ></ino-terminal>
     </div>
@@ -79,7 +79,7 @@ import { InoTerminalComponent } from '../../../../components/terminal/ino-termin
         #terminal5
         ariaLabel="Readonly output"
         prompt="$ "
-        readonly
+        [readonly]="true"
         [welcomeMessage]="[
           '--- Build Log ---',
           'Compiling source files...',
@@ -109,7 +109,7 @@ import { InoTerminalComponent } from '../../../../components/terminal/ino-termin
       <ino-terminal
         ariaLabel="Disabled terminal"
         prompt="$ "
-        disabled
+        [disabled]="true"
         [welcomeMessage]="['This terminal is disabled.']"
       ></ino-terminal>
     </div>
@@ -119,6 +119,7 @@ import { InoTerminalComponent } from '../../../../components/terminal/ino-termin
       <p class="demo-note">The input row height follows the global density (shown in fluid here).</p>
       <div data-density="fluid">
         <ino-terminal
+          #terminal7
           ariaLabel="Fluid density terminal"
           prompt="$ "
           (commandSubmit)="handleCommand(terminal7, $event)"
