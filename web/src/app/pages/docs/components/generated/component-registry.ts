@@ -45,7 +45,6 @@ import { InoInputMaskComponent } from '../../../../components/inputmask/ino-inpu
 import { InoInputNumberComponent } from '../../../../components/inputnumber/ino-inputnumber.component';
 import { InoInputTagsComponent } from '../../../../components/inputtags/ino-inputtags.component';
 import { InoKeyfilterComponent } from '../../../../components/keyfilter/ino-keyfilter.component';
-import { InoKnobComponent } from '../../../../components/knob/ino-knob.component';
 import { InoLabelComponent } from '../../../../components/label/ino-label.component';
 import { InoListboxComponent } from '../../../../components/listbox/ino-listbox.component';
 import { InoMenuComponent } from '../../../../components/menu/ino-menu.component';
@@ -75,6 +74,7 @@ import { InoStepperComponent } from '../../../../components/stepper/ino-stepper.
 import { InoTableComponent } from '../../../../components/table/ino-table.component';
 import { InoTabsComponent } from '../../../../components/tabs/ino-tabs.component';
 import { InoTagComponent } from '../../../../components/tag/ino-tag.component';
+import { InoTerminalComponent } from '../../../../components/terminal/ino-terminal.component';
 import { InoTextareaComponent } from '../../../../components/textarea/ino-textarea.component';
 import { InoTierCardComponent } from '../../../../components/tier-card/ino-tier-card.component';
 import { InoTimelineComponent } from '../../../../components/timeline/ino-timeline.component';
@@ -131,7 +131,6 @@ export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'inputnumber': InoInputNumberComponent,
   'inputtags': InoInputTagsComponent,
   'keyfilter': InoKeyfilterComponent,
-  'knob': InoKnobComponent,
   'label': InoLabelComponent,
   'listbox': InoListboxComponent,
   'menu': InoMenuComponent,
@@ -161,6 +160,7 @@ export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'table': InoTableComponent,
   'tabs': InoTabsComponent,
   'tag': InoTagComponent,
+  'terminal': InoTerminalComponent,
   'textarea': InoTextareaComponent,
   'tier-card': InoTierCardComponent,
   'timeline': InoTimelineComponent,

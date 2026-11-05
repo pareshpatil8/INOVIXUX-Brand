@@ -216,7 +216,11 @@ export class InoImageComponent implements OnChanges, OnDestroy {
   }
 
   private releaseScrollLock(): void {
-    if (this.lightboxOpen() && typeof document !== 'undefined') {
+    // Idempotent on purpose: closeLightbox() flips `lightboxOpen` to false *before* calling this,
+    // so gating on that signal here would mean a normal close never restores page scroll (it only
+    // "worked" via ngOnDestroy, which runs before the flip). Resetting unconditionally is harmless
+    // when nothing was ever locked.
+    if (typeof document !== 'undefined') {
       document.body.style.overflow = '';
     }
   }
