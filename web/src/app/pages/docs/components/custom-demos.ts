@@ -48,6 +48,7 @@ import { CarouselDemoComponent } from './demos/carousel-demo.component';
 import { ColorpickerDemoComponent } from './demos/colorpicker-demo.component';
 import { GalleriaDemoComponent } from './demos/galleria-demo.component';
 import { TerminalDemoComponent } from './demos/terminal-demo.component';
+import { InputColorDemoComponent } from './demos/inputcolor-demo.component';
 
 /**
  * Slug -> hand-authored demo component, for components whose §2 Component Publish Contract
@@ -244,4 +245,10 @@ export const CUSTOM_DEMOS: Record<string, Type<unknown>> = {
   // The terminal is a presentation shell with consumer-driven interaction, not a reactive
   // `@Input`-driven renderer target. See `terminal/SPEC.md` for the full contract.
   'terminal': TerminalDemoComponent,
+  // `value: string | null` is free-form, not an enum `STATE_INPUT_NAMES` can drive;
+  // `presets` is an array input (same empty-default gap `colorpicker`/`treetable`/`tree` hit),
+  // and `invalid-hex` (the §5 row's named state) is interaction-driven — typing an unparseable
+  // string into the hex field — not something a static `@Input` binding can stage. See
+  // `inputcolor/SPEC.md` for the full contract.
+  'inputcolor': InputColorDemoComponent,
 };

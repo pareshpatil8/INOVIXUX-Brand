@@ -8,7 +8,7 @@
     "tablet": "641-900px",
     "desktop": ">900px"
   },
-  "componentCount": 84,
+  "componentCount": 85,
   "components": [
     {
       "name": "ino-accordion",
@@ -2953,6 +2953,95 @@
         },
         {
           "name": "autofocus",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-inputcolor",
+      "slug": "inputcolor",
+      "className": "InoInputColorComponent",
+      "sourcePath": "web/src/app/components/inputcolor/ino-inputcolor.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "hint",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "InoControlSize",
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
+          "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "presets",
+          "type": "string[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "value",
+          "type": "string | null",
+          "values": null,
+          "default": "null",
+          "optional": true
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
           "type": "boolean",
           "values": null,
           "default": "false",

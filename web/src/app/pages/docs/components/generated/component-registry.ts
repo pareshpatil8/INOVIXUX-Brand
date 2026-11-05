@@ -41,6 +41,7 @@ import { InoImageComponent } from '../../../../components/image/ino-image.compon
 import { InoInputComponent } from '../../../../components/input/ino-input.component';
 import { InoInputGroupComponent } from '../../../../components/input-group/ino-input-group.component';
 import { InoInputOtpComponent } from '../../../../components/input-otp/ino-input-otp.component';
+import { InoInputColorComponent } from '../../../../components/inputcolor/ino-inputcolor.component';
 import { InoInputMaskComponent } from '../../../../components/inputmask/ino-inputmask.component';
 import { InoInputNumberComponent } from '../../../../components/inputnumber/ino-inputnumber.component';
 import { InoInputTagsComponent } from '../../../../components/inputtags/ino-inputtags.component';
@@ -127,6 +128,7 @@ export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'input': InoInputComponent,
   'input-group': InoInputGroupComponent,
   'input-otp': InoInputOtpComponent,
+  'inputcolor': InoInputColorComponent,
   'inputmask': InoInputMaskComponent,
   'inputnumber': InoInputNumberComponent,
   'inputtags': InoInputTagsComponent,
