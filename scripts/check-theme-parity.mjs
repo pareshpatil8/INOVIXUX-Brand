@@ -1676,6 +1676,24 @@ for (const dir of webComponentDirs) {
   const scssFiles = readdirSync(new URL(`web/src/app/components/${dir}/`, root)).filter(f => f.endsWith('.scss'));
   const sources = scssFiles.map(f => [f, stripComments(read(`web/src/app/components/${dir}/${f}`))]);
   const localProps = new Set(sources.flatMap(([, s]) => [...s.matchAll(/(--ino-[\w-]+)\s*:/g)].map(m => m[1])));
+  // A custom property can also be defined from the component's own template or class rather than
+  // its stylesheet. Angular's [style.--x]="expr" binding and an explicit style.setProperty() both
+  // write a real custom property on the element, and the .scss then reads it exactly as it would a
+  // sibling rule's declaration — the per-component "internal plumbing a parent sets and a child
+  // reads" case the comment above already sanctions, just authored in the template instead.
+  // Scanning only .scss made ino-panel-menu's --ino-panel-menu-level report as undefined even
+  // though ino-panel-menu.component.html sets it per <li> via [style.--ino-panel-menu-level];
+  // that was this gate's one false positive, found while merging to main (INO-911). It is the only
+  // instance of the pattern in the library today, so switching it on changes exactly that result.
+  // Deliberately NOT treating a var(--x, fallback) fallback as self-justifying: a fallback keeps
+  // the declaration valid but does not make a nonexistent role the right thing to point at, which
+  // is the defect class this assertion exists to catch.
+  for (const f of readdirSync(new URL(`web/src/app/components/${dir}/`, root))) {
+    if (!f.endsWith('.html') && !f.endsWith('.ts')) continue;
+    const tpl = read(`web/src/app/components/${dir}/${f}`);
+    for (const m of tpl.matchAll(/\[style\.(--ino-[\w-]+)\]/g)) localProps.add(m[1]);
+    for (const m of tpl.matchAll(/setProperty\(\s*['"`](--ino-[\w-]+)/g)) localProps.add(m[1]);
+  }
   for (const [file, src] of sources) {
     for (const m of src.matchAll(/var\(\s*(--ino-[\w-]+)/g)) {
       assert.ok(definedTokenProps.has(m[1]) || localProps.has(m[1]),
