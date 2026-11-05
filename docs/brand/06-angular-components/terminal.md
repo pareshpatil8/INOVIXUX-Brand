@@ -98,7 +98,7 @@ The input row height follows `--ino-control-height` (live, register-aware — no
 
 ---
 
-## Accessibility
+## Accessibility contract
 
 **Role / ARIA**
 - Log region carries `role="log"` and `aria-live="polite"` — screen readers announce new lines as they are appended.
@@ -137,8 +137,26 @@ All layout uses logical properties (`padding-inline`, `flex-direction: column`, 
 
 ---
 
-## Notes
+## Deliberate omissions
 
-**Web-only:** Doc 26 §5 specifies "Web-only (docs/dev tooling)" — no React Native or Flutter port.
+- **`active` (pointer-press)** — the only interactive element is a text `<input>`, which has
+  no meaningful pressed affordance (unlike a button); the input's native caret/typing state
+  already covers "the user is interacting with this."
+- **`hover`** — no bespoke hover treatment beyond the browser's native text-cursor change over
+  the input and default scrollbar hover in the log; a transcript has no hover-activatable
+  targets.
+- **Labels row** — the §2 contract's full "Labels" row (label, required marker, help text,
+  error text, float/ifta integration) does not apply — doc 26 §5 scopes labeling to
+  `aria-label` only, consistent with terminal not being a validated form field.
+- **Form `ControlValueAccessor`** — matches every other INO-31 control to date; CVA adoption is
+  a fleet-wide decision, not scoped to this ticket.
 
-**Labels row:** The §2 contract's full "Labels" row (label, required marker, help text, error text, float/ifta) does not apply — doc 26 §5 scopes labeling to `aria-label` only, consistent with terminal not being a validated form field.
+---
+
+## Mobile parity
+
+| Track | Status | Notes |
+|---|---|---|
+| Capacitor | Not a port | Renders the same Angular component and the same CSS (INO-31 plan rev 9 §5 rule) — done the moment the web component passes. |
+| React Native | Not ported | Web-only per doc 26 §5 row — "Web-only (docs/dev tooling)." |
+| Flutter | Not ported | Web-only per doc 26 §5 row — "Web-only (docs/dev tooling)." |

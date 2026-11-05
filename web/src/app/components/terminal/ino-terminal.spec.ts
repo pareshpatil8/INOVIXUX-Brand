@@ -143,7 +143,9 @@ describe('InoTerminalComponent', () => {
   });
 
   it('busy disables submission and hides the input in favor of the busy row', () => {
-    component.busy = true;
+    // setInput, not direct assignment — the component is OnPush, so a bare property write
+    // after initial render never marks the view dirty (see knob/speeddial specs).
+    fixture.componentRef.setInput('busy', true);
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelector('.ino-terminal__input')).toBeNull();
@@ -160,7 +162,7 @@ describe('InoTerminalComponent', () => {
   });
 
   it('disabled sets native disabled on the input and blocks submission', () => {
-    component.disabled = true;
+    fixture.componentRef.setInput('disabled', true);
     fixture.detectChanges();
 
     const input: HTMLInputElement = fixture.nativeElement.querySelector('.ino-terminal__input');
@@ -172,7 +174,7 @@ describe('InoTerminalComponent', () => {
   });
 
   it('readonly removes the input row entirely', () => {
-    component.readonly = true;
+    fixture.componentRef.setInput('readonly', true);
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelector('.ino-terminal__input-row')).toBeNull();
