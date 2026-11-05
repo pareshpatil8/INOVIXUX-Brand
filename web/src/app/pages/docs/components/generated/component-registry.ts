@@ -45,6 +45,7 @@ import { InoInputMaskComponent } from '../../../../components/inputmask/ino-inpu
 import { InoInputNumberComponent } from '../../../../components/inputnumber/ino-inputnumber.component';
 import { InoInputTagsComponent } from '../../../../components/inputtags/ino-inputtags.component';
 import { InoKeyfilterComponent } from '../../../../components/keyfilter/ino-keyfilter.component';
+import { InoKnobComponent } from '../../../../components/knob/ino-knob.component';
 import { InoLabelComponent } from '../../../../components/label/ino-label.component';
 import { InoListboxComponent } from '../../../../components/listbox/ino-listbox.component';
 import { InoMenuComponent } from '../../../../components/menu/ino-menu.component';
@@ -130,6 +131,7 @@ export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'inputnumber': InoInputNumberComponent,
   'inputtags': InoInputTagsComponent,
   'keyfilter': InoKeyfilterComponent,
+  'knob': InoKnobComponent,
   'label': InoLabelComponent,
   'listbox': InoListboxComponent,
   'menu': InoMenuComponent,
