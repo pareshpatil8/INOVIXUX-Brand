@@ -48,6 +48,7 @@ import { CarouselDemoComponent } from './demos/carousel-demo.component';
 import { ColorpickerDemoComponent } from './demos/colorpicker-demo.component';
 import { GalleriaDemoComponent } from './demos/galleria-demo.component';
 import { TerminalDemoComponent } from './demos/terminal-demo.component';
+import { KnobDemoComponent } from './demos/knob-demo.component';
 import { InputColorDemoComponent } from './demos/inputcolor-demo.component';
 import { EditorDemoComponent } from './demos/editor-demo.component';
 
@@ -246,6 +247,11 @@ export const CUSTOM_DEMOS: Record<string, Type<unknown>> = {
   // The terminal is a presentation shell with consumer-driven interaction, not a reactive
   // `@Input`-driven renderer target. See `terminal/SPEC.md` for the full contract.
   'terminal': TerminalDemoComponent,
+  // `size` is a type-alias union (`InoKnobSize`) the generic renderer's sizing axis doesn't pick
+  // up (same gap as `slider`), `valueTemplate` is never bound by the single-axis grid, and the
+  // §5 row's dragging/at-bounds states are interaction-driven. See `knob/SPEC.md` for the full
+  // contract.
+  'knob': KnobDemoComponent,
   // `value: string | null` is free-form, not an enum `STATE_INPUT_NAMES` can drive;
   // `presets` is an array input (same empty-default gap `colorpicker`/`treetable`/`tree` hit),
   // and `invalid-hex` (the §5 row's named state) is interaction-driven — typing an unparseable
