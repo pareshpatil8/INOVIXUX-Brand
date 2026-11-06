@@ -1,0 +1,36 @@
+<nav
+  class="ino-dock__frame"
+  [attr.aria-label]="ariaLabel"
+>
+  <ul
+    class="ino-dock__bar"
+    role="menubar"
+    [attr.aria-orientation]="orientation"
+    (keydown)="onKeydown($event)"
+  >
+    <li
+      *ngFor="let item of items; let i = index; trackBy: trackByIndex"
+      class="ino-dock__item"
+      [class.ino-dock__item--disabled]="item.disabled"
+      role="none"
+    >
+      <button
+        type="button"
+        class="ino-dock__btn"
+        [class.ino-dock__btn--active]="isActive(item)"
+        [class.ino-dock__btn--magnify]="magnify && !item.disabled"
+        role="menuitem"
+        [attr.aria-label]="item.label"
+        [attr.aria-disabled]="item.disabled ? true : null"
+        [attr.aria-current]="isActive(item) ? true : null"
+        [disabled]="item.disabled || null"
+        [attr.tabindex]="tabIndexFor(item, i)"
+        (focus)="onItemFocus(i)"
+        (click)="onActivate($event, item, i)"
+      >
+        <span *ngIf="item.icon" class="ino-dock__icon" aria-hidden="true">{{ item.icon }}</span>
+      </button>
+      <span class="ino-dock__label" aria-hidden="true">{{ labelFor(item) }}</span>
+    </li>
+  </ul>
+</nav>

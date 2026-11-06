@@ -54,6 +54,7 @@ import { InputColorDemoComponent } from './demos/inputcolor-demo.component';
 import { EditorDemoComponent } from './demos/editor-demo.component';
 import { DockDemoComponent } from './demos/dock-demo.component';
 import { OrgchartDemoComponent } from './demos/orgchart-demo.component';
+import { DragdropDemoComponent } from './demos/dragdrop-demo.component';
 
 /**
  * Slug -> hand-authored demo component, for components whose §2 Component Publish Contract
@@ -283,4 +284,9 @@ export const CUSTOM_DEMOS: Record<string, Type<unknown>> = {
   // subtrees, Arrow traversal, select/deselect, custom node templates — are interaction- and
   // content-projection-driven. See `orgchart/SPEC.md` for the full contract.
   'orgchart': OrgchartDemoComponent,
+  // `sourceItems`/`targetItems: InoDragDropItem[]` are the same empty-default gap `orderlist`
+  // hits, and the §5 row's signature behavior — drag or keyboard pick-up/move/drop between two
+  // zones, over-target/dropped-flash feedback, `maxItems` capacity — is interaction-driven. See
+  // `dragdrop/SPEC.md` for the full contract.
+  'dragdrop': DragdropDemoComponent,
 };

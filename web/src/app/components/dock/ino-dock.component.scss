@@ -1,0 +1,185 @@
+/*
+ * <ino-dock> — INO-481 / INO-31 B5. No literal colour — every colour/elevation/motion
+ * declaration resolves through tokens.css. The px literals below are fixed GEOMETRY (button
+ * diameters, icon font sizes, magnify scale), the same idiom `ino-speeddial`'s SCSS documents:
+ * a dock is floating chrome, not a form row, so the dense register's `--ino-control-height-*`
+ * remap must never resize it (SPEC.md §3).
+ *
+ * The host never fixes itself to the viewport (SPEC.md §2) — like `ino-speeddial`, the consumer
+ * anchors it (a docs demo wraps it in a positioned container; a real app shell fixes it to a
+ * screen edge).
+ */
+:host {
+  display: inline-block;
+}
+
+.ino-dock__frame {
+  display: inline-flex;
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-pill);
+  background: var(--ino-color-surface-raised);
+  box-shadow: var(--ino-shadow-lg);
+  padding: var(--ino-space-2);
+}
+
+.ino-dock__bar {
+  display: flex;
+  align-items: center;
+  gap: var(--ino-space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* `side` (SPEC.md §2): vertical column. The frame keeps the same pill radius either way — a
+   dock rotated onto an edge still reads as "one rounded strip". */
+:host([data-position='side']) .ino-dock__bar {
+  flex-direction: column;
+}
+
+.ino-dock__item {
+  position: relative;
+}
+
+.ino-dock__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: var(--ino-radius-lg);
+  background: transparent;
+  color: var(--ino-color-on-surface);
+  cursor: pointer;
+
+  /* md (default) — 44px, the fluid control height, fixed px (SPEC.md §3). */
+  inline-size: 44px;
+  block-size: 44px;
+
+  &:hover:not(:disabled) {
+    background: var(--ino-color-surface-sunken);
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+
+  &:disabled {
+    color: var(--ino-color-on-surface-muted);
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+:host([data-size='sm']) .ino-dock__btn {
+  inline-size: 36px;
+  block-size: 36px;
+}
+
+:host([data-size='lg']) .ino-dock__btn {
+  inline-size: 52px;
+  block-size: 52px;
+}
+
+/* active-item (SPEC.md §6): the same accent-fill + on-accent pairing every "checked/pressed"
+   control in this library uses, AA-guaranteed in all 3 themes by construction. */
+.ino-dock__btn--active {
+  background: var(--ino-gradient-accent);
+  color: var(--ino-color-on-accent);
+
+  &:hover:not(:disabled) {
+    background: var(--ino-gradient-accent);
+    color: var(--ino-color-on-accent);
+  }
+}
+
+/* §2 standard "active" (pressed) state — a flat darken, matching ino-speeddial's FAB :active. */
+.ino-dock__btn:active:not(:disabled) {
+  background: var(--ino-color-accent-active);
+  color: var(--ino-color-on-accent);
+}
+
+.ino-dock__icon {
+  font-size: 20px; /* md — matches --ino-control-icon-size-default (fixed px, SPEC.md §3) */
+  line-height: 1;
+  pointer-events: none;
+}
+
+:host([data-size='sm']) .ino-dock__icon {
+  font-size: 16px; /* matches --ino-control-icon-size-sm */
+}
+
+:host([data-size='lg']) .ino-dock__icon {
+  font-size: 24px; /* matches --ino-control-icon-size-lg */
+}
+
+/* Magnify-on-hover (SPEC.md §4): the hovered/focused item itself scales up. Neighbour
+   falloff (the full macOS effect) is a deliberate cut — see SPEC.md §9. */
+.ino-dock__btn--magnify:hover:not(:disabled),
+.ino-dock__btn--magnify:focus-visible:not(:disabled) {
+  transform: scale(1.22);
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ino-dock__btn {
+    transition: transform var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+      background var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+  }
+}
+
+/* Reduced motion (SPEC.md §4): the magnify effect is fully OFF, not merely instant — the
+   transform is reset outright, the same idiom `ino-modal` uses, not just `transition: none`. */
+@media (prefers-reduced-motion: reduce) {
+  .ino-dock__btn {
+    transition: none;
+  }
+
+  .ino-dock__btn--magnify:hover:not(:disabled),
+  .ino-dock__btn--magnify:focus-visible:not(:disabled) {
+    transform: none !important;
+  }
+}
+
+/* Tooltip-style visible label (SPEC.md §7), the same idiom `ino-speeddial__action-label` uses:
+   aria-hidden (the button's aria-label already carries the name), shown on hover/focus-within
+   only. `bottom` places it above the icon; `side` places it to the inline-end (SPEC.md §2's
+   left-edge-flavored default: labels read outward from a left-anchored dock). */
+.ino-dock__label {
+  position: absolute;
+  inset-inline-start: 50%;
+  bottom: calc(100% + var(--ino-space-2));
+  transform: translateX(-50%);
+  padding-block: var(--ino-space-1);
+  padding-inline: var(--ino-space-2);
+  border: 1px solid var(--ino-color-border-strong, var(--ino-color-on-surface-muted));
+  border-radius: var(--ino-radius-sm);
+  background: var(--ino-color-surface);
+  color: var(--ino-color-on-surface);
+  box-shadow: var(--ino-elevation-neutral-2);
+  font-size: var(--ino-control-font-size-compact);
+  line-height: 1.4;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+:host([data-position='side']) .ino-dock__label {
+  inset-inline-start: calc(100% + var(--ino-space-2));
+  bottom: auto;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.ino-dock__item:hover .ino-dock__label,
+.ino-dock__item:focus-within .ino-dock__label {
+  opacity: 1;
+  visibility: visible;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ino-dock__label {
+    transition: opacity var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+  }
+}

@@ -1,0 +1,95 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Live example — bottom position, active item, disabled item</h3>
+  <p class="demo-section__note">
+    Click an icon (or Tab to the strip, then <kbd>←</kbd>/<kbd>→</kbd>/<kbd>Home</kbd>/
+    <kbd>End</kbd> to rove, <kbd>Enter</kbd>/<kbd>Space</kbd> to activate) to set it active.
+    Hover or keyboard-focus an icon to see it magnify and show its label. "Notes (locked)" is
+    disabled: muted, skipped by keyboard navigation, never magnifies.
+  </p>
+  <div class="dock-stage">
+    <ino-dock
+      [items]="items"
+      [activeId]="activeId"
+      ariaLabel="Document actions"
+      (itemClick)="onItemClick($event.item); onActivate($event.item.label)"
+    ></ino-dock>
+  </div>
+  <p class="demo-live">active: {{ activeId }} · last action: {{ lastAction }}</p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Position — bottom (row) vs. side (column)</h3>
+  <p class="demo-section__note">
+    <code>position="bottom"</code> lays items out as a horizontal row with the hover label above
+    the icon; <code>position="side"</code> lays them out as a vertical column with the hover
+    label to the inline-end (the component assumes a left-anchored dock by default — see
+    <code>SPEC.md</code> §2). The component never fixes itself to the viewport; the consumer
+    anchors it.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">bottom (default)</p>
+      <div class="dock-stage">
+        <ino-dock [items]="items" position="bottom" ariaLabel="Dock, bottom position"></ino-dock>
+      </div>
+    </div>
+    <div class="demo-pane">
+      <p class="demo-pane__label">side</p>
+      <div class="dock-stage" style="justify-content: flex-start">
+        <ino-dock [items]="items" position="side" ariaLabel="Dock, side position"></ino-dock>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Sizing — icon sm / md / lg</h3>
+  <p class="demo-section__note">
+    <code>sm</code> 36px, <code>md</code> 44px (default), <code>lg</code> 52px buttons with
+    16/20/24px icons. Sizes are fixed px geometry (<code>SPEC.md</code> §3), so the dense/fluid
+    density register below leaves the dock unchanged — unlike a form control, a dock is floating
+    chrome and must not shrink in the dense register.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane" data-density="dense">
+      <p class="demo-pane__label">dense — sm / md / lg</p>
+      <div class="dock-stage dock-stage--row">
+        <ino-dock [items]="items" size="sm" ariaLabel="Small dock (dense)"></ino-dock>
+        <ino-dock [items]="items" size="md" ariaLabel="Medium dock (dense)"></ino-dock>
+        <ino-dock [items]="items" size="lg" ariaLabel="Large dock (dense)"></ino-dock>
+      </div>
+    </div>
+    <div class="demo-pane" data-density="fluid">
+      <p class="demo-pane__label">fluid — sm / md / lg</p>
+      <div class="dock-stage dock-stage--row">
+        <ino-dock [items]="items" size="sm" ariaLabel="Small dock (fluid)"></ino-dock>
+        <ino-dock [items]="items" size="md" ariaLabel="Medium dock (fluid)"></ino-dock>
+        <ino-dock [items]="items" size="lg" ariaLabel="Large dock (fluid)"></ino-dock>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Magnify-on-hover</h3>
+  <p class="demo-section__note">
+    Hover (or keyboard-focus) any icon below to see the CSS-only magnify effect
+    (<code>transform: scale(1.22)</code>). It is fully disabled — not just un-animated — under
+    <code>prefers-reduced-motion: reduce</code>, and can also be turned off explicitly with
+    <code>[magnify]="false"</code> (right pane) independent of the OS motion setting.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">magnify on (default)</p>
+      <div class="dock-stage">
+        <ino-dock [items]="items" ariaLabel="Dock with magnify"></ino-dock>
+      </div>
+    </div>
+    <div class="demo-pane">
+      <p class="demo-pane__label">[magnify]="false"</p>
+      <div class="dock-stage">
+        <ino-dock [items]="items" [magnify]="false" ariaLabel="Dock without magnify"></ino-dock>
+      </div>
+    </div>
+  </div>
+</section>
