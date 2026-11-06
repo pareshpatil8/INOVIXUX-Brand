@@ -78,8 +78,16 @@ describe('InoOrgchartComponent', () => {
     }).compileComponents();
     fixture = TestBed.createComponent(HostComponent);
     host = fixture.componentInstance;
-    fixture.detectChanges();
   });
+
+  /** First render, called after the test has staged its host state. The zoneless unit-test
+   *  builder never re-evaluates host bindings for a plain post-render field mutation
+   *  (`detectChanges`/`markForCheck`/`whenStable` all skip it; event listeners are what mark
+   *  views dirty) — so state-variant tests configure first and render once, instead of mutating
+   *  after render. Interaction tests are unaffected: DOM events mark the views dirty themselves. */
+  function render(): void {
+    fixture.detectChanges();
+  }
 
   function nodes(): HTMLElement[] {
     return Array.from(fixture.nativeElement.querySelectorAll('[role="treeitem"]'));
@@ -103,6 +111,7 @@ describe('InoOrgchartComponent', () => {
   // ── Rendering / semantics ────────────────────────────────────────────────────────────────────
 
   it('renders every node expanded by default with tree-of-nodes semantics', () => {
+    render();
     expect(nodes().length).toBe(7);
     const tree = fixture.nativeElement.querySelector('[role="tree"]') as HTMLElement;
     expect(tree.getAttribute('aria-labelledby')).toBeTruthy();
@@ -113,17 +122,20 @@ describe('InoOrgchartComponent', () => {
   });
 
   it('marks branch nodes with aria-expanded and leaves leaves unmarked', () => {
+    render();
     expect(nodeByLabel('CEO').getAttribute('aria-expanded')).toBe('true');
     expect(nodeByLabel('CFO').hasAttribute('aria-expanded')).toBe(false);
   });
 
   it('exactly one node is the roving tab stop', () => {
+    render();
     const stops = nodes().filter((el) => el.getAttribute('tabindex') === '0');
     expect(stops.length).toBe(1);
     expect(stops[0]).toBe(nodeByLabel('CEO'));
   });
 
   it('renders the default node content with label and sublabel', () => {
+    render();
     const ceo = nodeByLabel('CEO');
     expect(ceo.querySelector('.ino-orgchart__node-sublabel')?.textContent?.trim()).toBe(
       'Chief Executive',
@@ -132,7 +144,7 @@ describe('InoOrgchartComponent', () => {
 
   it('renders the empty state when value is null', () => {
     host.root = null;
-    fixture.detectChanges();
+    render();
     const empty = fixture.nativeElement.querySelector('.ino-orgchart__empty') as HTMLElement;
     expect(empty.textContent?.trim()).toBe('No data.');
     expect(nodes().length).toBe(0);
@@ -149,6 +161,7 @@ describe('InoOrgchartComponent', () => {
   // ── Expand / collapse ───────────────────────────────────────────────────────────────────────
 
   it('collapses and re-expands a subtree via the toggler', () => {
+    render();
     const toggle = nodeByLabel('CTO').parentElement!.querySelector(
       '.ino-orgchart__toggle',
     ) as HTMLButtonElement;
@@ -164,18 +177,20 @@ describe('InoOrgchartComponent', () => {
 
   it('hides togglers when collapsible is false', () => {
     host.collapsible = false;
-    fixture.detectChanges();
+    render();
     expect(fixture.nativeElement.querySelectorAll('.ino-orgchart__toggle').length).toBe(0);
   });
 
   // ── Arrow traversal (SPEC.md §5) ────────────────────────────────────────────────────────────
 
   it('ArrowDown descends into the first enabled child of an expanded branch', () => {
+    render();
     keydown(nodeByLabel('CEO'), 'ArrowDown');
     expect(nodeByLabel('CTO').getAttribute('tabindex')).toBe('0');
   });
 
   it('ArrowDown expands a collapsed branch without moving focus', () => {
+    render();
     chart().toggleExpand(host.root!.children![0]);
     fixture.detectChanges();
     const cto = nodeByLabel('CTO');
@@ -185,6 +200,7 @@ describe('InoOrgchartComponent', () => {
   });
 
   it('ArrowUp collapses an expanded branch, then ascends to the parent', () => {
+    render();
     const cto = nodeByLabel('CTO');
     keydown(cto, 'ArrowUp');
     expect(cto.getAttribute('aria-expanded')).toBe('false');
@@ -193,6 +209,7 @@ describe('InoOrgchartComponent', () => {
   });
 
   it('ArrowRight/ArrowLeft move between enabled siblings, clamped at the edges', () => {
+    render();
     keydown(nodeByLabel('CTO'), 'ArrowRight');
     expect(nodeByLabel('CFO').getAttribute('tabindex')).toBe('0');
     keydown(nodeByLabel('CFO'), 'ArrowRight');
@@ -204,12 +221,14 @@ describe('InoOrgchartComponent', () => {
   });
 
   it('sibling traversal skips disabled nodes', () => {
+    render();
     keydown(nodeByLabel('Frontend'), 'ArrowRight');
     expect(nodeByLabel('Mobile').getAttribute('tabindex')).toBe('0');
     expect(nodeByLabel('Backend').hasAttribute('tabindex')).toBe(false);
   });
 
   it('Home and End jump to the first/last enabled sibling', () => {
+    render();
     keydown(nodeByLabel('Mobile'), 'Home');
     expect(nodeByLabel('Frontend').getAttribute('tabindex')).toBe('0');
     keydown(nodeByLabel('Frontend'), 'End');
@@ -217,6 +236,7 @@ describe('InoOrgchartComponent', () => {
   });
 
   it('ArrowUp on the root is a no-op', () => {
+    render();
     keydown(nodeByLabel('CEO'), 'ArrowUp');
     expect(nodeByLabel('CEO').getAttribute('tabindex')).toBe('0');
   });
@@ -224,6 +244,7 @@ describe('InoOrgchartComponent', () => {
   // ── Selection (SPEC.md §3) ──────────────────────────────────────────────────────────────────
 
   it('Enter selects a node and re-activating it deselects', () => {
+    render();
     keydown(nodeByLabel('CFO'), 'Enter');
     expect(host.emitted).toEqual(['cfo']);
     expect(nodeByLabel('CFO').getAttribute('aria-selected')).toBe('true');
@@ -233,6 +254,7 @@ describe('InoOrgchartComponent', () => {
   });
 
   it('click selects in single mode', () => {
+    render();
     nodeByLabel('CTO').click();
     fixture.detectChanges();
     expect(host.emitted).toEqual(['cto']);
@@ -240,7 +262,7 @@ describe('InoOrgchartComponent', () => {
 
   it('selectionMode none renders no aria-selected and never emits', () => {
     host.selectionMode = 'none';
-    fixture.detectChanges();
+    render();
     expect(nodeByLabel('CFO').hasAttribute('aria-selected')).toBe(false);
     nodeByLabel('CFO').click();
     keydown(nodeByLabel('CFO'), 'Enter');
@@ -248,6 +270,7 @@ describe('InoOrgchartComponent', () => {
   });
 
   it('disabled nodes cannot be selected', () => {
+    render();
     nodeByLabel('Backend').click();
     fixture.detectChanges();
     expect(host.emitted).toEqual([]);
@@ -257,7 +280,7 @@ describe('InoOrgchartComponent', () => {
 
   it('loading sets aria-busy, shows the spinner, and suppresses interaction', () => {
     host.loading = true;
-    fixture.detectChanges();
+    render();
     const tree = fixture.nativeElement.querySelector('[role="tree"]') as HTMLElement;
     expect(tree.getAttribute('aria-busy')).toBe('true');
     expect(fixture.nativeElement.querySelector('.ino-orgchart__spinner')).toBeTruthy();
@@ -268,7 +291,7 @@ describe('InoOrgchartComponent', () => {
 
   it('disabled removes every node from the tab order and suppresses interaction', () => {
     host.disabled = true;
-    fixture.detectChanges();
+    render();
     expect(nodes().every((el) => !el.hasAttribute('tabindex'))).toBe(true);
     const tree = fixture.nativeElement.querySelector('[role="tree"]') as HTMLElement;
     expect(tree.getAttribute('aria-disabled')).toBe('true');
@@ -278,18 +301,21 @@ describe('InoOrgchartComponent', () => {
 
   // ── Zoom (SPEC.md §6) ───────────────────────────────────────────────────────────────────────
 
-  it('zoom scales the chart surface font-size and clamps to [0.5, 2]', () => {
-    const scroller = () =>
-      fixture.nativeElement.querySelector('.ino-orgchart__scroller') as HTMLElement;
-    expect(scroller().style.fontSize).toContain('* 1)');
+  it('zoom scales the chart surface font-size', () => {
     host.zoom = 1.5;
-    fixture.detectChanges();
-    expect(scroller().style.fontSize).toContain('* 1.5)');
-    host.zoom = 99;
-    fixture.detectChanges();
-    expect(scroller().style.fontSize).toContain('* 2)');
-    host.zoom = 0.01;
-    fixture.detectChanges();
-    expect(scroller().style.fontSize).toContain('* 0.5)');
+    render();
+    const scroller = fixture.nativeElement.querySelector('.ino-orgchart__scroller') as HTMLElement;
+    expect(scroller.getAttribute('style')).toContain('* 1.5)');
+  });
+
+  it('zoom clamps to [0.5, 2] and defaults non-numeric input to 1', () => {
+    render();
+    const instance = chart();
+    instance.zoom = 99;
+    expect(instance.zoom).toBe(2);
+    instance.zoom = 0.01;
+    expect(instance.zoom).toBe(0.5);
+    instance.zoom = Number.NaN;
+    expect(instance.zoom).toBe(1);
   });
 });

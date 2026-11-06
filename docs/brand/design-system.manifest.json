@@ -8,7 +8,7 @@
     "tablet": "641-900px",
     "desktop": ">900px"
   },
-  "componentCount": 90,
+  "componentCount": 91,
   "components": [
     {
       "name": "ino-accordion",
@@ -4675,6 +4675,80 @@
           "type": "boolean",
           "values": null,
           "default": "false",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-orgchart",
+      "slug": "orgchart",
+      "className": "InoOrgchartComponent",
+      "sourcePath": "web/src/app/components/orgchart/ino-orgchart.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "value",
+          "type": "InoOrgChartNode | null",
+          "values": null,
+          "default": "null",
+          "optional": true
+        },
+        {
+          "name": "selectionMode",
+          "type": "'none' | 'single'",
+          "values": [
+            "none",
+            "single"
+          ],
+          "default": "'none'",
+          "optional": true
+        },
+        {
+          "name": "selected",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "collapsible",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
           "optional": true
         }
       ],

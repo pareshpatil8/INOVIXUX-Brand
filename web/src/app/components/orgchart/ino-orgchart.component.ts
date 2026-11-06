@@ -315,8 +315,9 @@ export class InoOrgchartComponent implements OnChanges {
     queueMicrotask(() => {
       const el = this.host.nativeElement.querySelector<HTMLElement>(`[id="${id}"]`);
       el?.focus();
-      // Wide charts scroll inside the component (SPEC.md §6) — traversal drags the viewport along.
-      el?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      // Wide charts scroll inside the component (SPEC.md §6) — traversal drags the viewport
+      // along. Optional call: jsdom (the unit-test environment) has no scrollIntoView.
+      el?.scrollIntoView?.({ block: 'nearest', inline: 'nearest' });
     });
   }
 

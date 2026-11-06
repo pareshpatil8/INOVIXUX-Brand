@@ -2746,7 +2746,7 @@
       "docPath": "docs/brand/06-angular-components/dynamic-dialog.md",
       "a11y": "<p>Inherits the full <code>&lt;ino-modal&gt;</code> a11y contract (<code>role=\"dialog\"</code>, labelled by <code>heading</code>,\n<code>[inoFocusTrap]</code> keyboard containment, Escape/backdrop dismissal). The one item the doc 26 §5 spec\nrow calls out explicitly beyond \"inherits modal\": <strong>focus-return for the service flow</strong>.</p>\n<p>No extra code is needed for it. <code>[inoFocusTrap]</code>, placed on <code>&lt;ino-modal&gt;</code>'s panel, captures\n<code>document.activeElement</code> the instant the panel mounts — still inside the synchronous continuation\nof whatever click/keydown handler called <code>dialogService.open(...)</code> — so it captures the control\nthat triggered the call, exactly the guarantee a declarative <code>&lt;ino-modal [(open)]=\"flag\"&gt;</code> caller\nalready relies on. Closing the dialog by any path (<code>ref.close()</code> from the opened component,\n<code>&lt;ino-modal&gt;</code>'s own Escape/backdrop/close-button paths, or a second <code>open()</code> superseding it)\nrestores focus to that same control via the trap's existing teardown. See <code>SPEC.md</code> §4 for the full\nreasoning.</p>\n<p>The opened component receives no implicit a11y wiring beyond what <code>&lt;ino-modal&gt;</code> already provides —\nif it needs its own <code>aria-describedby</code> or form validation messaging, that is the opened component's\nown responsibility, same as any content projected into a declarative <code>&lt;ino-modal&gt;</code>.</p>\n<hr />\n",
       "notes": "<ul>\n<li><strong>No dialog stack.</strong> <code>InoDynamicDialogService</code> tracks a single <code>current</code> entry; a second <code>open()</code>\nsupersedes the first rather than stacking. A dynamic dialog can still appear over a declarative\n<code>&lt;ino-modal&gt;</code> or <code>&lt;ino-confirm-dialog&gt;</code> opened independently — <code>[inoFocusTrap]</code>'s trap stack\nhandles that case by DOM order regardless of which API opened which panel — but two <em>dynamic</em>\ndialogs stacked on each other is out of scope for this minimal API layer. See <code>SPEC.md</code> §3.</li>\n<li><strong>No imperative <code>ViewContainerRef.createComponent()</code>.</strong> The opened component is mounted via\n<code>NgComponentOutlet</code> inside <code>&lt;ino-dynamic-dialog&gt;</code>'s existing template, not a hand-rolled\n<code>ComponentRef</code> lifecycle — see <code>SPEC.md</code> §2 for why that is the simpler, OnPush/zoneless-safe\nchoice here.</li>\n<li><strong>No <code>@Input</code> bound to the opened component.</strong> <code>NgComponentOutlet</code> has no input-binding surface\nfor an arbitrary unknown type; the DI tokens (<code>InoDynamicDialogRef</code>, <code>INO_DYNAMIC_DIALOG_DATA</code>)\nare the entire data-passing contract, the same two-token shape Angular Material's\n<code>MatDialogRef</code>/<code>MAT_DIALOG_DATA</code> use.</li>\n</ul>\n",
-      "mobile": "<p>Web-only — the doc 26 §5 row disposition. No React Native or Flutter port: a service that opens an\narbitrary component by type, backed by Angular DI and <code>NgComponentOutlet</code>, has no analogue in\neither mobile stack's navigation model, where the equivalent is presenting a screen/route rather\nthan opening an overlay component by type. Mirrors <code>ino-command-menu</code>/<code>ino-toolbar</code>'s web-only\ndisposition in the same table.</p>\n<hr />\n",
+      "mobile": null,
       "api": {
         "props": [],
         "events": [],
@@ -5889,6 +5889,93 @@
         "templates": []
       }
     },
+    "orgchart": {
+      "name": "ino-orgchart",
+      "docPath": "docs/brand/06-angular-components/orgchart.md",
+      "a11y": "<p><strong>Roles / ARIA</strong> — the chart is <code>role=\"tree\"</code> (named by <code>aria-labelledby</code> → chart label, or\n<code>aria-label</code>), nodes are <code>role=\"treeitem\"</code> carrying <code>aria-level</code> (depth), <code>aria-expanded</code>\n(branches only), <code>aria-selected</code> (only when <code>selectionMode=\"single\"</code>), and <code>aria-disabled</code>.\nChildren nest in <code>ul[role=\"group\"]</code>, so set membership is derivable from the DOM. <code>loading</code> sets\n<code>aria-busy</code> on the tree. The chevron toggler is <code>aria-hidden</code> with <code>tabindex=\"-1\"</code> — the\nkeyboard path to expand/collapse is the Arrow map, not the pointer affordance.</p>\n<p><strong>Keyboard — documented Arrow traversal</strong> (the APG tree pattern rotated for a top-down chart):\none tab stop (roving tabindex; real DOM focus moves between cards, <code>aria-activedescendant</code> is\nnever used). <strong>ArrowDown</strong> expands a collapsed branch, else moves to the first enabled child.\n<strong>ArrowUp</strong> collapses an expanded branch, else moves to the parent. <strong>ArrowLeft / ArrowRight</strong>\nmove to the previous/next enabled sibling (clamped, no wrap). <strong>Home / End</strong> jump to the\nfirst/last enabled sibling in the row. <strong>Enter / Space</strong> select and deselect\n(<code>selectionMode=\"single\"</code> only). Disabled nodes are skipped by traversal; focused nodes\n<code>scrollIntoView</code> so wide charts keep the focus visible.</p>\n<p><strong>SR announcements</strong> — expanding/collapsing flips <code>aria-expanded</code>, selecting flips\n<code>aria-selected</code>; both announce on the focused treeitem with no live region needed. The spinner is\npresentational (<code>aria-hidden</code>) — <code>aria-busy</code> on the tree carries the loading state.</p>\n<p><strong>Contrast</strong> — every color is a role token: <code>--ino-color-border</code> connectors on the sunken\nsurface, <code>--ino-color-on-surface(-muted/-subtle)</code> text rungs, <code>--ino-color-accent</code> +\n<code>--ino-color-accent-text-safe</code> (the AA-safe text split) for selection, <code>--ino-focus-ring</code> for\nfocus — in all 3 themes, both densities.</p>\n",
+      "notes": "<ul>\n<li><strong>Mobile ports</strong> — the §5 row is explicitly Web-only; no RN/Flutter disposition.</li>\n<li><strong>Lazy children / per-branch loading</strong> — an org chart renders a known hierarchy; <code>loading</code> is\nchart-level. <code>ino-tree</code>'s <code>hasChildren</code>/<code>loadChildren</code> contract ports over unchanged if a lazy\nneed ever materializes. (<code>SPEC.md</code> §8)</li>\n<li><strong>Multiple / checkbox selection</strong> — the benchmark's multiple mode serves diagram-editing use\ncases the §5 row doesn't name; selection here is a single highlight.</li>\n<li><strong>readonly / invalid states</strong> — not applicable to a visualization: there is no committed value\nto protect or validate (<code>selectionMode=\"none\"</code> is the \"readonly\" of a chart).</li>\n<li><strong>Horizontal orientation, drag-to-reorganize, node editing, pan/pinch, PNG/SVG export</strong> —\ndiagram-editor territory; the benchmark is top-down-only too.</li>\n<li><strong><code>aria-setsize</code>/<code>aria-posinset</code></strong> — group membership is unambiguous from the <code>role=\"group\"</code>\nnesting; AT derives position without redundant bookkeeping.</li>\n<li><strong><code>ControlValueAccessor</code></strong> — plain <code>selected</code>/<code>selectedChange</code> is the repo-wide forms\nconvention.</li>\n</ul>\n",
+      "mobile": "<p><strong>Web-only by spec.</strong> The doc 26 §5 row's mobile disposition for <code>ino-orgchart</code> is \"Web-only\":\nno React Native or Flutter port is planned, and none ships. An org chart is a desktop-idiom,\nwide-canvas visualization (the doc 26 §0 assumption excludes desktop-idiom components from the\nport set); on a phone the same data belongs in a drill-down list — <code>ino-tree</code>'s ports cover that\nneed if it materializes.</p>\n",
+      "api": {
+        "props": [
+          {
+            "name": "label",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": "Chart label (doc 26 §5 \"Labels: chart label\") — rendered above the chart and wired to the tree via `aria-labelledby`."
+          },
+          {
+            "name": "ariaLabel",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": "Accessible-name fallback when no visible `label` is rendered."
+          },
+          {
+            "name": "value",
+            "type": "InoOrgChartNode | null",
+            "values": null,
+            "default": "null",
+            "optional": true,
+            "description": "Root node. `null` renders the empty state (SPEC.md §7)."
+          },
+          {
+            "name": "selectionMode",
+            "type": "'none' | 'single'",
+            "values": [
+              "none",
+              "single"
+            ],
+            "default": "'none'",
+            "optional": true,
+            "description": "`'none'` (default): pure visualization, nodes carry no selection semantics. `'single'`: click/Enter selects by `node.value`; re-activating deselects (SPEC.md §3)."
+          },
+          {
+            "name": "selected",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": "Selected `node.value` (`selectionMode=\"single\"` only)."
+          },
+          {
+            "name": "loading",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": "Chart-level async flag (SPEC.md §7): `aria-busy`, spinner overlay, interaction suppressed. Per-branch lazy loading is a deliberate omission (SPEC.md §8)."
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "collapsible",
+            "type": "boolean",
+            "values": null,
+            "default": "true",
+            "optional": true,
+            "description": "`false` removes the expand/collapse togglers — a static chart (SPEC.md §7)."
+          }
+        ],
+        "events": [
+          {
+            "name": "selectedChange",
+            "type": "string",
+            "description": null
+          }
+        ],
+        "methods": [],
+        "templates": []
+      }
+    },
     "paginator": {
       "name": "ino-paginator",
       "docPath": "docs/brand/06-angular-components/paginator.md",
@@ -7289,7 +7376,7 @@
       "name": "ino-slider",
       "docPath": "docs/brand/06-angular-components/slider.md",
       "a11y": "<p><strong>Role / ARIA</strong> — <code>role=\"slider\"</code> on <strong>each thumb</strong> (not the host element): a range slider is two\nindependent APG slider widgets sharing one visual track, per the ARIA Authoring Practices Guide.\n<code>aria-valuenow</code> always; <code>aria-valuemin</code>/<code>aria-valuemax</code> are the <em>effective</em> bounds for that\nthumb — the lower thumb's max is the upper thumb's current value (and vice versa) in range mode,\nnever the slider's global <code>min</code>/<code>max</code>, so a screen reader never announces a range the thumb can't\nactually reach. <code>aria-orientation</code> is <code>\"horizontal\"</code> (default) or <code>\"vertical\"</code>. <code>aria-label</code> is\nderived from <code>label</code>; range mode suffixes <code>\"(minimum)\"</code>/<code>\"(maximum)\"</code> so the two thumbs are\ndistinguishable without visual context. <code>aria-disabled</code>/<code>aria-readonly</code> are set when\n<code>disabled</code>/<code>readonly</code> are true — <code>slider</code> is one of the ARIA roles that supports <code>aria-readonly</code>\n(unlike, say, <code>button</code>). <code>aria-invalid</code> is not applicable to <code>role=\"slider\"</code> per the ARIA spec; the\nerror text still renders as a <code>role=\"alert\"</code> paragraph, matching every other form control's\nerror-surface convention.</p>\n<p><strong>Keyboard</strong> — APG slider pattern, per focused thumb:</p>\n<table>\n<thead>\n<tr>\n<th>Key</th>\n<th>Behavior</th>\n</tr>\n</thead>\n<tbody><tr>\n<td>ArrowRight / ArrowUp</td>\n<td>Increment by <code>step</code></td>\n</tr>\n<tr>\n<td>ArrowLeft / ArrowDown</td>\n<td>Decrement by <code>step</code></td>\n</tr>\n<tr>\n<td>PageUp</td>\n<td>Increment by <code>step * 10</code></td>\n</tr>\n<tr>\n<td>PageDown</td>\n<td>Decrement by <code>step * 10</code></td>\n</tr>\n<tr>\n<td>Home</td>\n<td>Jump to <code>min</code></td>\n</tr>\n<tr>\n<td>End</td>\n<td>Jump to <code>max</code></td>\n</tr>\n<tr>\n<td>Tab</td>\n<td>Move focus to the other thumb (range mode) or the next control</td>\n</tr>\n</tbody></table>\n<p>All keys call <code>event.preventDefault()</code> so the page does not scroll while a thumb has focus.</p>\n<p><strong>Contrast</strong> — WCAG 2.2 AA, gated by <code>check-theme-parity</code>.</p>\n<p><strong>RTL</strong> — logical properties only (<code>inset-inline-*</code>, <code>padding-inline</code>); vertical orientation is\nthe one place this component isn't purely logical-property-driven (there is no directional\nconvention for \"up is more\" vs. \"down is more\" that RTL flips), so its geometry is measured from\nthe track's own bottom edge rather than mirrored — see <code>SPEC.md</code> §3.</p>\n<p>Full contract: <code>SPEC.md</code> §9.</p>\n<hr />\n",
-      "notes": "<ul>\n<li><strong>Animated transition on programmatic value changes.</strong> Thumb position updates immediately; no\neased transition when <code>value</code> is set from outside. Drag/keyboard interaction is already\ninstant-feedback by design (dragging <em>is</em> the animation). Revisit if a docs demo shows the\nsnap reading as jarring.</li>\n<li><strong>Custom (non-uniform) step arrays.</strong> <code>step</code> is a single uniform number; PrimeNG's <code>Slider</code>\ndoesn't support this either, noted for completeness.</li>\n</ul>\n<p><strong>PrimeNG mapping:</strong> PrimeNG <code>Slider</code> → <code>ino-slider</code>; single/range, horizontal/vertical, step,\nmin/max are all covered. Full table: <code>SPEC.md</code> §10.</p>\n<hr />\n",
+      "notes": null,
       "mobile": "<ul>\n<li><strong>Capacitor</strong> — not a separate port; the same Angular component/CSS render in the Capacitor\nWebView.</li>\n<li><strong>React Native / Flutter</strong> — shipped in this issue\n(<code>mobile/react-native/src/components/InoSlider.tsx</code>,\n<code>mobile/flutter/lib/widgets/ino_slider.dart</code>).<ul>\n<li><strong>React Native</strong>: a from-scratch <code>PanResponder</code>-drawn track + thumb(s), computing value from\nthe gesture's <code>pageX</code>/<code>pageY</code> relative to the track's measured layout (<code>onLayout</code> +\n<code>measureInWindow</code>) — the RN equivalent of this component's <code>getBoundingClientRect()</code> +\n<code>pointermove</code> pattern. RN has no native <code>role=\"slider\"</code>; the ARIA-equivalent substitution is\n<code>accessibilityRole=\"adjustable\"</code> with <code>accessibilityActions</code>/<code>onAccessibilityAction</code> for\nincrement/decrement (VoiceOver/TalkBack swipe up/down) and <code>accessibilityValue={{min, max, now}}</code> for the numeric announcement — the same substitution <code>InoDatepicker</code>/<code>InoSelect</code>/\n<code>InoAutocomplete</code> document for their own overlay idioms.</li>\n<li><strong>Flutter</strong>: wraps Material's <code>Slider</code>/<code>RangeSlider</code>, themed via <code>SliderThemeData</code>\n(<code>activeTrackColor</code>, <code>inactiveTrackColor</code>, <code>thumbColor</code>, <code>overlayColor</code>) rather than a\nfrom-scratch custom-painted widget — Flutter's built-in slider already implements the\ndrag/keyboard/semantics contract this spec asks for, so theming it is the correct-effort\nchoice here (unlike RN, which has no built-in slider primitive to theme).</li>\n<li>Both ports default <code>showMarks</code>/<code>showTooltip</code>/<code>showMinMaxLabels</code>/<code>showValueLabel</code> to the same\n<code>false</code> defaults as web — parity is in the <em>capability</em>, not a mobile-specific default.</li>\n</ul>\n</li>\n</ul>\n<p>Full notes: <code>SPEC.md</code> §11.</p>\n",
       "api": {
         "props": [
@@ -8922,10 +9009,10 @@
     },
     "toolbar": {
       "name": "ino-toolbar",
-      "docPath": "docs/brand/06-angular-components/toolbar.md",
-      "a11y": "<p><strong>Role / ARIA</strong></p>\n<ul>\n<li><code>role=\"toolbar\"</code> on the host element</li>\n<li><code>aria-label</code> (required input) names the toolbar</li>\n<li>Roving tabindex on toolbar items (first item gets <code>tabindex=\"0\"</code>, others <code>\"-1\"</code>)</li>\n</ul>\n<p><strong>Keyboard</strong> — See Keyboard Navigation table above. Arrow keys and Home/End do NOT capture\nfocus when a text input, textarea, or select has focus (per WCAG 2.1.1 and APG guidelines).</p>\n<p><strong>Contrast</strong> — Toolbar background is <code>--ino-color-surface</code>, border is <code>--ino-color-border</code>. Both\nresolve to audited pairs per theme; no toolbar-specific contrast assertions needed (tokens already\ncover it).</p>\n<p><strong>Targets</strong> — Toolbar itself is not a target (structural container). Controls projected into slots\nare responsible for meeting the 24px SC 2.5.8 floor — this is enforced on <code>ino-button</code> and\nform-field components independently.</p>\n<p><strong>RTL</strong> — Uses <code>padding-inline</code>, <code>padding-block</code>, <code>border-block-end</code> (not <code>padding-left</code>/<code>top</code>/\n<code>border-bottom</code>). Mirrors under <code>dir=\"rtl\"</code> with no second stylesheet.</p>\n<p><strong>Overflow scrolling</strong> — <code>overflow-x: auto</code> on the toolbar container with <code>flex-wrap: nowrap</code> and\n<code>flex-shrink: 0</code> on all slotted children. When content exceeds the toolbar width, horizontal\nscrolling activates. Focused toolbar items automatically scroll into view during arrow-key\nnavigation, ensuring keyboard accessibility without requiring a separate scroll container tabstop.</p>\n<hr />\n",
-      "notes": "<ul>\n<li><strong><code>density</code> input.</strong> An earlier implementation had <code>@Input() density: 'dense' | 'comfortable'</code>,\nwhich duplicated the design system's own <code>[data-density]</code> axis and created a second conflicting\ndensity register. Removed in favor of the global attribute (CTO review, INO-443 defect 3).</li>\n<li><strong>Dynamic slot detection.</strong> An earlier implementation used <code>querySelector('[slot=\"...\"]')</code> to\nconditionally render slot containers only when content was projected. This created a chicken-and-egg\ndeadlock in Angular Ivy (content isn't attached until the view renders, but the view was gated on\ndetecting the content). <code>@ContentChildren</code> is no help either — it cannot query an attribute\nselector like <code>[slot=\"start\"]</code>, only a directive, which every <code>slot=\"start\"</code> call site would have\nto adopt. Current implementation always renders all three slot containers and collapses the unused\nones with <code>:empty { display: none }</code>, the same idiom <code>ino-card</code>/<code>ino-panel</code>/<code>ino-drawer</code> use for\noptional projected-content wrappers, so an unused slot is zero-width <strong>and</strong> contributes no <code>gap</code>\ngutter (CTO review, INO-443 defect 7; gutter fixed in INO-864).</li>\n</ul>\n<hr />\n",
-      "mobile": "<table>\n<thead>\n<tr>\n<th>Track</th>\n<th>Status</th>\n<th>Notes</th>\n</tr>\n</thead>\n<tbody><tr>\n<td>Capacitor</td>\n<td>Not a port</td>\n<td>Renders the same Angular component and the same CSS (INO-31 plan rev 9 §5 rule) — done the moment the web component passes.</td>\n</tr>\n<tr>\n<td>React Native</td>\n<td>Not ported</td>\n<td>Web-only per doc 26 §5 row specification</td>\n</tr>\n<tr>\n<td>Flutter</td>\n<td>Not ported</td>\n<td>Web-only per doc 26 §5 row specification</td>\n</tr>\n</tbody></table>\n",
+      "docPath": null,
+      "a11y": null,
+      "notes": null,
+      "mobile": null,
       "api": {
         "props": [
           {
@@ -8950,10 +9037,6 @@
           },
           {
             "name": "[slot='end']",
-            "description": null
-          },
-          {
-            "name": "default",
             "description": null
           }
         ]

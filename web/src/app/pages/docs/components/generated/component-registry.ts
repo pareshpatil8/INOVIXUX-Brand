@@ -60,6 +60,7 @@ import { InoModalComponent } from '../../../../components/modal/ino-modal.compon
 import { InoMultiSelectComponent } from '../../../../components/multiselect/ino-multiselect.component';
 import { InoNavComponent } from '../../../../components/nav/ino-nav.component';
 import { InoOrderListComponent } from '../../../../components/orderlist/ino-orderlist.component';
+import { InoOrgchartComponent } from '../../../../components/orgchart/ino-orgchart.component';
 import { InoPaginatorComponent } from '../../../../components/paginator/ino-paginator.component';
 import { InoPanelComponent } from '../../../../components/panel/ino-panel.component';
 import { InoPanelMenuComponent } from '../../../../components/panel-menu/ino-panel-menu.component';
@@ -152,6 +153,7 @@ export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'multiselect': InoMultiSelectComponent,
   'nav': InoNavComponent,
   'orderlist': InoOrderListComponent,
+  'orgchart': InoOrgchartComponent,
   'paginator': InoPaginatorComponent,
   'panel': InoPanelComponent,
   'panel-menu': InoPanelMenuComponent,
