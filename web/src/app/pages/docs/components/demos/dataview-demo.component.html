@@ -1,0 +1,104 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">List / grid layout switch + paginator</h3>
+  <p class="demo-section__note">
+    The built-in <code>&lt;ino-select-button&gt;</code> switch toggles <code>[layout]</code>
+    live; the built-in <code>&lt;ino-paginator&gt;</code> pages through the 24-row data set below.
+    Toggling the switch announces "List view"/"Grid view" to assistive tech in addition to the
+    switch's own radiogroup announcement.
+  </p>
+  <div class="demo-row">
+    <ino-dataview
+      [value]="companies"
+      [layout]="layout"
+      (layoutChange)="onLayoutChange($event)"
+      [paginator]="true"
+      [rows]="pageSize"
+      [first]="first"
+      (page)="onPage($event)"
+      label="Companies"
+    >
+      <ng-template inoDataViewListItem let-item>
+        <div class="dataview-demo__row">
+          <span class="dataview-demo__row-name">{{ item.name }}</span>
+          <span class="dataview-demo__row-status">{{ item.status }}</span>
+        </div>
+      </ng-template>
+      <ng-template inoDataViewGridItem let-item>
+        <div class="dataview-demo__card">
+          <span class="dataview-demo__card-name">{{ item.name }}</span>
+          <span class="dataview-demo__card-status">{{ item.status }}</span>
+        </div>
+      </ng-template>
+    </ino-dataview>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States — loading, empty</h3>
+  <p class="demo-section__note">
+    <code>[loading]="true"</code> renders shimmer placeholders in the current layout shape instead
+    of items; an empty <code>[value]</code> with <code>loading</code> false renders
+    <code>emptyMessage</code> (or the <code>inoDataViewEmpty</code> template, not shown here).
+  </p>
+  <div class="demo-row">
+    <ino-dataview [value]="smallSet" [loading]="true" label="Loading">
+      <ng-template inoDataViewListItem let-item>
+        <div class="dataview-demo__row">{{ item.name }}</div>
+      </ng-template>
+    </ino-dataview>
+
+    <ino-dataview [value]="[]" label="Empty" emptyMessage="No companies found.">
+      <ng-template inoDataViewListItem let-item>
+        <div class="dataview-demo__row">{{ item.name }}</div>
+      </ng-template>
+    </ino-dataview>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Sizing — grid gap scale</h3>
+  <p class="demo-section__note">
+    <code>size</code> rebinds the grid/list gap from the same control-padding-inline aliases every
+    other component's size rows use — compare the spacing between cards below.
+  </p>
+  <div class="demo-row">
+    <ino-dataview [value]="smallSet" layout="grid" size="sm" [showLayoutSwitcher]="false" label="sm" gridMinColumnWidth="120px">
+      <ng-template inoDataViewGridItem let-item>
+        <div class="dataview-demo__card">{{ item.name }}</div>
+      </ng-template>
+    </ino-dataview>
+
+    <ino-dataview [value]="smallSet" layout="grid" size="lg" [showLayoutSwitcher]="false" label="lg" gridMinColumnWidth="120px">
+      <ng-template inoDataViewGridItem let-item>
+        <div class="dataview-demo__card">{{ item.name }}</div>
+      </ng-template>
+    </ino-dataview>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Density — dense vs. fluid</h3>
+  <p class="demo-section__note">
+    This docs page renders in the dense register by default (<code>[data-density="dense"]</code> on
+    the layout host); the pane on the right overrides to the fluid floor to show the contrast in
+    the paginator/switcher control heights.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane" data-density="dense">
+      <p class="demo-pane__label">dense</p>
+      <ino-dataview [value]="smallSet" [paginator]="true" [rows]="4" label="Dense">
+        <ng-template inoDataViewListItem let-item>
+          <div class="dataview-demo__row">{{ item.name }}</div>
+        </ng-template>
+      </ino-dataview>
+    </div>
+    <div class="demo-pane" data-density="fluid">
+      <p class="demo-pane__label">fluid</p>
+      <ino-dataview [value]="smallSet" [paginator]="true" [rows]="4" label="Fluid">
+        <ng-template inoDataViewListItem let-item>
+          <div class="dataview-demo__row">{{ item.name }}</div>
+        </ng-template>
+      </ino-dataview>
+    </div>
+  </div>
+</section>

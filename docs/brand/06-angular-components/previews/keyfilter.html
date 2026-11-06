@@ -1,0 +1,165 @@
+<!-- @dsCard group="Misc" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KeyFilter — per-character input filtering (INO-420)</title>
+<!-- Canonical token file, linked rather than copied: this preview must repaint with the system,
+     and must never become a second place raw hex values live. -->
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-label-size);
+    letter-spacing: var(--ino-type-label-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 64ch; }
+  p.note { color: var(--ino-color-on-surface-muted); margin: var(--ino-space-3) 0 0; max-width: 64ch; }
+
+  /* The directive itself contributes no surface. Everything below is demo-field chrome, a
+     stand-in for whatever field (e.g. <ino-input>) a real consumer attaches it to. */
+  .field-row { display: flex; flex-direction: column; gap: var(--ino-space-2); max-width: 32ch; margin-bottom: var(--ino-space-6); }
+  label { font-size: var(--ino-type-label-size); color: var(--ino-color-on-surface-muted); }
+  input {
+    min-height: var(--ino-control-height-default);
+    padding-inline: var(--ino-space-4);
+    border-radius: var(--ino-radius-md);
+    border: 1px solid var(--ino-color-border);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font: inherit;
+  }
+  input:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+
+  .readout {
+    margin-top: var(--ino-space-2);
+    padding: var(--ino-space-2) var(--ino-space-3);
+    border-radius: var(--ino-radius-md);
+    background: var(--ino-color-surface-sunken);
+    color: var(--ino-color-on-surface-muted);
+    font-size: var(--ino-type-label-size);
+    min-height: 1.5em;
+  }
+  .readout b { color: var(--ino-color-accent-text-safe); }
+</style>
+</head>
+<body>
+
+<h1>KeyFilter</h1>
+<p class="lede">
+  A behaviour-only primitive: it paints nothing. It blocks keystrokes and pastes that don't match
+  a preset or custom pattern, on whatever field it's attached to — never rewriting or
+  reformatting the value, unlike <code>&lt;ino-inputmask&gt;</code>. Try typing a letter into the
+  numeric fields below, or pasting <code>12a34</code>.
+</p>
+
+<h2>int — digits, one leading minus</h2>
+<div class="field-row">
+  <label for="f-int">Quantity</label>
+  <input id="f-int" inputmode="numeric" placeholder="e.g. -42">
+  <div class="readout" id="r-int" aria-live="polite">—</div>
+</div>
+
+<h2>num — digits, one leading minus, one decimal point</h2>
+<div class="field-row">
+  <label for="f-num">Amount</label>
+  <input id="f-num" inputmode="decimal" placeholder="e.g. 1234.56">
+  <div class="readout" id="r-num" aria-live="polite">—</div>
+</div>
+
+<h2>alphanum — custom pattern (regex preset: [a-f0-9])</h2>
+<div class="field-row">
+  <label for="f-hex">Hex color</label>
+  <input id="f-hex" placeholder="e.g. a1b2c3" maxlength="6">
+  <div class="readout" id="r-hex" aria-live="polite">—</div>
+</div>
+
+<p class="note">
+  Rejections are logged in each read-out purely so the behaviour is visible without opening
+  devtools — the shipped directive announces nothing to assistive technology by default
+  (<code>inoKeyfilterReject</code> exists for a caller that wants its own announcement). Filtering
+  happens only in <kbd>keydown</kbd>, only for a single printable character with no modifier held,
+  and is skipped entirely while <code>isComposing</code> — an IME composing non-Latin text is
+  never touched. Tab, Backspace, arrows, and every Ctrl/Cmd/Alt combo are never intercepted.
+</p>
+
+<!--
+  Preview-only mirror of `web/src/app/components/keyfilter/{ino-keyfilter.directive.ts,keyfilter-presets.ts}`.
+
+  This file is a standalone HTML card with no Angular runtime, so the preset predicates are
+  re-stated here in plain JS purely so the card is demonstrable. It is NOT a second
+  implementation to keep in sync: the shipped directive additionally handles paste-filtering with
+  caret-accurate re-insertion and the component wrapper form. See SPEC.md §3 for the full contract.
+-->
+<script>
+  const DIGIT = /^[0-9]$/;
+
+  function isLeadingMinus(ch, value, selectionStart) {
+    return ch === '-' && selectionStart === 0 && !value.includes('-');
+  }
+
+  const TESTS = {
+    int: (ch, value, pos) => DIGIT.test(ch) || isLeadingMinus(ch, value, pos),
+    num: (ch, value, pos) => DIGIT.test(ch) || isLeadingMinus(ch, value, pos) || (ch === '.' && !value.includes('.')),
+    hex: (ch) => /^[a-f0-9]$/i.test(ch),
+  };
+
+  function wire(inputId, readoutId, test) {
+    const input = document.getElementById(inputId);
+    const readout = document.getElementById(readoutId);
+    input.addEventListener('keydown', (event) => {
+      if (event.isComposing || event.keyCode === 229) return;
+      if (event.ctrlKey || event.metaKey || event.altKey) return;
+      if (event.key.length !== 1) return;
+      if (!test(event.key, input.value, input.selectionStart ?? input.value.length)) {
+        event.preventDefault();
+        readout.innerHTML = `rejected <b>${event.key}</b>`;
+      }
+    });
+    input.addEventListener('paste', (event) => {
+      const text = event.clipboardData?.getData('text') ?? '';
+      if (!text) return;
+      const selStart = input.selectionStart ?? input.value.length;
+      const selEnd = input.selectionEnd ?? selStart;
+      const base = input.value.slice(0, selStart) + input.value.slice(selEnd);
+      let value = base, pos = selStart, filtered = '';
+      for (const ch of text) {
+        if (test(ch, value, pos)) {
+          value = value.slice(0, pos) + ch + value.slice(pos);
+          filtered += ch;
+          pos++;
+        }
+      }
+      if (filtered === text) return;
+      event.preventDefault();
+      readout.innerHTML = `rejected paste <b>${text}</b>`;
+      if (!filtered) return;
+      input.value = base.slice(0, selStart) + filtered + base.slice(selStart);
+      const caret = selStart + filtered.length;
+      input.setSelectionRange(caret, caret);
+    });
+  }
+
+  wire('f-int', 'r-int', TESTS.int);
+  wire('f-num', 'r-num', TESTS.num);
+  wire('f-hex', 'r-hex', TESTS.hex);
+</script>
+
+</body>
+</html>

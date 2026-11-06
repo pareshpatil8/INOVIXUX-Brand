@@ -1,0 +1,106 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Variants — flat items, grouped sections, nested submenu</h3>
+  <p class="demo-section__note">
+    <code>items</code> renders a flat list. <code>sections</code> (when non-<code>null</code>)
+    always wins over <code>items</code> and renders grouped — "File"/"Edit" below, plus a trailing
+    unlabelled group. "Export" nests a submenu one level deep (the absorbed
+    <code>TieredMenu</code> case). Activating a leaf fires its <code>command</code> or navigates,
+    read out below.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">flat (items)</p>
+      <ino-menu [items]="flatItems" ariaLabel="Flat demo menu"></ino-menu>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">grouped (sections), with nested submenu</p>
+      <ino-menu [sections]="groupedSections" ariaLabel="Grouped demo menu"></ino-menu>
+    </div>
+  </div>
+  <p class="demo-live">last activated: {{ lastAction }}</p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States</h3>
+  <p class="demo-section__note">
+    <strong>Default/hover/focus-visible/active</strong> are live on every item above — tab onto
+    one for the focus ring, or hover for the surface-sunken fill. <strong>Active-item</strong> is
+    the roving-<code>tabindex</code> item, which always coincides with focus-visible.
+    <strong>Open</strong> is demonstrated by the popup pane below. <strong>Disabled</strong> items
+    ("Delete (locked)" / "Paste (locked)" above) are skipped entirely by keyboard navigation.
+    <strong>Empty</strong> renders the <code>emptyLabel</code> placeholder rather than an empty
+    menu.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">popup (mode="popup")</p>
+      <button type="button" (click)="popupMenu.toggle($event)">
+        Actions &#9662;
+      </button>
+      <ino-menu
+        #popupMenu
+        mode="popup"
+        [items]="flatItems"
+        ariaLabel="Popup demo menu"
+      ></ino-menu>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">empty — non-null <code>sections = []</code> wins over <code>items</code></p>
+      <ino-menu
+        [sections]="emptySections"
+        [items]="fallbackItems"
+        emptyLabel="No menu items configured"
+        ariaLabel="Empty demo menu"
+      ></ino-menu>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Sizing &amp; density</h3>
+  <p class="demo-section__note">
+    "Sizing: compact/comfortable" per the spec row — no <code>sm</code>/<code>lg</code> axis.
+    <code>comfortable</code> (default) reads the unsuffixed <code>--ino-control-*</code> aliases;
+    <code>compact</code> re-points to the <code>-compact</code> tier. Both compose with density —
+    the left pane runs dense, the right pane overrides to fluid via
+    <code>[data-density="fluid"]</code>.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane" data-density="dense">
+      <p class="demo-pane__label">comfortable, dense</p>
+      <ino-menu [items]="flatItems"></ino-menu>
+    </div>
+    <div class="demo-pane" data-density="fluid">
+      <p class="demo-pane__label">compact, fluid</p>
+      <ino-menu [items]="flatItems" size="compact"></ino-menu>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Labels</h3>
+  <p class="demo-section__note">
+    No <code>required</code>/help-text/error-text inputs apply — a menu has no bound value to
+    validate (see the narrative doc's "Deliberate omissions"). A section's own <code>label</code>
+    is its group's accessible name only (<code>aria-label</code>, no visible heading text — see
+    <code>SPEC.md</code> §6).
+  </p>
+  <div class="demo-col" style="max-width: 320px;">
+    <ino-menu [sections]="groupedSections" ariaLabel="Labelled-groups demo menu"></ino-menu>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Keyboard contract</h3>
+  <p class="demo-section__note">
+    <strong>Arrow Up/Down</strong> move roving focus within a level, wrapping at the ends.
+    <strong>Arrow Right</strong>/<strong>Enter</strong>/<strong>Space</strong> on "Export" above
+    opens its submenu and focuses the first entry; <strong>Arrow Left</strong> or
+    <strong>Escape</strong> closes it and returns focus to "Export".
+    <strong>Home</strong>/<strong>End</strong> jump to the first/last enabled item.
+    <strong>Type-ahead</strong> — focus the grouped menu and type a letter to jump to the next
+    matching label.
+  </p>
+</section>

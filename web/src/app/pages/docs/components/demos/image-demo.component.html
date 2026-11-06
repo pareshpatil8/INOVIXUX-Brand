@@ -1,0 +1,115 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Variants / Structure — image, caption, fallback</h3>
+  <p class="demo-section__note">
+    Doc 26 §5 row: caption slot + error-fallback slot. See <code>SPEC.md</code> §1.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">image + caption</p>
+      <ino-image [src]="sampleImage" alt="Stylized dusk skyline over water" width="200px" height="130px">
+        <span caption>A dusk skyline, demo asset</span>
+      </ino-image>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">no src → built-in fallback glyph</p>
+      <ino-image alt="Missing image" width="200px" height="130px"></ino-image>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">no src → projected <code>[fallback]</code></p>
+      <ino-image alt="Missing image" width="200px" height="130px">
+        <span fallback>No photo yet</span>
+      </ino-image>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Sizing — intrinsic + fit modes</h3>
+  <p class="demo-section__note">
+    Two modes (doc 26 §5 "intrinsic + fit modes"): unset <code>width</code>/<code>height</code>
+    renders at intrinsic size; setting either activates <code>fit</code>. See
+    <code>SPEC.md</code> §3.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">intrinsic (no width/height)</p>
+      <ino-image [src]="sampleImage" alt="Stylized dusk skyline over water"></ino-image>
+    </div>
+
+    @for (fit of fits; track fit) {
+      <div class="demo-pane">
+        <p class="demo-pane__label">fit="{{ fit }}" (160×160 box)</p>
+        <ino-image [src]="sampleImage" alt="Stylized dusk skyline over water" [fit]="fit" width="160px" height="160px"></ino-image>
+      </div>
+    }
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States — loading, error-fallback</h3>
+  <p class="demo-section__note">
+    Doc 26 §5's own named states, on top of the §2 standard set. See <code>SPEC.md</code> §2.
+    The broken URL below is deliberately unreachable to trigger the native
+    <code>&lt;img&gt; (error)</code> event live.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">default — loaded</p>
+      <ino-image [src]="sampleImage" alt="Stylized dusk skyline over water" width="160px" height="100px"></ino-image>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">error-fallback — broken src</p>
+      <ino-image [src]="brokenImage" alt="Broken image" width="160px" height="100px"></ino-image>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Preview lightbox — zoom / rotate</h3>
+  <p class="demo-section__note">
+    Click (or Enter/Space) the image to open the dialog. Keyboard map:
+    <code>+</code>/<code>-</code> zoom, <code>0</code> reset, <code>r</code>/<code>R</code>
+    rotate, <code>Escape</code> close. See <code>SPEC.md</code> §5/§6.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">previewable (default)</p>
+      <ino-image [src]="sampleImage" alt="Stylized dusk skyline over water" width="160px" height="100px"></ino-image>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">previewable=false — no lightbox trigger</p>
+      <ino-image [src]="sampleImage" alt="Stylized dusk skyline over water" width="160px" height="100px" [previewable]="false"></ino-image>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">RTL</h3>
+  <p class="demo-section__note">
+    Logical properties only; no directional properties in either stylesheet, so the host mirrors
+    correctly under <code>dir="rtl"</code> with no code-path difference.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane" dir="rtl">
+      <p class="demo-pane__label">RTL — caption</p>
+      <ino-image [src]="sampleImage" alt="أفق المدينة عند الغسق" width="160px" height="100px">
+        <span caption>أفق المدينة عند الغسق</span>
+      </ino-image>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Mobile — React Native + Flutter ports</h3>
+  <p class="demo-section__note">
+    Per doc 26 §5 "Port both (base render; lightbox web-only)" — <code>InoImage</code> ships for
+    React Native (<code>mobile/react-native/src/components/InoImage.tsx</code>) and Flutter
+    (<code>mobile/flutter/lib/widgets/ino_image.dart</code>) with the same loading placeholder,
+    error-fallback, caption, and intrinsic/fit sizing as web. The lightbox is web-only — neither
+    mobile port has a focus-trap primitive of its own in this codebase.
+  </p>
+</section>

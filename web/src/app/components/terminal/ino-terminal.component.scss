@@ -1,0 +1,170 @@
+/*
+ * <ino-terminal> — INO-479 / INO-31 B5. No literal colour/space — every declaration resolves
+ * through tokens.css (px literals below are fixed-height geometry only, per SPEC.md §5).
+ */
+:host {
+  display: block;
+}
+
+.ino-terminal {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-md);
+  background: var(--ino-color-surface-sunken);
+  font-family: var(--ino-font-mono);
+  overflow: hidden;
+
+  &--focused {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+
+  &--disabled {
+    opacity: 0.6;
+  }
+}
+
+.ino-terminal__log {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: var(--ino-space-3);
+  // Fixed block-size per `size` (SPEC.md §5) — density-immune, same idiom as
+  // ino-speeddial's FAB diameters: a scrollback transcript is not a form-control row.
+  block-size: 320px;
+
+  &:focus-visible {
+    outline: none;
+  }
+}
+
+.ino-terminal[data-size='sm'] .ino-terminal__log {
+  block-size: 200px;
+}
+
+.ino-terminal[data-size='lg'] .ino-terminal__log {
+  block-size: 440px;
+}
+
+.ino-terminal__line {
+  display: flex;
+  gap: var(--ino-space-2);
+  color: var(--ino-color-on-surface);
+  font-size: var(--ino-control-font-size);
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.ino-terminal__line[data-line-type='system'] {
+  color: var(--ino-color-on-surface-muted);
+}
+
+.ino-terminal__line[data-line-type='error'] {
+  color: var(--ino-color-danger-text-safe);
+}
+
+.ino-terminal__line-prompt {
+  flex: 0 0 auto;
+  color: var(--ino-color-on-surface-muted);
+}
+
+.ino-terminal__line-text {
+  min-inline-size: 0;
+}
+
+/* Standard sr-only clip pattern (library precedent: ino-alert__sr-status) — announces the
+   busy transition via its own role="status" region, separate from the log's role="log". */
+.ino-terminal__sr-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.ino-terminal__input-row {
+  display: flex;
+  align-items: center;
+  gap: var(--ino-space-2);
+  padding-inline: var(--ino-space-3);
+  // Real text input — follows the live, register-aware default like any other control
+  // (only the log region above is fixed-height; see SPEC.md §5).
+  block-size: var(--ino-control-height);
+  border-block-start: 1px solid var(--ino-color-border);
+}
+
+.ino-terminal__prompt {
+  flex: 0 0 auto;
+  color: var(--ino-color-on-surface-muted);
+}
+
+.ino-terminal__input {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  border: none;
+  background: transparent;
+  color: var(--ino-color-on-surface);
+  font-family: inherit;
+  font-size: var(--ino-control-font-size);
+
+  &:focus {
+    outline: none;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  &::placeholder {
+    color: var(--ino-color-on-surface-muted);
+  }
+}
+
+.ino-terminal__busy-row {
+  display: flex;
+  align-items: center;
+  gap: var(--ino-space-2);
+}
+
+.ino-terminal__busy-dots {
+  display: inline-flex;
+  gap: var(--ino-space-1);
+
+  span {
+    inline-size: 4px;
+    block-size: 4px;
+    border-radius: 50%;
+    background: var(--ino-color-on-surface-muted);
+    opacity: 0.4;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ino-terminal__busy-dots span {
+    animation: ino-terminal-busy-pulse 1.2s ease-in-out infinite;
+
+    &:nth-child(2) {
+      animation-delay: 0.15s;
+    }
+
+    &:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+  }
+
+  @keyframes ino-terminal-busy-pulse {
+    0%,
+    80%,
+    100% {
+      opacity: 0.4;
+    }
+    40% {
+      opacity: 1;
+    }
+  }
+}

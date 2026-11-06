@@ -8,8 +8,64 @@
     "tablet": "641-900px",
     "desktop": ">900px"
   },
-  "componentCount": 43,
+  "componentCount": 90,
   "components": [
+    {
+      "name": "ino-accordion",
+      "slug": "accordion",
+      "className": "InoAccordionComponent",
+      "sourcePath": "web/src/app/components/accordion/ino-accordion.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "multiple",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "'compact' | 'comfortable'",
+          "values": [
+            "compact",
+            "comfortable"
+          ],
+          "default": "'comfortable'",
+          "optional": true
+        },
+        {
+          "name": "iconPosition",
+          "type": "'start' | 'end'",
+          "values": [
+            "start",
+            "end"
+          ],
+          "default": "'start'",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
     {
       "name": "ino-alert",
       "slug": "alert",
@@ -39,6 +95,20 @@
           ],
           "default": "'inline'",
           "optional": true
+        },
+        {
+          "name": "heading",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "dismissible",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
         }
       ],
       "variants": [
@@ -47,6 +117,452 @@
         "warning",
         "danger"
       ],
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-autocomplete",
+      "slug": "autocomplete",
+      "className": "InoAutocompleteComponent",
+      "sourcePath": "web/src/app/components/autocomplete/ino-autocomplete.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "options",
+          "type": "InoAutocompleteOption[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "value",
+          "type": "string | string[]",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "values": null,
+          "default": "'Type to search…'",
+          "optional": true
+        },
+        {
+          "name": "hint",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "InoControlSize",
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
+          "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "clearable",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "multiple",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "mode",
+          "type": "'dropdown' | 'inline'",
+          "values": [
+            "dropdown",
+            "inline"
+          ],
+          "default": "'dropdown'",
+          "optional": true
+        },
+        {
+          "name": "forceSelection",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "maxSelected",
+          "type": "number",
+          "values": null,
+          "default": "null",
+          "optional": true
+        },
+        {
+          "name": "virtualScrollThreshold",
+          "type": "number",
+          "values": null,
+          "default": "100",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-autofocus",
+      "slug": "autofocus",
+      "className": "InoAutofocusComponent",
+      "sourcePath": "web/src/app/components/autofocus/ino-autofocus.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "inoAutofocus",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "target",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "preventScroll",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "trigger",
+          "type": "unknown",
+          "values": null,
+          "default": "undefined",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-avatar",
+      "slug": "avatar",
+      "className": "InoAvatarComponent",
+      "sourcePath": "web/src/app/components/avatar/ino-avatar.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "initials",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "alt",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "shape",
+          "type": "InoAvatarShape",
+          "values": [
+            "circle",
+            "square"
+          ],
+          "default": "'circle'",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "InoAvatarSize",
+          "values": [
+            "xs",
+            "sm",
+            "default",
+            "lg",
+            "xl"
+          ],
+          "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "decorative",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-avatar-group",
+      "slug": "avatar-group",
+      "className": "InoAvatarGroupComponent",
+      "sourcePath": "web/src/app/components/avatar-group/ino-avatar-group.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "avatars",
+          "type": "InoAvatarGroupItem[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "max",
+          "type": "number | null",
+          "values": null,
+          "default": "null",
+          "optional": true
+        },
+        {
+          "name": "shape",
+          "type": "InoAvatarShape",
+          "values": [
+            "circle",
+            "square"
+          ],
+          "default": "'circle'",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "InoAvatarSize",
+          "values": [
+            "xs",
+            "sm",
+            "default",
+            "lg",
+            "xl"
+          ],
+          "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-badge",
+      "slug": "badge",
+      "className": "InoBadgeComponent",
+      "sourcePath": "web/src/app/components/badge/ino-badge.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "variant",
+          "type": "InoBadgeVariant",
+          "values": [
+            "dot",
+            "count",
+            "status"
+          ],
+          "default": "'count'",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "InoBadgeSize",
+          "values": [
+            "sm",
+            "md"
+          ],
+          "default": "'md'",
+          "optional": true
+        },
+        {
+          "name": "severity",
+          "type": "InoBadgeSeverity",
+          "values": [
+            "info",
+            "success",
+            "warning",
+            "danger"
+          ],
+          "default": "'info'",
+          "optional": true
+        },
+        {
+          "name": "value",
+          "type": "number",
+          "values": null,
+          "default": "null",
+          "optional": true
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        }
+      ],
+      "variants": [
+        "dot",
+        "count",
+        "status"
+      ],
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-breadcrumb",
+      "slug": "breadcrumb",
+      "className": "InoBreadcrumbComponent",
+      "sourcePath": "web/src/app/components/breadcrumb/ino-breadcrumb.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "items",
+          "type": "InoBreadcrumbItem[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "values": null,
+          "default": "'breadcrumb'",
+          "optional": true
+        },
+        {
+          "name": "ellipsisLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Show hidden breadcrumb items'",
+          "optional": true
+        },
+        {
+          "name": "maxVisible",
+          "type": "number",
+          "values": null,
+          "default": "0",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        }
+      ],
+      "variants": null,
       "viewports": [
         "mobile",
         "tablet",
@@ -76,8 +592,26 @@
         {
           "name": "size",
           "type": "InoControlSize",
-          "values": null,
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
           "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
           "optional": true
         }
       ],
@@ -126,8 +660,33 @@
         {
           "name": "size",
           "type": "InoControlSize",
-          "values": null,
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
           "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "interactive",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
           "optional": true
         }
       ],
@@ -143,6 +702,208 @@
       ]
     },
     {
+      "name": "ino-carousel",
+      "slug": "carousel",
+      "className": "InoCarouselComponent",
+      "sourcePath": "web/src/app/components/carousel/ino-carousel.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "orientation",
+          "type": "InoCarouselOrientation",
+          "values": [
+            "horizontal",
+            "vertical"
+          ],
+          "default": "'horizontal'",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "InoControlSize",
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
+          "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "visibleCount",
+          "type": "number",
+          "values": null,
+          "default": "1",
+          "optional": true
+        },
+        {
+          "name": "step",
+          "type": "number",
+          "values": null,
+          "default": "1",
+          "optional": true
+        },
+        {
+          "name": "autoplay",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "autoplayInterval",
+          "type": "number",
+          "values": null,
+          "default": "5000",
+          "optional": true
+        },
+        {
+          "name": "circular",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "showIndicators",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "showNavigation",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Carousel'",
+          "optional": true
+        },
+        {
+          "name": "activeIndex",
+          "type": "number",
+          "values": null,
+          "default": null,
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-cascade-select",
+      "slug": "cascade-select",
+      "className": "InoCascadeSelectComponent",
+      "sourcePath": "web/src/app/components/cascade-select/ino-cascade-select.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "options",
+          "type": "InoCascadeSelectOption[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "values": null,
+          "default": "'Select an option'",
+          "optional": true
+        },
+        {
+          "name": "hint",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "InoControlSize",
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
+          "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "backLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Back'",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
       "name": "ino-checkbox",
       "slug": "checkbox",
       "className": "InoCheckboxComponent",
@@ -150,10 +911,384 @@
       "previewPath": null,
       "inputs": [
         {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
           "name": "size",
           "type": "InoControlSize",
-          "values": null,
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
           "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "checked",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "indeterminate",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "invalid",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-chip",
+      "slug": "chip",
+      "className": "InoChipComponent",
+      "sourcePath": "web/src/app/components/chip/ino-chip.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "InoControlSize",
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
+          "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "interactive",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "removable",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "pressable",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "pressed",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-colorpicker",
+      "slug": "colorpicker",
+      "className": "InoColorPickerComponent",
+      "sourcePath": "web/src/app/components/colorpicker/ino-colorpicker.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "hint",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "values": null,
+          "default": "'Select color'",
+          "optional": true
+        },
+        {
+          "name": "swatchSize",
+          "type": "InoColorPickerSwatchSize",
+          "values": [
+            "sm",
+            "md"
+          ],
+          "default": "'md'",
+          "optional": true
+        },
+        {
+          "name": "inline",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "showAlpha",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "presets",
+          "type": "string[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "value",
+          "type": "string | null",
+          "values": null,
+          "default": "null",
+          "optional": true
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "closeOnEscape",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "closeOnBackdrop",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "appendTo",
+          "type": "'self' | 'body'",
+          "values": [
+            "self",
+            "body"
+          ],
+          "default": "'self'",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-command-menu",
+      "slug": "command-menu",
+      "className": "InoCommandMenuComponent",
+      "sourcePath": "web/src/app/components/command-menu/ino-command-menu.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "open",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "'Command menu'",
+          "optional": true
+        },
+        {
+          "name": "searchLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Search commands'",
+          "optional": true
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "values": null,
+          "default": "'Type a command or search…'",
+          "optional": true
+        },
+        {
+          "name": "groups",
+          "type": "InoCommandMenuGroup[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "recentItems",
+          "type": "InoCommandMenuItem[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "recentHeading",
+          "type": "string",
+          "values": null,
+          "default": "'Recent'",
+          "optional": true
+        },
+        {
+          "name": "emptyMessage",
+          "type": "string",
+          "values": null,
+          "default": "'No results found.'",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "closeOnSelect",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "closeOnBackdrop",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "closeOnEscape",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "hotkey",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
           "optional": true
         }
       ],
@@ -172,6 +1307,41 @@
       "previewPath": null,
       "inputs": [
         {
+          "name": "open",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "heading",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "message",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "confirmLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Confirm'",
+          "optional": true
+        },
+        {
+          "name": "cancelLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Cancel'",
+          "optional": true
+        },
+        {
           "name": "severity",
           "type": "InoConfirmSeverity",
           "values": [
@@ -184,8 +1354,33 @@
         {
           "name": "size",
           "type": "InoControlSize",
-          "values": null,
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
           "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "closeOnEscape",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "closeOnBackdrop",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
           "optional": true
         }
       ],
@@ -204,6 +1399,13 @@
       "previewPath": null,
       "inputs": [
         {
+          "name": "open",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
           "name": "target",
           "type": "HTMLElement | ElementRef<HTMLElement> | null",
           "values": null,
@@ -213,22 +1415,253 @@
         {
           "name": "position",
           "type": "InoOverlayPosition",
-          "values": null,
+          "values": [
+            "top",
+            "bottom",
+            "left",
+            "right"
+          ],
           "default": "'bottom'",
+          "optional": true
+        },
+        {
+          "name": "heading",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "message",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "confirmLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Confirm'",
+          "optional": true
+        },
+        {
+          "name": "cancelLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Cancel'",
           "optional": true
         },
         {
           "name": "severity",
           "type": "InoConfirmSeverity",
-          "values": null,
+          "values": [
+            "default",
+            "danger"
+          ],
           "default": "'default'",
           "optional": true
         },
         {
           "name": "size",
           "type": "InoControlSize",
-          "values": null,
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
           "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "closeOnEscape",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-context-menu",
+      "slug": "context-menu",
+      "className": "InoContextMenuComponent",
+      "sourcePath": "web/src/app/components/context-menu/ino-context-menu.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "items",
+          "type": "InoContextMenuItem[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Context menu'",
+          "optional": true
+        },
+        {
+          "name": "visible",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-dataview",
+      "slug": "dataview",
+      "className": "InoDataViewComponent",
+      "sourcePath": "web/src/app/components/dataview/ino-dataview.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "value",
+          "type": "readonly unknown[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "trackBy",
+          "type": "((index: number, item: unknown) => unknown) | null",
+          "values": null,
+          "default": "null",
+          "optional": true
+        },
+        {
+          "name": "layout",
+          "type": "InoDataViewLayout",
+          "values": [
+            "list",
+            "grid"
+          ],
+          "default": "'list'",
+          "optional": true
+        },
+        {
+          "name": "showLayoutSwitcher",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "paginator",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "rows",
+          "type": "number",
+          "values": null,
+          "default": "10",
+          "optional": true
+        },
+        {
+          "name": "first",
+          "type": "number",
+          "values": null,
+          "default": "0",
+          "optional": true
+        },
+        {
+          "name": "rowsPerPageOptions",
+          "type": "number[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "lazy",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "totalRecords",
+          "type": "number",
+          "values": null,
+          "default": "0",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "InoControlSize",
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
+          "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "gridMinColumnWidth",
+          "type": "string",
+          "values": null,
+          "default": "'220px'",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "skeletonItemCount",
+          "type": "number",
+          "values": null,
+          "default": "0",
+          "optional": true
+        },
+        {
+          "name": "emptyMessage",
+          "type": "string",
+          "values": null,
+          "default": "'No records found.'",
+          "optional": true
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Data view'",
           "optional": true
         }
       ],
@@ -247,9 +1680,41 @@
       "previewPath": null,
       "inputs": [
         {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "hint",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "values": null,
+          "default": "'Select date'",
+          "optional": true
+        },
+        {
           "name": "size",
           "type": "InoControlSize",
-          "values": null,
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
           "default": "'default'",
           "optional": true
         },
@@ -269,6 +1734,41 @@
           "type": "Date | Date[] | null",
           "values": null,
           "default": "null",
+          "optional": true
+        },
+        {
+          "name": "inline",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "showTime",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "timeOnly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "showSeconds",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "manualEntry",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
           "optional": true
         },
         {
@@ -324,6 +1824,55 @@
           "optional": true
         },
         {
+          "name": "locale",
+          "type": "string",
+          "values": null,
+          "default": "'en-IN'",
+          "optional": true
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "closeOnEscape",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "closeOnBackdrop",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
           "name": "appendTo",
           "type": "'self' | 'body'",
           "values": [
@@ -342,12 +1891,182 @@
       ]
     },
     {
+      "name": "ino-divider",
+      "slug": "divider",
+      "className": "InoDividerComponent",
+      "sourcePath": "web/src/app/components/divider/ino-divider.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "orientation",
+          "type": "InoDividerOrientation",
+          "values": [
+            "horizontal",
+            "vertical"
+          ],
+          "default": "'horizontal'",
+          "optional": true
+        },
+        {
+          "name": "thickness",
+          "type": "InoDividerThickness",
+          "values": [
+            "hairline",
+            "thick"
+          ],
+          "default": "'hairline'",
+          "optional": true
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-dock",
+      "slug": "dock",
+      "className": "InoDockComponent",
+      "sourcePath": "web/src/app/components/dock/ino-dock.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "items",
+          "type": "InoDockItem[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "position",
+          "type": "InoDockPosition",
+          "values": [
+            "bottom",
+            "side"
+          ],
+          "default": "'bottom'",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "InoDockSize",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "'md'",
+          "optional": true
+        },
+        {
+          "name": "activeId",
+          "type": "string | null",
+          "values": null,
+          "default": "null",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Application dock'",
+          "optional": true
+        },
+        {
+          "name": "magnify",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-dragdrop",
+      "slug": "dragdrop",
+      "className": "InoDragdropComponent",
+      "sourcePath": "web/src/app/components/dragdrop/ino-dragdrop.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "sourceLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Available'",
+          "optional": true
+        },
+        {
+          "name": "targetLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Selected'",
+          "optional": true
+        },
+        {
+          "name": "sourceItems",
+          "type": "InoDragDropItem[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "targetItems",
+          "type": "InoDragDropItem[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "maxItems",
+          "type": "unknown",
+          "values": null,
+          "default": "Infinity",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
       "name": "ino-drawer",
       "slug": "drawer",
       "className": "InoDrawerComponent",
       "sourcePath": "web/src/app/components/drawer/ino-drawer.component.ts",
       "previewPath": null,
       "inputs": [
+        {
+          "name": "open",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
         {
           "name": "position",
           "type": "'start' | 'end' | 'top' | 'bottom'",
@@ -363,8 +2082,157 @@
         {
           "name": "size",
           "type": "InoControlSize",
-          "values": null,
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
           "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "heading",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "modal",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "closeOnBackdrop",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "closeOnEscape",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-dynamic-dialog",
+      "slug": "dynamic-dialog",
+      "className": "InoDynamicDialogComponent",
+      "sourcePath": "web/src/app/components/dynamic-dialog/ino-dynamic-dialog.component.ts",
+      "previewPath": null,
+      "inputs": [],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-editor",
+      "slug": "editor",
+      "className": "InoEditorComponent",
+      "sourcePath": "web/src/app/components/editor/ino-editor.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "hint",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "InoControlSize",
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
+          "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "maxLength",
+          "type": "number",
+          "values": null,
+          "default": "null",
+          "optional": true
+        },
+        {
+          "name": "showCount",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
           "optional": true
         }
       ],
@@ -398,12 +2266,94 @@
       ]
     },
     {
+      "name": "ino-fieldset",
+      "slug": "fieldset",
+      "className": "InoFieldsetComponent",
+      "sourcePath": "web/src/app/components/fieldset/ino-fieldset.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "legend",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "'sm' | 'md' | 'lg'",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "'md'",
+          "optional": true
+        },
+        {
+          "name": "collapsible",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "collapsed",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
       "name": "ino-file-upload",
       "slug": "file-upload",
       "className": "InoFileUploadComponent",
       "sourcePath": "web/src/app/components/file-upload/ino-file-upload.component.ts",
       "previewPath": null,
       "inputs": [
+        {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
         {
           "name": "mode",
           "type": "InoFileUploadMode",
@@ -415,6 +2365,34 @@
           "optional": true
         },
         {
+          "name": "multiple",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "accept",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "maxFileSize",
+          "type": "number",
+          "values": null,
+          "default": "0",
+          "optional": true
+        },
+        {
+          "name": "maxFiles",
+          "type": "number",
+          "values": null,
+          "default": "0",
+          "optional": true
+        },
+        {
           "name": "items",
           "type": "InoFileUploadItem[]",
           "values": null,
@@ -422,10 +2400,77 @@
           "optional": true
         },
         {
+          "name": "hint",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
           "name": "size",
           "type": "InoControlSize",
-          "values": null,
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
           "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "dragDrop",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "chooseLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Choose files'",
+          "optional": true
+        },
+        {
+          "name": "dropHint",
+          "type": "string",
+          "values": null,
+          "default": "'or drag and drop files here'",
           "optional": true
         },
         {
@@ -454,6 +2499,20 @@
       "previewPath": null,
       "inputs": [
         {
+          "name": "for",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
           "name": "variant",
           "type": "InoFloatLabelVariant",
           "values": [
@@ -467,8 +2526,40 @@
         {
           "name": "size",
           "type": "InoControlSize",
-          "values": null,
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
           "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "invalid",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
           "optional": true
         }
       ],
@@ -489,7 +2580,36 @@
       "className": "InoFocusTrapComponent",
       "sourcePath": "web/src/app/components/focus-trap/ino-focus-trap.component.ts",
       "previewPath": null,
-      "inputs": [],
+      "inputs": [
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "autoFocus",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "initialFocus",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "restoreFocus",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        }
+      ],
       "variants": null,
       "viewports": [
         "mobile",
@@ -520,12 +2640,116 @@
       ]
     },
     {
+      "name": "ino-galleria",
+      "slug": "galleria",
+      "className": "InoGalleriaComponent",
+      "sourcePath": "web/src/app/components/galleria/ino-galleria.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "size",
+          "type": "InoControlSize",
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
+          "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "autoplay",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "autoplayInterval",
+          "type": "number",
+          "values": null,
+          "default": "5000",
+          "optional": true
+        },
+        {
+          "name": "showThumbnails",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "showIndicators",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "showFullscreen",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Gallery'",
+          "optional": true
+        },
+        {
+          "name": "activeIndex",
+          "type": "number",
+          "values": null,
+          "default": null,
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
       "name": "ino-hero",
       "slug": "hero",
       "className": "InoHeroComponent",
       "sourcePath": "web/src/app/components/hero/ino-hero.component.ts",
       "previewPath": null,
-      "inputs": [],
+      "inputs": [
+        {
+          "name": "eyebrow",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "headline",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "lead",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        }
+      ],
       "variants": null,
       "viewports": [
         "mobile",
@@ -549,6 +2773,13 @@
           ],
           "default": "'start'",
           "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
         }
       ],
       "variants": null,
@@ -566,10 +2797,129 @@
       "previewPath": null,
       "inputs": [
         {
+          "name": "for",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
           "name": "size",
           "type": "InoControlSize",
-          "values": null,
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
           "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "invalid",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-image",
+      "slug": "image",
+      "className": "InoImageComponent",
+      "sourcePath": "web/src/app/components/image/ino-image.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "src",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "alt",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "fit",
+          "type": "InoImageFit",
+          "values": [
+            "cover",
+            "contain",
+            "fill",
+            "none",
+            "scale-down"
+          ],
+          "default": "'cover'",
+          "optional": true
+        },
+        {
+          "name": "width",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "height",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "'lazy' | 'eager'",
+          "values": [
+            "lazy",
+            "eager"
+          ],
+          "default": "'lazy'",
+          "optional": true
+        },
+        {
+          "name": "previewable",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
           "optional": true
         }
       ],
@@ -588,6 +2938,13 @@
       "previewPath": null,
       "inputs": [
         {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
           "name": "type",
           "type": "'text' | 'email' | 'password' | 'number' | 'search' | 'tel' | 'url'",
           "values": [
@@ -603,9 +2960,41 @@
           "optional": true
         },
         {
+          "name": "placeholder",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "hint",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
           "name": "size",
           "type": "InoControlSize",
-          "values": null,
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
           "default": "'default'",
           "optional": true
         },
@@ -617,6 +3006,34 @@
             "filled"
           ],
           "default": "'outline'",
+          "optional": true
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
           "optional": true
         }
       ],
@@ -640,8 +3057,19 @@
         {
           "name": "size",
           "type": "InoControlSize",
-          "values": null,
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
           "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
           "optional": true
         }
       ],
@@ -660,10 +3088,742 @@
       "previewPath": null,
       "inputs": [
         {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "length",
+          "type": "number",
+          "values": null,
+          "default": "6",
+          "optional": true
+        },
+        {
+          "name": "mask",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "integerOnly",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "hint",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
           "name": "size",
           "type": "InoControlSize",
-          "values": null,
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
           "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "autofocus",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-inputcolor",
+      "slug": "inputcolor",
+      "className": "InoInputColorComponent",
+      "sourcePath": "web/src/app/components/inputcolor/ino-inputcolor.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "hint",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "InoControlSize",
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
+          "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "presets",
+          "type": "string[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "value",
+          "type": "string | null",
+          "values": null,
+          "default": "null",
+          "optional": true
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-inputmask",
+      "slug": "inputmask",
+      "className": "InoInputMaskComponent",
+      "sourcePath": "web/src/app/components/inputmask/ino-inputmask.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "mask",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "preset",
+          "type": "InoInputMaskPreset | ''",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "placeholderChar",
+          "type": "string",
+          "values": null,
+          "default": "'_'",
+          "optional": true
+        },
+        {
+          "name": "hint",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "InoControlSize",
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
+          "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-inputnumber",
+      "slug": "inputnumber",
+      "className": "InoInputNumberComponent",
+      "sourcePath": "web/src/app/components/inputnumber/ino-inputnumber.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "value",
+          "type": "number | null",
+          "values": null,
+          "default": "null",
+          "optional": true
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "hint",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "InoControlSize",
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
+          "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "variant",
+          "type": "InoInputNumberVariant",
+          "values": [
+            "outline",
+            "filled"
+          ],
+          "default": "'outline'",
+          "optional": true
+        },
+        {
+          "name": "mode",
+          "type": "InoInputNumberMode",
+          "values": [
+            "decimal",
+            "currency",
+            "percent"
+          ],
+          "default": "'decimal'",
+          "optional": true
+        },
+        {
+          "name": "prefix",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "suffix",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "locale",
+          "type": "string",
+          "values": null,
+          "default": "'en-US'",
+          "optional": true
+        },
+        {
+          "name": "currency",
+          "type": "string",
+          "values": null,
+          "default": "'USD'",
+          "optional": true
+        },
+        {
+          "name": "min",
+          "type": "number",
+          "values": null,
+          "default": "null",
+          "optional": true
+        },
+        {
+          "name": "max",
+          "type": "number",
+          "values": null,
+          "default": "null",
+          "optional": true
+        },
+        {
+          "name": "step",
+          "type": "number",
+          "values": null,
+          "default": "1",
+          "optional": true
+        },
+        {
+          "name": "minFractionDigits",
+          "type": "number",
+          "values": null,
+          "default": "0",
+          "optional": true
+        },
+        {
+          "name": "maxFractionDigits",
+          "type": "number",
+          "values": null,
+          "default": "3",
+          "optional": true
+        },
+        {
+          "name": "useGrouping",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "showButtons",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        }
+      ],
+      "variants": [
+        "outline",
+        "filled"
+      ],
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-inputtags",
+      "slug": "inputtags",
+      "className": "InoInputTagsComponent",
+      "sourcePath": "web/src/app/components/inputtags/ino-inputtags.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "value",
+          "type": "InoInputTagsTag[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "suggestions",
+          "type": "InoInputTagsOption[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "values": null,
+          "default": "'Add tags…'",
+          "optional": true
+        },
+        {
+          "name": "hint",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "InoControlSize",
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
+          "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "allowDuplicates",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "addOnBlur",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "maxTags",
+          "type": "number",
+          "values": null,
+          "default": "null",
+          "optional": true
+        },
+        {
+          "name": "validateTag",
+          "type": "((tag: string) => boolean) | null",
+          "values": null,
+          "default": "null",
+          "optional": true
+        },
+        {
+          "name": "separators",
+          "type": "string",
+          "values": null,
+          "default": "','",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-keyfilter",
+      "slug": "keyfilter",
+      "className": "InoKeyfilterComponent",
+      "sourcePath": "web/src/app/components/keyfilter/ino-keyfilter.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "preset",
+          "type": "InoKeyfilterPreset",
+          "values": [
+            "int",
+            "num",
+            "alpha",
+            "alphanum",
+            "regex"
+          ],
+          "default": "'int'",
+          "optional": true
+        },
+        {
+          "name": "pattern",
+          "type": "string | RegExp",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "validateOnPaste",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-knob",
+      "slug": "knob",
+      "className": "InoKnobComponent",
+      "sourcePath": "web/src/app/components/knob/ino-knob.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "hint",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "InoKnobSize",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "'md'",
+          "optional": true
+        },
+        {
+          "name": "min",
+          "type": "number",
+          "values": null,
+          "default": "0",
+          "optional": true
+        },
+        {
+          "name": "max",
+          "type": "number",
+          "values": null,
+          "default": "100",
+          "optional": true
+        },
+        {
+          "name": "step",
+          "type": "number",
+          "values": null,
+          "default": "1",
+          "optional": true
+        },
+        {
+          "name": "valueTemplate",
+          "type": "string",
+          "values": null,
+          "default": "'{value}'",
+          "optional": true
+        },
+        {
+          "name": "showValue",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "value",
+          "type": "number",
+          "values": null,
+          "default": "0",
           "optional": true
         }
       ],
@@ -682,6 +3842,13 @@
       "previewPath": null,
       "inputs": [
         {
+          "name": "for",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
           "name": "size",
           "type": "InoLabelSize",
           "values": [
@@ -690,6 +3857,324 @@
             "lg"
           ],
           "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "invalid",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-listbox",
+      "slug": "listbox",
+      "className": "InoListboxComponent",
+      "sourcePath": "web/src/app/components/listbox/ino-listbox.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "options",
+          "type": "InoListboxOption[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "value",
+          "type": "string | string[]",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "hint",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "InoControlSize",
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
+          "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "multiple",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "filter",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "filterLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Filter'",
+          "optional": true
+        },
+        {
+          "name": "filterPlaceholder",
+          "type": "string",
+          "values": null,
+          "default": "'Filter…'",
+          "optional": true
+        },
+        {
+          "name": "virtualScrollThreshold",
+          "type": "number",
+          "values": null,
+          "default": "100",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-megamenu",
+      "slug": "megamenu",
+      "className": "InoMegaMenuComponent",
+      "sourcePath": "web/src/app/components/megamenu/ino-megamenu.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "items",
+          "type": "InoMegaMenuItem[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Main menu'",
+          "optional": true
+        },
+        {
+          "name": "orientation",
+          "type": "'horizontal' | 'vertical'",
+          "values": [
+            "horizontal",
+            "vertical"
+          ],
+          "default": "'horizontal'",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "'compact' | 'comfortable'",
+          "values": [
+            "compact",
+            "comfortable"
+          ],
+          "default": "'comfortable'",
+          "optional": true
+        },
+        {
+          "name": "activeHref",
+          "type": "string",
+          "values": null,
+          "default": null,
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "emptyLabel",
+          "type": "string",
+          "values": null,
+          "default": "'No items'",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-menu",
+      "slug": "menu",
+      "className": "InoMenuComponent",
+      "sourcePath": "web/src/app/components/menu/ino-menu.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "items",
+          "type": "InoMenuItem[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "sections",
+          "type": "InoMenuSection[] | null",
+          "values": null,
+          "default": "null",
+          "optional": true
+        },
+        {
+          "name": "mode",
+          "type": "InoMenuMode",
+          "values": [
+            "static",
+            "popup"
+          ],
+          "default": "'static'",
+          "optional": true
+        },
+        {
+          "name": "open",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "anchor",
+          "type": "HTMLElement | ElementRef<HTMLElement> | null",
+          "values": null,
+          "default": "null",
+          "optional": true
+        },
+        {
+          "name": "position",
+          "type": "InoOverlayPosition",
+          "values": [
+            "top",
+            "bottom",
+            "left",
+            "right"
+          ],
+          "default": "'bottom'",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "InoMenuSize",
+          "values": [
+            "compact",
+            "comfortable"
+          ],
+          "default": "'comfortable'",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Menu'",
+          "optional": true
+        },
+        {
+          "name": "emptyLabel",
+          "type": "string",
+          "values": null,
+          "default": "'No items'",
           "optional": true
         }
       ],
@@ -715,6 +4200,20 @@
           "optional": true
         },
         {
+          "name": "min",
+          "type": "number",
+          "values": null,
+          "default": "0",
+          "optional": true
+        },
+        {
+          "name": "max",
+          "type": "number",
+          "values": null,
+          "default": "100",
+          "optional": true
+        },
+        {
           "name": "orientation",
           "type": "InoMeterOrientation",
           "values": [
@@ -727,8 +4226,26 @@
         {
           "name": "size",
           "type": "InoControlSize",
-          "values": null,
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
           "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "showLegend",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
           "optional": true
         },
         {
@@ -736,6 +4253,27 @@
           "type": "TemplateRef<{ $implicit: InoMeterSegment[] }> | null",
           "values": null,
           "default": "null",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "invalid",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
           "optional": true
         }
       ],
@@ -753,6 +4291,27 @@
       "sourcePath": "web/src/app/components/metric-panel/ino-metric-panel.component.ts",
       "previewPath": null,
       "inputs": [
+        {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "value",
+          "type": "number",
+          "values": null,
+          "default": "0",
+          "optional": true
+        },
+        {
+          "name": "delta",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
         {
           "name": "rows",
           "type": "InoMetricPanelRow[]",
@@ -776,10 +4335,63 @@
       "previewPath": null,
       "inputs": [
         {
+          "name": "open",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "heading",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "closeOnBackdrop",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "closeOnEscape",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
           "name": "size",
           "type": "InoControlSize",
-          "values": null,
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
           "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "maximizable",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "maximized",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "draggable",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
           "optional": true
         }
       ],
@@ -798,18 +4410,9 @@
       "previewPath": null,
       "inputs": [
         {
-          "name": "value",
-          "type": "string[]` / `@Output() valueChange` (banana-in-a-box), matching `ino-select` and\n * every other Tier-1 form control in this repo — no `ControlValueAccessor`.\n */\n@Component({\n  selector: 'ino-multiselect',\n  standalone: true,\n  imports: [CommonModule, InoLabelComponent, InoVirtualScrollerComponent, InoVirtualScrollerItemDirective],\n  templateUrl: './ino-multiselect.component.html',\n  styleUrl: './ino-multiselect.component.scss',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n  host: {\n    class: 'ino-multiselect',\n    '[attr.data-size]': 'size',\n    '[class.ino-multiselect--open]': 'open',\n  },\n})\nexport class InoMultiSelectComponent implements OnChanges, AfterViewInit {\n  @Input() label",
-          "values": [
-            "ino-multiselect",
-            "./ino-multiselect.component.html",
-            "./ino-multiselect.component.scss",
-            "ino-multiselect",
-            "[attr.data-size]",
-            "size",
-            "[class.ino-multiselect--open]",
-            "open"
-          ],
+          "name": "label",
+          "type": "string",
+          "values": null,
           "default": "''",
           "optional": true
         },
@@ -828,10 +4431,84 @@
           "optional": true
         },
         {
+          "name": "placeholder",
+          "type": "string",
+          "values": null,
+          "default": "'Select options'",
+          "optional": true
+        },
+        {
+          "name": "hint",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
           "name": "size",
           "type": "InoControlSize",
-          "values": null,
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
           "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "clearable",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "filter",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "filterPlaceholder",
+          "type": "string",
+          "values": null,
+          "default": "'Search…'",
           "optional": true
         },
         {
@@ -842,6 +4519,34 @@
             "comma"
           ],
           "default": "'chip'",
+          "optional": true
+        },
+        {
+          "name": "maxSelectedLabels",
+          "type": "number",
+          "values": null,
+          "default": "3",
+          "optional": true
+        },
+        {
+          "name": "selectAll",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "selectionLimit",
+          "type": "number",
+          "values": null,
+          "default": "null",
+          "optional": true
+        },
+        {
+          "name": "virtualScrollThreshold",
+          "type": "number",
+          "values": null,
+          "default": "100",
           "optional": true
         }
       ],
@@ -867,10 +4572,109 @@
           "optional": true
         },
         {
+          "name": "ctaLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Request access'",
+          "optional": true
+        },
+        {
           "name": "size",
           "type": "InoControlSize",
-          "values": null,
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
           "default": "'default'",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-orderlist",
+      "slug": "orderlist",
+      "className": "InoOrderListComponent",
+      "sourcePath": "web/src/app/components/orderlist/ino-orderlist.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "options",
+          "type": "InoOrderListOption[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "value",
+          "type": "string[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "hint",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "'compact' | 'comfortable'",
+          "values": [
+            "compact",
+            "comfortable"
+          ],
+          "default": "'comfortable'",
+          "optional": true
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
           "optional": true
         }
       ],
@@ -889,6 +4693,27 @@
       "previewPath": null,
       "inputs": [
         {
+          "name": "totalRecords",
+          "type": "number",
+          "values": null,
+          "default": "0",
+          "optional": true
+        },
+        {
+          "name": "rows",
+          "type": "number",
+          "values": null,
+          "default": "10",
+          "optional": true
+        },
+        {
+          "name": "first",
+          "type": "number",
+          "values": null,
+          "default": "0",
+          "optional": true
+        },
+        {
           "name": "rowsPerPageOptions",
           "type": "number[]",
           "values": null,
@@ -896,10 +4721,431 @@
           "optional": true
         },
         {
+          "name": "pageLinkSize",
+          "type": "number",
+          "values": null,
+          "default": "5",
+          "optional": true
+        },
+        {
           "name": "size",
           "type": "InoControlSize",
-          "values": null,
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
           "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Pagination'",
+          "optional": true
+        },
+        {
+          "name": "currentPageReportTemplate",
+          "type": "string",
+          "values": null,
+          "default": "'{first}–{last} of {totalRecords}'",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "showFirstLastIcon",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "showCurrentPageReport",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "showJumpToPageInput",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "alwaysShow",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-panel",
+      "slug": "panel",
+      "className": "InoPanelComponent",
+      "sourcePath": "web/src/app/components/panel/ino-panel.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "header",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "'sm' | 'md' | 'lg'",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "'md'",
+          "optional": true
+        },
+        {
+          "name": "collapsible",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "collapsed",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-panel-menu",
+      "slug": "panel-menu",
+      "className": "InoPanelMenuComponent",
+      "sourcePath": "web/src/app/components/panel-menu/ino-panel-menu.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "items",
+          "type": "InoPanelMenuItem[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Panel menu'",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "'compact' | 'comfortable'",
+          "values": [
+            "compact",
+            "comfortable"
+          ],
+          "default": "'comfortable'",
+          "optional": true
+        },
+        {
+          "name": "multiple",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "emptyLabel",
+          "type": "string",
+          "values": null,
+          "default": "'No items'",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-password",
+      "slug": "password",
+      "className": "InoPasswordComponent",
+      "sourcePath": "web/src/app/components/password/ino-password.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "hint",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "InoControlSize",
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
+          "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "autocomplete",
+          "type": "string",
+          "values": null,
+          "default": "'new-password'",
+          "optional": true
+        },
+        {
+          "name": "showStrengthMeter",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "policyRules",
+          "type": "InoPasswordPolicyRule[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-picklist",
+      "slug": "picklist",
+      "className": "InoPickListComponent",
+      "sourcePath": "web/src/app/components/picklist/ino-picklist.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "sourceLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Available'",
+          "optional": true
+        },
+        {
+          "name": "targetLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Selected'",
+          "optional": true
+        },
+        {
+          "name": "source",
+          "type": "InoPickListOption[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "target",
+          "type": "InoPickListOption[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "sourceSelection",
+          "type": "string[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "targetSelection",
+          "type": "string[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "hint",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "'compact' | 'comfortable'",
+          "values": [
+            "compact",
+            "comfortable"
+          ],
+          "default": "'comfortable'",
+          "optional": true
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
           "optional": true
         }
       ],
@@ -918,6 +5164,13 @@
       "previewPath": null,
       "inputs": [
         {
+          "name": "open",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
           "name": "target",
           "type": "HTMLElement | ElementRef<HTMLElement> | null",
           "values": null,
@@ -927,15 +5180,66 @@
         {
           "name": "position",
           "type": "InoOverlayPosition",
-          "values": null,
+          "values": [
+            "top",
+            "bottom",
+            "left",
+            "right"
+          ],
           "default": "'bottom'",
           "optional": true
         },
         {
           "name": "size",
           "type": "InoControlSize",
-          "values": null,
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
           "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "heading",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "dismissable",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "closeOnEscape",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "showCloseIcon",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "closeLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Close'",
           "optional": true
         }
       ],
@@ -956,7 +5260,11 @@
         {
           "name": "size",
           "type": "InoControlSize",
-          "values": null,
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
           "default": "'default'",
           "optional": true
         },
@@ -968,6 +5276,41 @@
             "indeterminate"
           ],
           "default": "'determinate'",
+          "optional": true
+        },
+        {
+          "name": "value",
+          "type": "number",
+          "values": null,
+          "default": "0",
+          "optional": true
+        },
+        {
+          "name": "showValue",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "invalid",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "''",
           "optional": true
         }
       ],
@@ -988,7 +5331,11 @@
         {
           "name": "size",
           "type": "InoControlSize",
-          "values": null,
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
           "default": "'default'",
           "optional": true
         },
@@ -1000,6 +5347,41 @@
             "determinate"
           ],
           "default": "'indeterminate'",
+          "optional": true
+        },
+        {
+          "name": "value",
+          "type": "number",
+          "values": null,
+          "default": "0",
+          "optional": true
+        },
+        {
+          "name": "strokeWidth",
+          "type": "number",
+          "values": null,
+          "default": "8",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "invalid",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "''",
           "optional": true
         }
       ],
@@ -1018,6 +5400,20 @@
       "previewPath": null,
       "inputs": [
         {
+          "name": "legend",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "name",
+          "type": "unknown",
+          "values": null,
+          "default": "`ino-radio-group-${++idCounter}`",
+          "optional": true
+        },
+        {
           "name": "options",
           "type": "InoRadioOption[]",
           "values": null,
@@ -1025,10 +5421,98 @@
           "optional": true
         },
         {
+          "name": "value",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
           "name": "size",
           "type": "InoControlSize",
-          "values": null,
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
           "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-scrolltop",
+      "slug": "scrolltop",
+      "className": "InoScrolltopComponent",
+      "sourcePath": "web/src/app/components/scrolltop/ino-scrolltop.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "target",
+          "type": "InoScrolltopTarget",
+          "values": [
+            "window",
+            "parent"
+          ],
+          "default": "'window'",
+          "optional": true
+        },
+        {
+          "name": "threshold",
+          "type": "number",
+          "values": null,
+          "default": "400",
+          "optional": true
+        },
+        {
+          "name": "behavior",
+          "type": "InoScrolltopBehavior",
+          "values": [
+            "smooth",
+            "auto"
+          ],
+          "default": "'smooth'",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Scroll to top'",
+          "optional": true
+        },
+        {
+          "name": "focusTarget",
+          "type": "string | null",
+          "values": null,
+          "default": "null",
           "optional": true
         }
       ],
@@ -1047,6 +5531,13 @@
       "previewPath": null,
       "inputs": [
         {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
           "name": "options",
           "type": "InoSelectOption[]",
           "values": null,
@@ -1054,10 +5545,208 @@
           "optional": true
         },
         {
+          "name": "value",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "values": null,
+          "default": "'Select an option'",
+          "optional": true
+        },
+        {
+          "name": "hint",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
           "name": "size",
           "type": "InoControlSize",
-          "values": null,
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
           "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "clearable",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "editable",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "filter",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "filterPlaceholder",
+          "type": "string",
+          "values": null,
+          "default": "'Search…'",
+          "optional": true
+        },
+        {
+          "name": "virtualScrollThreshold",
+          "type": "number",
+          "values": null,
+          "default": "100",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-select-button",
+      "slug": "select-button",
+      "className": "InoSelectButtonComponent",
+      "sourcePath": "web/src/app/components/select-button/ino-select-button.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "options",
+          "type": "InoSelectButtonOption[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "value",
+          "type": "string | string[]",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "name",
+          "type": "unknown",
+          "values": null,
+          "default": "`ino-select-button-${++idSeq}`",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "InoControlSize",
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
+          "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "multiple",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "iconOnly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "equalWidth",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "groupLabel",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "ariaLabelledby",
+          "type": "string",
+          "values": null,
+          "default": "''",
           "optional": true
         }
       ],
@@ -1089,8 +5778,316 @@
         {
           "name": "size",
           "type": "InoControlSize",
-          "values": null,
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
           "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "width",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "height",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "borderRadius",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "animate",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-slider",
+      "slug": "slider",
+      "className": "InoSliderComponent",
+      "sourcePath": "web/src/app/components/slider/ino-slider.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "hint",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "trackSize",
+          "type": "InoSliderTrackSize",
+          "values": [
+            "sm",
+            "md"
+          ],
+          "default": "'md'",
+          "optional": true
+        },
+        {
+          "name": "min",
+          "type": "number",
+          "values": null,
+          "default": "0",
+          "optional": true
+        },
+        {
+          "name": "max",
+          "type": "number",
+          "values": null,
+          "default": "100",
+          "optional": true
+        },
+        {
+          "name": "step",
+          "type": "number",
+          "values": null,
+          "default": "1",
+          "optional": true
+        },
+        {
+          "name": "range",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "vertical",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "showMarks",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "showTooltip",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "showMinMaxLabels",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "showValueLabel",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "value",
+          "type": "number | [number, number]",
+          "values": null,
+          "default": "0",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-speeddial",
+      "slug": "speeddial",
+      "className": "InoSpeedDialComponent",
+      "sourcePath": "web/src/app/components/speeddial/ino-speeddial.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "items",
+          "type": "InoSpeedDialItem[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "type",
+          "type": "InoSpeedDialType",
+          "values": [
+            "linear",
+            "circle",
+            "quarter-circle"
+          ],
+          "default": "'linear'",
+          "optional": true
+        },
+        {
+          "name": "direction",
+          "type": "InoSpeedDialDirection",
+          "values": null,
+          "default": "'up'",
+          "optional": true
+        },
+        {
+          "name": "radius",
+          "type": "number",
+          "values": null,
+          "default": "80",
+          "optional": true
+        },
+        {
+          "name": "mask",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "InoSpeedDialSize",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "'md'",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Speed dial'",
+          "optional": true
+        },
+        {
+          "name": "icon",
+          "type": "string",
+          "values": null,
+          "default": "'+'",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-splitter",
+      "slug": "splitter",
+      "className": "InoSplitterComponent",
+      "sourcePath": "web/src/app/components/splitter/ino-splitter.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "orientation",
+          "type": "InoSplitterOrientation",
+          "values": [
+            "horizontal",
+            "vertical"
+          ],
+          "default": "'horizontal'",
+          "optional": true
+        },
+        {
+          "name": "resizeStep",
+          "type": "number",
+          "values": null,
+          "default": "5",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
           "optional": true
         }
       ],
@@ -1109,9 +6106,20 @@
       "previewPath": null,
       "inputs": [
         {
+          "name": "activeIndex",
+          "type": "number",
+          "values": null,
+          "default": null,
+          "optional": true
+        },
+        {
           "name": "size",
           "type": "InoControlSize",
-          "values": null,
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
           "default": "'default'",
           "optional": true
         },
@@ -1123,6 +6131,20 @@
             "vertical"
           ],
           "default": "'horizontal'",
+          "optional": true
+        },
+        {
+          "name": "linear",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
           "optional": true
         }
       ],
@@ -1156,22 +6178,80 @@
         },
         {
           "name": "rowKey",
-          "type": "(row: T, index: number)",
+          "type": "(row: T, index: number) => unknown",
           "values": null,
-          "default": "> unknown = (_row, index) => index",
+          "default": "(_row, index) => index",
           "optional": true
         },
         {
           "name": "size",
           "type": "InoControlSize",
-          "values": null,
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
           "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Data table'",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "invalid",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "skeletonRowCount",
+          "type": "number",
+          "values": null,
+          "default": "5",
+          "optional": true
+        },
+        {
+          "name": "emptyMessage",
+          "type": "string",
+          "values": null,
+          "default": "'No records found.'",
           "optional": true
         },
         {
           "name": "selectionMode",
           "type": "InoTableSelectionMode",
-          "values": null,
+          "values": [
+            "none",
+            "single",
+            "multiple",
+            "checkbox"
+          ],
           "default": "'none'",
           "optional": true
         },
@@ -1180,6 +6260,13 @@
           "type": "T[]",
           "values": null,
           "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "expandableRows",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
           "optional": true
         },
         {
@@ -1232,10 +6319,59 @@
           "optional": true
         },
         {
+          "name": "resizableColumns",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "reorderableColumns",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "paginator",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "rowsPerPage",
+          "type": "number",
+          "values": null,
+          "default": "10",
+          "optional": true
+        },
+        {
           "name": "rowsPerPageOptions",
           "type": "number[]",
           "values": null,
           "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "first",
+          "type": "number",
+          "values": null,
+          "default": "0",
+          "optional": true
+        },
+        {
+          "name": "lazy",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "totalRecords",
+          "type": "number",
+          "values": null,
+          "default": "0",
           "optional": true
         }
       ],
@@ -1254,6 +6390,13 @@
       "previewPath": null,
       "inputs": [
         {
+          "name": "activeIndex",
+          "type": "number",
+          "values": null,
+          "default": null,
+          "optional": true
+        },
+        {
           "name": "orientation",
           "type": "InoTabsOrientation",
           "values": [
@@ -1266,8 +6409,26 @@
         {
           "name": "size",
           "type": "InoControlSize",
-          "values": null,
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
           "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "scrollable",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
           "optional": true
         }
       ],
@@ -1307,6 +6468,109 @@
           ],
           "default": "'default'",
           "optional": true
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "rounded",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "dot",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-terminal",
+      "slug": "terminal",
+      "className": "InoTerminalComponent",
+      "sourcePath": "web/src/app/components/terminal/ino-terminal.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "prompt",
+          "type": "string",
+          "values": null,
+          "default": "'$'",
+          "optional": true
+        },
+        {
+          "name": "welcomeMessage",
+          "type": "string[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Terminal'",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "InoTerminalSize",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "'md'",
+          "optional": true
+        },
+        {
+          "name": "busy",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
         }
       ],
       "variants": null,
@@ -1324,9 +6588,48 @@
       "previewPath": null,
       "inputs": [
         {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "hint",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
           "name": "size",
           "type": "InoControlSize",
-          "values": null,
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
           "default": "'default'",
           "optional": true
         },
@@ -1338,6 +6641,76 @@
             "filled"
           ],
           "default": "'outline'",
+          "optional": true
+        },
+        {
+          "name": "rows",
+          "type": "number",
+          "values": null,
+          "default": "3",
+          "optional": true
+        },
+        {
+          "name": "autoResize",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "minRows",
+          "type": "number",
+          "values": null,
+          "default": "2",
+          "optional": true
+        },
+        {
+          "name": "maxRows",
+          "type": "number",
+          "values": null,
+          "default": "10",
+          "optional": true
+        },
+        {
+          "name": "maxLength",
+          "type": "number",
+          "values": null,
+          "default": "null",
+          "optional": true
+        },
+        {
+          "name": "showCount",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
           "optional": true
         }
       ],
@@ -1359,10 +6732,31 @@
       "previewPath": null,
       "inputs": [
         {
+          "name": "name",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
           "name": "features",
           "type": "string[]",
           "values": null,
           "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "highlighted",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
           "optional": true
         }
       ],
@@ -1389,16 +6783,16 @@
         },
         {
           "name": "dataKey",
-          "type": "((item: unknown, index: number)",
+          "type": "((item: unknown, index: number) => unknown) | null",
           "values": null,
-          "default": "> unknown) | null = null",
+          "default": "null",
           "optional": true
         },
         {
           "name": "markerRole",
-          "type": "(item: unknown, index: number)",
+          "type": "(item: unknown, index: number) => InoTimelineMarkerRole",
           "values": null,
-          "default": "> InoTimelineMarkerRole = () => 'neutral'",
+          "default": "() => 'neutral'",
           "optional": true
         },
         {
@@ -1431,6 +6825,48 @@
             "lg"
           ],
           "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "interactive",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "invalid",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "skeletonCount",
+          "type": "number",
+          "values": null,
+          "default": "3",
           "optional": true
         },
         {
@@ -1485,11 +6921,182 @@
       "previewPath": null,
       "inputs": [
         {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
           "name": "size",
           "type": "InoControlSize",
-          "values": null,
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
           "default": "'default'",
           "optional": true
+        },
+        {
+          "name": "checked",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-toggle-button",
+      "slug": "toggle-button",
+      "className": "InoToggleButtonComponent",
+      "sourcePath": "web/src/app/components/toggle-button/ino-toggle-button.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "onLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Yes'",
+          "optional": true
+        },
+        {
+          "name": "offLabel",
+          "type": "string",
+          "values": null,
+          "default": "'No'",
+          "optional": true
+        },
+        {
+          "name": "onIcon",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "offIcon",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "InoControlSize",
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
+          "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "pressed",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-toolbar",
+      "slug": "toolbar",
+      "className": "InoToolbarComponent",
+      "sourcePath": "web/src/app/components/toolbar/ino-toolbar.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "values": null,
+          "default": null,
+          "optional": false
         }
       ],
       "variants": null,
@@ -1507,17 +7114,456 @@
       "previewPath": null,
       "inputs": [
         {
+          "name": "open",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "text",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
           "name": "position",
           "type": "InoOverlayPosition",
-          "values": null,
+          "values": [
+            "top",
+            "bottom",
+            "left",
+            "right"
+          ],
           "default": "'top'",
           "optional": true
         },
         {
           "name": "size",
           "type": "InoControlSize",
-          "values": null,
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
           "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "tooltipId",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "top",
+          "type": "number",
+          "values": null,
+          "default": "0",
+          "optional": true
+        },
+        {
+          "name": "left",
+          "type": "number",
+          "values": null,
+          "default": "0",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-tree",
+      "slug": "tree",
+      "className": "InoTreeComponent",
+      "sourcePath": "web/src/app/components/tree/ino-tree.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "nodes",
+          "type": "InoTreeNode[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "value",
+          "type": "string | string[]",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "selectionMode",
+          "type": "'basic' | 'checkbox'",
+          "values": [
+            "basic",
+            "checkbox"
+          ],
+          "default": "'basic'",
+          "optional": true
+        },
+        {
+          "name": "multiple",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "hint",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "'compact' | 'comfortable'",
+          "values": [
+            "compact",
+            "comfortable"
+          ],
+          "default": "'comfortable'",
+          "optional": true
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "filter",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "filterLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Filter'",
+          "optional": true
+        },
+        {
+          "name": "filterPlaceholder",
+          "type": "string",
+          "values": null,
+          "default": "'Filter…'",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-treeselect",
+      "slug": "treeselect",
+      "className": "InoTreeSelectComponent",
+      "sourcePath": "web/src/app/components/treeselect/ino-treeselect.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "label",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "nodes",
+          "type": "InoTreeSelectNode[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "value",
+          "type": "string | string[]",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "selectionMode",
+          "type": "'single' | 'multiple' | 'checkbox'",
+          "values": [
+            "single",
+            "multiple",
+            "checkbox"
+          ],
+          "default": "'single'",
+          "optional": true
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "values": null,
+          "default": "'Select…'",
+          "optional": true
+        },
+        {
+          "name": "hint",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "InoControlSize",
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
+          "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "filter",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "filterLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Filter'",
+          "optional": true
+        },
+        {
+          "name": "filterPlaceholder",
+          "type": "string",
+          "values": null,
+          "default": "'Filter…'",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-treetable",
+      "slug": "treetable",
+      "className": "InoTreeTableComponent",
+      "sourcePath": "web/src/app/components/treetable/ino-treetable.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "data",
+          "type": "InoTreeTableRow[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "columns",
+          "type": "InoTreeTableColumn[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "caption",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "InoTreeTableSize",
+          "values": [
+            "sm",
+            "default",
+            "lg"
+          ],
+          "default": "'default'",
+          "optional": true
+        },
+        {
+          "name": "density",
+          "type": "InoTreeTableDensity",
+          "values": [
+            "dense",
+            "fluid"
+          ],
+          "default": "'fluid'",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "invalid",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "emptyMessage",
+          "type": "string",
+          "values": null,
+          "default": "'No data available'",
+          "optional": true
+        },
+        {
+          "name": "skeletonRowCount",
+          "type": "number",
+          "values": null,
+          "default": "5",
+          "optional": true
+        },
+        {
+          "name": "resizableColumns",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "reorderableColumns",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "expandedRowValues",
+          "type": "Set<string>",
+          "values": null,
+          "default": null,
+          "optional": true
+        },
+        {
+          "name": "sortColumn",
+          "type": "number",
+          "values": null,
+          "default": null,
+          "optional": true
+        },
+        {
+          "name": "sortDirection",
+          "type": "InoTreeTableSortDirection",
+          "values": null,
+          "default": "null",
+          "optional": true
+        },
+        {
+          "name": "rememberFocus",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
           "optional": true
         }
       ],
@@ -1543,6 +7589,27 @@
           "optional": true
         },
         {
+          "name": "itemSize",
+          "type": "number",
+          "values": null,
+          "default": "0",
+          "optional": true
+        },
+        {
+          "name": "columnSize",
+          "type": "number",
+          "values": null,
+          "default": "0",
+          "optional": true
+        },
+        {
+          "name": "columns",
+          "type": "number",
+          "values": null,
+          "default": "0",
+          "optional": true
+        },
+        {
           "name": "orientation",
           "type": "InoVirtualScrollerOrientation",
           "values": [
@@ -1554,17 +7621,38 @@
           "optional": true
         },
         {
-          "name": "itemSizeFn",
-          "type": "((item: unknown, index: number)",
+          "name": "autoSize",
+          "type": "boolean",
           "values": null,
-          "default": "> number) | null = null",
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "estimatedItemSize",
+          "type": "number",
+          "values": null,
+          "default": "0",
+          "optional": true
+        },
+        {
+          "name": "itemSizeFn",
+          "type": "((item: unknown, index: number) => number) | null",
+          "values": null,
+          "default": "null",
+          "optional": true
+        },
+        {
+          "name": "buffer",
+          "type": "number",
+          "values": null,
+          "default": "4",
           "optional": true
         },
         {
           "name": "trackBy",
-          "type": "((index: number, item: unknown)",
+          "type": "((index: number, item: unknown) => unknown) | null",
           "values": null,
-          "default": "> unknown) | null = null",
+          "default": "null",
           "optional": true
         },
         {
@@ -1590,6 +7678,76 @@
           "type": "string | null",
           "values": null,
           "default": "null",
+          "optional": true
+        },
+        {
+          "name": "delay",
+          "type": "number",
+          "values": null,
+          "default": "0",
+          "optional": true
+        },
+        {
+          "name": "lazy",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "totalRecords",
+          "type": "number",
+          "values": null,
+          "default": "0",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "showLoader",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loaderItemCount",
+          "type": "number",
+          "values": null,
+          "default": "0",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "invalid",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "role",
+          "type": "string",
+          "values": null,
+          "default": "'group'",
           "optional": true
         },
         {

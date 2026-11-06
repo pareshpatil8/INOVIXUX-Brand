@@ -1,0 +1,296 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Variants — single value</h3>
+  <p class="demo-section__note">
+    Every box below sets a real <code>min</code>/<code>max</code>/<code>value</code> so each
+    thumb's <code>aria-valuemin</code>/<code>aria-valuemax</code>/<code>aria-valuenow</code> is a
+    real number, not <code>NaN</code>.
+  </p>
+  <div class="demo-row">
+    <ino-slider
+      label="Basic"
+      [min]="0"
+      [max]="100"
+      [value]="basicValue"
+      (valueChange)="basicValue = $any($event)"
+    ></ino-slider>
+
+    <ino-slider
+      label="Step marks"
+      [min]="0"
+      [max]="100"
+      [step]="10"
+      [showMarks]="true"
+      [value]="marksValue"
+      (valueChange)="marksValue = $any($event)"
+    ></ino-slider>
+
+    <ino-slider
+      label="Value tooltip"
+      [min]="0"
+      [max]="100"
+      [showTooltip]="true"
+      [value]="tooltipValue"
+      (valueChange)="tooltipValue = $any($event)"
+    ></ino-slider>
+
+    <ino-slider
+      label="Min/max labels"
+      [min]="0"
+      [max]="100"
+      [showMinMaxLabels]="true"
+      [value]="minMaxLabelsValue"
+      (valueChange)="minMaxLabelsValue = $any($event)"
+    ></ino-slider>
+
+    <ino-slider
+      label="Value label"
+      [min]="0"
+      [max]="100"
+      [showValueLabel]="true"
+      [value]="valueLabelValue"
+      (valueChange)="valueLabelValue = $any($event)"
+    ></ino-slider>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Variants — vertical orientation</h3>
+  <div class="demo-row">
+    <ino-slider
+      label="Vertical"
+      [vertical]="true"
+      [min]="0"
+      [max]="100"
+      [value]="verticalValue"
+      (valueChange)="verticalValue = $any($event)"
+    ></ino-slider>
+
+    <ino-slider
+      label="Vertical range"
+      [vertical]="true"
+      [range]="true"
+      [min]="0"
+      [max]="100"
+      [value]="rangeVerticalValue"
+      (valueChange)="rangeVerticalValue = $any($event)"
+    ></ino-slider>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Variants — range (dual thumb)</h3>
+  <p class="demo-section__note">
+    <code>range="true"</code> switches <code>value</code> from a plain <code>number</code> to a
+    <code>[number, number]</code> tuple. The lower thumb is clamped to never exceed the upper
+    thumb and vice versa.
+  </p>
+  <div class="demo-row">
+    <ino-slider
+      label="Price range"
+      [range]="true"
+      [min]="0"
+      [max]="100"
+      [showMinMaxLabels]="true"
+      [showValueLabel]="true"
+      [value]="rangeValue"
+      (valueChange)="rangeValue = $any($event)"
+    ></ino-slider>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States</h3>
+  <p class="demo-section__note">
+    Default, disabled, readonly, required, invalid/error (string input — not auto-demoed by the
+    generic renderer), and at-min/at-max (the thumb sits flush against a track boundary). Hover
+    and focus-visible are live on every enabled box — tab onto one to see the focus ring.
+  </p>
+  <div class="demo-row">
+    <ino-slider
+      label="Default"
+      [min]="0"
+      [max]="100"
+      [value]="defaultValue"
+      (valueChange)="defaultValue = $any($event)"
+    ></ino-slider>
+
+    <ino-slider
+      label="Disabled"
+      [disabled]="true"
+      [min]="0"
+      [max]="100"
+      [value]="disabledValue"
+    ></ino-slider>
+
+    <ino-slider
+      label="Readonly"
+      [readonly]="true"
+      [min]="0"
+      [max]="100"
+      [value]="readonlyValue"
+    ></ino-slider>
+
+    <ino-slider
+      label="Required"
+      [required]="true"
+      [min]="0"
+      [max]="100"
+      [value]="requiredValue"
+      (valueChange)="requiredValue = $any($event)"
+    ></ino-slider>
+
+    <ino-slider
+      label="Invalid / error"
+      error="Value must be below the budget cap"
+      [min]="0"
+      [max]="100"
+      [value]="invalidValue"
+      (valueChange)="invalidValue = $any($event)"
+    ></ino-slider>
+
+    <ino-slider
+      label="At min"
+      [min]="0"
+      [max]="100"
+      [value]="atMinValue"
+      (valueChange)="atMinValue = $any($event)"
+    ></ino-slider>
+
+    <ino-slider
+      label="At max"
+      [min]="0"
+      [max]="100"
+      [value]="atMaxValue"
+      (valueChange)="atMaxValue = $any($event)"
+    ></ino-slider>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Sizing</h3>
+  <p class="demo-section__note">
+    Track thickness — the documented 2-rung scale, <code>sm</code> / <code>md</code>. A slider's
+    varying dimension is track thickness, not control height, so this is a narrower local scale
+    rather than the fleet-wide <code>sm | default | lg</code> control-size union.
+  </p>
+  <div class="demo-row">
+    <ino-slider
+      label="sm"
+      trackSize="sm"
+      [min]="0"
+      [max]="100"
+      [value]="smallTrackValue"
+      (valueChange)="smallTrackValue = $any($event)"
+    ></ino-slider>
+
+    <ino-slider
+      label="md"
+      trackSize="md"
+      [min]="0"
+      [max]="100"
+      [value]="mediumTrackValue"
+      (valueChange)="mediumTrackValue = $any($event)"
+    ></ino-slider>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Density — dense vs. fluid</h3>
+  <p class="demo-section__note">
+    This docs page renders in the dense register by default (<code>[data-density="dense"]</code> on
+    the layout host); the pane on the right overrides to the fluid row-height floor to show the
+    contrast — the thumb diameter tracks <code>--ino-control-icon-size-default</code>
+    (16px dense / 20px fluid), orthogonal to the <code>trackSize</code> sm/md scale above.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane" data-density="dense">
+      <p class="demo-pane__label">dense</p>
+      <ino-slider
+        label="Dense row"
+        [min]="0"
+        [max]="100"
+        [value]="densityDenseValue"
+        (valueChange)="densityDenseValue = $any($event)"
+      ></ino-slider>
+    </div>
+    <div class="demo-pane" data-density="fluid">
+      <p class="demo-pane__label">fluid</p>
+      <ino-slider
+        label="Fluid row"
+        [min]="0"
+        [max]="100"
+        [value]="densityFluidValue"
+        (valueChange)="densityFluidValue = $any($event)"
+      ></ino-slider>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Labels — hint, error, wrapping, RTL</h3>
+  <p class="demo-section__note">
+    Label association via <code>&lt;ino-label for&gt;</code>; hint text; error text with
+    <code>role="alert"</code>; long labels wrap; the track, fill, and thumb positioning use only
+    logical properties (<code>inset-inline-*</code>/<code>inset-block-*</code>) so they mirror
+    correctly under <code>dir="rtl"</code>.
+  </p>
+  <div class="demo-col" style="max-width: 360px;">
+    <ino-slider
+      label="Budget"
+      [required]="true"
+      [min]="0"
+      [max]="100"
+      [value]="labeledValue"
+      (valueChange)="labeledValue = $any($event)"
+    ></ino-slider>
+
+    <ino-slider
+      label="Volume"
+      hint="Changes apply immediately"
+      [min]="0"
+      [max]="100"
+      [value]="hintValue"
+      (valueChange)="hintValue = $any($event)"
+    ></ino-slider>
+
+    <ino-slider
+      label="Budget"
+      error="This value exceeds your plan's limit"
+      [min]="0"
+      [max]="100"
+      [value]="errorValue"
+      (valueChange)="errorValue = $any($event)"
+    ></ino-slider>
+
+    <ino-slider
+      label="Maximum monthly spend across all linked payment instruments (this label is intentionally long to demonstrate wrapping behavior in constrained layouts)"
+      [min]="0"
+      [max]="100"
+      [value]="longLabelValue"
+      (valueChange)="longLabelValue = $any($event)"
+    ></ino-slider>
+  </div>
+  <div class="demo-rtl" dir="rtl" style="margin-top: var(--ino-space-4); max-width: 360px;">
+    <ino-slider
+      label="مستوى الصوت"
+      hint="يتم تطبيق التغييرات فورًا"
+      [min]="0"
+      [max]="100"
+      [showMinMaxLabels]="true"
+      [value]="rtlValue"
+      (valueChange)="rtlValue = $any($event)"
+    ></ino-slider>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Keyboard contract</h3>
+  <p class="demo-section__note">
+    Focus any thumb above and try:
+    <strong>ArrowRight</strong>/<strong>ArrowUp</strong> increments by <code>step</code>;
+    <strong>ArrowLeft</strong>/<strong>ArrowDown</strong> decrements by <code>step</code>;
+    <strong>PageUp</strong>/<strong>PageDown</strong> moves by <code>step * 10</code>;
+    <strong>Home</strong>/<strong>End</strong> jump to <code>min</code>/<code>max</code>;
+    <strong>Tab</strong> moves to the other thumb in range mode, or the next control.
+  </p>
+</section>

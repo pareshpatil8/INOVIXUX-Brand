@@ -1,0 +1,220 @@
+/*
+ * <ino-chip> — INO-462 / INO-31 Phase B4.
+ *
+ * Chrome is the `.ino-inputtags__tag` idiom (surface-raised pill, border, on-surface text)
+ * promoted to this component's own classes — doc 26 §5 pairs the two explicitly. No literal
+ * colour/space/radius/duration/font-size: every declaration resolves through tokens.css, logical
+ * properties only (RTL is one code path, see SPEC.md §4).
+ *
+ * `.ino-chip` (standalone, non-removable) and `.ino-chip-group` (removable — the pill chrome
+ * moves to the group wrapper so the inner button + remove button don't each draw their own
+ * border) share one declaration block so the two never drift visually.
+ */
+:host {
+  display: inline-flex;
+  max-inline-size: 100%;
+}
+
+.ino-chip,
+.ino-chip-group {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ino-control-gap);
+  max-inline-size: 100%;
+  min-block-size: var(--ino-row-min-height, 32px); /* same density-floor idiom as ino-tag §3 —
+    a chip is an inline label/action, not a full-height form control. */
+  padding-inline: var(--ino-control-padding-inline);
+  padding-block: var(--ino-space-1);
+  background: var(--ino-color-surface-raised);
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-pill);
+  color: var(--ino-color-on-surface);
+  font-family: var(--ino-font-display);
+  font-size: var(--ino-control-font-size, var(--ino-type-body-sm-size));
+  line-height: var(--ino-type-body-sm-line);
+  transition: background var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+    border-color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+    opacity var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+/* State 1 — default/hover on the button form only; a static, non-removable chip has no
+   interactive element to hover/focus (SPEC.md §2). */
+button.ino-chip:hover:not(:disabled),
+.ino-chip-group:has(.ino-chip__body--button:hover:not(:disabled)) {
+  background: var(--ino-color-surface-sunken);
+}
+
+button.ino-chip:focus-visible {
+  outline: var(--ino-focus-ring);
+  outline-offset: var(--ino-focus-ring-offset);
+}
+
+button.ino-chip:active:not(:disabled) {
+  background: var(--ino-color-surface-sunken);
+}
+
+/* State — pressed (toggle-button pattern, `pressable` + `pressed`). Accent tint, same role pair
+   `ino-toggle-button` uses for its "on" face. */
+.ino-chip--pressed,
+.ino-chip-group--pressed {
+  background: var(--ino-color-accent);
+  border-color: var(--ino-color-accent);
+  color: var(--ino-color-on-accent);
+}
+
+/* State 5 — disabled. Opacity-only, same precedent as ino-tag — kept in the accessibility tree,
+   not removed, matching ino-button's loading rationale. Host-level class (not `:has(:disabled)`)
+   so a fully-static, non-interactive disabled chip (no button to target) still dims. */
+:host(.ino-chip-host--disabled) .ino-chip,
+:host(.ino-chip-host--disabled) .ino-chip-group {
+  opacity: 0.5;
+}
+
+/* Readonly — dims less than disabled (the label is still meant to be read), same split
+   ino-inputtags' field-level readonly/disabled already uses. */
+:host(.ino-chip-host--readonly) .ino-chip,
+:host(.ino-chip-host--readonly) .ino-chip-group {
+  opacity: 0.75;
+}
+
+/* State — removing (SPEC.md §2). Fade+scale out; `animationend` on the group wrapper drives the
+   `remove` emit. Under reduced motion the component emits synchronously in TS and this animation
+   never plays. */
+.ino-chip-group--removing {
+  animation: ino-chip-remove var(--ino-motion-duration-fast) var(--ino-motion-easing-standard) forwards;
+}
+
+@keyframes ino-chip-remove {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ino-chip-group--removing {
+    animation: none;
+  }
+}
+
+.ino-chip__body {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ino-control-gap);
+  max-inline-size: 100%;
+}
+
+.ino-chip__body--button {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+    border-radius: var(--ino-radius-sm);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.ino-chip__icon,
+.ino-chip__avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--ino-control-icon-size);
+  block-size: var(--ino-control-icon-size);
+  flex-shrink: 0;
+}
+
+.ino-chip__icon:empty,
+.ino-chip__avatar:empty {
+  display: none;
+}
+
+.ino-chip__label {
+  max-inline-size: 20ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Same remove-button chrome as ino-inputtags__tag-remove — the shared button-in-group idiom
+   (SPEC.md §1, §8). */
+.ino-chip-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--ino-target-min, 24px);
+  block-size: var(--ino-target-min, 24px);
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: currentColor;
+  cursor: pointer;
+  transition: background var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+
+  &:hover:not(:disabled) {
+    background: var(--ino-color-surface-sunken);
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  svg {
+    display: block;
+  }
+}
+
+.ino-sr-only {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* SIZE — the three-alias subset ino-tag reads (font-size / padding-inline / gap), not the full
+   --ino-control-height set: a chip is a label/action, not a form control (SPEC.md §3). */
+:host([data-size='sm']) {
+  --ino-control-font-size: var(--ino-control-font-size-sm);
+  --ino-control-padding-inline: var(--ino-control-padding-inline-sm);
+  --ino-control-gap: var(--ino-control-gap-sm);
+}
+
+:host([data-size='lg']) {
+  --ino-control-font-size: var(--ino-control-font-size-lg);
+  --ino-control-padding-inline: var(--ino-control-padding-inline-lg);
+  --ino-control-gap: var(--ino-control-gap-lg);
+}

@@ -1,0 +1,131 @@
+/*
+ * <ino-badge> — INO-460 / INO-31 Phase B4.
+ *
+ * No literal colour/duration — every colour resolves through a semantic role in tokens.css.
+ * Logical properties only (RTL is one code path).
+ *
+ * Positioning modes (doc 26 §5 "positioned-on-child or standalone"):
+ * - Standalone: use as a regular inline element
+ * - Positioned: parent container should be `position: relative`; badge will anchor to top-end
+ *   corner via absolute positioning (see `:host` below)
+ */
+:host {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-family: var(--ino-font-display);
+  font-weight: 600;
+  line-height: 1;
+  user-select: none;
+  vertical-align: middle;
+}
+
+/* Positioned mode — when badge is a child of a positioned container, it anchors to the top-end
+ * corner. The caller determines mode by positioning the parent; no explicit prop needed. */
+:host-context([style*="position: relative"]),
+:host-context([style*="position: absolute"]),
+:host-context([style*="position: fixed"]) {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-end: 0;
+  transform: translate(50%, -50%);
+}
+
+/* Dot variant — simple circular indicator */
+:host([data-variant='dot']) {
+  padding: 0;
+}
+
+.ino-badge__dot {
+  display: block;
+  border-radius: 50%;
+  background: var(--ino-color-accent);
+}
+
+:host([data-variant='dot'][data-size='sm']) .ino-badge__dot {
+  inline-size: 8px;
+  block-size: 8px;
+}
+
+:host([data-variant='dot'][data-size='md']) .ino-badge__dot {
+  inline-size: 10px;
+  block-size: 10px;
+}
+
+/* Count variant — numeric badge with pill shape */
+:host([data-variant='count']) {
+  min-inline-size: var(--ino-badge-count-min-width);
+  padding-inline: var(--ino-badge-count-padding-inline);
+  border-radius: var(--ino-badge-count-border-radius);
+  background: var(--ino-color-accent);
+  color: var(--ino-color-on-accent);
+}
+
+:host([data-variant='count'][data-size='sm']) {
+  --ino-badge-count-min-width: 16px;
+  --ino-badge-count-padding-inline: var(--ino-space-2);
+  --ino-badge-count-border-radius: var(--ino-radius-pill);
+  block-size: 16px;
+  font-size: var(--ino-type-caption-size);
+}
+
+:host([data-variant='count'][data-size='md']) {
+  --ino-badge-count-min-width: 20px;
+  --ino-badge-count-padding-inline: var(--ino-space-3);
+  --ino-badge-count-border-radius: var(--ino-radius-pill);
+  block-size: 20px;
+  font-size: var(--ino-type-label-sm-size);
+}
+
+.ino-badge__count {
+  display: block;
+}
+
+/* Status variant — labeled indicator with severity colors */
+:host([data-variant='status']) {
+  gap: var(--ino-space-2);
+  padding-inline: var(--ino-badge-status-padding-inline);
+  border-radius: var(--ino-radius-md);
+  border: 1px solid currentColor;
+}
+
+:host([data-variant='status'][data-size='sm']) {
+  --ino-badge-status-padding-inline: var(--ino-space-3);
+  block-size: 20px;
+  font-size: var(--ino-type-caption-size);
+}
+
+:host([data-variant='status'][data-size='md']) {
+  --ino-badge-status-padding-inline: var(--ino-space-4);
+  block-size: 24px;
+  font-size: var(--ino-type-label-sm-size);
+}
+
+.ino-badge__status {
+  display: block;
+}
+
+/* Severity color mapping for status variant — tinted background (12% severity color on surface)
+ * + colored text + colored border. The tint percentage is chosen to provide subtle differentiation
+ * while maintaining readability in all three themes (dark/light/high-contrast). */
+:host([data-variant='status'][data-severity='info']) {
+  background: color-mix(in srgb, var(--ino-color-info) 12%, var(--ino-color-surface));
+  color: var(--ino-color-info);
+}
+
+:host([data-variant='status'][data-severity='success']) {
+  background: color-mix(in srgb, var(--ino-color-success) 12%, var(--ino-color-surface));
+  color: var(--ino-color-success);
+}
+
+:host([data-variant='status'][data-severity='warning']) {
+  background: color-mix(in srgb, var(--ino-color-warning) 12%, var(--ino-color-surface));
+  color: var(--ino-color-warning);
+}
+
+:host([data-variant='status'][data-severity='danger']) {
+  background: color-mix(in srgb, var(--ino-color-danger) 12%, var(--ino-color-surface));
+  color: var(--ino-color-danger);
+}

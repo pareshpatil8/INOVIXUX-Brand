@@ -1,0 +1,122 @@
+<ng-container [ngSwitch]="headingTag">
+  <h1 *ngSwitchCase="'h1'" class="ino-accordion-tab__heading">
+    <button
+      #headerButton
+      type="button"
+      class="ino-accordion-tab__header"
+      [class.ino-accordion-tab__header--icon-end]="iconPosition === 'end'"
+      [id]="headerId"
+      [disabled]="isDisabled"
+      [attr.aria-expanded]="expanded"
+      [attr.aria-controls]="contentId"
+      [attr.tabindex]="accordion && accordion.getTabIndex(this) === 0 ? 0 : -1"
+      (click)="toggle()"
+      (keydown)="onKeyDown($event)"
+    >
+      <span class="ino-accordion-tab__chevron" [class.ino-accordion-tab__chevron--expanded]="expanded" aria-hidden="true">▸</span>
+      <span class="ino-accordion-tab__header-text">{{ header }}</span>
+    </button>
+  </h1>
+  <h2 *ngSwitchCase="'h2'" class="ino-accordion-tab__heading">
+    <button
+      #headerButton
+      type="button"
+      class="ino-accordion-tab__header"
+      [class.ino-accordion-tab__header--icon-end]="iconPosition === 'end'"
+      [id]="headerId"
+      [disabled]="isDisabled"
+      [attr.aria-expanded]="expanded"
+      [attr.aria-controls]="contentId"
+      [attr.tabindex]="accordion && accordion.getTabIndex(this) === 0 ? 0 : -1"
+      (click)="toggle()"
+      (keydown)="onKeyDown($event)"
+    >
+      <span class="ino-accordion-tab__chevron" [class.ino-accordion-tab__chevron--expanded]="expanded" aria-hidden="true">▸</span>
+      <span class="ino-accordion-tab__header-text">{{ header }}</span>
+    </button>
+  </h2>
+  <h3 *ngSwitchCase="'h3'" class="ino-accordion-tab__heading">
+    <button
+      #headerButton
+      type="button"
+      class="ino-accordion-tab__header"
+      [class.ino-accordion-tab__header--icon-end]="iconPosition === 'end'"
+      [id]="headerId"
+      [disabled]="isDisabled"
+      [attr.aria-expanded]="expanded"
+      [attr.aria-controls]="contentId"
+      [attr.tabindex]="accordion && accordion.getTabIndex(this) === 0 ? 0 : -1"
+      (click)="toggle()"
+      (keydown)="onKeyDown($event)"
+    >
+      <span class="ino-accordion-tab__chevron" [class.ino-accordion-tab__chevron--expanded]="expanded" aria-hidden="true">▸</span>
+      <span class="ino-accordion-tab__header-text">{{ header }}</span>
+    </button>
+  </h3>
+  <h4 *ngSwitchCase="'h4'" class="ino-accordion-tab__heading">
+    <button
+      #headerButton
+      type="button"
+      class="ino-accordion-tab__header"
+      [class.ino-accordion-tab__header--icon-end]="iconPosition === 'end'"
+      [id]="headerId"
+      [disabled]="isDisabled"
+      [attr.aria-expanded]="expanded"
+      [attr.aria-controls]="contentId"
+      [attr.tabindex]="accordion && accordion.getTabIndex(this) === 0 ? 0 : -1"
+      (click)="toggle()"
+      (keydown)="onKeyDown($event)"
+    >
+      <span class="ino-accordion-tab__chevron" [class.ino-accordion-tab__chevron--expanded]="expanded" aria-hidden="true">▸</span>
+      <span class="ino-accordion-tab__header-text">{{ header }}</span>
+    </button>
+  </h4>
+  <h5 *ngSwitchCase="'h5'" class="ino-accordion-tab__heading">
+    <button
+      #headerButton
+      type="button"
+      class="ino-accordion-tab__header"
+      [class.ino-accordion-tab__header--icon-end]="iconPosition === 'end'"
+      [id]="headerId"
+      [disabled]="isDisabled"
+      [attr.aria-expanded]="expanded"
+      [attr.aria-controls]="contentId"
+      [attr.tabindex]="accordion && accordion.getTabIndex(this) === 0 ? 0 : -1"
+      (click)="toggle()"
+      (keydown)="onKeyDown($event)"
+    >
+      <span class="ino-accordion-tab__chevron" [class.ino-accordion-tab__chevron--expanded]="expanded" aria-hidden="true">▸</span>
+      <span class="ino-accordion-tab__header-text">{{ header }}</span>
+    </button>
+  </h5>
+  <h6 *ngSwitchCase="'h6'" class="ino-accordion-tab__heading">
+    <button
+      #headerButton
+      type="button"
+      class="ino-accordion-tab__header"
+      [class.ino-accordion-tab__header--icon-end]="iconPosition === 'end'"
+      [id]="headerId"
+      [disabled]="isDisabled"
+      [attr.aria-expanded]="expanded"
+      [attr.aria-controls]="contentId"
+      [attr.tabindex]="accordion && accordion.getTabIndex(this) === 0 ? 0 : -1"
+      (click)="toggle()"
+      (keydown)="onKeyDown($event)"
+    >
+      <span class="ino-accordion-tab__chevron" [class.ino-accordion-tab__chevron--expanded]="expanded" aria-hidden="true">▸</span>
+      <span class="ino-accordion-tab__header-text">{{ header }}</span>
+    </button>
+  </h6>
+</ng-container>
+
+<div
+  class="ino-accordion-tab__body"
+  [id]="contentId"
+  [hidden]="!expanded"
+  role="region"
+  [attr.aria-labelledby]="headerId"
+>
+  <div class="ino-accordion-tab__content">
+    <ng-content></ng-content>
+  </div>
+</div>

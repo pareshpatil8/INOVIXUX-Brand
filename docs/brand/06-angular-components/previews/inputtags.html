@@ -1,0 +1,239 @@
+<!-- @dsCard group="Form" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ino-inputtags — free-entry tags with autocomplete (INO-418)</title>
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-eyebrow-size);
+    letter-spacing: var(--ino-type-eyebrow-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 60ch; }
+
+  .row { display: flex; flex-wrap: wrap; gap: var(--ino-space-5); margin-bottom: var(--ino-space-5); }
+
+  /* Mirrors web/src/app/components/inputtags/ino-inputtags.component.scss */
+  .ino-field { display: flex; flex-direction: column; gap: var(--ino-space-2); min-width: 320px; }
+  .ino-field__label { font-size: var(--ino-type-label-size, var(--ino-type-body-sm-size)); font-weight: 600; }
+  .ino-field__tags-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--ino-space-2);
+    align-items: center;
+    min-height: var(--ino-target-comfortable);
+    padding: var(--ino-space-2);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-md);
+    background: var(--ino-color-surface);
+  }
+  .ino-field__tags-wrapper--error { border-color: var(--ino-color-danger); }
+  .ino-field__tags-wrapper--disabled { opacity: 0.6; background: var(--ino-color-surface-sunken); }
+  .ino-field__tags-wrapper--at-max { opacity: 0.7; }
+  .ino-field__tag {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--ino-space-1);
+    padding: var(--ino-space-1) var(--ino-space-2);
+    background: var(--ino-color-accent-alpha-10);
+    color: var(--ino-color-accent);
+    border-radius: var(--ino-radius-sm);
+    font-size: var(--ino-type-body-sm-size);
+  }
+  .ino-field__tag--invalid {
+    background: var(--ino-color-danger-alpha-10);
+    color: var(--ino-color-danger);
+    border: 1px solid var(--ino-color-danger);
+  }
+  .ino-field__tag-label { max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ino-field__tag-remove {
+    display: inline-flex;
+    padding: 2px;
+    color: currentColor;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+  }
+  .ino-field__input {
+    flex: 1;
+    min-width: 120px;
+    height: 28px;
+    border: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: var(--ino-type-body-size);
+    color: var(--ino-color-on-surface);
+  }
+  .ino-field__input::placeholder { color: var(--ino-color-on-surface-subtle); }
+  .ino-field__hint { margin: 0; font-size: var(--ino-type-body-sm-size); color: var(--ino-color-on-surface-muted); }
+  .ino-field__error { margin: 0; font-size: var(--ino-type-body-sm-size); color: var(--ino-color-danger); font-weight: 600; }
+
+  /* Size variants */
+  .ino-field--sm .ino-field__tags-wrapper { min-height: var(--ino-control-height-sm); }
+  .ino-field--sm .ino-field__tag { font-size: var(--ino-type-body-xs-size); padding: 2px var(--ino-space-1); }
+  .ino-field--sm .ino-field__input { font-size: var(--ino-type-body-sm-size); height: 24px; }
+
+  .ino-field--lg .ino-field__tags-wrapper { min-height: var(--ino-control-height-lg); }
+  .ino-field--lg .ino-field__tag { font-size: var(--ino-type-body-size); padding: var(--ino-space-2) var(--ino-space-3); }
+  .ino-field--lg .ino-field__input { font-size: var(--ino-type-body-lg-size); height: 32px; }
+</style>
+</head>
+<body>
+<h1>ino-inputtags</h1>
+<p class="lede">
+  Free-entry tag/chip input with autocomplete suggestions. Type and press Enter, comma, or blur to add tags.
+  Backspace removes the last tag when input is empty.
+</p>
+
+<h2>Default (with tags)</h2>
+<div class="row">
+  <div class="ino-field">
+    <label class="ino-field__label">Skills</label>
+    <div class="ino-field__tags-wrapper">
+      <div class="ino-field__tag">
+        <span class="ino-field__tag-label">TypeScript</span>
+        <span class="ino-field__tag-remove">×</span>
+      </div>
+      <div class="ino-field__tag">
+        <span class="ino-field__tag-label">Angular</span>
+        <span class="ino-field__tag-remove">×</span>
+      </div>
+      <div class="ino-field__tag">
+        <span class="ino-field__tag-label">Design Systems</span>
+        <span class="ino-field__tag-remove">×</span>
+      </div>
+      <input class="ino-field__input" placeholder="" value="" />
+    </div>
+  </div>
+</div>
+
+<h2>Empty state</h2>
+<div class="row">
+  <div class="ino-field">
+    <label class="ino-field__label">Tags</label>
+    <div class="ino-field__tags-wrapper">
+      <input class="ino-field__input" placeholder="Add tags…" value="" />
+    </div>
+    <p class="ino-field__hint">Press Enter or comma to add a tag</p>
+  </div>
+</div>
+
+<h2>With invalid tag</h2>
+<div class="row">
+  <div class="ino-field">
+    <label class="ino-field__label">Email addresses</label>
+    <div class="ino-field__tags-wrapper">
+      <div class="ino-field__tag">
+        <span class="ino-field__tag-label">user@example.com</span>
+        <span class="ino-field__tag-remove">×</span>
+      </div>
+      <div class="ino-field__tag ino-field__tag--invalid">
+        <span class="ino-field__tag-label">invalid-email</span>
+        <span class="ino-field__tag-remove">×</span>
+      </div>
+      <input class="ino-field__input" placeholder="" value="" />
+    </div>
+  </div>
+</div>
+
+<h2>At max limit</h2>
+<div class="row">
+  <div class="ino-field">
+    <label class="ino-field__label">Top 3 priorities</label>
+    <div class="ino-field__tags-wrapper ino-field__tags-wrapper--at-max">
+      <div class="ino-field__tag">
+        <span class="ino-field__tag-label">Performance</span>
+        <span class="ino-field__tag-remove">×</span>
+      </div>
+      <div class="ino-field__tag">
+        <span class="ino-field__tag-label">Accessibility</span>
+        <span class="ino-field__tag-remove">×</span>
+      </div>
+      <div class="ino-field__tag">
+        <span class="ino-field__tag-label">Security</span>
+        <span class="ino-field__tag-remove">×</span>
+      </div>
+      <input class="ino-field__input" placeholder="" disabled />
+    </div>
+    <p class="ino-field__hint">Maximum of 3 tags reached</p>
+  </div>
+</div>
+
+<h2>Error state</h2>
+<div class="row">
+  <div class="ino-field">
+    <label class="ino-field__label">Required field</label>
+    <div class="ino-field__tags-wrapper ino-field__tags-wrapper--error">
+      <input class="ino-field__input" placeholder="Add tags…" value="" />
+    </div>
+    <p class="ino-field__error">At least one tag is required</p>
+  </div>
+</div>
+
+<h2>Disabled state</h2>
+<div class="row">
+  <div class="ino-field">
+    <label class="ino-field__label">Disabled</label>
+    <div class="ino-field__tags-wrapper ino-field__tags-wrapper--disabled">
+      <div class="ino-field__tag">
+        <span class="ino-field__tag-label">Locked tag</span>
+        <span class="ino-field__tag-remove">×</span>
+      </div>
+      <input class="ino-field__input" placeholder="" disabled />
+    </div>
+  </div>
+</div>
+
+<h2>Size variants</h2>
+<div class="row">
+  <div class="ino-field ino-field--sm">
+    <label class="ino-field__label">Small</label>
+    <div class="ino-field__tags-wrapper">
+      <div class="ino-field__tag">
+        <span class="ino-field__tag-label">Small tag</span>
+        <span class="ino-field__tag-remove">×</span>
+      </div>
+      <input class="ino-field__input" placeholder="Add tags…" />
+    </div>
+  </div>
+
+  <div class="ino-field">
+    <label class="ino-field__label">Default</label>
+    <div class="ino-field__tags-wrapper">
+      <div class="ino-field__tag">
+        <span class="ino-field__tag-label">Default tag</span>
+        <span class="ino-field__tag-remove">×</span>
+      </div>
+      <input class="ino-field__input" placeholder="Add tags…" />
+    </div>
+  </div>
+
+  <div class="ino-field ino-field--lg">
+    <label class="ino-field__label">Large</label>
+    <div class="ino-field__tags-wrapper">
+      <div class="ino-field__tag">
+        <span class="ino-field__tag-label">Large tag</span>
+        <span class="ino-field__tag-remove">×</span>
+      </div>
+      <input class="ino-field__input" placeholder="Add tags…" />
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

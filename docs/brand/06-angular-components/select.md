@@ -105,6 +105,18 @@ matching `ino-input`/`ino-button`/`ino-datepicker`.
 
 ---
 
+## Labels and fields
+
+`label` renders through the shared `ino-label` leaf (`[required]` for the decorative `*`,
+`[invalid]="!!error"` for the danger treatment) and doubles as the fallback `aria-label` for the
+popup listbox (`label || placeholder`) when nothing is selected. `placeholder` shows in the closed
+field until a value is chosen; `filterPlaceholder` is the separate placeholder for the in-popup
+filter input, not a label. `hint`/`error` render as a paragraph under the field — `error` taking
+priority, both wired via `aria-describedby` — and `error` also sets `aria-invalid` and the field's
+danger border.
+
+---
+
 ## Accessibility contract
 
 **Role / ARIA** — WAI-ARIA APG "Collapsible Dropdown Listbox," `aria-activedescendant` variant

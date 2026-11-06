@@ -79,7 +79,7 @@
   justify-content: space-between;
   gap: var(--ino-control-gap, var(--_sp2));
   inline-size: 100%;
-  min-block-size: var(--ino-row-min-height, var(--ino-control-height, var(--ino-target-comfortable)));
+  min-block-size: max(var(--ino-control-height, var(--ino-target-comfortable)), var(--ino-row-min-height, 0px));
   padding-inline: var(--ino-control-padding-inline, var(--_sp4));
   background: var(--_sunk);
   border: 1px solid var(--_border);

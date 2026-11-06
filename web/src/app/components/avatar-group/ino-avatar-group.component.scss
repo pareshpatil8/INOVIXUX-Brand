@@ -1,0 +1,48 @@
+/*
+ * <ino-avatar-group> — INO-458 / INO-31 Phase B4.
+ *
+ * No literal colour/duration — every colour resolves through a semantic role in tokens.css.
+ * Logical properties only (RTL-safe — see `../avatar/SPEC.md` §6).
+ *
+ * Overlap amount is one of the space-scale tokens per size tier (`margin-inline-start` IS
+ * governed by `check-ds-adherence.mjs`'s off-scale-spacing rule), chosen to land each tier at
+ * roughly a quarter to a third of that size's own diameter — not itself load-bearing, just the
+ * nearest on-scale neighbour. See `../avatar/SPEC.md` §5.
+ */
+:host {
+  display: inline-flex;
+  align-items: center;
+}
+
+:host([data-size='xs']) {
+  --ino-avatar-group-overlap: var(--ino-space-2);
+}
+
+:host([data-size='sm']) {
+  --ino-avatar-group-overlap: var(--ino-space-2);
+}
+
+:host([data-size='default']) {
+  --ino-avatar-group-overlap: var(--ino-space-3);
+}
+
+:host([data-size='lg']) {
+  --ino-avatar-group-overlap: var(--ino-space-3);
+}
+
+:host([data-size='xl']) {
+  --ino-avatar-group-overlap: var(--ino-space-4);
+}
+
+/* Each avatar gets a ring in the ambient surface colour so overlapping circles read as distinct
+ * items instead of a fused blob. `border`, not `box-shadow` — `box-shadow` is a token-only
+ * property under the adherence lint (no literal offsets permitted at all, tokens.css only has
+ * `--ino-elevation-*`/`--ino-invalid-ring`), and neither is a semantic fit for a plain separator
+ * ring. */
+.ino-avatar-group__item {
+  border: 2px solid var(--ino-color-surface-raised);
+}
+
+.ino-avatar-group__item:not(:first-child) {
+  margin-inline-start: calc(-1 * var(--ino-avatar-group-overlap));
+}

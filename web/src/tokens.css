@@ -217,6 +217,7 @@
 
   --ino-color-border: var(--ino-primitive-line);
   --ino-color-border-soft: var(--ino-primitive-line-soft);
+  --ino-color-border-strong: var(--ino-color-on-surface-muted); /* stronger border for context menus / high-separation overlays, consumed by ino-context-menu (INO-814) */
 
   --ino-color-accent: var(--ino-primitive-violet-500);    /* swap token */
   --ino-color-accent-secondary: var(--ino-primitive-indigo-500);
@@ -307,6 +308,8 @@
   --ino-elevation-neutral-4: 0 40px 80px -40px rgba(0, 0, 0, 0.6);   /* resting card — == --ino-elevation-1 */
   --ino-elevation-neutral-5: 0 60px 120px -32px rgba(0, 0, 0, 0.72); /* modal/sheet/popover — == --ino-elevation-2 */
   --ino-elevation-neutral-6: 0 80px 160px -24px rgba(0, 0, 0, 0.8);  /* max depth — full-screen drawer, command palette */
+
+  --ino-shadow-lg: var(--ino-elevation-neutral-3); /* overlay/dropdown shadow alias consumed by ino-context-menu and ino-menu (INO-818) */
 
   --ino-elevation-brand-1: 0 8px 24px -8px color-mix(in srgb, var(--ino-color-accent) 25%, transparent);   /* hovered primary CTA */
   --ino-elevation-brand-2: 0 24px 56px -20px color-mix(in srgb, var(--ino-color-accent) 35%, transparent); /* selected/active tier card */
@@ -534,6 +537,16 @@
   --ino-radius-pill: 20px;
 
   /* ---------------------------------------------------------------------
+   * 6b. BORDER WIDTH — named, not invented: -hairline is the 1px line every
+   *     bordered surface already uses (ino-card, ino-alert, ino-toggle-button);
+   *     -thick is the existing 2px weight used for emphasis (ino-card's
+   *     featured border). Added for ino-divider's thickness axis (doc 26 §5,
+   *     INO-441) so it reads a shared scale instead of a component-local value.
+   * ------------------------------------------------------------------- */
+  --ino-border-width-hairline: 1px;
+  --ino-border-width-thick: 2px;
+
+  /* ---------------------------------------------------------------------
    * 7. TOUCH TARGETS — mobile app + touch-input web/dense-table minimums.
    *    -min meets WCAG 2.2 §2.5.8 (24x24 CSS px floor, AA). -comfortable
    *    meets platform HIG guidance (iOS 44pt / Android 48dp) and is the
@@ -643,6 +656,17 @@
   --ino-control-gap-default: var(--ino-space-2); /* same 8px as -sm on purpose: --ino-space-1 (4px) is a within-component step, and 6px would be a new primitive for a 2px win */
   --ino-control-gap-lg: var(--ino-space-3);
 
+  /* COMPACT CONTROL SCALE — fixed values for space-efficient overlays (context menu, menu).
+     These are not density-composited: spec §9 says compact controls never appear inside a
+     density container, so no re-declaration inside [data-density="dense/fluid"] is needed.
+     INO-818: tokens were consumed by ino-context-menu.component.scss and ino-menu.component.scss
+     but were undefined in tokens.css, collapsing all computed values to empty/invalid. */
+  --ino-control-height-compact: 32px;                           /* dense-default row height — overlay-appropriate */
+  --ino-control-font-size-compact: var(--ino-type-body-sm-size); /* 12.5px */
+  --ino-control-icon-size-compact: 16px;                        /* floor icon size, same as sm/dense */
+  --ino-control-gap-compact: var(--ino-space-2);                /* 8px */
+  --ino-control-padding-inline-compact: var(--ino-space-3);     /* 12px */
+
   /* CONSUMPTION ALIASES — what component CSS actually reads, resolved to
      size="default". A size class re-points them on the host element:
        :host(.ino-btn--sm) { --ino-control-height: var(--ino-control-height-sm); … }
@@ -735,6 +759,16 @@
   --ino-invalid-ring: 0 0 0 2px var(--ino-color-danger); /* light mode inherits this unchanged: the
                                                             weight is right on both surfaces and the
                                                             colour re-themes through the role */
+
+  /* ---------------------------------------------------------------------
+   * 12b. Z-INDEX SCALE — overlay stacking (INO-814). One value for now:
+   *      overlays (menu, context-menu, popover) above page content but
+   *      below toasts/modals/drawers. Components must use this shared
+   *      value instead of hardcoding 1000/1100 literals to prevent
+   *      stacking conflicts (a menu was rendering BELOW a popover because
+   *      the fallback diverged from popover's hardcoded literal).
+   * ------------------------------------------------------------------- */
+  --ino-z-overlay: 1100; /* menu, context-menu, popover — all three must agree */
 }
 
 /* ---------------------------------------------------------------------

@@ -16,6 +16,7 @@ enum InoInputVariant { outline, filled }
 /// the web component's SPEC.md §2 draws between `readonly` and `disabled`.
 class InoInput extends StatefulWidget {
   final String? label;
+  final String? placeholder;
   final String? hint;
   final String? error;
   final String? initialValue;
@@ -30,6 +31,7 @@ class InoInput extends StatefulWidget {
   const InoInput({
     super.key,
     this.label,
+    this.placeholder,
     this.hint,
     this.error,
     this.initialValue,
@@ -108,6 +110,8 @@ class _InoInputState extends State<InoInput> {
                     fillColor: filled
                         ? (nonEditable && !widget.disabled ? colors.surfaceSunken : colors.surfaceRaised)
                         : (widget.readOnly ? colors.surfaceRaised : colors.surfaceSunken),
+                    hintText: widget.placeholder,
+                    hintStyle: TextStyle(fontSize: widget.size.fontSize, color: colors.onSurfaceSubtle),
                     contentPadding: EdgeInsets.only(
                       left: widget.size.paddingInline,
                       right: widget.loading ? widget.size.paddingInline + 24 : widget.size.paddingInline,

@@ -1,0 +1,320 @@
+<!-- @dsCard group="Form" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ino-listbox — always-visible APG Listbox, single/multiple, filter, virtualized (INO-414)</title>
+<!-- Canonical token file, linked rather than copied: this preview must repaint with the system,
+     and must never become a second place raw hex values live. -->
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-eyebrow-size);
+    letter-spacing: var(--ino-type-eyebrow-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 60ch; }
+
+  .theme-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); }
+  .theme-pane {
+    flex: 1 1 260px;
+    padding: var(--ino-space-5);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-xl);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+  }
+  .theme-pane > h3 {
+    margin: 0 0 var(--ino-space-4);
+    font-size: var(--ino-type-body-sm-size);
+    color: var(--ino-color-on-surface-muted);
+    font-weight: 600;
+  }
+
+  .row { display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--ino-space-5); }
+
+  /* Mirrors web/src/app/components/listbox/ino-listbox.component.scss — same token bindings and
+     class names, so a divergence between this preview and the shipped component is visible as a
+     visual diff. */
+  .ino-field { display: flex; flex-direction: column; gap: var(--ino-space-2); min-width: 220px; }
+  .ino-field--disabled .ino-field__control-wrap { opacity: 0.5; }
+
+  .ino-field__control-wrap {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--ino-space-1);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-md);
+    background: var(--ino-color-surface-sunken);
+    overflow: hidden;
+  }
+  .ino-field__control-wrap--invalid { border-color: var(--ino-color-danger); }
+
+  .ino-field__filter {
+    box-sizing: border-box;
+    inline-size: 100%;
+    min-block-size: var(--ino-control-height-default);
+    padding-inline: var(--ino-space-3);
+    border: none;
+    border-block-end: 1px solid var(--ino-color-border);
+    background: transparent;
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-control-font-size-default);
+  }
+  .ino-field__filter::placeholder { color: var(--ino-color-on-surface-subtle); }
+  .ino-field__filter:focus-visible { outline: var(--ino-focus-ring); outline-offset: calc(-1 * var(--ino-focus-ring-offset)); }
+  .ino-field__filter:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .ino-field__listbox {
+    margin: 0;
+    padding: var(--ino-space-1) 0;
+    list-style: none;
+    max-block-size: calc(var(--ino-control-height-default) * 8);
+    overflow-y: auto;
+  }
+  .ino-field__listbox--sm { max-block-size: calc(var(--ino-control-height-sm) * 8); }
+  .ino-field__listbox--lg { max-block-size: calc(var(--ino-control-height-lg) * 8); }
+
+  .ino-field__group-heading {
+    padding: var(--ino-space-2) var(--ino-space-4) var(--ino-space-1);
+    font-size: var(--ino-type-caption-size, var(--ino-type-body-sm-size));
+    font-weight: 600;
+    color: var(--ino-color-on-surface-muted);
+  }
+
+  .ino-field__option {
+    padding: var(--ino-space-2) var(--ino-space-4);
+    min-block-size: var(--ino-control-height-default);
+    display: flex;
+    align-items: center;
+    gap: var(--ino-space-3);
+    color: var(--ino-color-on-surface);
+    cursor: pointer;
+  }
+  .ino-field__option:hover:not(.ino-field__option--disabled) { background: var(--ino-color-surface-raised); }
+  .ino-field__option:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: calc(-1 * var(--ino-focus-ring-offset));
+    background: var(--ino-color-surface-raised);
+  }
+  .ino-field__option--selected { color: var(--ino-color-accent-text-safe); font-weight: 600; }
+  .ino-field__option--disabled { color: var(--ino-color-on-surface-subtle); cursor: not-allowed; }
+
+  .ino-field__checkbox { inline-size: 16px; block-size: 16px; flex: 0 0 auto; accent-color: var(--ino-color-accent); pointer-events: none; }
+
+  .ino-field__empty {
+    margin: 0;
+    padding: var(--ino-space-4);
+    min-block-size: var(--ino-control-height-default);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ino-color-on-surface-muted);
+    font-size: var(--ino-type-body-sm-size);
+    text-align: center;
+  }
+
+  .ino-field__spinner {
+    position: absolute;
+    inset-block-start: var(--ino-space-2);
+    inset-inline-end: var(--ino-space-2);
+    inline-size: 14px;
+    block-size: 14px;
+    border-radius: 50%;
+    border: 2px solid var(--ino-color-on-surface-muted);
+    border-top-color: transparent;
+  }
+
+  .ino-field__hint { margin: 0; font-size: var(--ino-type-body-sm-size); color: var(--ino-color-on-surface-muted); }
+  .ino-field__error { margin: 0; font-size: var(--ino-type-body-sm-size); color: var(--ino-color-danger); font-weight: 600; }
+  .ino-field__label { font-size: var(--ino-type-body-sm-size); font-weight: 600; color: var(--ino-color-on-surface); }
+  .ino-field__required { color: var(--ino-color-danger); }
+</style>
+</head>
+<body>
+
+<h1>Listbox — always-visible APG Listbox</h1>
+<p class="lede">
+  Single/multiple selection, an always-visible filter box, optional run-boundary option grouping,
+  and virtualization above the usual 100-option threshold (reusing <code>&lt;ino-virtual-scroller&gt;</code>).
+  Roving <code>tabindex</code> — real DOM focus moves between <code>role="option"</code> rows, never
+  <code>aria-activedescendant</code>. See <code>SPEC.md</code>.
+</p>
+
+<h2>Theme × single-selection</h2>
+<div class="theme-row">
+
+  <div class="theme-pane">
+    <h3>dark — :root (default)</h3>
+    <div class="ino-field">
+      <span class="ino-field__label">Country</span>
+      <div class="ino-field__control-wrap">
+        <input class="ino-field__filter" type="text" placeholder="Filter…" aria-label="Filter" />
+        <ul class="ino-field__listbox" role="listbox" aria-label="Country">
+          <li class="ino-field__option" role="option" tabindex="-1" aria-selected="false">Argentina</li>
+          <li class="ino-field__option ino-field__option--selected" role="option" tabindex="0" aria-selected="true">Brazil</li>
+          <li class="ino-field__option" role="option" tabindex="-1" aria-selected="false">Canada</li>
+          <li class="ino-field__option ino-field__option--disabled" role="option" aria-disabled="true" aria-selected="false">Denmark (unavailable)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="light">
+    <h3>light — [data-theme="light"]</h3>
+    <div class="ino-field">
+      <span class="ino-field__label">Country</span>
+      <div class="ino-field__control-wrap">
+        <input class="ino-field__filter" type="text" placeholder="Filter…" aria-label="Filter" value="an" />
+        <ul class="ino-field__listbox" role="listbox" aria-label="Country">
+          <li class="ino-field__group-heading" role="presentation">Americas</li>
+          <li class="ino-field__option ino-field__option--selected" role="option" tabindex="0" aria-selected="true">Canada</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="high-contrast">
+    <h3>high-contrast — [data-theme="high-contrast"]</h3>
+    <div class="ino-field">
+      <span class="ino-field__label">Country — invalid</span>
+      <div class="ino-field__control-wrap ino-field__control-wrap--invalid">
+        <input class="ino-field__filter" type="text" placeholder="Filter…" aria-label="Filter" aria-invalid="true" />
+        <ul class="ino-field__listbox" role="listbox" aria-label="Country" aria-invalid="true" aria-describedby="listbox-error-demo">
+          <li class="ino-field__option" role="option" tabindex="0" aria-selected="false">Argentina</li>
+          <li class="ino-field__option" role="option" tabindex="-1" aria-selected="false">Brazil</li>
+        </ul>
+      </div>
+      <p class="ino-field__error" id="listbox-error-demo" role="alert">Choose a country to continue.</p>
+    </div>
+  </div>
+
+</div>
+
+<h2>Multiple selection (checkbox rows, aria-multiselectable)</h2>
+<div class="row">
+  <div class="ino-field">
+    <span class="ino-field__label">Tags</span>
+    <div class="ino-field__control-wrap">
+      <ul class="ino-field__listbox" role="listbox" aria-label="Tags" aria-multiselectable="true">
+        <li class="ino-field__option ino-field__option--selected" role="option" tabindex="0" aria-selected="true">
+          <input class="ino-field__checkbox" type="checkbox" tabindex="-1" aria-hidden="true" checked />
+          Risk
+        </li>
+        <li class="ino-field__option" role="option" tabindex="-1" aria-selected="false">
+          <input class="ino-field__checkbox" type="checkbox" tabindex="-1" aria-hidden="true" />
+          Compliance
+        </li>
+        <li class="ino-field__option ino-field__option--selected" role="option" tabindex="-1" aria-selected="true">
+          <input class="ino-field__checkbox" type="checkbox" tabindex="-1" aria-hidden="true" checked />
+          Underwriting
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<h2>Size (control-size scale, 8-row fixed-height viewport)</h2>
+<div class="row">
+  <div class="ino-field">
+    <span class="ino-field__label">Small</span>
+    <div class="ino-field__control-wrap">
+      <ul class="ino-field__listbox ino-field__listbox--sm" role="listbox" aria-label="Small">
+        <li class="ino-field__option" role="option" tabindex="0" aria-selected="false" style="min-block-size: var(--ino-control-height-sm);">Row 1</li>
+        <li class="ino-field__option" role="option" tabindex="-1" aria-selected="false" style="min-block-size: var(--ino-control-height-sm);">Row 2</li>
+      </ul>
+    </div>
+  </div>
+  <div class="ino-field">
+    <span class="ino-field__label">Default</span>
+    <div class="ino-field__control-wrap">
+      <ul class="ino-field__listbox" role="listbox" aria-label="Default">
+        <li class="ino-field__option" role="option" tabindex="0" aria-selected="false">Row 1</li>
+        <li class="ino-field__option" role="option" tabindex="-1" aria-selected="false">Row 2</li>
+      </ul>
+    </div>
+  </div>
+  <div class="ino-field">
+    <span class="ino-field__label">Large</span>
+    <div class="ino-field__control-wrap">
+      <ul class="ino-field__listbox ino-field__listbox--lg" role="listbox" aria-label="Large">
+        <li class="ino-field__option" role="option" tabindex="0" aria-selected="false" style="min-block-size: var(--ino-control-height-lg);">Row 1</li>
+        <li class="ino-field__option" role="option" tabindex="-1" aria-selected="false" style="min-block-size: var(--ino-control-height-lg);">Row 2</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<h2>States</h2>
+<div class="row">
+  <div class="ino-field">
+    <span class="ino-field__label">Filtered-empty</span>
+    <div class="ino-field__control-wrap">
+      <input class="ino-field__filter" type="text" value="zzz" aria-label="Filter" />
+      <p class="ino-field__empty" role="listbox" aria-label="Filtered-empty">No options match your filter.</p>
+    </div>
+  </div>
+  <div class="ino-field">
+    <span class="ino-field__label">Empty (no options)</span>
+    <div class="ino-field__control-wrap">
+      <p class="ino-field__empty" role="listbox" aria-label="Empty">No options.</p>
+    </div>
+  </div>
+  <div class="ino-field">
+    <span class="ino-field__label">Loading</span>
+    <div class="ino-field__control-wrap">
+      <ul class="ino-field__listbox" role="listbox" aria-label="Loading" aria-busy="true">
+        <li class="ino-field__option" role="option" tabindex="0" aria-selected="false">Row 1</li>
+      </ul>
+      <span class="ino-field__spinner" aria-hidden="true"></span>
+    </div>
+  </div>
+  <div class="ino-field ino-field--disabled">
+    <span class="ino-field__label">Disabled</span>
+    <div class="ino-field__control-wrap">
+      <ul class="ino-field__listbox" role="listbox" aria-label="Disabled" aria-disabled="true">
+        <li class="ino-field__option" role="option" aria-selected="false">Row 1</li>
+      </ul>
+    </div>
+  </div>
+  <div class="ino-field">
+    <span class="ino-field__label">Required<span class="ino-field__required" aria-hidden="true"> *</span></span>
+    <div class="ino-field__control-wrap">
+      <ul class="ino-field__listbox" role="listbox" aria-label="Required">
+        <li class="ino-field__option" role="option" tabindex="0" aria-selected="false">Row 1</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<h2>RTL</h2>
+<div class="row" dir="rtl">
+  <div class="ino-field">
+    <span class="ino-field__label">الدولة</span>
+    <div class="ino-field__control-wrap">
+      <input class="ino-field__filter" type="text" placeholder="تصفية…" aria-label="تصفية" />
+      <ul class="ino-field__listbox" role="listbox" aria-label="الدولة">
+        <li class="ino-field__option ino-field__option--selected" role="option" tabindex="0" aria-selected="true">البرازيل</li>
+        <li class="ino-field__option" role="option" tabindex="-1" aria-selected="false">كندا</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

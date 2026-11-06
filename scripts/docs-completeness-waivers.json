@@ -1,0 +1,205 @@
+{
+  "$comment": [
+    "Seeded by INO-375 when the docs-completeness gate (doc 26 §7 D-gate 3c) was first wired into CI.",
+    "",
+    "Every entry is a PRE-EXISTING §2 gap that predates the gate, kept green so the lint can start",
+    "blocking NEW incomplete docs pages today instead of waiting on the 43-component sweep. This is a",
+    "ratchet, not a parking lot: each waiver names the issue that deletes it, an unused waiver FAILS",
+    "the build, and adding one is a visible diff on a reviewed file.",
+    "",
+    "Do NOT add a waiver to ship a component. Write the missing section. A waiver is for a gap whose",
+    "content is a decision someone else owns — and then say so on the issue named below.",
+    "",
+    "  INO-371 — A4 full-catalog presentability audit: establishes, per component, which §2 states,",
+    "            sizes and omissions actually apply, then writes them. Deletes 30 of these entries.",
+    "  INO-374 — C5 docs pages for the 5 marketing-only components. Deletes the 5 doc entries.",
+    "",
+    "INO-373 (C4 PrimeNG-anatomy page migration) normalises heading NAMES across the 38 docs; the",
+    "lint accepts the documented synonym families already, so it needs no waivers for that.",
+    "",
+    "Nothing here waives §2.1 (demo) or §2.4 (labels): all 43 components already resolve to a live",
+    "demo and every component with a label @Input documents it. Those two checks are fully armed."
+  ],
+  "waivers": [
+    {
+      "slug": "alert",
+      "check": "states",
+      "reason": "the doc documents no state coverage at all; the audit establishes which of the §2.2 states apply to this component first",
+      "issue": "INO-371"
+    },
+    {
+      "slug": "card",
+      "check": "states",
+      "reason": "the doc documents no state coverage at all; the audit establishes which of the §2.2 states apply to this component first",
+      "issue": "INO-371"
+    },
+    {
+      "slug": "checkbox",
+      "check": "notes",
+      "reason": "no \"## Deliberate omissions\" section; the omissions have to be established by the audit before they can be written down",
+      "issue": "INO-371"
+    },
+    {
+      "slug": "confirm-dialog",
+      "check": "sizing",
+      "reason": "declares a size @Input but the doc never documents the scale; the audit decides whether the scale is real or the @Input is vestigial before text is written for it",
+      "issue": "INO-371"
+    },
+    {
+      "slug": "confirm-popup",
+      "check": "sizing",
+      "reason": "declares a size @Input but the doc never documents the scale; the audit decides whether the scale is real or the @Input is vestigial before text is written for it",
+      "issue": "INO-371"
+    },
+    {
+      "slug": "drawer",
+      "check": "states",
+      "reason": "the doc documents no state coverage at all; the audit establishes which of the §2.2 states apply to this component first",
+      "issue": "INO-371"
+    },
+    {
+      "slug": "floatlabel",
+      "check": "sizing",
+      "reason": "declares a size @Input but the doc never documents the scale; the audit decides whether the scale is real or the @Input is vestigial before text is written for it",
+      "issue": "INO-371"
+    },
+    {
+      "slug": "floatlabel",
+      "check": "notes",
+      "reason": "no \"## Deliberate omissions\" section; the omissions have to be established by the audit before they can be written down",
+      "issue": "INO-371"
+    },
+    {
+      "slug": "focus-trap",
+      "check": "notes",
+      "reason": "no \"## Deliberate omissions\" section; the omissions have to be established by the audit before they can be written down",
+      "issue": "INO-371"
+    },
+    {
+      "slug": "iftalabel",
+      "check": "sizing",
+      "reason": "declares a size @Input but the doc never documents the scale; the audit decides whether the scale is real or the @Input is vestigial before text is written for it",
+      "issue": "INO-371"
+    },
+    {
+      "slug": "iftalabel",
+      "check": "notes",
+      "reason": "no \"## Deliberate omissions\" section; the omissions have to be established by the audit before they can be written down",
+      "issue": "INO-371"
+    },
+    {
+      "slug": "input-otp",
+      "check": "sizing",
+      "reason": "declares a size @Input but the doc never documents the scale; the audit decides whether the scale is real or the @Input is vestigial before text is written for it",
+      "issue": "INO-371"
+    },
+    {
+      "slug": "meter-group",
+      "check": "states",
+      "reason": "the doc documents no state coverage at all; the audit establishes which of the §2.2 states apply to this component first",
+      "issue": "INO-371"
+    },
+    {
+      "slug": "modal",
+      "check": "sizing",
+      "reason": "declares a size @Input but the doc never documents the scale; the audit decides whether the scale is real or the @Input is vestigial before text is written for it",
+      "issue": "INO-371"
+    },
+    {
+      "slug": "modal",
+      "check": "notes",
+      "reason": "no \"## Deliberate omissions\" section; the omissions have to be established by the audit before they can be written down",
+      "issue": "INO-371"
+    },
+    {
+      "slug": "popover",
+      "check": "sizing",
+      "reason": "declares a size @Input but the doc never documents the scale; the audit decides whether the scale is real or the @Input is vestigial before text is written for it",
+      "issue": "INO-371"
+    },
+    {
+      "slug": "progress-spinner",
+      "check": "states",
+      "reason": "the doc documents no state coverage at all; the audit establishes which of the §2.2 states apply to this component first",
+      "issue": "INO-371"
+    },
+    {
+      "slug": "radio-group",
+      "check": "notes",
+      "reason": "no \"## Deliberate omissions\" section; the omissions have to be established by the audit before they can be written down",
+      "issue": "INO-371"
+    },
+    {
+      "slug": "skeleton",
+      "check": "states",
+      "reason": "the doc documents no state coverage at all; the audit establishes which of the §2.2 states apply to this component first",
+      "issue": "INO-371"
+    },
+    {
+      "slug": "skeleton",
+      "check": "sizing",
+      "reason": "declares a size @Input but the doc never documents the scale; the audit decides whether the scale is real or the @Input is vestigial before text is written for it",
+      "issue": "INO-371"
+    },
+    {
+      "slug": "stepper",
+      "check": "sizing",
+      "reason": "declares a size @Input but the doc never documents the scale; the audit decides whether the scale is real or the @Input is vestigial before text is written for it",
+      "issue": "INO-371"
+    },
+    {
+      "slug": "stepper",
+      "check": "notes",
+      "reason": "no \"## Deliberate omissions\" section; the omissions have to be established by the audit before they can be written down",
+      "issue": "INO-371"
+    },
+    {
+      "slug": "tabs",
+      "check": "sizing",
+      "reason": "declares a size @Input but the doc never documents the scale; the audit decides whether the scale is real or the @Input is vestigial before text is written for it",
+      "issue": "INO-371"
+    },
+    {
+      "slug": "tabs",
+      "check": "notes",
+      "reason": "no \"## Deliberate omissions\" section; the omissions have to be established by the audit before they can be written down",
+      "issue": "INO-371"
+    },
+    {
+      "slug": "tag",
+      "check": "states",
+      "reason": "the doc documents no state coverage at all; the audit establishes which of the §2.2 states apply to this component first",
+      "issue": "INO-371"
+    },
+    {
+      "slug": "toast-container",
+      "check": "states",
+      "reason": "the doc documents no state coverage at all; the audit establishes which of the §2.2 states apply to this component first",
+      "issue": "INO-371"
+    },
+    {
+      "slug": "toggle",
+      "check": "notes",
+      "reason": "no \"## Deliberate omissions\" section; the omissions have to be established by the audit before they can be written down",
+      "issue": "INO-371"
+    },
+    {
+      "slug": "tooltip",
+      "check": "sizing",
+      "reason": "declares a size @Input but the doc never documents the scale; the audit decides whether the scale is real or the @Input is vestigial before text is written for it",
+      "issue": "INO-371"
+    },
+    {
+      "slug": "virtual-scroller",
+      "check": "sizing",
+      "reason": "declares a size @Input but the doc never documents the scale; the audit decides whether the scale is real or the @Input is vestigial before text is written for it",
+      "issue": "INO-371"
+    },
+    {
+      "slug": "virtual-scroller",
+      "check": "notes",
+      "reason": "no \"## Deliberate omissions\" section; the omissions have to be established by the audit before they can be written down",
+      "issue": "INO-371"
+    }
+  ]
+}

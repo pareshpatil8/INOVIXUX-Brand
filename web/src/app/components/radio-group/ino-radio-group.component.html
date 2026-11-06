@@ -1,4 +1,10 @@
-<fieldset class="ino-radio-group" [disabled]="disabled" [attr.aria-describedby]="error ? errorId : null">
+<fieldset
+  class="ino-radio-group"
+  role="radiogroup"
+  [disabled]="disabled"
+  [attr.aria-readonly]="readonly ? true : null"
+  [attr.aria-describedby]="error ? errorId : null"
+>
   <legend *ngIf="legend" class="ino-radio-group__legend">{{ legend }}</legend>
 
   <ino-radio

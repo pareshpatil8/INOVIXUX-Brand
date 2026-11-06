@@ -58,6 +58,15 @@ determinate value jumps straight to its new position instead of easing.
 
 ---
 
+## Labels and fields
+
+`label` overrides the spinner's accessible name (`aria-label`); it is not a visible `<label for>`
+— this is a status indicator, not a form field, so `required`, hint text, error text and
+float-label integration don't apply. Left unset, the accessible name defaults to `"Loading"`
+(indeterminate mode) or `"N% complete"` (determinate), matching `ino-progress-bar`'s convention.
+
+---
+
 ## Accessibility contract
 
 **Role / ARIA** — `role="progressbar"` on the host (the standard WAI-ARIA pattern for this widget).

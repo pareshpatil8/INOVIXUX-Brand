@@ -220,12 +220,22 @@ export class InoDatePickerComponent implements OnChanges, OnDestroy {
     if (typeof document !== 'undefined') {
       this.previouslyFocused = document.activeElement as HTMLElement | null;
     }
-    queueMicrotask(() => this.focusGrid());
+    // Zoneless: CD runs via the render scheduler, not a microtask, so a queued microtask would
+    // fire before the *ngIf-gated grid renders and find nothing. Force the render synchronously.
+    this.cdr.detectChanges();
+    // The detectChanges() call above already attached the *ngIf-gated overlay and resolved
+    // `overlayRef` synchronously (same guarantee focusGrid() below relies on for `gridRef`), so
+    // reparenting + positioning can happen here, still inside this task, before the browser
+    // paints. activatePortal() -> updatePortalPosition() writes portalTop/portalLeft and calls
+    // markForCheck(), which only *schedules* the next render on the zoneless scheduler — it does
+    // not flush the [style.top.px]/[style.left.px] bindings synchronously. Left alone, the
+    // portal-fixed overlay would still paint once at its 0,0 default before that scheduled render
+    // lands. The second detectChanges() below forces that flush inside the same task (INO-398).
     if (this.appendTo === 'body') {
-      // *ngIf hasn't attached the overlay's view yet on this tick — deferred one macrotask past
-      // the pending render, same reasoning as <ino-popover>'s reposition() doc comment.
-      setTimeout(() => this.activatePortal());
+      this.activatePortal();
+      this.cdr.detectChanges();
     }
+    this.focusGrid();
   }
 
   requestClose(): void {
@@ -415,6 +425,28 @@ export class InoDatePickerComponent implements OnChanges, OnDestroy {
       weeks.push(row);
     }
     return weeks;
+  }
+
+  /** `weeks` always renders a fixed 6x7 grid, so the position IS the identity — reusing the
+   *  row/cell at each index lets Angular patch bindings on the existing DOM node instead of
+   *  destroying and recreating it every time `weeks` is re-evaluated (it returns fresh object
+   *  literals on every read, since `buildCell` has no memoization). Without this, a later
+   *  change-detection pass — e.g. the render scheduler's own follow-up tick after a manual
+   *  `detectChanges()` in `onGridKeydown` — tears down and rebuilds the very cell that was
+   *  just focused, dropping focus to <body> a frame later. */
+  protected trackByIndex(index: number): number {
+    return index;
+  }
+
+  /** Whether `date` falls within the fixed 6-week window the `weeks` getter renders for the
+   *  current `viewDate`, including its leading/trailing overflow days from adjacent months. */
+  private isDateInCurrentGrid(date: Date): boolean {
+    const first = this.firstDayOfWeek();
+    const monthStart = new Date(this.viewDate.getFullYear(), this.viewDate.getMonth(), 1);
+    const offset = (monthStart.getDay() - first + 7) % 7;
+    const gridStart = addDays(monthStart, -offset);
+    const gridEnd = addDays(gridStart, 41);
+    return date >= gridStart && date <= gridEnd;
   }
 
   private buildCell(date: Date): InoDateCell {
@@ -784,6 +816,12 @@ export class InoDatePickerComponent implements OnChanges, OnDestroy {
 
   onGridKeydown(event: KeyboardEvent, cell: InoDateCell): void {
     let next: Date | null = null;
+    // PageUp/PageDown explicitly page the displayed month/year, so they must always move
+    // `viewDate` to the target's month even when that month's overflow days already happen to
+    // render inside the current 6-week grid (see the `weeks` getter). Arrow/Home/End only ever
+    // move within or adjacent to the focused week, so for them the grid should re-paginate
+    // ONLY when the target actually falls outside what's currently rendered.
+    let forceRepaginate = false;
     switch (event.key) {
       case 'ArrowLeft':
         next = addDays(this.focusedDate, -1);
@@ -808,9 +846,11 @@ export class InoDatePickerComponent implements OnChanges, OnDestroy {
         break;
       case 'PageUp':
         next = event.shiftKey ? addYears(this.focusedDate, -1) : addMonths(this.focusedDate, -1);
+        forceRepaginate = true;
         break;
       case 'PageDown':
         next = event.shiftKey ? addYears(this.focusedDate, 1) : addMonths(this.focusedDate, 1);
+        forceRepaginate = true;
         break;
       case 'Enter':
       case ' ':
@@ -823,10 +863,14 @@ export class InoDatePickerComponent implements OnChanges, OnDestroy {
     event.preventDefault();
     this.focusedDate = next;
     const resolved = next as Date;
-    if (resolved.getMonth() !== this.viewDate.getMonth() || resolved.getFullYear() !== this.viewDate.getFullYear()) {
+    if (forceRepaginate || !this.isDateInCurrentGrid(resolved)) {
       this.viewDate = new Date(resolved.getFullYear(), resolved.getMonth(), 1);
     }
-    queueMicrotask(() => this.focusGrid());
+    // Same zoneless render-timing issue as openPanel(): force the [tabindex] update to commit
+    // before querying for it, otherwise focusGrid() re-focuses the stale cell (or, after a month
+    // page destroys it, focuses nothing and focus falls back to <body>).
+    this.cdr.detectChanges();
+    this.focusGrid();
   }
 
   private focusGrid(): void {

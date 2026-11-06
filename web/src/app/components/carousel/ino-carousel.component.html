@@ -1,0 +1,63 @@
+<div class="ino-carousel__viewport">
+  <button
+    *ngIf="showNavigation"
+    type="button"
+    class="ino-carousel__nav ino-carousel__nav--prev"
+    [attr.aria-label]="orientation === 'horizontal' ? 'Previous slide' : 'Previous slide (up)'"
+    [disabled]="!circular && isAtStart"
+    (click)="prev()"
+  >‹</button>
+
+  <div
+    #track
+    class="ino-carousel__track"
+    tabindex="0"
+    [attr.aria-label]="ariaLabel"
+    (keydown)="onKeydown($event)"
+  >
+    <ng-content></ng-content>
+  </div>
+
+  <button
+    *ngIf="showNavigation"
+    type="button"
+    class="ino-carousel__nav ino-carousel__nav--next"
+    [attr.aria-label]="orientation === 'horizontal' ? 'Next slide' : 'Next slide (down)'"
+    [disabled]="!circular && isAtEnd"
+    (click)="next()"
+  >›</button>
+
+  <!-- APG carousel: a visible pause control must exist whenever autoplay is on — never hidden
+       behind hover/focus (SPEC.md §3). -->
+  <button
+    *ngIf="autoplay"
+    type="button"
+    class="ino-carousel__play-pause"
+    [attr.aria-label]="playing ? 'Pause autoplay' : 'Play autoplay'"
+    [attr.aria-pressed]="playing"
+    (click)="togglePlaying()"
+  ><span aria-hidden="true">{{ playing ? '⏸' : '▶' }}</span></button>
+</div>
+
+<div
+  *ngIf="showIndicators && stops.length > 1"
+  class="ino-carousel__indicators"
+  role="group"
+  aria-label="Choose slide"
+>
+  <button
+    *ngFor="let stop of stops; let i = index"
+    type="button"
+    class="ino-carousel__indicator"
+    [class.ino-carousel__indicator--active]="i === currentStopIndex"
+    [attr.aria-current]="i === currentStopIndex ? 'true' : null"
+    [attr.aria-label]="'Go to slide ' + (stop + 1) + ' of ' + items.length"
+    (click)="goTo(stop)"
+  ></button>
+</div>
+
+<!-- Range announcement — `off` while autoplaying so AT isn't interrupted every tick, `polite`
+     once paused/under manual control (SPEC.md §5). -->
+<div class="ino-carousel__sr-status" [attr.aria-live]="playing ? 'off' : 'polite'" aria-atomic="true">
+  {{ rangeLabel }}
+</div>

@@ -1,0 +1,254 @@
+/* Connector geometry is the classic CSS org-chart recipe — half-rails + drop stubs drawn with
+   borders on pseudo-elements — in logical properties throughout, so the chart mirrors under
+   `dir="rtl"` with zero `[dir]` overrides (SPEC.md §4). Every internal length is in `em`: the
+   scroller's `font-size` is `--ino-control-font-size × zoom`, so one declaration scales the whole
+   chart — layout, text and connectors together (SPEC.md §6). */
+
+:host {
+  display: block;
+}
+
+.ino-orgchart__wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ino-space-2);
+
+  &--disabled {
+    .ino-orgchart__tree,
+    .ino-orgchart__empty {
+      opacity: 0.5;
+    }
+
+    .ino-orgchart__node {
+      cursor: not-allowed;
+    }
+  }
+}
+
+.ino-orgchart__label {
+  color: var(--ino-color-on-surface);
+  font-size: var(--ino-type-body-size);
+  font-weight: 600;
+}
+
+/* A chart must never force the host page to scroll sideways — wide charts scroll in here
+   (SPEC.md §6). Padding keeps node focus rings clear of the clip edge. */
+.ino-orgchart__scroller {
+  position: relative;
+  overflow: auto;
+  padding: var(--ino-space-3);
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-md);
+  background: var(--ino-color-surface-sunken);
+}
+
+/* ── Tree layout + connectors (SPEC.md §4) ─────────────────────────────────────────────────── */
+
+.ino-orgchart__tree,
+.ino-orgchart__children {
+  display: flex;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  /* Vertical run of one connector segment — rail-to-node and card-to-rail stubs both use it. */
+  --ino-orgchart-connector: 1.25em;
+}
+
+.ino-orgchart__item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-block-start: var(--ino-orgchart-connector);
+  padding-inline: 0.5em;
+
+  /* Half-rail toward the row's start side… */
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-end: 50%;
+    inline-size: 50%;
+    block-size: var(--ino-orgchart-connector);
+    border-block-start: 1px solid var(--ino-color-border);
+  }
+
+  /* …and toward the end side, which also carries the center drop stub down to the node. */
+  &::after {
+    inset-inline-end: auto;
+    inset-inline-start: 50%;
+    border-inline-start: 1px solid var(--ino-color-border);
+  }
+
+  /* Edge children keep only the rail half that points at a sibling; the stub always stays. */
+  &:first-child::before {
+    border-block-start: none;
+  }
+
+  &:last-child::after {
+    border-block-start: none;
+  }
+}
+
+/* Root node has no parent — no rail, no stub, no connector headroom. */
+.ino-orgchart__tree > .ino-orgchart__item {
+  padding-block-start: 0;
+
+  &::before,
+  &::after {
+    display: none;
+  }
+}
+
+/* Descent stub from the parent card (or its toggler) down to the children's rail. */
+.ino-orgchart__children {
+  position: relative;
+  padding-block-start: var(--ino-orgchart-connector);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: 50%;
+    block-size: var(--ino-orgchart-connector);
+    border-inline-start: 1px solid var(--ino-color-border);
+  }
+}
+
+/* ── Node card (SPEC.md §7) ────────────────────────────────────────────────────────────────── */
+
+.ino-orgchart__node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.125em;
+  min-inline-size: 6em;
+  max-inline-size: 14em;
+  padding: 0.5em 0.875em;
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-md);
+  background: var(--ino-color-surface-raised);
+  color: var(--ino-color-on-surface);
+  text-align: center;
+
+  &--selectable {
+    cursor: pointer;
+
+    &:hover {
+      border-color: var(--ino-color-on-surface-muted);
+    }
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+
+  &--selected {
+    border-color: var(--ino-color-accent);
+
+    .ino-orgchart__node-label {
+      color: var(--ino-color-accent-text-safe);
+      font-weight: 600;
+    }
+  }
+
+  &--disabled {
+    color: var(--ino-color-on-surface-subtle);
+
+    .ino-orgchart__node-sublabel {
+      color: var(--ino-color-on-surface-subtle);
+    }
+  }
+}
+
+.ino-orgchart__node-label {
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.ino-orgchart__node-sublabel {
+  font-size: 0.85em;
+  color: var(--ino-color-on-surface-muted);
+  overflow-wrap: anywhere;
+}
+
+/* ── Expand/collapse toggler — pointer affordance, out of the tab order (template note) ────── */
+
+.ino-orgchart__toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 1.5em;
+  block-size: 1.5em;
+  margin-block-start: 0.25em;
+  padding: 0;
+  border: 1px solid var(--ino-color-border);
+  border-radius: 50%;
+  background: var(--ino-color-surface-raised);
+  color: var(--ino-color-on-surface-muted);
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    border-color: var(--ino-color-on-surface-muted);
+    color: var(--ino-color-on-surface);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+.ino-orgchart__chevron {
+  line-height: 1;
+  /* Expanded: point up (click collapses); collapsed: point down (click expands). */
+  transform: rotate(180deg);
+  transition: transform 120ms ease;
+
+  &--collapsed {
+    transform: rotate(0deg);
+  }
+}
+
+/* ── Loading overlay (SPEC.md §7) ──────────────────────────────────────────────────────────── */
+
+.ino-orgchart__spinner {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  inline-size: 1.5em;
+  block-size: 1.5em;
+  margin-block-start: -0.75em;
+  margin-inline-start: -0.75em;
+  border: 2px solid var(--ino-color-border);
+  border-block-start-color: var(--ino-color-accent);
+  border-radius: 50%;
+  animation: ino-orgchart-spin 700ms linear infinite;
+}
+
+@keyframes ino-orgchart-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.ino-orgchart__empty {
+  margin: 0;
+  padding: var(--ino-space-4);
+  color: var(--ino-color-on-surface-subtle);
+  font-size: var(--ino-type-body-size);
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ino-orgchart__chevron {
+    transition: none;
+  }
+
+  .ino-orgchart__spinner {
+    animation-duration: 1.6s;
+  }
+}

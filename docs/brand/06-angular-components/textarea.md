@@ -96,6 +96,17 @@ scroll-height transition would visibly lag behind fast typing).
 
 ---
 
+## Labels and fields
+
+`label` renders through the shared `ino-label` leaf (`[required]` for the decorative `*`,
+`[invalid]="!!error"` for the danger treatment); `required` is also forwarded to the native
+`<textarea required>` for browser-level validation. `placeholder` sits inside the control, never as
+a label substitute. `hint`/`error` share a meta row under the field with the character counter (see
+[Character counter](#character-counter)) — `error` takes priority over `hint`, both wired via
+`aria-describedby` — and `error` also sets `aria-invalid` and the field's danger border.
+
+---
+
 ## Accessibility contract
 
 **Role / ARIA** — a real `<label for>` gives the accessible name. `aria-invalid` reflects `error`;

@@ -1,0 +1,179 @@
+/*
+ * <ino-splitter> — INO-445 (INO-31 Phase B2, doc 26 §5 row `ino-splitter`).
+ *
+ * No literal colour/space/radius/duration/font-size — every declaration resolves through a
+ * semantic role in tokens.css, logical properties only (inset-inline/-block, never left/right/
+ * top/bottom), so the whole component is RTL-safe for free.
+ *
+ * "Sizing: gutter tokens" (the spec row's own sizing dimension) is satisfied by REUSING two
+ * existing tokens rather than inventing new ones — tokens.css is frozen after Wave 0, the same
+ * constraint `ino-slider`'s own SCSS doc comment names for its thumb/track sizing:
+ *   - --ino-target-min (24px, WCAG 2.2 SC 2.5.8) is the gutter's interactive hit width.
+ *   - --ino-border-width-hairline (1px) is the gutter's visible line thickness — the same token
+ *     `ino-divider` already uses for an on-screen dividing line.
+ */
+
+:host {
+  display: block;
+  position: relative;
+  inline-size: 100%;
+  block-size: 100%;
+  min-block-size: 0;
+}
+
+:host(.ino-splitter--disabled) {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.ino-splitter__track {
+  display: flex;
+  inline-size: 100%;
+  block-size: 100%;
+  overflow: hidden;
+}
+
+:host([data-orientation='vertical']) .ino-splitter__track {
+  flex-direction: column;
+}
+
+.ino-splitter__gutters {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.ino-splitter__gutter {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  touch-action: none;
+  background: transparent;
+  transition: background-color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+}
+
+:host([data-orientation='horizontal']) .ino-splitter__gutter {
+  inset-block: 0;
+  inline-size: var(--ino-target-min);
+  block-size: 100%;
+  transform: translateX(-50%);
+  cursor: col-resize;
+  flex-direction: column;
+}
+
+:host([data-orientation='vertical']) .ino-splitter__gutter {
+  inset-inline: 0;
+  block-size: var(--ino-target-min);
+  inline-size: 100%;
+  transform: translateY(-50%);
+  cursor: row-resize;
+}
+
+.ino-splitter__gutter-line {
+  position: absolute;
+  background: var(--ino-color-border);
+}
+
+:host([data-orientation='horizontal']) .ino-splitter__gutter-line {
+  inline-size: var(--ino-border-width-hairline);
+  block-size: 100%;
+}
+
+:host([data-orientation='vertical']) .ino-splitter__gutter-line {
+  block-size: var(--ino-border-width-hairline);
+  inline-size: 100%;
+}
+
+.ino-splitter__gutter:hover .ino-splitter__gutter-line,
+.ino-splitter__gutter:focus-visible .ino-splitter__gutter-line {
+  background: var(--ino-color-accent);
+}
+
+.ino-splitter__gutter:hover,
+.ino-splitter__gutter:focus-visible {
+  background: var(--ino-color-surface-sunken);
+}
+
+.ino-splitter__gutter:focus-visible {
+  outline: var(--ino-focus-ring);
+  outline-offset: calc(-1 * var(--ino-focus-ring-offset));
+  z-index: 1;
+}
+
+/* Active/dragging (spec row's additional state beyond the §2 standard set). */
+.ino-splitter__gutter--dragging,
+.ino-splitter__gutter:active {
+  background: var(--ino-color-surface-sunken);
+}
+
+.ino-splitter__gutter--dragging .ino-splitter__gutter-line,
+.ino-splitter__gutter:active .ino-splitter__gutter-line {
+  background: var(--ino-color-accent-active);
+}
+
+:host(.ino-splitter--dragging) .ino-splitter__gutter:not(.ino-splitter__gutter--dragging) {
+  pointer-events: none;
+}
+
+.ino-splitter__gutter[aria-disabled='true'] {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.ino-splitter__collapse-toggle {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--ino-control-icon-size-default);
+  block-size: var(--ino-control-icon-size-default);
+  border: var(--ino-border-width-hairline) solid var(--ino-color-border);
+  border-radius: var(--ino-radius-sm);
+  background: var(--ino-color-surface-raised);
+  color: var(--ino-color-on-surface-muted);
+  font-size: var(--ino-type-body-sm-size);
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0;
+  transition:
+    opacity var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+    color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+}
+
+.ino-splitter__gutter:hover .ino-splitter__collapse-toggle,
+.ino-splitter__gutter:focus-within .ino-splitter__collapse-toggle {
+  opacity: 1;
+}
+
+.ino-splitter__collapse-toggle:hover:not(:disabled) {
+  color: var(--ino-color-accent);
+}
+
+.ino-splitter__collapse-toggle:focus-visible {
+  opacity: 1;
+  outline: var(--ino-focus-ring);
+  outline-offset: var(--ino-focus-ring-offset);
+}
+
+.ino-splitter__collapse-toggle:disabled {
+  cursor: not-allowed;
+}
+
+:host([data-orientation='horizontal']) .ino-splitter__collapse-toggle {
+  margin-block: var(--ino-space-2);
+}
+
+:host([data-orientation='horizontal']) .ino-splitter__collapse-toggle--after {
+  margin-block-start: auto;
+  margin-block-end: var(--ino-space-2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ino-splitter__gutter,
+  .ino-splitter__collapse-toggle {
+    transition: none;
+  }
+}

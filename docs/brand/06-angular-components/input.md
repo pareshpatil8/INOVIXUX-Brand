@@ -75,6 +75,18 @@ rotation, matching `ino-button`'s spinner. Both collapse to no animation under
 
 ---
 
+## Labels and fields
+
+`label` renders through the shared `ino-label` leaf: a real `<label for>`, `[required]` for the
+decorative `*` marker (colour/glyph alone never carries the meaning — pair with `aria-required` on
+the input when a screen reader must announce it), `[invalid]="!!error"` for the danger-token
+treatment. `placeholder` sits inside the field itself, never as a label substitute. `hint`/`error`
+render as a paragraph below the field — `error` wins when both are set — wired via
+`aria-describedby` so assistive tech announces them on focus, not just on visual inspection;
+`error` also sets `aria-invalid` and swaps the field border to the danger token.
+
+---
+
 ## Accessibility contract
 
 **Role / ARIA** — a real `<label for>` (not a placeholder-only control) gives the accessible name.

@@ -1,0 +1,193 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Tree Structure — hierarchical data with expand/collapse</h3>
+  <p class="demo-section__note">
+    The treetable combines a tree's expand/collapse model with a table's column layout. The first
+    column is frozen by default and contains the expand chevron. Click chevrons or press ArrowRight
+    to expand, ArrowLeft to collapse. Implements WAI-ARIA <code>role=treegrid</code> with roving
+    tabindex and 2D keyboard navigation.
+  </p>
+  <div class="demo-pane">
+    <ino-treetable
+      [data]="data"
+      [columns]="columns"
+      caption="Component Development Status"
+    ></ino-treetable>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Sortable Columns</h3>
+  <p class="demo-section__note">
+    Columns with <code>[sortable]="true"</code> render a clickable header. Click once for ascending,
+    again for descending, again to clear sort. Sort events allow external sort control or
+    server-side sorting.
+  </p>
+  <div class="demo-pane">
+    <ino-treetable
+      [data]="data"
+      [columns]="columns"
+      caption="Sortable Component List"
+      (sort)="onSort($event)"
+    ></ino-treetable>
+    <p class="demo-pane__note">Last sort event: {{ lastSortEvent }}</p>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Density — dense vs fluid row heights</h3>
+  <p class="demo-section__note">
+    <code>[density]="dense"</code> uses <code>--ino-row-min-height</code> for compact layouts.
+    <code>[density]="fluid"</code> (default) uses <code>--ino-control-height-default</code> for
+    comfortable spacing. Both modes maintain WCAG 2.2 AA touch target minimums.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">dense</p>
+      <ino-treetable
+        [data]="minimalData"
+        [columns]="minimalColumns"
+        caption="Dense Layout"
+        density="dense"
+      ></ino-treetable>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">fluid (default)</p>
+      <ino-treetable
+        [data]="minimalData"
+        [columns]="minimalColumns"
+        caption="Fluid Layout"
+        density="fluid"
+      ></ino-treetable>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Size — control sizing for headers</h3>
+  <p class="demo-section__note">
+    <code>[size]="sm|default|lg"</code> controls the size of interactive elements in the header
+    (sort buttons, resize handles). Row sizing is controlled separately via <code>[density]</code>.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">sm</p>
+      <ino-treetable
+        [data]="minimalData"
+        [columns]="minimalColumns"
+        caption="Small Headers"
+        size="sm"
+      ></ino-treetable>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">default</p>
+      <ino-treetable
+        [data]="minimalData"
+        [columns]="minimalColumns"
+        caption="Default Headers"
+        size="default"
+      ></ino-treetable>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">lg</p>
+      <ino-treetable
+        [data]="minimalData"
+        [columns]="minimalColumns"
+        caption="Large Headers"
+        size="lg"
+      ></ino-treetable>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States — disabled, readonly, invalid, loading</h3>
+  <p class="demo-section__note">
+    <code>[disabled]="true"</code> prevents all interaction. <code>[readonly]="true"</code> renders
+    controls but blocks interaction. <code>[invalid]="true"</code> adds a danger border.
+    <code>[loading]="true"</code> shows skeleton rows.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">disabled</p>
+      <ino-treetable
+        [data]="minimalData"
+        [columns]="minimalColumns"
+        caption="Disabled State"
+        [disabled]="true"
+      ></ino-treetable>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">readonly</p>
+      <ino-treetable
+        [data]="minimalData"
+        [columns]="minimalColumns"
+        caption="Readonly State"
+        [readonly]="true"
+      ></ino-treetable>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">invalid</p>
+      <ino-treetable
+        [data]="minimalData"
+        [columns]="minimalColumns"
+        caption="Invalid State"
+        [invalid]="true"
+      ></ino-treetable>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">loading</p>
+      <ino-treetable
+        [data]="minimalData"
+        [columns]="minimalColumns"
+        caption="Loading State"
+        [loading]="true"
+      ></ino-treetable>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Empty State</h3>
+  <p class="demo-section__note">
+    When <code>[data]="[]"</code>, the component shows the <code>[emptyMessage]</code> in place of
+    rows. Customize with your own message for context-specific guidance.
+  </p>
+  <div class="demo-pane">
+    <ino-treetable
+      [data]="emptyData"
+      [columns]="minimalColumns"
+      caption="Empty Table"
+      emptyMessage="No components to display. Add your first component to get started."
+    ></ino-treetable>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Keyboard Navigation</h3>
+  <p class="demo-section__note">
+    Follows WAI-ARIA APG treegrid pattern with roving tabindex:
+  </p>
+  <ul class="demo-section__list">
+    <li><kbd>Tab</kbd> moves focus into/out of the grid (to first/last focusable cell)</li>
+    <li><kbd>Arrow keys</kbd> navigate between cells (2D grid navigation)</li>
+    <li><kbd>Home</kbd>/<kbd>End</kbd> move to first/last cell in current row</li>
+    <li><kbd>Ctrl+Home</kbd>/<kbd>Ctrl+End</kbd> move to first/last cell in entire grid</li>
+    <li><kbd>PageUp</kbd>/<kbd>PageDown</kbd> move up/down by 10 rows</li>
+    <li><kbd>ArrowRight</kbd> on tree column expands collapsed branch</li>
+    <li><kbd>ArrowLeft</kbd> on tree column collapses expanded branch or moves to parent</li>
+    <li><kbd>Enter</kbd>/<kbd>Space</kbd> on tree column toggles expansion</li>
+  </ul>
+  <div class="demo-pane">
+    <ino-treetable
+      [data]="data"
+      [columns]="columns"
+      caption="Keyboard Navigation Demo"
+    ></ino-treetable>
+  </div>
+</section>

@@ -1,0 +1,53 @@
+<div #track class="ino-splitter__track">
+  <ng-content></ng-content>
+</div>
+
+<div class="ino-splitter__gutters" aria-hidden="false">
+  <div
+    *ngFor="let gi of gutterIndices"
+    class="ino-splitter__gutter"
+    [class.ino-splitter__gutter--dragging]="draggingGutterIndex === gi"
+    role="separator"
+    [attr.aria-orientation]="orientation === 'horizontal' ? 'vertical' : 'horizontal'"
+    [attr.aria-valuenow]="round(panels[gi].flexBasis)"
+    [attr.aria-valuemin]="round(panels[gi].minSize)"
+    [attr.aria-valuemax]="round(panels[gi].flexBasis + panels[gi + 1].flexBasis - panels[gi + 1].minSize)"
+    [attr.aria-valuetext]="round(panels[gi].flexBasis) + '%'"
+    [attr.tabindex]="disabled ? -1 : 0"
+    [attr.aria-disabled]="disabled ? 'true' : null"
+    [attr.data-readonly]="readonly ? 'true' : null"
+    [style.inset-inline-start.%]="orientation === 'horizontal' ? cumulativeOffset(gi + 1) : null"
+    [style.inset-block-start.%]="orientation === 'vertical' ? cumulativeOffset(gi + 1) : null"
+    (pointerdown)="onGutterPointerDown($event, gi, track)"
+    (pointermove)="onGutterPointerMove($event, gi)"
+    (pointerup)="onGutterPointerUp($event, gi)"
+    (pointercancel)="onGutterPointerUp($event, gi)"
+    (keydown)="onGutterKeydown($event, gi)"
+  >
+    <span class="ino-splitter__gutter-line" aria-hidden="true"></span>
+
+    <button
+      *ngIf="hasBeforeToggle(gi)"
+      type="button"
+      class="ino-splitter__collapse-toggle"
+      [attr.aria-label]="toggleLabel('before', panels[gi].collapsed)"
+      [attr.aria-expanded]="!panels[gi].collapsed"
+      [attr.aria-controls]="panels[gi].panelId"
+      [disabled]="disabled || readonly"
+      (pointerdown)="$event.stopPropagation()"
+      (click)="toggleCollapse(gi, 'before')"
+    >{{ chevron('before', panels[gi].collapsed) }}</button>
+
+    <button
+      *ngIf="hasAfterToggle(gi)"
+      type="button"
+      class="ino-splitter__collapse-toggle ino-splitter__collapse-toggle--after"
+      [attr.aria-label]="toggleLabel('after', panels[panels.length - 1].collapsed)"
+      [attr.aria-expanded]="!panels[panels.length - 1].collapsed"
+      [attr.aria-controls]="panels[panels.length - 1].panelId"
+      [disabled]="disabled || readonly"
+      (pointerdown)="$event.stopPropagation()"
+      (click)="toggleCollapse(panels.length - 1, 'after')"
+    >{{ chevron('after', panels[panels.length - 1].collapsed) }}</button>
+  </div>
+</div>

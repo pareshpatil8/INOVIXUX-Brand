@@ -1,0 +1,141 @@
+/* `.ino-field` shell re-declared per control (no-shared-partial convention — see
+   `ino-listbox.component.scss`'s header comment, the closest sibling this file mirrors). */
+.ino-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ino-space-2);
+}
+
+/* Sizing (doc 26 §5 row: "compact/comfortable", NOT the sm/default/lg `InoControlSize` scale —
+   same axis `ino-accordion`/`ino-panel-menu` already established for list/menu-shaped
+   components). "comfortable" (default) reads the unsuffixed `--ino-control-*` aliases;
+   "compact" re-points to the `-sm` tier. Both still compose under `[data-density]` since the
+   aliases themselves are re-declared in tokens.css §10/§12 — see SPEC.md §3. */
+:host {
+  --ino-orderlist-row-height: var(--ino-control-height);
+  --ino-orderlist-row-padding-inline: var(--ino-control-padding-inline-roomy);
+  --ino-orderlist-font-size: var(--ino-control-font-size);
+}
+
+:host([data-size='compact']) {
+  --ino-orderlist-row-height: var(--ino-control-height-sm);
+  --ino-orderlist-row-padding-inline: var(--ino-control-padding-inline-roomy-sm);
+  --ino-orderlist-font-size: var(--ino-control-font-size-sm);
+}
+
+.ino-orderlist__body {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ino-space-3);
+}
+
+.ino-orderlist__list {
+  flex: 1 1 auto;
+  margin: 0;
+  padding: var(--ino-space-1) 0;
+  list-style: none;
+  max-block-size: calc(var(--ino-orderlist-row-height) * 8);
+  overflow-y: auto;
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-md);
+  background: var(--ino-color-surface-sunken);
+
+  &[aria-disabled='true'] {
+    opacity: 0.5;
+  }
+}
+
+.ino-orderlist__option {
+  padding: 0 var(--ino-orderlist-row-padding-inline);
+  min-block-size: var(--ino-orderlist-row-height);
+  display: flex;
+  align-items: center;
+  gap: var(--ino-space-3);
+  color: var(--ino-color-on-surface);
+  font-size: var(--ino-orderlist-font-size);
+  cursor: pointer;
+
+  &:hover:not(.ino-orderlist__option--disabled) {
+    background: var(--ino-color-surface-raised);
+    box-shadow: inset 0 0 0 1px var(--ino-color-on-surface-muted);
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: calc(-1 * var(--ino-focus-ring-offset));
+    background: var(--ino-color-surface-raised);
+  }
+
+  /* `selected` state (doc 26 §5 standard set), same visual language `ino-listbox` uses. */
+  &.ino-orderlist__option--selected {
+    color: var(--ino-color-accent-text-safe);
+    font-weight: 600;
+    background: var(--ino-color-surface-raised);
+  }
+
+  &.ino-orderlist__option--disabled {
+    color: var(--ino-color-on-surface-subtle);
+    cursor: not-allowed;
+  }
+
+  /* `moved-flash` state (doc 26 §5) — brief highlight confirming a reorder landed. No existing
+     repo precedent for a flash state (SPEC.md §4); a background transition that eases back to
+     transparent is the smallest implementation that reads as "this row just moved" without a
+     dedicated keyframe animation. Guarded by `prefers-reduced-motion` like every other motion
+     effect in this codebase. */
+  &.ino-orderlist__option--moved-flash {
+    background: var(--ino-color-surface-raised);
+    box-shadow: inset 0 0 0 1px var(--ino-color-accent);
+
+    @media (prefers-reduced-motion: no-preference) {
+      transition: background var(--ino-motion-duration-slow), box-shadow var(--ino-motion-duration-slow);
+    }
+  }
+}
+
+.ino-orderlist__checkbox {
+  inline-size: 16px;
+  block-size: 16px;
+  flex: 0 0 auto;
+  accent-color: var(--ino-color-accent);
+  /* Decorative — the row's own role="option"/aria-selected carries the real selection
+     semantics, same rationale `ino-listbox.component.scss` documents. */
+  pointer-events: none;
+}
+
+.ino-orderlist__empty {
+  padding: var(--ino-space-4);
+  color: var(--ino-color-on-surface-muted);
+  font-size: var(--ino-type-body-sm-size);
+  text-align: center;
+}
+
+.ino-orderlist__controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ino-space-2);
+  flex: 0 0 auto;
+}
+
+.ino-orderlist__hint {
+  margin: 0;
+  font-size: var(--ino-type-body-sm-size);
+  color: var(--ino-color-on-surface-muted);
+}
+
+.ino-orderlist__error {
+  margin: 0;
+  font-size: var(--ino-type-body-sm-size);
+  color: var(--ino-color-danger);
+  font-weight: 600;
+}
+
+.ino-field--disabled {
+  .ino-orderlist__list {
+    opacity: 0.5;
+  }
+
+  .ino-orderlist__hint {
+    color: var(--ino-color-on-surface-subtle);
+  }
+}

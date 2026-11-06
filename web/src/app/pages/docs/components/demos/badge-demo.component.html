@@ -1,0 +1,254 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Variants — dot, count, status</h3>
+  <p class="demo-section__note">
+    Three usage patterns per doc 26 §5: <strong>dot</strong> (simple presence indicator),
+    <strong>count</strong> (numeric badge with 99+ overflow), <strong>status</strong> (labeled
+    indicator with severity colors). Each variant has different accessibility semantics — see the
+    A11y section below.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">dot (decorative)</p>
+      <ino-badge variant="dot" size="md"></ino-badge>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">dot (informative, with ariaLabel)</p>
+      <ino-badge variant="dot" size="md" ariaLabel="Online status"></ino-badge>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">count (numeric)</p>
+      <ino-badge variant="count" size="md" [value]="3" ariaLabel="3 new notifications"></ino-badge>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">status (labeled)</p>
+      <ino-badge variant="status" size="md" label="Active" severity="success"></ino-badge>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Count variant — 99+ overflow</h3>
+  <p class="demo-section__note">
+    When <code>value >= 100</code>, the displayed text is "99+" (per doc 26 §5 "max+ overflow").
+    The real <code>value</code> is always preserved in <code>ariaLabel</code> for screen readers.
+  </p>
+  <div class="demo-grid">
+    @for (sample of countSamples; track sample.value) {
+      <div class="demo-pane">
+        <p class="demo-pane__label">value={{ sample.value }}</p>
+        <ino-badge variant="count" size="md" [value]="sample.value" [ariaLabel]="sample.label"></ino-badge>
+      </div>
+    }
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Status variant — severity colors</h3>
+  <p class="demo-section__note">
+    <code>severity</code> applies only to <code>variant="status"</code>. Maps to semantic color
+    roles (<code>--ino-color-{{ '{' }}severity{{ '}' }}</code> and <code>--ino-color-{{ '{' }}severity{{ '}' }}-surface</code>).
+    Dot and count variants use fixed <code>--ino-color-primary</code> instead.
+  </p>
+  <div class="demo-grid">
+    @for (severity of severities; track severity) {
+      <div class="demo-pane">
+        <p class="demo-pane__label">{{ severity }}</p>
+        <ino-badge variant="status" size="md" [label]="severity" [severity]="severity"></ino-badge>
+      </div>
+    }
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Sizing — sm/md (dense/fluid)</h3>
+  <p class="demo-section__note">
+    Two sizes per doc 26 §5 "sm/md" — aligned with dense/fluid density modes. Unlike
+    <code>ino-avatar</code>'s five-step scale, badge uses only two sizes: <strong>sm</strong> (dense
+    mode — 8px dot, 16px count height, 20px status height) and <strong>md</strong> (fluid mode —
+    10px dot, 20px count height, 24px status height).
+  </p>
+  <div class="demo-grid">
+    @for (variant of variants; track variant) {
+      @for (size of sizes; track size) {
+        <div class="demo-pane">
+          <p class="demo-pane__label">{{ variant }}, {{ size }}</p>
+          @switch (variant) {
+            @case ('dot') {
+              <ino-badge [variant]="variant" [size]="size" ariaLabel="Example dot"></ino-badge>
+            }
+            @case ('count') {
+              <ino-badge [variant]="variant" [size]="size" [value]="3" ariaLabel="3 items"></ino-badge>
+            }
+            @case ('status') {
+              <ino-badge [variant]="variant" [size]="size" label="Info" severity="info"></ino-badge>
+            }
+          }
+        </div>
+      }
+    }
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Positioned mode — badge on child element</h3>
+  <p class="demo-section__note">
+    Per doc 26 §5 "positioned-on-child or standalone" — when the parent container has
+    <code>position: relative</code>, the badge anchors to the top-end corner via
+    <code>position: absolute</code>. Mode is detected via <code>:host-context()</code> rather than
+    an explicit prop. Positioned badges work on buttons, icons, avatars, etc.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">dot on button</p>
+      <button class="demo-button" style="position: relative; padding: 12px 24px; border-radius: 8px; border: 1px solid currentColor;">
+        Notifications
+        <ino-badge variant="dot" size="sm" ariaLabel="Has new items"></ino-badge>
+      </button>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">count on button</p>
+      <button class="demo-button" style="position: relative; padding: 12px 24px; border-radius: 8px; border: 1px solid currentColor;">
+        Messages
+        <ino-badge variant="count" size="sm" [value]="5" ariaLabel="5 new messages"></ino-badge>
+      </button>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">count overflow on button</p>
+      <button class="demo-button" style="position: relative; padding: 12px 24px; border-radius: 8px; border: 1px solid currentColor;">
+        Inbox
+        <ino-badge variant="count" size="sm" [value]="142" ariaLabel="142 unread items"></ino-badge>
+      </button>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">dot on icon (simulated)</p>
+      <span style="position: relative; display: inline-block; font-size: 32px;">
+        🔔
+        <ino-badge variant="dot" size="sm" ariaLabel="Notification waiting"></ino-badge>
+      </span>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Standalone mode — inline badge</h3>
+  <p class="demo-section__note">
+    Without a positioned parent, the badge renders as a regular inline element. Useful in toolbars,
+    after labels, in lists, etc. No positioning logic applies.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">inline with text</p>
+      <span style="display: flex; align-items: center; gap: 8px;">
+        Notifications
+        <ino-badge variant="count" size="sm" [value]="12" ariaLabel="12 new notifications"></ino-badge>
+      </span>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">status in toolbar</p>
+      <span style="display: flex; align-items: center; gap: 8px;">
+        Server status:
+        <ino-badge variant="status" size="sm" label="Online" severity="success"></ino-badge>
+      </span>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">multiple status badges</p>
+      <span style="display: flex; align-items: center; gap: 8px;">
+        <ino-badge variant="status" size="sm" label="Draft" severity="info"></ino-badge>
+        <ino-badge variant="status" size="sm" label="Reviewed" severity="success"></ino-badge>
+        <ino-badge variant="status" size="sm" label="Requires action" severity="warning"></ino-badge>
+      </span>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Accessibility contract</h3>
+  <p class="demo-section__note">
+    Each variant has different a11y semantics per doc 26 §5:
+  </p>
+  <ul class="demo-section__note" style="margin-top: 8px; padding-left: 20px;">
+    <li>
+      <strong>Dot without ariaLabel:</strong> decorative, <code>aria-hidden="true"</code>, no
+      <code>role</code>. Pure visual indicator.
+    </li>
+    <li>
+      <strong>Dot with ariaLabel:</strong> informative, <code>role="status"</code>,
+      <code>aria-label</code> set. Announces the label (e.g. "Online") to screen readers.
+    </li>
+    <li>
+      <strong>Count:</strong> always informative, <code>role="status"</code>, requires
+      <code>ariaLabel</code> (e.g. "3 new notifications"). The visible count is
+      <code>aria-hidden</code> to avoid double-announcement. The <code>role="status"</code> makes it
+      a live region — dynamic count updates are announced automatically.
+    </li>
+    <li>
+      <strong>Status:</strong> the visible <code>label</code> is already accessible text, so no
+      <code>role</code> or <code>aria-label</code> is added. Standard flow content semantics.
+    </li>
+  </ul>
+  <p class="demo-section__note" style="margin-top: 12px;">
+    The "live-region guidance for dynamic counts" (doc 26 §5) is fulfilled by
+    <code>role="status"</code> — it's already a polite live region, so incrementing
+    <code>value</code> will announce the new count. No separate <code>aria-live</code> region needed.
+  </p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States</h3>
+  <p class="demo-section__note">
+    Per doc 26 §5 "States: n/a" — badge has no interactive states (hover/focus/active) or validation
+    states (invalid/error). It is a static visual indicator or counter, never a form control. The
+    element it's attached to (e.g. a button) handles interaction; the badge is purely presentational.
+  </p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Labels — RTL and wrapping</h3>
+  <p class="demo-section__note">
+    Logical properties only (<code>padding-inline</code>, <code>inset-inline-end</code>), so the
+    component mirrors correctly under <code>dir="rtl"</code>. Status variant labels wrap if
+    constrained, though in practice they should be kept short (one or two words).
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane" dir="rtl">
+      <p class="demo-pane__label">RTL — positioned dot on button</p>
+      <button class="demo-button" style="position: relative; padding: 12px 24px; border-radius: 8px; border: 1px solid currentColor;">
+        إشعارات
+        <ino-badge variant="dot" size="sm" ariaLabel="عناصر جديدة"></ino-badge>
+      </button>
+    </div>
+
+    <div class="demo-pane" dir="rtl">
+      <p class="demo-pane__label">RTL — count badge</p>
+      <button class="demo-button" style="position: relative; padding: 12px 24px; border-radius: 8px; border: 1px solid currentColor;">
+        رسائل
+        <ino-badge variant="count" size="sm" [value]="7" ariaLabel="7 رسائل جديدة"></ino-badge>
+      </button>
+    </div>
+
+    <div class="demo-pane" dir="rtl">
+      <p class="demo-pane__label">RTL — status badge</p>
+      <span style="display: flex; align-items: center; gap: 8px;">
+        حالة الخادم:
+        <ino-badge variant="status" size="sm" label="متصل" severity="success"></ino-badge>
+      </span>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Mobile — React Native + Flutter ports</h3>
+  <p class="demo-section__note">
+    Per doc 26 §5 "Port both" — <code>ino-badge</code> will have equivalent React Native and Flutter
+    implementations with the same variant/state coverage (dot/count/status, sm/md, severity colors,
+    positioned/standalone modes). Mobile ports are in progress as separate deliverables.
+  </p>
+</section>

@@ -1,0 +1,56 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Default (comfortable)</h3>
+  <p class="demo-section__note">
+    Check one or more rows in either pane (click/<code>Space</code>), then use the transfer
+    buttons — or <code>Alt+ArrowRight</code>/<code>Alt+ArrowLeft</code> on a focused row — to move
+    them. The arrival pane briefly shows the <code>moved-flash</code> state. "Director KYC" is
+    disabled and cannot be selected or moved.
+  </p>
+  <div class="demo-row">
+    <ino-picklist
+      sourceLabel="Available checks"
+      targetLabel="Selected checks"
+      [source]="comfortableSource"
+      [target]="comfortableTarget"
+      [sourceSelection]="comfortableSourceSelection"
+      [targetSelection]="comfortableTargetSelection"
+      (sourceChange)="comfortableSource = $event"
+      (targetChange)="comfortableTarget = $event"
+      (sourceSelectionChange)="comfortableSourceSelection = $event"
+      (targetSelectionChange)="comfortableTargetSelection = $event"
+    ></ino-picklist>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Sizing — compact</h3>
+  <p class="demo-section__note">
+    <code>size="compact"</code> applies to both panes at once (doc 26 §5: "compact/comfortable").
+  </p>
+  <div class="demo-row">
+    <ino-picklist
+      sourceLabel="Available checks"
+      targetLabel="Selected checks"
+      size="compact"
+      [source]="compactSource"
+      [target]="compactTarget"
+      [sourceSelection]="compactSourceSelection"
+      [targetSelection]="compactTargetSelection"
+      (sourceChange)="compactSource = $event"
+      (targetChange)="compactTarget = $event"
+      (sourceSelectionChange)="compactSourceSelection = $event"
+      (targetSelectionChange)="compactTargetSelection = $event"
+    ></ino-picklist>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States</h3>
+  <p class="demo-section__note">Disabled, readonly, loading, and invalid (error text) states.</p>
+  <div class="demo-row">
+    <ino-picklist sourceLabel="Available" targetLabel="Selected" disabled [source]="disabledSource" [target]="disabledTarget"></ino-picklist>
+    <ino-picklist sourceLabel="Available" targetLabel="Selected" readonly [source]="disabledSource" [target]="disabledTarget"></ino-picklist>
+    <ino-picklist sourceLabel="Available" targetLabel="Selected" loading [source]="disabledSource" [target]="disabledTarget"></ino-picklist>
+    <ino-picklist sourceLabel="Available" targetLabel="Selected" error="Select at least one check." [source]="disabledSource" [target]="[]"></ino-picklist>
+  </div>
+</section>

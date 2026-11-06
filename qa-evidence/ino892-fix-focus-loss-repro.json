@@ -1,0 +1,22 @@
+{
+  "focus_loss_repro": {
+    "before": {
+      "tag": "LI",
+      "role": "treeitem",
+      "text": "\u25b8Engineering",
+      "inTree": true
+    },
+    "afterExpand": {
+      "tag": "LI",
+      "role": "treeitem",
+      "text": "\u25b8Engineering",
+      "inTree": true
+    },
+    "afterArrowDownStuck": {
+      "tag": "LI",
+      "role": "treeitem",
+      "text": "Payments platform",
+      "inTree": true
+    }
+  }
+}

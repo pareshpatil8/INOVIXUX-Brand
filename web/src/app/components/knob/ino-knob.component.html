@@ -1,0 +1,58 @@
+<div class="ino-field ino-knob__field">
+  <ino-label
+    *ngIf="label"
+    [for]="knobId"
+    [required]="required"
+    [disabled]="disabled"
+    [invalid]="!!error"
+    [readonly]="readonly"
+  >{{ label }}</ino-label>
+
+  <svg
+    #dial
+    class="ino-knob__dial"
+    viewBox="0 0 100 100"
+    focusable="false"
+    (pointerdown)="onDialPointerDown($event, dial)"
+    (pointermove)="onDialPointerMove($event)"
+    (pointerup)="onDialPointerUp($event)"
+    (pointercancel)="onDialPointerUp($event)"
+  >
+    <path class="ino-knob__range" [attr.d]="rangePath" />
+    <path class="ino-knob__value" [attr.d]="valuePath" />
+    <g
+      class="ino-knob__handle"
+      role="slider"
+      tabindex="0"
+      [attr.id]="knobId"
+      [attr.aria-label]="accessibleName"
+      [attr.aria-valuemin]="min"
+      [attr.aria-valuemax]="max"
+      [attr.aria-valuenow]="clampedValue"
+      [attr.aria-valuetext]="formattedValue"
+      [attr.aria-disabled]="disabled ? true : null"
+      [attr.aria-readonly]="readonly ? true : null"
+      [attr.aria-describedby]="error ? errorId : (hint ? hintId : null)"
+      (keydown)="onKeyDown($event)"
+    >
+      <circle
+        class="ino-knob__indicator"
+        [attr.cx]="indicatorPoint.x"
+        [attr.cy]="indicatorPoint.y"
+        r="6"
+      />
+    </g>
+    <text
+      *ngIf="showValue"
+      class="ino-knob__text"
+      x="50"
+      y="50"
+      text-anchor="middle"
+      dominant-baseline="central"
+      aria-hidden="true"
+    >{{ formattedValue }}</text>
+  </svg>
+
+  <p *ngIf="hint && !error" [id]="hintId" class="ino-field__hint">{{ hint }}</p>
+  <p *ngIf="error" [id]="errorId" class="ino-field__error" role="alert">{{ error }}</p>
+</div>

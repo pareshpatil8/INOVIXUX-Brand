@@ -1,0 +1,142 @@
+// ino-menu — vertical menu (static) / popup-from-button menu, nested submenus (TieredMenu-
+// equivalent). Spec: web/src/app/components/menu/SPEC.md
+//
+// No literal colour/space/font-size — every declaration resolves through a semantic role in
+// tokens.css, logical properties only. Size API — doc 26 §2 row 3 / §5's "Sizing:
+// compact/comfortable" column: `comfortable` (the unmarked default) reads the bare
+// --ino-control-* aliases directly, same "no size class needed" convention ino-toggle-button's
+// default tier uses; [data-size='compact'] re-points those same aliases to the
+// --ino-control-*-compact tier (tokens.css §12) — the exact toggle-button re-point pattern
+// (ino-toggle-button.component.scss lines ~1-28). These CSS custom properties live on :host, so
+// every descendant — including the popup panel and nested submenus, both still DOM descendants of
+// the host even though they render position: fixed — inherits them for free. See SPEC.md §7.
+:host {
+  display: flex;
+  flex-direction: column;
+
+  --ino-menu-item-height: var(--ino-control-height);
+  --ino-menu-item-padding-inline: var(--ino-control-padding-inline);
+  --ino-menu-font-size: var(--ino-control-font-size);
+  --ino-menu-icon-size: var(--ino-control-icon-size);
+  --ino-menu-gap: var(--ino-control-gap);
+}
+
+:host([data-size='compact']) {
+  --ino-menu-item-height: var(--ino-control-height-compact);
+  --ino-menu-item-padding-inline: var(--ino-control-padding-inline-compact);
+  --ino-menu-font-size: var(--ino-control-font-size-compact);
+  --ino-menu-icon-size: var(--ino-control-icon-size-compact);
+  --ino-menu-gap: var(--ino-control-gap-compact);
+}
+
+// Popup mode: the host itself renders no box — the visible panel is `.ino-menu__popup-panel`,
+// a position: fixed sibling anchored via overlay-position.ts, same "host not rendered, only the
+// overlay" contract ino-context-menu documents for its own host.
+:host([data-mode='popup']) {
+  display: contents;
+}
+
+.ino-menu__group {
+  display: flex;
+  flex-direction: column;
+}
+
+.ino-menu__separator {
+  flex: none;
+  block-size: var(--ino-border-width-hairline, 1px);
+  margin-block: var(--ino-space-1);
+  margin-inline: var(--ino-menu-item-padding-inline);
+  background: var(--ino-color-border);
+}
+
+.ino-menu__item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--ino-menu-gap);
+  min-block-size: var(--ino-menu-item-height);
+  padding-inline: var(--ino-menu-item-padding-inline);
+
+  font-family: var(--ino-font-display);
+  font-size: var(--ino-menu-font-size);
+  color: var(--ino-color-on-surface);
+  text-decoration: none;
+
+  cursor: pointer;
+  user-select: none;
+
+  &:hover:not(&--disabled) {
+    background: var(--ino-color-surface-sunken);
+    color: var(--ino-color-accent);
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset, -2px);
+    background: var(--ino-color-surface-sunken);
+  }
+
+  &:active:not(&--disabled) {
+    color: var(--ino-color-accent-active);
+  }
+
+  &--disabled {
+    color: var(--ino-color-on-surface-muted);
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  &--empty {
+    cursor: default;
+    color: var(--ino-color-on-surface-muted);
+  }
+}
+
+.ino-menu__icon {
+  flex: none;
+  inline-size: var(--ino-menu-icon-size);
+  block-size: var(--ino-menu-icon-size);
+  line-height: 1;
+}
+
+.ino-menu__label {
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ino-menu__chevron {
+  flex: none;
+  color: var(--ino-color-on-surface-muted);
+  font-size: 1.1em;
+  line-height: 1;
+}
+
+.ino-menu__popup-panel,
+.ino-menu__submenu {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 12rem;
+  max-inline-size: 24rem;
+  padding-block: var(--ino-space-1);
+
+  background: var(--ino-color-surface);
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-md);
+  box-shadow: var(--ino-shadow-lg);
+}
+
+.ino-menu__popup-panel {
+  z-index: var(--ino-z-overlay);
+}
+
+// Stacked one level above the panel it opens from, same convention ino-context-menu's own
+// nested submenu uses — each deeper level only needs to clear its immediate parent, not a
+// depth-aware counter, since a submenu never renders behind its own trigger's panel regardless of
+// nesting depth.
+.ino-menu__submenu {
+  z-index: calc(var(--ino-z-overlay) + 1);
+}

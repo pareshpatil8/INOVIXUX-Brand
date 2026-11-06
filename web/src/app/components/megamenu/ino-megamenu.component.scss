@@ -1,0 +1,238 @@
+// Sizing (doc 26 §5 row: "compact/comfortable"): the bar's own trigger row is page-resident nav
+// content (like ino-nav/ino-panel-menu), so it composes with [data-density] the same way their
+// -sm/-default pair does. The open panel is an ephemeral overlay, so its link rows always read
+// the fixed overlay-compact control scale (tokens.css §12) regardless of this size — see SPEC.md §4.
+:host {
+  display: block;
+  --ino-megamenu-bar-height: var(--ino-control-height);
+  --ino-megamenu-bar-gap: var(--ino-control-gap);
+  --ino-megamenu-bar-padding-inline: var(--ino-control-padding-inline-roomy);
+  --ino-megamenu-bar-font-size: var(--ino-control-font-size);
+  --ino-megamenu-icon-size: var(--ino-control-icon-size);
+}
+
+:host([data-size='compact']) {
+  --ino-megamenu-bar-height: var(--ino-control-height-sm);
+  --ino-megamenu-bar-gap: var(--ino-control-gap-sm);
+  --ino-megamenu-bar-padding-inline: var(--ino-control-padding-inline-roomy-sm);
+  --ino-megamenu-bar-font-size: var(--ino-control-font-size-sm);
+  --ino-megamenu-icon-size: var(--ino-control-icon-size-sm);
+}
+
+.ino-megamenu {
+  display: block;
+  position: relative;
+  background: var(--ino-color-surface);
+}
+
+.ino-megamenu__bar {
+  display: flex;
+  flex-direction: row;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: var(--ino-megamenu-bar-gap);
+}
+
+.ino-megamenu--vertical .ino-megamenu__bar {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.ino-megamenu__bar-item {
+  position: relative;
+}
+
+.ino-megamenu__trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--ino-megamenu-bar-gap);
+  min-height: var(--ino-megamenu-bar-height);
+  padding-inline: var(--ino-megamenu-bar-padding-inline);
+  border: none;
+  background: transparent;
+  color: var(--ino-color-on-surface);
+  font: inherit;
+  font-size: var(--ino-megamenu-bar-font-size);
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  &:hover:not(:disabled) {
+    background: var(--ino-color-surface-sunken);
+  }
+
+  &:active:not(:disabled) {
+    background: var(--ino-color-surface-sunken);
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: calc(var(--ino-focus-ring-offset) * -1);
+  }
+
+  &:disabled,
+  &[aria-disabled='true'] {
+    color: var(--ino-color-on-surface-subtle);
+    cursor: not-allowed;
+  }
+}
+
+// Active-item state (spec row's addition beyond the §2 standard set) — plain bold on-surface
+// text, same "current page" treatment ino-breadcrumb's SPEC.md records, not an accent colour:
+// --ino-color-accent is non-text-safe (tokens.css §2), and there is no reason to tint a trigger
+// that already carries aria-current="page".
+.ino-megamenu__trigger--active {
+  color: var(--ino-color-on-surface);
+  font-weight: 600;
+}
+
+.ino-megamenu__trigger--inert {
+  cursor: default;
+}
+
+.ino-megamenu__icon {
+  flex-shrink: 0;
+  width: var(--ino-megamenu-icon-size);
+  height: var(--ino-megamenu-icon-size);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ino-megamenu__label {
+  min-width: 0;
+}
+
+.ino-megamenu__chevron {
+  flex-shrink: 0;
+  font-size: 0.75em;
+  transition: transform var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+}
+
+.ino-megamenu__chevron--open {
+  transform: rotate(180deg);
+}
+
+// Panel — ephemeral overlay, reads the fixed compact control scale directly (not [data-size]).
+.ino-megamenu__panel {
+  position: absolute;
+  inset-block-start: 100%;
+  inset-inline-start: 0;
+  z-index: var(--ino-z-overlay);
+  display: grid;
+  grid-template-columns: repeat(var(--ino-megamenu-panel-columns, 1), minmax(180px, 1fr));
+  gap: var(--ino-space-6) var(--ino-space-5);
+  min-width: 100%;
+  padding: var(--ino-space-4);
+  background: var(--ino-color-surface-raised);
+  border: 1px solid var(--ino-color-border-soft);
+  border-radius: var(--ino-radius-md);
+  box-shadow: var(--ino-shadow-lg);
+}
+
+.ino-megamenu--vertical .ino-megamenu__panel {
+  inset-block-start: 0;
+  inset-inline-start: 100%;
+}
+
+.ino-megamenu__column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ino-space-1);
+  min-width: 0;
+}
+
+.ino-megamenu__column-heading {
+  padding-inline: var(--ino-control-padding-inline-compact);
+  color: var(--ino-color-on-surface-muted);
+  font-size: var(--ino-control-font-size-compact);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ino-megamenu__link {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ino-control-gap-compact);
+  min-height: var(--ino-control-height-compact);
+  padding-inline: var(--ino-control-padding-inline-compact);
+  padding-block: var(--ino-space-1);
+  border: none;
+  border-radius: var(--ino-radius-sm);
+  background: transparent;
+  color: var(--ino-color-on-surface);
+  font: inherit;
+  font-size: var(--ino-control-font-size-compact);
+  text-align: start;
+  text-decoration: none;
+  cursor: pointer;
+  width: 100%;
+  transition: background var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  &:hover {
+    background: var(--ino-color-surface-sunken);
+  }
+
+  &:active {
+    background: var(--ino-color-surface-sunken);
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: calc(var(--ino-focus-ring-offset) * -1);
+  }
+
+  &[aria-disabled='true'] {
+    color: var(--ino-color-on-surface-subtle);
+    cursor: not-allowed;
+  }
+}
+
+.ino-megamenu__link--active {
+  color: var(--ino-color-on-surface);
+  font-weight: 600;
+}
+
+.ino-megamenu__link--inert {
+  cursor: default;
+}
+
+.ino-megamenu__link-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.ino-megamenu__link-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ino-megamenu__link-description {
+  color: var(--ino-color-on-surface-muted);
+  font-size: calc(var(--ino-control-font-size-compact) * 0.9);
+}
+
+.ino-megamenu__empty {
+  padding: var(--ino-megamenu-bar-padding-inline);
+  color: var(--ino-color-on-surface-muted);
+  font-size: var(--ino-megamenu-bar-font-size);
+}
+
+// Loading skeleton — aria-hidden, purely decorative, same flat-bar approach ino-panel-menu uses.
+.ino-megamenu__skeleton {
+  display: block;
+  width: 96px;
+  height: calc(var(--ino-megamenu-bar-font-size) * 1.1);
+  margin: calc(var(--ino-megamenu-bar-gap)) var(--ino-megamenu-bar-padding-inline);
+  border-radius: var(--ino-radius-sm);
+  background: var(--ino-color-surface-sunken);
+}
+
+.ino-megamenu__skeleton--short {
+  width: 64px;
+}

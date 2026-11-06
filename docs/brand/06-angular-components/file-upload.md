@@ -110,6 +110,18 @@ under `@media (prefers-reduced-motion: reduce)`.
 
 ---
 
+## Labels and fields
+
+`label` renders through the shared `ino-label` leaf (real `<label for>`, `[required]` for the
+decorative `*` marker, `[invalid]="!!error"` for the danger-token treatment) and also drives the
+dropzone's `aria-labelledby` in advanced mode. `hint`/`error` render as a paragraph under the
+control, `error` taking priority and wired via `aria-describedby`; `error` also paints the
+dropzone's invalid border. `chooseLabel` and `dropHint` are separate, non-form-label strings —
+button text and drag-and-drop instructions respectively — both real rendered text rather than
+implied by icon/appearance alone.
+
+---
+
 ## Accessibility contract
 
 **Role / ARIA** — the hidden `<input type="file">` keeps a real `<label for>` association via

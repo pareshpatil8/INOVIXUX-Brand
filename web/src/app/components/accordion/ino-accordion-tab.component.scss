@@ -1,0 +1,129 @@
+/* Individual accordion tab with heading+button pattern (APG accordion). Hover/focus-visible/
+   active only apply to the button, never to the tab shell itself. The heading element
+   (h1-h6, configurable via `headingLevel`) wraps the button, following the APG pattern exactly. */
+.ino-accordion-tab {
+  display: flex;
+  flex-direction: column;
+  border-block-end: 1px solid var(--ino-color-border-soft);
+
+  &:last-child {
+    border-block-end: none;
+  }
+}
+
+.ino-accordion-tab--disabled {
+  opacity: 0.5;
+}
+
+/* Heading wrapper (h1-h6) has no visual styling — exists purely for document outline. The
+   button inside carries all the visual treatment. */
+.ino-accordion-tab__heading {
+  margin: 0;
+  padding: 0;
+  font: inherit;
+}
+
+/* Tab header button (WAI-ARIA APG pattern: button + aria-expanded/aria-controls). Roving tabindex
+   is managed by the parent accordion: first tab is tabindex=0, others are -1, and Arrow keys
+   move focus. */
+.ino-accordion-tab__header {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: var(--ino-space-2);
+  padding-block: var(--ino-control-padding-inline-roomy);
+  padding-inline: var(--ino-control-padding-inline-roomy);
+  border: none;
+  background: var(--ino-color-surface-raised);
+  color: var(--ino-color-on-surface);
+  font-weight: 600;
+  font-size: var(--ino-type-body-size);
+  line-height: var(--ino-type-body-line);
+  text-align: start;
+  cursor: pointer;
+  transition:
+    background-color var(--ino-motion-duration-base) var(--ino-motion-easing-standard),
+    color var(--ino-motion-duration-base) var(--ino-motion-easing-standard);
+
+  &:hover:not(:disabled) {
+    /* INO-835: --ino-color-surface-hover is undefined; switch to surface-sunken (same fix as
+       INO-723 select-button). surface-sunken is the high-contrast-safe inset fill, resolves to
+       a perceptible value in all themes including high-contrast where it must remain at or above
+       3:1 against surface-raised per SC 1.4.11. See select-button scss:94 for full rationale. */
+    background: var(--ino-color-surface-sunken);
+    color: var(--ino-color-accent);
+  }
+
+  &:active:not(:disabled) {
+    /* INO-835: --ino-color-surface-active is undefined; switch to surface-sunken (same fix as
+       INO-723 select-button). Pressed uses the same inset fill as hover for consistency. */
+    background: var(--ino-color-surface-sunken);
+    color: var(--ino-color-accent-active);
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: calc(-1 * var(--ino-focus-ring-offset));
+    position: relative;
+    z-index: 1;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    color: var(--ino-color-on-surface-muted);
+  }
+}
+
+/* Icon-end variant: chevron appears after the text instead of before. */
+.ino-accordion-tab__header--icon-end {
+  flex-direction: row-reverse;
+  justify-content: space-between;
+}
+
+.ino-accordion-tab__chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 1em;
+  height: 1em;
+  font-size: 11px;
+  color: var(--ino-color-on-surface-muted);
+  transform: rotate(0deg);
+
+  .ino-accordion-tab__header:hover:not(:disabled) & {
+    color: var(--ino-color-accent);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition: transform var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+  }
+}
+
+.ino-accordion-tab__chevron--expanded {
+  transform: rotate(90deg);
+}
+
+.ino-accordion-tab__header-text {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Tab body (region role, labeled by the heading button). Hidden via [hidden] attribute when
+   collapsed (not `display:none` in CSS) so screen readers respect the expanded/collapsed state. */
+.ino-accordion-tab__body {
+  background: var(--ino-color-surface-raised);
+}
+
+.ino-accordion-tab__content {
+  padding-block: var(--ino-control-padding-inline-roomy);
+  padding-inline: var(--ino-control-padding-inline-roomy);
+  font-size: var(--ino-type-body-size);
+  line-height: var(--ino-type-body-line);
+  color: var(--ino-color-on-surface);
+}
+
+/* Expanded state background differentiation */
+.ino-accordion-tab--expanded .ino-accordion-tab__body {
+  background: var(--ino-color-surface);
+}

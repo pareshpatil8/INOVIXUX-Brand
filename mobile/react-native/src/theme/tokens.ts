@@ -183,6 +183,13 @@ export const radius = {
   sm: 6, md: 8, lg: 10, xl: 14, pill: 20,
 } as const;
 
+// tokens.css §6b — hairline is the 1px line every bordered surface already uses; thick is the
+// existing 2px emphasis weight. Added for InoDivider (INO-441); check-theme-parity.mjs asserts
+// these against the CSS, so edit tokens.css first.
+export const borderWidth = {
+  hairline: 1, thick: 2,
+} as const;
+
 // Touch targets — tokens.css §7. Mobile is always -comfortable per 13-…patterns.md §1/§3,
 // never -min (that's a dense-mode desktop exception only).
 export const targetComfortable = 44;

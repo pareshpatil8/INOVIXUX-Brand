@@ -31,3 +31,17 @@ a {
 h1, h2, h3, p, ul {
   margin: 0;
 }
+
+/* ino-splitter (INO-445): while a gutter drag is in progress, pointer capture keeps pointermove/
+   pointerup firing on the gutter even once the cursor strays over other elements, but captured
+   elements don't reliably keep showing their own CSS `cursor` in every browser — this keeps the
+   resize cursor visible for the whole drag regardless of what's underneath it. */
+body.ino-splitter-resizing-x {
+  cursor: col-resize !important;
+  user-select: none;
+}
+
+body.ino-splitter-resizing-y {
+  cursor: row-resize !important;
+  user-select: none;
+}

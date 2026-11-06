@@ -1,0 +1,23 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Structure — label, count-up value, delta, risk rows</h3>
+  <p class="demo-section__note">
+    <code>value</code> animates via <code>inoCountUp</code> on mount; each row's <code>status</code>
+    resolves to a token-bound RAG chip in this component's own SCSS — callers cannot pass an
+    arbitrary color.
+  </p>
+  <ino-metric-panel
+    label="Underwriting queue"
+    [value]="299"
+    delta="+18 this week"
+    [rows]="riskRows"
+  ></ino-metric-panel>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Structure — value-only, no delta or rows</h3>
+  <p class="demo-section__note">
+    <code>delta</code> and a non-empty <code>rows</code> array are both optional; the row list is
+    <code>*ngIf="rows.length"</code>-gated so an empty array renders no list at all.
+  </p>
+  <ino-metric-panel label="Applicants today" [value]="47"></ino-metric-panel>
+</section>

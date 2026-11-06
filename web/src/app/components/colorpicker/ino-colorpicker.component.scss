@@ -1,0 +1,324 @@
+/*
+ * <ino-colorpicker> — INO-473 (INO-31 Phase B5, doc 26 §5 row `ino-colorpicker`).
+ *
+ * No literal colour/space/radius/duration/font-size — every static declaration resolves through
+ * a semantic role in tokens.css; logical properties only (RTL-safe). The SB panel/hue bar/alpha
+ * bar's *dynamic* fills (the actual picked color, which is caller/user data, not a design
+ * decision) are written in the component class and bound via `[style.*]` — see
+ * ino-colorpicker.component.ts's class doc comment §8 and SPEC.md §8 for why that boundary is
+ * drawn where it is.
+ *
+ * Swatch-size API (§2 contract row 3 — "swatch sm/md"), same local-two-rung-alias precedent as
+ * `<ino-slider>`'s `--ino-slider-thumb` (`../slider/ino-slider.component.scss`).
+ */
+
+:host {
+  --ino-colorpicker-swatch: var(--ino-control-icon-size-lg);
+}
+
+:host([data-swatch-size='sm']) {
+  --ino-colorpicker-swatch: var(--ino-control-icon-size-default);
+}
+
+.ino-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ino-space-2);
+}
+
+.ino-field--disabled {
+  opacity: 0.5;
+}
+
+.ino-colorpicker__control-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ino-space-2);
+}
+
+.ino-colorpicker__swatch {
+  inline-size: var(--ino-colorpicker-swatch);
+  block-size: var(--ino-colorpicker-swatch);
+  min-inline-size: var(--ino-target-min);
+  min-block-size: var(--ino-target-min);
+  flex: none;
+  border-radius: var(--ino-radius-md);
+  border: 1px solid var(--ino-color-border);
+  background: var(--ino-color-surface-sunken);
+  color: var(--ino-color-on-surface-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: border-color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  &:hover:not(:disabled) {
+    border-color: var(--ino-color-on-surface-muted);
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.ino-colorpicker__swatch-empty {
+  inline-size: 60%;
+  block-size: 60%;
+}
+
+.ino-colorpicker__hex-input {
+  inline-size: 11ch;
+  flex: none;
+  min-block-size: var(--ino-control-height, var(--ino-target-comfortable));
+  padding-inline: var(--ino-space-3);
+  background: var(--ino-color-surface-sunken);
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-md);
+  color: var(--ino-color-on-surface);
+  font-family: var(--ino-font-display);
+  font-size: var(--ino-type-body-size);
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+    border-color: var(--ino-color-accent);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &[aria-invalid='true'] {
+    border-color: var(--ino-color-danger);
+  }
+}
+
+/* Overlay — identical shape to ino-datepicker's (SPEC.md §2). */
+.ino-colorpicker__overlay {
+  position: absolute;
+  inset-block-start: calc(100% + var(--ino-space-2));
+  inset-inline-start: 0;
+  z-index: var(--ino-z-overlay);
+}
+
+.ino-colorpicker__overlay--portal {
+  position: fixed;
+}
+
+.ino-colorpicker__scrim {
+  position: fixed;
+  inset: 0;
+  background: transparent;
+}
+
+.ino-colorpicker__panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ino-space-3);
+  min-inline-size: 280px;
+  max-inline-size: 90vw;
+  padding: var(--ino-space-4);
+  background: var(--ino-color-surface-raised);
+  border: 1px solid var(--ino-color-border-soft);
+  border-radius: var(--ino-radius-md);
+  box-shadow: var(--ino-elevation-neutral-4);
+}
+
+.ino-colorpicker__panel--inline {
+  box-shadow: none;
+}
+
+/* SB panel — the fill colour (pure hue) is set dynamically via [style.background-color]; the
+   white-to-transparent / transparent-to-black overlay layers below are the only static part. */
+.ino-colorpicker__sb-panel {
+  position: relative;
+  inline-size: 100%;
+  block-size: 200px;
+  min-block-size: var(--ino-target-min);
+  border-radius: var(--ino-radius-md);
+  touch-action: none;
+  cursor: crosshair;
+  background-image:
+    linear-gradient(to top, black, transparent),
+    linear-gradient(to right, white, transparent);
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+}
+
+.ino-colorpicker__sb-thumb {
+  position: absolute;
+  inline-size: var(--ino-space-4);
+  block-size: var(--ino-space-4);
+  border-radius: 50%;
+  border: 2px solid var(--ino-color-surface);
+  outline: 1px solid var(--ino-color-border);
+  outline-offset: -1px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.ino-colorpicker__bars {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ino-space-3);
+}
+
+.ino-colorpicker__hue-bar,
+.ino-colorpicker__alpha-bar {
+  position: relative;
+  inline-size: 100%;
+  block-size: var(--ino-space-4);
+  min-block-size: var(--ino-target-min);
+  border-radius: var(--ino-radius-pill);
+  touch-action: none;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+}
+
+/* Alpha bar checkerboard — purely token-driven (two surface roles), so it re-themes correctly;
+   the actual transparent -> opaque-at-current-color overlay is the dynamic
+   [style.background-image] gradient layered on top via the element's own background. */
+.ino-colorpicker__alpha-bar {
+  background-color: var(--ino-color-surface);
+  background-image:
+    linear-gradient(45deg, var(--ino-color-surface-sunken) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--ino-color-surface-sunken) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--ino-color-surface-sunken) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--ino-color-surface-sunken) 75%);
+  background-size: var(--ino-space-3) var(--ino-space-3);
+  background-position: 0 0, 0 calc(var(--ino-space-3) / 2), calc(var(--ino-space-3) / 2) calc(-1 * var(--ino-space-3) / 2), calc(-1 * var(--ino-space-3) / 2) 0;
+}
+
+.ino-colorpicker__bar-thumb {
+  position: absolute;
+  inset-block-start: 50%;
+  inline-size: var(--ino-space-4);
+  block-size: var(--ino-space-4);
+  border-radius: 50%;
+  background: var(--ino-color-on-accent);
+  border: 2px solid var(--ino-color-accent);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.ino-colorpicker__fields {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: var(--ino-space-2);
+}
+
+.ino-colorpicker__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ino-space-1);
+}
+
+.ino-colorpicker__field-label {
+  font-size: var(--ino-type-caption-size);
+  color: var(--ino-color-on-surface-muted);
+}
+
+.ino-colorpicker__field input {
+  inline-size: 100%;
+  min-block-size: var(--ino-target-min);
+  padding-inline: var(--ino-space-2);
+  background: var(--ino-color-surface-sunken);
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-sm);
+  color: var(--ino-color-on-surface);
+  font-family: var(--ino-font-display);
+  font-size: var(--ino-type-body-sm-size);
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+    border-color: var(--ino-color-accent);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &[aria-invalid='true'] {
+    border-color: var(--ino-color-danger);
+  }
+}
+
+.ino-colorpicker__presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ino-space-2);
+}
+
+.ino-colorpicker__preset {
+  inline-size: var(--ino-space-6);
+  block-size: var(--ino-space-6);
+  min-inline-size: var(--ino-target-min);
+  min-block-size: var(--ino-target-min);
+  border-radius: var(--ino-radius-sm);
+  border: 1px solid var(--ino-color-border);
+  padding: 0;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    border-color: var(--ino-color-on-surface-muted);
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+/* States — invalid (field-level `error`) and invalid-hex (transient typed-text state, §5 row). */
+:host(.ino-colorpicker--invalid) .ino-colorpicker__swatch,
+:host(.ino-colorpicker--invalid) .ino-colorpicker__hex-input {
+  border-color: var(--ino-color-danger);
+}
+
+:host(.ino-colorpicker--disabled) {
+  opacity: 0.5;
+}
+
+.ino-colorpicker__sr-status {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.ino-field__hint {
+  margin: 0;
+  font-size: var(--ino-type-body-sm-size);
+  color: var(--ino-color-on-surface-muted);
+}
+
+.ino-field__error {
+  margin: 0;
+  font-size: var(--ino-type-body-sm-size);
+  color: var(--ino-color-danger);
+  font-weight: 600;
+}

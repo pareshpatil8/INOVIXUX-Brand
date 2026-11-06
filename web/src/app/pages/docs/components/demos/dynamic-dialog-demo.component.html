@@ -1,0 +1,36 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Service API — open(), onClose, config</h3>
+  <p class="demo-section__note">
+    <code>&lt;ino-dynamic-dialog&gt;</code> is mounted once below (a slot, same contract as
+    <code>&lt;ino-toast-container&gt;</code>) and renders whatever
+    <code>InoDynamicDialogService.open()</code> queues as an <code>&lt;ino-modal&gt;</code>. Each
+    button opens <code>DynamicDialogDemoContentComponent</code> — a stand-in for any
+    caller-supplied component — with a different config and awaits its <code>onClose</code>
+    promise.
+  </p>
+  <div class="demo-row">
+    <button ino-button variant="primary" size="default" (click)="openDefault()">Open (default)</button>
+    <button ino-button variant="secondary" size="default" (click)="openLarge()">
+      Open large, maximizable, draggable
+    </button>
+    <button ino-button variant="secondary" size="default" (click)="openUndismissable()">
+      Open (Escape/backdrop disabled)
+    </button>
+    <button ino-button variant="ghost" size="default" (click)="openSuperseded()">
+      Open twice (second supersedes first)
+    </button>
+  </div>
+  <p class="demo-live">last onClose result: {{ lastResult }}</p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">A11y — focus return</h3>
+  <p class="demo-section__note">
+    The dialog's focus trap captures <code>document.activeElement</code> the instant it mounts —
+    whichever button above you clicked — and restores focus to that same button on close (Escape,
+    backdrop click, Cancel, or Confirm). See the narrative doc's "Focus-return for the service flow"
+    section for why no extra code is needed for this.
+  </p>
+</section>
+
+<ino-dynamic-dialog></ino-dynamic-dialog>

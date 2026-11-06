@@ -1,0 +1,147 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Variants — the five presets</h3>
+  <p class="demo-section__note">
+    <code>preset</code> picks the per-character test: <code>int</code>, <code>num</code>,
+    <code>alpha</code>, <code>alphanum</code>, or <code>regex</code> (which defers to
+    <code>pattern</code>). Each field below is a real <code>&lt;input&gt;</code> projected into
+    <code>&lt;ino-keyfilter&gt;</code> — the component paints nothing itself, so what you see is
+    the field's own chrome. Type a letter into <strong>Quantity</strong>, or a second
+    <code>.</code> into <strong>Amount</strong>: the keystroke never lands.
+  </p>
+  <div class="demo-row demo-row--keyfilter">
+    <div
+      class="demo-keyfilter"
+      *ngFor="let field of fields"
+      [class.is-rejected]="flashing() === field.id"
+    >
+      <label class="demo-keyfilter__label" [attr.for]="'kf-' + field.id">
+        {{ field.label }} <code>{{ field.preset }}</code>
+      </label>
+      <ino-keyfilter
+        [preset]="field.preset"
+        [pattern]="field.pattern"
+        [validateOnPaste]="validateOnPaste()"
+        (inoKeyfilterReject)="onReject(field, $event)"
+      >
+        <input
+          class="demo-keyfilter__input"
+          type="text"
+          [id]="'kf-' + field.id"
+          [attr.inputmode]="field.inputMode"
+          [placeholder]="field.placeholder"
+          [attr.aria-describedby]="'kf-hint-' + field.id"
+        />
+      </ino-keyfilter>
+      <p class="demo-keyfilter__hint" [id]="'kf-hint-' + field.id">{{ field.allows }}</p>
+      <p class="demo-keyfilter__readout">
+        <ng-container *ngIf="rejections()[field.id] as rejected; else neverRejected">
+          Blocked: <code>{{ rejected }}</code>
+        </ng-container>
+        <ng-template #neverRejected>Nothing blocked yet.</ng-template>
+      </p>
+    </div>
+  </div>
+  <p class="demo-live" role="status" aria-live="polite">{{ announcement() }}</p>
+  <p class="demo-section__note">
+    The line above is this demo's own <code>aria-live="polite"</code> region, wired to
+    <code>(inoKeyfilterReject)</code>. The shipped directive deliberately announces
+    <em>nothing</em> on its own — rejection is silent unless a caller opts in, exactly like this.
+  </p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Paste — <code>validateOnPaste</code></h3>
+  <p class="demo-section__note">
+    Copy <code>12a34</code> and paste it into any field above. With
+    <code>validateOnPaste</code> on (the default) the disallowed characters are stripped and
+    <code>1234</code> is inserted at the caret; with it off the whole paste is refused and the
+    value is left untouched. Either way <code>inoKeyfilterReject</code> fires exactly once, with
+    the <em>full</em> clipboard text rather than a single character.
+  </p>
+  <ino-checkbox
+    label="validateOnPaste — strip disallowed characters instead of refusing the paste"
+    [checked]="validateOnPaste()"
+    (checkedChange)="validateOnPaste.set($event)"
+  ></ino-checkbox>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Two forms, one implementation</h3>
+  <p class="demo-section__note">
+    The row above uses the element form. The field below uses the attribute form,
+    <code>[inoKeyfilter]</code>, on an <code>&lt;ino-input&gt;</code> you already own — the
+    preferred shape when you render the field yourself, since it adds no wrapper node. Both are
+    the same directive: <code>&lt;ino-keyfilter&gt;</code> applies it through
+    <code>hostDirectives</code>, which is why the Props and Events tables below list the
+    directive's surface.
+  </p>
+  <div class="demo-col" style="max-width: 360px;">
+    <ino-input
+      label="Reference code"
+      hint="[inoKeyfilter]=&quot;'alphanum'&quot; on the ino-input itself"
+      placeholder="INV2026A"
+      [inoKeyfilter]="'alphanum'"
+      [value]="directiveFormValue"
+      (valueChange)="directiveFormValue = $event"
+      (inoKeyfilterReject)="onReject({ id: 'directive', label: 'Reference code' }, $event)"
+    ></ino-input>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Density — the host field's axis, not this component's</h3>
+  <p class="demo-section__note">
+    A key filter contributes no colour, spacing, radius, elevation or type, so it has no density
+    register of its own — its host is <code>display: contents</code>, which keeps it out of
+    layout entirely. What density changes is the field it guards. Both panes run the same
+    <code>num</code> filter; only the row height differs.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane" data-density="dense">
+      <p class="demo-pane__label">dense</p>
+      <ino-input
+        label="Amount"
+        placeholder="1234.56"
+        [inoKeyfilter]="'num'"
+        [value]="denseValue"
+        (valueChange)="denseValue = $event"
+      ></ino-input>
+    </div>
+    <div class="demo-pane" data-density="fluid">
+      <p class="demo-pane__label">fluid</p>
+      <ino-input
+        label="Amount"
+        placeholder="1234.56"
+        [inoKeyfilter]="'num'"
+        [value]="fluidValue"
+        (valueChange)="fluidValue = $event"
+      ></ino-input>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States, sizing and labels — <code>n/a (directive)</code></h3>
+  <p class="demo-section__note">
+    Recorded, not omitted (doc 26 §2 point 6). This is a behaviour-only primitive: it paints
+    nothing, so it has no hover / focus-visible / active / disabled / readonly / invalid / loading
+    state of its own, no size scale, and no label API. Every one of those belongs to the field
+    it's attached to, and <code>&lt;ino-input&gt;</code> demonstrates its own full set on its own
+    page. A <code>disabled</code> input here would only duplicate the host field's — which
+    already stops <code>keydown</code> firing before this directive sees it. Same disposition
+    <code>[inoFocusTrap]</code> records, for the same reason.
+  </p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Keyboard, IME and assistive technology</h3>
+  <p class="demo-section__note">
+    Filtering happens only on <code>keydown</code>, and only for a single printable character
+    with no modifier held. <kbd>Tab</kbd>, <kbd>Backspace</kbd>, <kbd>Delete</kbd>, arrows,
+    <kbd>Home</kbd>/<kbd>End</kbd>, <kbd>Enter</kbd> and every Ctrl/Cmd/Alt combination — copy,
+    paste, undo, select-all, screen-reader command keys — are never intercepted. Composition is
+    never touched either: the handler returns immediately while <code>isComposing</code> is true,
+    so non-Latin text typed through an IME is never tested against these (Latin/numeric) presets
+    and never retroactively stripped. Try it in any field above.
+  </p>
+</section>

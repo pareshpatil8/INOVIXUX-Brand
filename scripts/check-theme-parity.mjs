@@ -1,5 +1,73 @@
 // Dependency-free source-contract audit. Run from any directory with Node.
-import assert from 'node:assert/strict';
+import nodeAssert from 'node:assert/strict';
+// INO-809: aggregate-and-report instead of fail-fast. Every assertion below used to throw on the
+// first failure, which meant ONE red component erased the whole report -- including the
+// WCAG-contrast measurements QA cites as automated evidence (doc 26 section 2 item 5). A failing
+// gate printed zero lines of stdout. This proxy records ERR_ASSERTION failures and lets the run
+// continue, so one red no longer blinds the other checks. Non-assertion errors (e.g. a NaN
+// cascade downstream of a swallowed assert.fail) still abort the run, but the exit handler
+// flushes whatever evidence was already collected, so partial evidence beats none.
+//
+// INO-809 follow-up: "the exit handler flushes the evidence" was only true of the FAIL report.
+// The contrast block was still printed by the last statement in this file, so a non-assertion
+// abort anywhere above it (measured: a TypeError at the EXEMPT reverse-coverage check) printed
+// the report and zero contrast lines -- while the report asserted the measurements were on
+// stdout. Same erasure INO-809 was filed about, one layer down. The contrast block is now
+// emitted BY the exit handler from a reference registered at the array's declaration, so it
+// survives any abort after that point, and it is labelled partial when the run did not finish.
+const assertFailures = [];
+const evidence = { measurements: null, complete: false };
+const assert = new Proxy(nodeAssert, {
+  get(target, prop) {
+    const v = target[prop];
+    if (typeof v !== 'function') return v;
+    return (...args) => {
+      try { return v.apply(target, args); }
+      catch (e) {
+        if (e && e.code === 'ERR_ASSERTION') { assertFailures.push(e); return undefined; }
+        throw e;
+      }
+    };
+  },
+});
+process.on('exit', () => {
+  // Contrast evidence first, and unconditionally: this is the artifact QA cites, so it must not
+  // be contingent on the run reaching the bottom of the file.
+  if (evidence.measurements?.length) {
+    console.log(
+      'High-contrast token pairs (AAA text >=7; non-text borders >=3; excludes disabled/decorative subtle role);\n'
+      + 'plus per-theme pressed-accent pairs (INO-123):\n'
+      + evidence.measurements.join('\n')
+    );
+    if (!evidence.complete) {
+      console.log(`\n[PARTIAL] the run aborted before completing; ${evidence.measurements.length} contrast pair(s) were computed before that point. Absence of a pair here is NOT a pass.`);
+    }
+  }
+  // An abort with zero recorded assertion failures used to print nothing but a stack trace, so a
+  // reader could not tell a crashed gate from one that had not been asked to report. Say it.
+  if (!evidence.complete) {
+    console.error('\nINCOMPLETE: the gate aborted before finishing — the checks after the abort point never ran. This is NOT a pass, and the absence of a defect from any report below is not evidence.');
+  }
+  if (!assertFailures.length) return;
+  // Group by message: one missing token read from 11 declarations is ONE defect, not 11.
+  const byMessage = new Map();
+  for (const e of assertFailures) {
+    const k = e.message.split('\n')[0];
+    byMessage.set(k, (byMessage.get(k) ?? 0) + 1);
+  }
+  console.error(`\nFAIL: ${assertFailures.length} assertion(s) failed, ${byMessage.size} distinct defect(s):\n`);
+  let n = 0;
+  for (const [msg, count] of byMessage) {
+    console.error(`  ${++n}. ${msg}${count > 1 ? `  [x${count}]` : ''}`);
+  }
+  console.error('\nThese are independent -- fixing the first does not imply the rest pass.');
+  // Say what is actually on stdout. The previous wording claimed the measurements were there
+  // whether or not they had been computed, which is the one thing a QA reader must not be told.
+  console.error(evidence.measurements?.length
+    ? `Contrast measurements on stdout: ${evidence.measurements.length} pair(s)${evidence.complete ? '' : ' (PARTIAL -- run aborted)'}.`
+    : 'No contrast measurements on stdout: the run aborted before any were computed.');
+  process.exitCode = 1;
+});
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 const root = new URL('../', import.meta.url);
@@ -115,6 +183,9 @@ function luminance(c) {
 function contrast(a,b) { const x=luminance(a), y=luminance(b); return (Math.max(x,y)+.05)/(Math.min(x,y)+.05); }
 const hc = resolved['high-contrast'];
 const measurements = [];
+// Hand the exit handler the array itself (not a copy) so every pair pushed below is visible to
+// it even if the run never reaches the bottom of this file. See the INO-809 follow-up note above.
+evidence.measurements = measurements;
 function pair(fg,bg,min,palette = hc,label = '') {
   const a = palette[fg], b = palette[bg];
   assert.ok(a && b, `${label}${fg}/${bg}: role missing from palette`);
@@ -202,6 +273,9 @@ assert.deepEqual(controlKeys(rawDense), controlKeys(rawFluid),
 const DENSITY_INVARIANT = [
   '--ino-control-font-size-lg', '--ino-control-font-size-sm',   // alias body-lg/body-sm, which no density block overrides
   '--ino-control-gap-default', '--ino-control-gap-sm', '--ino-control-gap-lg', // gap is density-invariant by design, §12
+  // -compact tier (INO-425): ephemeral overlay sizing, never re-resolved per density — see §12.
+  '--ino-control-height-compact', '--ino-control-padding-inline-compact',
+  '--ino-control-font-size-compact', '--ino-control-icon-size-compact', '--ino-control-gap-compact',
 ];
 assert.deepEqual(controlKeys(rawBase).filter(k => !controlKeys(rawDense).includes(k)), DENSITY_INVARIANT.sort(),
   'the set of control tokens a density block leaves to :root changed — update §12 and DENSITY_INVARIANT together');
@@ -552,12 +626,140 @@ function webColorRoles(dir) {
   assert.ok(scssFiles.length, `${dir}: no .scss files found`);
   const roles = new Set();
   for (const f of scssFiles) {
-    for (const m of read(`${dir}/${f}`).matchAll(/var\(--ino-color-([\w-]+)\)/g)) roles.add(camel(m[1]));
+    // Comments stripped first (INO-723): several files now carry a `/* was var(--ino-color-x) */`
+    // note explaining a role they deliberately stopped reading. Counting those as live usage
+    // would make the registry describe the comment rather than the code, and would then fail the
+    // "declared divergence no longer reflects an actual difference" check for the removed role.
+    for (const m of stripComments(read(`${dir}/${f}`)).matchAll(/var\(--ino-color-([\w-]+)\)/g)) roles.add(camel(m[1]));
   }
   return roles;
 }
 
 const COMPONENT_REGISTRY = [
+  {
+    name: 'accordion',
+    web: 'web/src/app/components/accordion',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoAccordion.tsx',
+        roles: ['border', 'surfaceRaised'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_accordion.dart',
+        roles: ['border', 'borderSoft', 'onSurface', 'onSurfaceMuted', 'surface', 'surfaceRaised'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['accent', 'accentActive', 'borderSoft', 'onSurface', 'onSurfaceMuted', 'surface', 'surfaceSunken'], reason: "web reads accent/accent-active for the tab header's hover/pressed text color, surface-sunken for its hover/pressed background fill, border-soft for the inter-tab divider, on-surface/on-surface-muted for tab text, and surface for the expanded panel background (ino-accordion-tab.component.scss). RN port (InoAccordion.tsx + InoAccordionTab.tsx) only reads border and surface-raised from the theme; the tab component has hardcoded StyleSheet values instead of theme reads for all other roles. Hover/active states (accent/accent-active/surface-sunken) are pointer/keyboard concepts this port does not reach. The remaining roles (border-soft, on-surface, on-surface-muted, surface) are hardcoded and need to be migrated to theme reads in a follow-up — see InoAccordionTab.tsx:95-135 StyleSheet comments for the intended mappings." },
+      { platform: 'flutter', roles: ['accent', 'accentActive', 'surfaceSunken'], reason: 'web reads accent/accent-active for the tab header hover/pressed text color and surface-sunken for its hover/pressed background fill. Hover and :active are pointer/keyboard concepts this port does not reach — a touch press has no separate hover phase. The port reads border-soft for the inter-tab divider, on-surface/on-surface-muted for tab text, surface for the expanded panel, and surface-raised for the collapsed tab header (ino_accordion.dart).' },
+    ],
+  },
+  {
+    name: 'autocomplete',
+    web: 'web/src/app/components/autocomplete',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoAutocomplete.tsx',
+        roles: ['accent', 'accentTextSafe', 'border', 'borderSoft', 'danger', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'overlayScrim', 'surfaceRaised', 'surfaceSunken'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_autocomplete.dart',
+        roles: ['accent', 'accentTextSafe', 'border', 'borderSoft', 'danger', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'overlayScrim', 'surfaceRaised', 'surfaceSunken'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['overlayScrim', 'borderSoft'], reason: 'ADDED roles, not dropped ones — same one intentional visual divergence the select/multiselect ports declare (SPEC.md §10c). Web anchors the suggestion panel absolutely under the trigger (dropdown mode) or in-flow (inline mode) with no scrim and no sheet chrome; this port presents the same suggestion list in a modal bottom sheet (ConfirmActionSheet.tsx idiom, docs/brand/13-mobile-app-patterns.md §2) for the same reason — an anchored or in-flow list under a text field collides with the software keyboard and the bottom safe area on a phone. overlay-scrim is that sheet backdrop and border-soft its grabber. See web/src/app/components/autocomplete/SPEC.md §10c.' },
+      { platform: 'flutter', roles: ['overlayScrim', 'borderSoft'], reason: 'same as the React Native entry above — showModalBottomSheet barrierColor is overlay-scrim and the grabber is border-soft, matching confirm_action_sheet.dart / ino_select.dart.' },
+    ],
+  },
+  {
+    name: 'autofocus',
+    web: 'web/src/app/components/autofocus',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoAutofocus.ts',
+        roles: [],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_autofocus.dart',
+        roles: [],
+      },
+    },
+    // Not a "roles: []" oversight — autofocus is behaviour-only (contributes no colour, spacing,
+    // radius, elevation, duration or type). web reads zero --ino-color-* roles, and both mobile
+    // ports (RN hook / Flutter FocusNode) are focus-placement mechanisms with no rendering of
+    // their own, so there is no role set for either side to diverge on. See SPEC.md §2.
+  },
+  {
+    name: 'avatar',
+    web: 'web/src/app/components/avatar',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoAvatar.tsx',
+        roles: ['onSurface', 'onSurfaceMuted', 'surfaceSunken'],
+      },
+      flutter: {
+        // InoAvatarGroup lives in the same file, same "ticket-scoped file" organisation
+        // ino_dataview.dart uses — see the 'avatar-group' entry below for its own roles.
+        path: 'mobile/flutter/lib/widgets/ino_avatar.dart',
+        roles: ['onSurface', 'onSurfaceMuted', 'surfaceSunken'],
+      },
+    },
+  },
+  {
+    name: 'avatar-group',
+    web: 'web/src/app/components/avatar-group',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoAvatarGroup.tsx',
+        roles: ['surfaceRaised'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_avatar.dart',
+        roles: ['surfaceRaised'],
+      },
+    },
+  },
+  {
+    name: 'badge',
+    web: 'web/src/app/components/badge',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoBadge.tsx',
+        roles: ['accent', 'danger', 'info', 'onAccent', 'onDanger', 'onInfo', 'onSuccess', 'onWarning', 'success', 'warning'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_badge.dart',
+        roles: ['accent', 'danger', 'info', 'onAccent', 'onDanger', 'onInfo', 'onSuccess', 'onWarning', 'success', 'warning'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['surface'], reason: "web's status variant uses `color-mix(in srgb, var(--ino-color-{severity}) 12%, var(--ino-color-surface))` to create a tinted background (ino-badge.component.scss). RN has no built-in color-blend function, so the port uses the full severity color as background with `on{Severity}` text instead — a visual divergence but equivalent contrast (severity background + on-severity text = full semantic pairing)." },
+      { platform: 'flutter', roles: ['surface'], reason: 'same as the React Native entry above — Flutter port uses full severity color backgrounds with on-severity text, while web uses color-mix tinting.' },
+      { platform: 'reactNative', roles: ['onDanger', 'onInfo', 'onSuccess', 'onWarning'], reason: "ADDED roles, not dropped ones. Web's status variant uses tinted backgrounds (color-mix) with the severity color as text; mobile uses full severity backgrounds with on-severity text. Both achieve WCAG AA contrast, just via different pairing strategies." },
+      { platform: 'flutter', roles: ['onDanger', 'onInfo', 'onSuccess', 'onWarning'], reason: 'same as the React Native entry above.' },
+    ],
+  },
+  {
+    name: 'breadcrumb',
+    web: 'web/src/app/components/breadcrumb',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoBreadcrumb.tsx',
+        roles: ['onSurface', 'onSurfaceMuted', 'onSurfaceSubtle'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_breadcrumb.dart',
+        roles: ['onSurface', 'onSurfaceMuted', 'onSurfaceSubtle'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['accent', 'accentActive', 'surfaceSunken'], reason: "web reads accent for a crumb link's hover/underline colour, accent-active for its pressed colour, and surface-sunken for the ellipsis trigger's hover background and the loading skeleton's bar fill (ino-breadcrumb.component.scss). Hover and :active are pointer/keyboard concepts this port doesn't reach — a touch press has no separate hover phase, and there is no dedicated pressed-colour read because tapping a crumb fires onItemPress directly rather than reproducing a hover-then-press sequence. loading is web-only (SPEC.md §10), so there is no skeleton for surface-sunken to tint either." },
+      { platform: 'flutter', roles: ['accent', 'accentActive', 'surfaceSunken'], reason: 'same as the React Native entry above.' },
+      { platform: 'reactNative', roles: ['onSurfaceSubtle'], reason: 'ADDED role, not a dropped one. Web dims a disabled or otherwise non-navigable crumb with opacity: 0.6 over the same on-surface-muted colour every other non-current crumb already reads (ino-breadcrumb.component.scss .ino-breadcrumb__label--disabled); this port has no opacity-dimming convention for static text and instead reads the dedicated, already-dimmer on-surface-subtle role directly for that case — the same substitution InoAutocomplete.tsx makes for its own disabled rows (rowDisabled ? colors.onSurfaceSubtle : colors.onSurfaceMuted).' },
+      { platform: 'flutter', roles: ['onSurfaceSubtle'], reason: 'same as the React Native entry above.' },
+    ],
+  },
   {
     name: 'button',
     web: 'web/src/app/components/button',
@@ -591,14 +793,58 @@ const COMPONENT_REGISTRY = [
       },
     },
     divergences: [
-      { platform: 'reactNative', roles: ['accent', 'onSurface'], reason: 'web reads accent only for the interactive variant\'s :hover/:focus-visible border (ino-card.component.scss); touch has no hover and the port already supplies the pressed border via accentActive (below), so accent itself is never reached. onSurface colors the header/footer/body text on web, but header/footer/children are caller-supplied ReactNode here — the component never paints their text color itself.' },
-      { platform: 'flutter', roles: ['accent', 'accentActive', 'onSurface'], reason: 'onSurface: same rationale as the React Native entry above (header/footer/child are caller-supplied Widgets). accent and accentActive are both unreached because this port\'s GestureDetector renders no pressed-state border change at all — unlike the RN port, it never reads a press-state color (InoCard.build has no equivalent of RN\'s `pressed && isInteractive` style branch).' },
+      { platform: 'reactNative', roles: ['onSurface'], reason: 'web sets the content text colour on the wrapper classes themselves (`.ino-card__header`, `.ino-card__body` in ino-card.component.scss), because on web those classes wrap slotted projected content. Both ports take header/body/footer as caller-supplied slots (`header`, `children`, `footer` props) and render them inside an unstyled View, so the card never owns its content text colour — the caller does. The port reads on-surface-muted only for its own loading spinner.' },
+      { platform: 'flutter', roles: ['onSurface'], reason: 'same as the React Native entry above — `header`, `child` and `footer` are caller-supplied widgets wrapped in a bare Container, so the card never sets content text colour.' },
+      { platform: 'reactNative', roles: ['accent'], reason: 'web reads accent for the interactive card\'s `&:focus-visible` border (ino-card.component.scss). Touch has no focus-visible state; the Pressable expresses the same "this card is being activated" affordance through its pressed border (`pressed && isInteractive ? { borderColor: colors.accentActive }`), so accent itself is never reached.' },
+      { platform: 'flutter', roles: ['accent', 'accentActive'], reason: 'the interactive card is a plain GestureDetector wrapping the same static shell (ino_card.dart `_interactive` path), not a Material/InkWell with focus and press border states — the same structural reason the cascade-select Flutter entry declares. So neither the focus-visible border (accent) nor the pressed border (accent-active) has anywhere to land, and the border stays colors.border regardless of tap state. The React Native port does express the pressed state, so this is a Flutter-only gap.' },
+    ],
+  },
+  {
+    name: 'carousel',
+    web: 'web/src/app/components/carousel',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoCarousel.tsx',
+        roles: ['accent', 'border', 'onSurface', 'surfaceRaised'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_carousel.dart',
+        roles: ['accent', 'border', 'onSurface', 'surfaceRaised'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['onSurfaceMuted', 'onSurfaceSubtle', 'surfaceSunken'], reason: 'all three are pointer- or disabled-state fills with nowhere to land on touch. surface-sunken is the nav-button hover background (ino-carousel.component.scss, `&:hover:not(:disabled)`) and on-surface-muted the indicator-dot hover fill (`.ino-carousel__indicator &:hover`) — a touch press has no separate hover phase. on-surface-subtle is the disabled nav glyph (`&:disabled`); this port instead dims the whole button with `opacity: 0.6` over the same on-surface glyph colour it already reads (InoCarousel.tsx:165), the same opacity-dimming convention InoCard uses, so the dedicated dimmer role is never reached. The port reads accent for the active indicator, border for the nav-button outline, on-surface for the nav glyph and surface-raised for the nav-button fill.' },
+      { platform: 'flutter', roles: ['onSurfaceMuted', 'onSurfaceSubtle', 'surfaceSunken'], reason: 'same as the React Native entry above — hover is a pointer concept the GestureDetector nav buttons never reach, and disabled is expressed with an Opacity(0.6) wrapper over the same on-surface glyph (ino_carousel.dart:138-139) rather than a swap to on-surface-subtle.' },
+    ],
+  },
+  {
+    name: 'cascade-select',
+    web: 'web/src/app/components/cascade-select',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoCascadeSelect.tsx',
+        roles: ['accent', 'accentTextSafe', 'border', 'borderSoft', 'danger', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'overlayScrim', 'surfaceRaised', 'surfaceSunken'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_cascade_select.dart',
+        roles: ['accentTextSafe', 'border', 'borderSoft', 'danger', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'overlayScrim', 'surfaceRaised', 'surfaceSunken'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['accentActive'], reason: 'same rationale as the select/datepicker entries above — web reserves accent-active for the transient mousedown-before-focus-settles flash on the trigger (ino-cascade-select.component.scss `.ino-field__control:active`); touch has no pointer-down-before-focus phase, so the Pressable goes straight from unfocused to colors.accent when the sheet opens.' },
+      { platform: 'flutter', roles: ['accentActive'], reason: 'same as the React Native entry above.' },
+      { platform: 'flutter', roles: ['accent'], reason: 'the trigger is a plain GestureDetector + Container (ino_cascade_select.dart, around the `_open` callback), not a Material/InkWell with a focus/press border state, so unlike the React Native Pressable or ino_select.dart\'s OutlineInputBorder, the border never changes for open/focus/press — it stays invalid ? colors.danger : colors.border regardless of sheet state, so the role is never reached.' },
+      { platform: 'reactNative', roles: ['overlayScrim', 'borderSoft'], reason: 'ADDED roles, not dropped ones — same one intentional visual divergence the select/autocomplete ports declare (SPEC.md §7, doc 26 §5 "mobile = stacked sheet pages"). Web anchors the drill-down panel absolutely under the trigger with no scrim and no sheet chrome; a nested-listbox popover under a field collides with the software keyboard and bottom safe area on a phone, so this port presents each level as a full-screen modal sheet page (ConfirmActionSheet.tsx idiom, docs/brand/13-mobile-app-patterns.md §2). overlay-scrim is that sheet backdrop and border-soft its grabber. See web/src/app/components/cascade-select/SPEC.md §7.' },
+      { platform: 'flutter', roles: ['overlayScrim', 'borderSoft'], reason: 'same as the React Native entry above — showModalBottomSheet barrierColor is overlay-scrim and the grabber is border-soft, matching confirm_action_sheet.dart / ino_select.dart.' },
     ],
   },
   {
     name: 'checkbox',
     web: 'web/src/app/components/checkbox',
     mobile: {
+      // The group wrapper (InoCheckboxGroup.tsx / ino_checkbox_group.dart) reads only on-surface for
+      // its legend, which the single-checkbox file below already declares, so the declared path
+      // carries the component's whole role surface.
       reactNative: {
         path: 'mobile/react-native/src/components/InoCheckbox.tsx',
         roles: ['accent', 'border', 'danger', 'onAccent', 'onSurface', 'onSurfaceMuted'],
@@ -609,8 +855,28 @@ const COMPONENT_REGISTRY = [
       },
     },
     divergences: [
-      { platform: 'reactNative', roles: ['accentActive', 'border', 'onAccent'], reason: 'web restyles a real native <input type="checkbox"> via the `accent-color` CSS property, so it never needs its own border or on-accent-fill roles — the browser draws the box and tick. RN has no native checkbox primitive (InoCheckbox.tsx doc comment) and draws the box from scratch, so it needs border for the unchecked outline and onAccent for the checkmark glyph color that accent-color drew for free on web. accentActive is dropped because the drawn box has only two states (empty/filled, both using accent) with no separate pressed-color change — same "touch has no mousedown-before-focus phase" gap this file already records for accentActive on input/datepicker/select.' },
-      { platform: 'flutter', roles: ['accentActive', 'border', 'onAccent'], reason: 'same as the React Native entry above — ino_checkbox.dart draws its own box for the same "no native checkbox primitive" reason.' },
+      { platform: 'reactNative', roles: ['border', 'onAccent'], reason: 'ADDED roles, not dropped ones. Web does not draw the box at all — it hands the whole control to the UA with `accent-color: var(--ino-color-accent)` on a native `<input type="checkbox">` (ino-checkbox.component.scss `.ino-checkbox__input`), so the browser paints the unchecked box outline and the check glyph and web never names a role for either. React Native has no native checkbox primitive, so this port hand-draws it: border is the unchecked box outline and on-accent is the check/indeterminate glyph over the accent fill. Same roles web would have had to name if it drew the box itself.' },
+      { platform: 'flutter', roles: ['border', 'onAccent'], reason: 'same as the React Native entry above — ino_checkbox.dart draws the box with a BoxDecoration (border = unchecked outline) and an Icons.check / dash Container tinted on-accent, because web delegates both to the UA via accent-color.' },
+      { platform: 'reactNative', roles: ['accentActive'], reason: 'web reserves accent-active for the pointer-down flash on the native control (`&:active:not(:disabled)` re-points accent-color, ino-checkbox.component.scss:73). Touch has no pointer-down-before-commit phase for a checkbox — the tap commits the toggle immediately — so the port goes straight from colors.border to colors.accent. Same rationale the input/datepicker entries declare.' },
+      { platform: 'flutter', roles: ['accentActive'], reason: 'same as the React Native entry above.' },
+    ],
+  },
+  {
+    name: 'chip',
+    web: 'web/src/app/components/chip',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoChip.tsx',
+        roles: ['accent', 'border', 'onAccent', 'onSurface', 'surfaceRaised'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_chip.dart',
+        roles: ['accent', 'border', 'onAccent', 'onSurface', 'surfaceRaised'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['surfaceSunken'], reason: 'web reserves surface-sunken for the hover/pointer-down flash on the interactive button form (`:hover`/`:active`, ino-chip.component.scss lines 47-57). A touch tap has no hover phase and commits on release, not on press-down, so InoChip.tsx never reads this role — same rationale the checkbox entry above gives for dropping accent-active.' },
+      { platform: 'flutter', roles: ['surfaceSunken'], reason: 'same as the React Native entry above — ino_chip.dart has no hover/pointer-down intermediate state to paint.' },
     ],
   },
   {
@@ -624,6 +890,24 @@ const COMPONENT_REGISTRY = [
     web: 'web/src/app/components/confirm-popup',
     mobile: { reactNative: 'web-only', flutter: 'web-only' },
     reason: 'web-only by explicit decision (INO-148, plan rev 9 §5 desktop-idiom porting rule) — same rationale as confirm-dialog above; `ino-confirm-action-sheet` already covers mobile confirm. See web/src/app/components/confirm-popup/SPEC.md §5 and docs/brand/06-angular-components/confirm-popup.md#mobile.',
+  },
+  {
+    name: 'dataview',
+    web: 'web/src/app/components/dataview',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoDataView.tsx',
+        roles: ['borderSoft', 'onSurfaceMuted'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_dataview.dart',
+        roles: ['borderSoft', 'onSurfaceMuted'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['border', 'onSurface'], reason: "border is only the midpoint stop of the web skeleton's shimmer gradient, and that gradient exists solely under `@media (prefers-reduced-motion: no-preference)` (ino-dataview.component.scss `.ino-dataview__skeleton-bar`); this port draws a flat border-soft skeleton bar with no gradient and no shimmer, so there is no midpoint colour to read. on-surface is the host and `.ino-dataview__label` body-text colour on web, where those classes wrap slotted projected content. This port is a thin generic FlatList wrapper whose item content is caller-supplied via `renderItem` (InoDataView.tsx:36), so the view never owns item text colour — the caller does. It reads on-surface-muted for its own empty message and loading spinner." },
+      { platform: 'flutter', roles: ['border', 'onSurface'], reason: "same as the React Native entry above — the skeleton is a flat border-soft Container with no shimmer gradient, and `itemBuilder` (ino_dataview.dart:23) makes item text colour the caller's concern, not the view's." },
+    ],
   },
   {
     name: 'datepicker',
@@ -648,6 +932,21 @@ const COMPONENT_REGISTRY = [
     ],
   },
   {
+    name: 'divider',
+    web: 'web/src/app/components/divider',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoDivider.tsx',
+        roles: ['border', 'onSurfaceMuted'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_divider.dart',
+        roles: ['border', 'onSurfaceMuted'],
+      },
+    },
+    divergences: [],
+  },
+  {
     name: 'drawer',
     web: 'web/src/app/components/drawer',
     mobile: {
@@ -665,6 +964,24 @@ const COMPONENT_REGISTRY = [
       { platform: 'flutter', roles: ['accentActive'], reason: 'same as the React Native entry above — IconButton\'s built-in press ripple is used instead of a dedicated accent-active read.' },
       { platform: 'reactNative', roles: ['surfaceSunken'], reason: 'web reads surface-sunken for the close button\'s :hover/:active background; touch has no hover and the port\'s Pressable has no custom pressed background, so the role is never reached (same gap as accent-active above, same button, same missing pressed-state affordance).' },
       { platform: 'flutter', roles: ['surfaceSunken'], reason: 'same as the React Native entry above.' },
+    ],
+  },
+  {
+    name: 'fieldset',
+    web: 'web/src/app/components/fieldset',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoFieldset.tsx',
+        roles: ['border', 'danger', 'dangerTextSafe', 'onSurface', 'onSurfaceMuted', 'surfaceRaised'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_fieldset.dart',
+        roles: ['border', 'danger', 'dangerTextSafe', 'onSurface', 'onSurfaceMuted', 'surfaceRaised'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['accent', 'accentActive'], reason: "web reads accent for the collapsible legend toggle's hover text colour and accent-active for its pressed colour (ino-fieldset.component.scss .ino-fieldset__toggle). Touch has no hover state and the Pressable's onPress commits the toggle on release with no distinct pressed-text-colour treatment, so neither role is ever reached." },
+      { platform: 'flutter', roles: ['accent', 'accentActive'], reason: 'same as the React Native entry above — the legend row is a plain GestureDetector with no hover/press colour state of its own.' },
     ],
   },
   {
@@ -734,6 +1051,24 @@ const COMPONENT_REGISTRY = [
     ],
   },
   {
+    name: 'image',
+    web: 'web/src/app/components/image',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoImage.tsx',
+        roles: ['onSurfaceMuted', 'surfaceSunken'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_image.dart',
+        roles: ['onSurfaceMuted', 'surfaceSunken'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['border', 'onSurface', 'onSurfaceSubtle', 'overlayScrim', 'surfaceRaised'], reason: 'all five are lightbox chrome, and this port deliberately ships no lightbox — see its own header comment at InoImage.tsx:32, "no lightbox. The preview-on-click lightbox is web-only (no focus-trap primitive exists on this platform)". overlay-scrim is the lightbox backdrop (`.ino-image__scrim`); surface-raised, border and on-surface are the lightbox control buttons\' fill, outline and glyph (`.ino-image__lightbox-controls button`); on-surface-subtle is those controls\' disabled glyph (`&:disabled`). With no lightbox there is no scrim and no control bar to paint. The port reads surface-sunken for the placeholder/fallback box and on-surface-muted for the fallback icon and the caption.' },
+      { platform: 'flutter', roles: ['border', 'onSurface', 'onSurfaceSubtle', 'overlayScrim', 'surfaceRaised'], reason: 'same as the React Native entry above — ino_image.dart:36 carries the identical "no lightbox" declaration, so the scrim and the control-bar roles have nowhere to land.' },
+    ],
+  },
+  {
     name: 'input',
     web: 'web/src/app/components/input',
     mobile: {
@@ -743,19 +1078,12 @@ const COMPONENT_REGISTRY = [
       },
       flutter: {
         path: 'mobile/flutter/lib/widgets/ino_input.dart',
-        roles: ['accent', 'border', 'danger', 'onSurface', 'onSurfaceMuted', 'surfaceRaised', 'surfaceSunken'],
+        roles: ['accent', 'border', 'danger', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'surfaceRaised', 'surfaceSunken'],
       },
     },
     divergences: [
       { platform: 'reactNative', roles: ['accentActive'], reason: 'web reserves accent-active for the transient mousedown-before-focus-settles flash (ino-input.component.scss); touch input has no pointer-down-before-focus phase, so the port goes straight from unfocused to colors.accent on focus.' },
       { platform: 'flutter', roles: ['accentActive'], reason: 'same as the React Native entry above.' },
-      // NOT a declared design decision — this is an apparent gap this check surfaced while being
-      // written (INO-171). RN sets placeholderTextColor={colors.onSurfaceSubtle} explicitly
-      // (InoInput.tsx); Flutter's TextField/InputDecoration sets no hintStyle at all, so the
-      // placeholder falls back to Flutter's default theme color instead of reading the role web
-      // and RN both use. Recorded here so the check passes without masking the finding — flagged
-      // to the input component owner (INO-157) to fix Flutter or confirm the omission is intended.
-      { platform: 'flutter', roles: ['onSurfaceSubtle'], reason: 'GAP, not a decision: Flutter InoInput sets no explicit placeholder/hint color (no hintStyle on the InputDecoration), so it never reads onSurfaceSubtle at all, unlike web (::placeholder) and RN (placeholderTextColor). Filed as a follow-up against the input component owner rather than fixed here — see INO-171 handoff comment.' },
     ],
   },
   {
@@ -783,30 +1111,122 @@ const COMPONENT_REGISTRY = [
     ],
   },
   {
+    name: 'inputmask',
+    web: 'web/src/app/components/inputmask',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoInputMask.tsx',
+        roles: ['accent', 'border', 'danger', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'surfaceRaised', 'surfaceSunken', 'warning'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_inputmask.dart',
+        roles: ['accent', 'border', 'danger', 'onSurface', 'onSurfaceMuted', 'surfaceRaised', 'surfaceSunken', 'warning'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['accentActive'], reason: 'same rationale as the input entry — web reserves accent-active for the transient mousedown-before-focus-settles border flash (`&:active:not(:disabled):not(:read-only)`, ino-inputmask.component.scss:53); touch has no pointer-down-before-focus phase, so the field goes straight from colors.border to colors.accent on focus.' },
+      { platform: 'flutter', roles: ['accentActive'], reason: 'same as the React Native entry above.' },
+      { platform: 'reactNative', roles: ['onSurfaceSubtle'], reason: 'ADDED role, not a dropped one. Web has no `::placeholder` rule in this component because the mask template is rendered as the input\'s actual value (the underscores are value characters the user types over — see the tabular-nums comment at ino-inputmask.component.scss:38), so it inherits on-surface. React Native\'s TextInput paints its native placeholder separately and needs an explicit `placeholderTextColor`, which this port sets to on-surface-subtle — the same role web\'s sibling text inputs use for their placeholders.' },
+    ],
+  },
+  {
+    name: 'inputnumber',
+    web: 'web/src/app/components/inputnumber',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoInputNumber.tsx',
+        roles: ['accent', 'border', 'danger', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'surfaceRaised', 'surfaceSunken'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_inputnumber.dart',
+        roles: ['accent', 'border', 'danger', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'surfaceRaised', 'surfaceSunken'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['accentActive'], reason: 'same rationale as the inputmask/input entries — web reserves accent-active for the pointer-down border flash (`&:active:not(:disabled):not(:read-only)`, ino-inputnumber.component.scss:80), which has no touch equivalent.' },
+      { platform: 'flutter', roles: ['accentActive'], reason: 'same as the React Native entry above.' },
+      { platform: 'reactNative', roles: ['surface'], reason: 'web reads surface for the stepper buttons\' `&:hover:not(:disabled)` background (ino-inputnumber.component.scss:165) — a hover-only lift off surface-raised. Hover has no touch equivalent, so both stepper buttons here stay colors.surfaceRaised with a colors.border outline in every state and the role is never reached.' },
+      { platform: 'flutter', roles: ['surface'], reason: 'same as the React Native entry above — the stepper buttons are a static surface-raised Container (ino_inputnumber.dart:369) with no hover state.' },
+    ],
+  },
+  {
+    // INO-723. This entry replaces the EXEMPT line INO-652 left below, which said there was
+    // nothing truthful to declare because all three implementations sat outside the token system:
+    // web read an 11-property `primary`/`text`/`error` vocabulary tokens.css never defined, the
+    // React Native port hardcoded hex literals and never imported the palette, and the Flutter
+    // port read Material's ColorScheme (so `colorScheme.primary` = accentTextSafe, the text
+    // accent, was being used as a chip fill). All three now read the same nine Ino roles, so the
+    // entry writes itself — which is exactly the condition that exemption set for its own removal.
+    name: 'inputtags',
+    web: 'web/src/app/components/inputtags',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoInputTags.tsx',
+        roles: ['accent', 'border', 'borderSoft', 'danger', 'dangerTextSafe', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'surfaceRaised', 'surfaceSunken'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_inputtags.dart',
+        roles: ['accent', 'border', 'danger', 'dangerTextSafe', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'surfaceRaised', 'surfaceSunken'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['borderSoft'], reason: 'an ADDED role, not a dropped one. Web separates suggestion rows by hover tint and padding alone — a pointer affordance. Touch has no hover, so this port draws a hairline rule between rows instead (`option.borderBottomColor`), and border-soft is the role for a separator inside an already-bordered container (the same role InoAutocomplete.tsx spends on its sheet grabber). Flutter does not need it: ListTile inside a Material already renders its own row separation.' },
+    ],
+  },
+  {
+    name: 'keyfilter',
+    web: 'web/src/app/components/keyfilter',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoKeyfilter.ts',
+        roles: [],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_keyfilter.dart',
+        roles: [],
+      },
+    },
+    // Not a "roles: []" oversight — keyfilter is behaviour-only (ino-keyfilter.component.scss's
+    // own header: "a key filter is behavior, not surface — it contributes no colour, spacing,
+    // radius, elevation, duration or type"). web reads zero --ino-color-* roles, and both mobile
+    // ports are formatters (RN hook / Flutter TextInputFormatter) with no rendering of their own,
+    // so there is no role set for either side to diverge on. See SPEC.md §7.
+  },
+  {
     name: 'label',
     web: 'web/src/app/components/label',
     mobile: {
       reactNative: {
         path: 'mobile/react-native/src/components/InoLabel.tsx',
-        roles: ['onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'dangerTextSafe'],
+        roles: ['dangerTextSafe', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle'],
       },
       flutter: {
         path: 'mobile/flutter/lib/widgets/ino_label.dart',
-        roles: ['onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'dangerTextSafe'],
+        roles: ['dangerTextSafe', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle'],
       },
     },
-    // Web never reads a base palette role directly in ino-label.component.scss — it reads the
-    // semantic label-* aliases instead, which tokens.css (§ form-label tokens) points at the same
-    // base roles the mobile ports read directly: --ino-color-label -> on-surface,
-    // --ino-color-label-muted -> on-surface-muted, --ino-color-label-disabled -> on-surface-subtle,
-    // --ino-color-label-invalid / --ino-color-required-marker -> danger-text-safe. Every role on
-    // both sides of this entry is therefore a declared divergence by construction — not a gap,
-    // an indirection layer the camelCase(--ino-color-X) scan in this file cannot see through.
     divergences: [
-      { platform: 'reactNative', roles: ['label', 'labelMuted', 'labelInvalid', 'labelDisabled', 'requiredMarker'], reason: 'web-only semantic aliases (tokens.css) that resolve to the base roles this port reads directly — see the component-level comment above.' },
-      { platform: 'reactNative', roles: ['onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'dangerTextSafe'], reason: 'the base roles the web aliases above resolve to; web never names them directly in ino-label.component.scss, so they read as "extra" here.' },
-      { platform: 'flutter', roles: ['label', 'labelMuted', 'labelInvalid', 'labelDisabled', 'requiredMarker'], reason: 'same as the React Native entry above.' },
-      { platform: 'flutter', roles: ['onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'dangerTextSafe'], reason: 'same as the React Native entry above.' },
+      // The one divergence in this file that is a pure naming difference with zero value difference.
+      { platform: 'reactNative', roles: ['label', 'labelMuted', 'labelDisabled', 'labelInvalid', 'requiredMarker', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'dangerTextSafe'], reason: 'Declared-alias divergence, not drift: web reads the five form-label aliases and this port reads the four roles they are defined as. tokens.css:248-252 defines them as exactly that — label = on-surface, label-muted = on-surface-muted, label-disabled = on-surface-subtle, label-invalid = danger-text-safe, required-marker = danger-text-safe — so the resolved values are identical by construction, not by coincidence (contrast the button entry\'s onAccent/onDanger note, which IS a coincidence). The mobile palettes deliberately carry no form-label alias layer: `grep "final Color" mobile/flutter/lib/theme/tokens.dart` has no label* or requiredMarker field, because an alias that only ever resolves to one base role buys nothing once there is no cascade to re-point it in. The port\'s state ladder matches the alias table one-for-one (InoLabel.tsx:44-50): disabled -> onSurfaceSubtle, invalid -> dangerTextSafe, muted/readonly -> onSurfaceMuted, resting -> onSurface, and the required asterisk -> dangerTextSafe. If the alias table is ever re-pointed to something other than these four roles, this divergence becomes a real one and must be re-examined.' },
+      { platform: 'flutter', roles: ['label', 'labelMuted', 'labelDisabled', 'labelInvalid', 'requiredMarker', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'dangerTextSafe'], reason: 'same as the React Native entry above — ino_label.dart:44-49 walks the identical state ladder over the aliased-to roles, and the Flutter palette has no form-label alias fields either.' },
+    ],
+  },
+  {
+    name: 'listbox',
+    web: 'web/src/app/components/listbox',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoListbox.tsx',
+        roles: ['accent', 'accentTextSafe', 'border', 'borderSoft', 'danger', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'overlayScrim', 'surfaceRaised', 'surfaceSunken'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_listbox.dart',
+        roles: ['accent', 'accentTextSafe', 'border', 'borderSoft', 'danger', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'overlayScrim', 'surfaceRaised', 'surfaceSunken'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['overlayScrim', 'borderSoft'], reason: 'ADDED roles, not dropped ones — the same one intentional visual divergence the select/multiselect/autocomplete/cascade-select ports declare, and the sharpest case of it. Web renders an always-visible inline list with no trigger, no scrim and no sheet chrome; doc 26 §5 calls for "mobile = full-screen sheet reuse of multiselect" because an inline scrolling list nested inside a phone screen\'s own scroll view traps the gesture. So this port is a trigger-plus-modal-sheet (InoListbox.tsx:211-219): overlay-scrim is the sheet backdrop and border-soft its grabber. The web-only filter input moves inside the sheet for the same reason. See the port\'s header comment.' },
+      { platform: 'flutter', roles: ['overlayScrim', 'borderSoft'], reason: 'same as the React Native entry above — showModalBottomSheet barrierColor is overlay-scrim (ino_listbox.dart:108) and the grabber is border-soft, matching ino_select.dart.' },
     ],
   },
   {
@@ -833,19 +1253,19 @@ const COMPONENT_REGISTRY = [
     mobile: {
       reactNative: {
         path: 'mobile/react-native/src/components/InoModal.tsx',
-        roles: ['overlayScrim', 'onSurface', 'onSurfaceMuted', 'surfaceRaised'],
+        roles: ['onSurface', 'onSurfaceMuted', 'overlayScrim', 'surfaceRaised'],
       },
       flutter: {
         path: 'mobile/flutter/lib/widgets/ino_modal.dart',
-        roles: ['overlayScrim', 'onSurfaceMuted', 'surfaceRaised'],
+        roles: ['onSurfaceMuted', 'overlayScrim', 'surfaceRaised'],
       },
     },
     divergences: [
-      { platform: 'reactNative', roles: ['accentActive', 'surfaceSunken'], reason: 'web reads these only for the close/maximize icon-button\'s :hover (surfaceSunken bg) and :active (accentActive glyph) states (ino-modal.component.scss); the port\'s close Pressable has no custom pressed style, so neither role is ever reached — same "touch has no hover/press-state color" gap this file records for several other components\' accentActive entries.' },
-      { platform: 'reactNative', roles: ['surfaceRaised'], reason: 'ADDED, not dropped — web composes <ino-card variant="overlay"> for the panel background (SPEC.md §"Overlay" row, ino-modal.component.ts class comment) and never reads --ino-color-surface-raised in its own .scss; this port renders its own panel View directly and has no shared card primitive to delegate to, so it reads surfaceRaised itself.' },
-      { platform: 'flutter', roles: ['accentActive', 'surfaceSunken'], reason: 'same as the React Native entry above — the close IconButton relies on Material\'s built-in ripple instead of a custom pressed-state color read.' },
-      { platform: 'flutter', roles: ['surfaceRaised'], reason: 'same delegation gap as the React Native entry above.' },
-      { platform: 'flutter', roles: ['onSurface'], reason: 'ADDED relative to the declared set, i.e. never read — the heading renders via `Theme.of(context).textTheme.titleMedium` (Flutter\'s ambient Material text style) rather than an explicit `colors.onSurface` read, unlike web (ino-modal.component.scss) and RN (InoModal.tsx), both of which set the heading color directly from the role.' },
+      { platform: 'reactNative', roles: ['surfaceRaised'], reason: 'ADDED role, not a dropped one, and it is a composition difference rather than a visual one. Web\'s `.ino-modal__panel` sets no background at all (ino-modal.component.scss:17) because the template wraps the panel content in `<ino-card variant="overlay">` (ino-modal.component.html:16) and the card owns the surface — so the role is read, just from the card\'s stylesheet, which is why it is absent from this directory\'s scss. React Native has no composed card here; the Modal\'s panel View must be opaque itself, so the port reads surface-raised directly. Same resolved colour, declared by a different file.' },
+      { platform: 'flutter', roles: ['surfaceRaised'], reason: 'same as the React Native entry above — showDialog\'s Material gets `backgroundColor: colors.surfaceRaised` (ino_modal.dart:42) because there is no composed ino_card painting it.' },
+      { platform: 'reactNative', roles: ['accentActive', 'surfaceSunken'], reason: 'both roles exist in this component only for the header close button\'s hover and pointer-down states (ino-modal.component.scss:130-136 — surface-sunken is the hover/active background, accent-active the active glyph colour). Hover has no touch equivalent and the close affordance here is a plain Pressable glyph with no pressed background, so neither role is reached. The panel body never uses surface-sunken on web either.' },
+      { platform: 'flutter', roles: ['accentActive', 'surfaceSunken'], reason: 'same as the React Native entry above — the close affordance is an IconButton whose press feedback is Material\'s own ripple, not a surface-role swap.' },
+      { platform: 'flutter', roles: ['onSurface'], reason: 'web sets the dialog heading colour explicitly (`.ino-modal__heading`, ino-modal.component.scss:99) and the React Native port matches it (`{ color: colors.onSurface }` on the heading Text). This port renders the heading with `Theme.of(dialogContext).textTheme.titleMedium` (ino_modal.dart:58) and leaves the colour to that text theme, so it never reads the Ino role. The resolved colour is still the Ino role, because buildInoTheme sets `titleMedium: TextStyle(..., color: p.onSurface)` (mobile/flutter/lib/theme/app_theme.dart:26) — so this is an indirection through the Material text theme, not a dropped role. Harmless today; worth knowing because it breaks the moment a heading needs a colour the text theme does not already carry.' },
     ],
   },
   {
@@ -869,6 +1289,42 @@ const COMPONENT_REGISTRY = [
     ],
   },
   {
+    name: 'panel',
+    web: 'web/src/app/components/panel',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoPanel.tsx',
+        roles: ['border', 'borderSoft', 'onSurface', 'onSurfaceMuted', 'surfaceRaised'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_panel.dart',
+        roles: ['border', 'borderSoft', 'onSurface', 'onSurfaceMuted', 'surfaceRaised'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['accent', 'accentActive'], reason: "web reads accent for the collapsible toggle's hover text colour and accent-active for its pressed colour (ino-panel.component.scss .ino-panel__toggle). Touch has no hover state and the Pressable's onPress commits the toggle on release with no distinct pressed-text-colour treatment, so neither role is ever reached — same rationale the card entry above gives for its own focus/press border roles." },
+      { platform: 'flutter', roles: ['accent', 'accentActive'], reason: 'same as the React Native entry above — the header row is a plain GestureDetector with no hover/press colour state of its own.' },
+    ],
+  },
+  {
+    name: 'password',
+    web: 'web/src/app/components/password',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoPassword.tsx',
+        roles: ['accent', 'border', 'danger', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'success', 'surfaceRaised', 'surfaceSunken', 'warning'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_password.dart',
+        roles: ['accent', 'border', 'danger', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'success', 'surfaceRaised', 'surfaceSunken', 'warning'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['accentActive'], reason: 'same rationale as the input entry above (INO-171) — web reserves accent-active for the transient mousedown-before-focus-settles flash (ino-password.component.scss `&:active`); touch input has no pointer-down-before-focus phase, so the port goes straight from unfocused to colors.accent on focus.' },
+      { platform: 'flutter', roles: ['accentActive'], reason: 'same as the React Native entry above.' },
+    ],
+  },
+  {
     name: 'popover',
     web: 'web/src/app/components/popover',
     mobile: { reactNative: 'web-only', flutter: 'web-only' },
@@ -889,6 +1345,9 @@ const COMPONENT_REGISTRY = [
     },
   },
   {
+    // The only entry in this file with no divergences on either platform: web, React Native and
+    // Flutter read the same three roles for the same three parts (track, indeterminate arc, error
+    // state). Worth keeping as the reference shape for what full parity looks like.
     name: 'progress-spinner',
     web: 'web/src/app/components/progress-spinner',
     mobile: {
@@ -901,35 +1360,27 @@ const COMPONENT_REGISTRY = [
         roles: ['accent', 'borderSoft', 'danger'],
       },
     },
-    divergences: [],
   },
   {
     name: 'radio-group',
     web: 'web/src/app/components/radio-group',
     mobile: {
+      // As with checkbox, the group wrapper (InoRadioGroup.tsx / ino_radio_group.dart) reads only
+      // on-surface for its legend, which the single-radio file below already declares.
       reactNative: {
-        path: 'mobile/react-native/src/components/InoRadioGroup.tsx',
-        roles: ['onSurface'],
+        path: 'mobile/react-native/src/components/InoRadio.tsx',
+        roles: ['accent', 'border', 'danger', 'onSurface', 'onSurfaceMuted'],
       },
       flutter: {
-        path: 'mobile/flutter/lib/widgets/ino_radio_group.dart',
-        roles: ['onSurface'],
+        path: 'mobile/flutter/lib/widgets/ino_radio.dart',
+        roles: ['accent', 'border', 'danger', 'onSurface', 'onSurfaceMuted'],
       },
     },
-    // The web ino-radio-group directory bundles both the group chrome
-    // (ino-radio-group.component.scss: legend/error) and the individual radio control
-    // (ino-radio.component.scss: box/fill/label) in one folder, per this registry's own
-    // directory-per-web-component convention. The mobile ports split these into two separate
-    // files — InoRadioGroup.tsx/ino_radio_group.dart (this entry's declared path, group chrome
-    // only) and the sibling InoRadio.tsx/ino_radio.dart (individually registrable under its own
-    // "radio" name if a web/src/app/components/radio directory existed; it does not — radio only
-    // ships as part of the group). The individual-control roles below are a structural
-    // consequence of that split, not an unverified gap: InoRadio.tsx/ino_radio.dart do read them.
     divergences: [
-      { platform: 'reactNative', roles: ['accent', 'accentActive', 'onSurfaceMuted'], reason: 'these color the individual radio control, which lives in the sibling InoRadio.tsx this entry does not point at — see the component-level comment above.' },
-      { platform: 'reactNative', roles: ['danger'], reason: 'web\'s ino-radio-group__error renders a group-level error message in danger; InoRadioGroup.tsx has no error prop or rendering at all, so this is an actual missing feature (not a structural-split artifact like the roles above) — filed as a gap, not a design decision.' },
-      { platform: 'flutter', roles: ['accent', 'accentActive', 'onSurfaceMuted'], reason: 'same structural-split rationale as the React Native entry above — these live in the sibling ino_radio.dart.' },
-      { platform: 'flutter', roles: ['danger'], reason: 'same as the React Native entry above — InoRadioGroup has no error-message feature.' },
+      { platform: 'reactNative', roles: ['border'], reason: 'ADDED role, not a dropped one — identical to the checkbox entry\'s reasoning. Web hands the control to the UA with `accent-color: var(--ino-color-accent)` on a native `<input type="radio">` (ino-radio.component.scss:41), so the browser paints the unchecked ring and web never names a role for it. React Native has no native radio primitive; this port draws the ring itself, and border is the unchecked ring colour. The checked dot needs no added role — it is colors.accent, same as web.' },
+      { platform: 'flutter', roles: ['border'], reason: 'same as the React Native entry above — ino_radio.dart draws the ring with a BoxDecoration whose unchecked border is colors.border.' },
+      { platform: 'reactNative', roles: ['accentActive'], reason: 'web reserves accent-active for the pointer-down flash on the native control (`&:active:not(:disabled)` re-points accent-color, ino-radio.component.scss:68). A radio tap commits immediately on touch with no pointer-down-before-commit phase, so the port goes straight from colors.border to colors.accent. Same rationale as checkbox/input/datepicker.' },
+      { platform: 'flutter', roles: ['accentActive'], reason: 'same as the React Native entry above.' },
     ],
   },
   {
@@ -953,6 +1404,28 @@ const COMPONENT_REGISTRY = [
     ],
   },
   {
+    name: 'select-button',
+    web: 'web/src/app/components/select-button',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoSelectButton.tsx',
+        roles: ['accent', 'border', 'onAccent', 'onSurface', 'surfaceRaised'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_select_button.dart',
+        roles: ['accent', 'border', 'onAccent', 'onSurface', 'surfaceRaised'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['surfaceSunken'], reason: 'INO-723 resolved the predecessor of this entry. Web used to read surface-hover at :hover and surface-pressed at :active — two roles tokens.css never defined, so both states cleared the segment background to transparent instead of tinting it. Neither token was added (the scale has no "hover"/"pressed" surface and tokens.css is frozen after Wave 0); web now reads surface-sunken for both, the one-step-down-from-raised fill every option surface in the tree uses. The port still does not read it, for the reason the old entry gave and INO-723 did not change: hover has no touch equivalent, and press is expressed as `pressed && !isDisabled && { opacity: 0.8 }` (InoSelectButton.tsx:117), which is the mobile idiom for pointer-down feedback.' },
+      { platform: 'flutter', roles: ['surfaceSunken'], reason: 'same as the React Native entry above — this port expresses press through Opacity (ino_select_button.dart:199) rather than a surface-role swap.' },
+      { platform: 'reactNative', roles: ['accentActive'], reason: 'web reads accent-active in two pointer-down places, both inside the `:active` rule (ino-select-button-option.component.scss): the pressed-AND-selected background, and — added by INO-723, replacing the undefined surface-pressed fill — the pressed border on an unselected segment. Both are pointer-down states, not selected states. Touch has no pointer-down-before-commit phase here and the pressed feedback is opacity, so a selected option stays colors.accent while pressed and an unselected one keeps colors.border.' },
+      { platform: 'flutter', roles: ['accentActive'], reason: 'same as the React Native entry above.' },
+      { platform: 'reactNative', roles: ['onSurfaceMuted'], reason: 'web spends this role in two places, and the port covers both without reading it. (1) The disabled option label (ino-select-button-option.component.scss:96) — this port dims the whole option with `opacity: isDisabled ? 0.6 : 1` (InoSelectButton.tsx:107) instead of re-colouring the text, so the label keeps colors.onSurface at 60%. (2) The group label (`.ino-select-button__group-label`, ino-select-button.component.scss:12) — this port delegates it to `<InoLabel>` (InoSelectButton.tsx:143), and InoLabel owns that role itself, so it is read, just from the label component rather than from here. See the label entry above.' },
+      { platform: 'flutter', roles: ['onSurfaceMuted'], reason: 'same as the React Native entry above — Opacity(0.6) for the disabled option (ino_select_button.dart:199) and `InoLabel(groupLabel!)` for the group label (ino_select_button.dart:145).' },
+    ],
+  },
+  {
     name: 'skeleton',
     web: 'web/src/app/components/skeleton',
     mobile: {
@@ -966,6 +1439,29 @@ const COMPONENT_REGISTRY = [
       },
     },
     divergences: [],
+  },
+  {
+    name: 'slider',
+    web: 'web/src/app/components/slider',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoSlider.tsx',
+        roles: ['accent', 'accentActive', 'borderSoft', 'danger', 'onSurface', 'onSurfaceMuted', 'surface', 'surfaceRaised', 'surfaceSunken'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_slider.dart',
+        roles: ['accent', 'borderSoft', 'danger', 'onSurface', 'onSurfaceMuted', 'surface', 'surfaceRaised', 'surfaceSunken'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['onAccent', 'surfaceRaised'], reason: 'a substitution, declared as a pair because one replaces the other. Web paints the thumb on-accent — a white chip reading as a cutout in the accent fill (`.ino-slider__thumb`, ino-slider.component.scss:112). Both mobile ports paint it surface-raised instead, i.e. as an elevated control sitting ON the track rather than a hole punched in it, which is the platform thumb idiom on both iOS and Android and what Material\'s SliderTheme thumbColor expects. The accent ring around the thumb still comes from accent/accent-active, so the thumb remains identifiable; what changes is the fill. Not a contrast concern — surface-raised against the accent fill is a surface/accent pair already budgeted in the colour checks above.' },
+      { platform: 'flutter', roles: ['onAccent', 'surfaceRaised'], reason: 'same as the React Native entry above — `thumbColor: colors.surfaceRaised` (ino_slider.dart:85).' },
+      { platform: 'reactNative', roles: ['border'], reason: 'web draws a 1px hairline around the track (`.ino-slider__track`, ino-slider.component.scss:58) to separate it from the page surface at desktop sizes, where the track is thin and sits on a flat background. Both ports render the track as a borderless filled pill (`backgroundColor: colors.surfaceSunken, borderRadius: radius.pill`) — the sunken fill carries the separation on its own at touch sizes, and a hairline on a rounded 4px track reads as an artifact on a high-DPI phone screen.' },
+      { platform: 'flutter', roles: ['border'], reason: 'same as the React Native entry above — Material\'s SliderTheme has no track-border slot at all; `inactiveTrackColor: colors.surfaceSunken` is the whole track treatment (ino_slider.dart:84).' },
+      { platform: 'reactNative', roles: ['borderSoft'], reason: 'ADDED role, not a dropped one. Web renders no tick marks — there is no tick rule anywhere in ino-slider.component.scss. Both mobile ports do render them for `marks` (InoSlider.tsx:254), because a touch thumb covers more of the track than a mouse cursor does and the marks are what make step positions findable without hovering. border-soft is the tick colour, chosen to sit under the track fill rather than compete with it.' },
+      { platform: 'flutter', roles: ['borderSoft'], reason: 'same as the React Native entry above — activeTickMarkColor and inactiveTickMarkColor both read border-soft (ino_slider.dart:88-89).' },
+      { platform: 'flutter', roles: ['accentActive'], reason: 'web re-tints the fill while dragging (`:host(.ino-slider--dragging) .ino-slider__fill`, ino-slider.component.scss:87) and also uses accent-active for the thumb hover/active ring and the at-max thumb. The React Native port keeps the dragging tint (`isDragging ? colors.accentActive : colors.accent`, InoSlider.tsx:241) and the at-bound ring, so this is a Flutter-only gap: Material\'s SliderTheme has no "track colour while dragging" slot, and this port expresses drag through the built-in overlay instead (`overlayColor: colors.accent.withOpacity(0.12)`, ino_slider.dart:86). The drag state is still visible, just as a halo rather than a fill shift.' },
+    ],
   },
   {
     name: 'stepper',
@@ -1092,8 +1588,27 @@ const COMPONENT_REGISTRY = [
       },
     },
     divergences: [
-      { platform: 'reactNative', roles: ['accentActive'], reason: 'same rationale as the input/datepicker/select entries above — web reserves accent-active for the transient mousedown-before-focus-settles flash (ino-toggle.component.scss); touch has no pointer-down-before-focus phase, so the port goes straight from unchecked to colors.accent on toggle.' },
+      { platform: 'reactNative', roles: ['accentActive'], reason: 'the only divergence on either platform for this component — web reserves accent-active for the pointer-down flash on the track, both as a border and as a fill (`&:active:not(:disabled):not(.ino-toggle__control--readonly) .ino-toggle__track`, ino-toggle.component.scss:63 and :170). A toggle tap commits the state change immediately on touch with no pointer-down-before-commit phase, so the track goes straight between its off and on colours. Same rationale as checkbox/radio-group.' },
       { platform: 'flutter', roles: ['accentActive'], reason: 'same as the React Native entry above.' },
+    ],
+  },
+  {
+    name: 'toggle-button',
+    web: 'web/src/app/components/toggle-button',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoToggleButton.tsx',
+        roles: ['accent', 'accentActive', 'border', 'onAccent', 'onSurface', 'surfaceRaised', 'surfaceSunken'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_toggle_button.dart',
+        roles: ['accent', 'accentActive', 'border', 'onAccent', 'onSurface', 'surface', 'surfaceRaised', 'surfaceSunken'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['danger'], reason: "readonly/loading/error are web-only for this component (SPEC.md §7, doc 26 §5 row) — InoToggleButton.tsx carries no error prop or message element, so colors.danger (painted only by web's ino-toggle-button__error paragraph, ino-toggle-button.component.scss) is never read." },
+      { platform: 'flutter', roles: ['danger'], reason: 'same as the React Native entry above — ino_toggle_button.dart has no error prop or message widget.' },
+      { platform: 'flutter', roles: ['surface'], reason: "the pressed face's border uses colors.surface.withValues(alpha: 0) as a typed transparent Color (same trick ino_button.dart's ghost/icon fill uses); web achieves the same transparent border with the literal CSS keyword `transparent` (ino-toggle-button.component.scss `.ino-toggle-button__control--pressed`), so this role never actually reads a surface value." },
     ],
   },
   {
@@ -1101,6 +1616,26 @@ const COMPONENT_REGISTRY = [
     web: 'web/src/app/components/tooltip',
     mobile: { reactNative: 'web-only', flutter: 'web-only' },
     reason: 'web-only by explicit decision (INO-149, plan rev 9 §5 desktop-idiom porting rule) — hover and keyboard focus have no touch equivalent; a long-press hint is a materially different interaction, not a port. See web/src/app/components/tooltip/SPEC.md §5 and docs/brand/06-angular-components/tooltip.md#mobile.',
+  },
+  {
+    name: 'treeselect',
+    web: 'web/src/app/components/treeselect',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoTreeSelect.tsx',
+        roles: ['accent', 'accentTextSafe', 'border', 'borderSoft', 'danger', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'overlayScrim', 'surfaceRaised', 'surfaceSunken'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_treeselect.dart',
+        roles: ['accent', 'accentTextSafe', 'border', 'borderSoft', 'danger', 'onSurface', 'onSurfaceMuted', 'onSurfaceSubtle', 'overlayScrim', 'surfaceRaised', 'surfaceSunken'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['overlayScrim', 'borderSoft'], reason: 'ADDED roles, not dropped ones — the same one intentional visual divergence the select/multiselect/autocomplete/cascade-select/listbox ports declare. Web anchors the tree panel absolutely under the trigger with no scrim and no sheet chrome; an expandable tree under a field is the worst case for colliding with the software keyboard and the bottom safe area, since its height changes as nodes expand. So this port presents the tree in a modal sheet (InoTreeSelect.tsx:333-338): overlay-scrim is the backdrop and border-soft its grabber.' },
+      { platform: 'flutter', roles: ['overlayScrim', 'borderSoft'], reason: 'same as the React Native entry above — showModalBottomSheet barrierColor is overlay-scrim (ino_treeselect.dart:199) and the grabber is border-soft (ino_treeselect.dart:442).' },
+      { platform: 'reactNative', roles: ['accentActive'], reason: 'same rationale as the select/cascade-select/datepicker entries — web reserves accent-active for the transient mousedown-before-focus-settles flash on the trigger (`&:active:not(:disabled)`, ino-treeselect.component.scss:60); touch has no pointer-down-before-focus phase, so the trigger goes straight from unfocused to colors.accent when the sheet opens.' },
+      { platform: 'flutter', roles: ['accentActive'], reason: 'same as the React Native entry above.' },
+    ],
   },
   {
     name: 'virtual-scroller',
@@ -1115,9 +1650,124 @@ for (let i = 1; i < COMPONENT_REGISTRY.length; i++) {
     `COMPONENT_REGISTRY must stay alphabetically inserted: "${COMPONENT_REGISTRY[i - 1].name}" is not before "${COMPONENT_REGISTRY[i].name}"`);
 }
 
+// ── INO-648 — reverse-coverage assertion ────────────────────────────────────────────────────────
+// Everything below this comment, and everything above since INO-171, only ever walked
+// COMPONENT_REGISTRY — a hand-maintained array. Forgetting to add an entry here does not fail the
+// gate, it silently REMOVES the component from it, so the gate reported green for 4 of 5 components
+// in the INO-544 batch that it never evaluated at all. Assert completeness against the filesystem
+// instead of trusting the array: every web/src/app/components/* directory that ships a matching
+// mobile port (React Native and/or Flutter — matched by name, ignoring case/punctuation, so
+// "cascade-select" matches "InoCascadeSelect.tsx"/"ino_cascade_select.dart") must appear in
+// COMPONENT_REGISTRY, or be named in EXEMPT with a written reason. Anything else fails loudly,
+// naming the component — that is the whole point: a missing entry can no longer just vanish.
+function normalizeName(s) { return s.toLowerCase().replace(/[^a-z0-9]/g, ''); }
+const stripExt = (f, prefix, suffix) => normalizeName(f.slice(prefix.length, f.length - suffix.length));
+const webComponentDirs = readdirSync(new URL('web/src/app/components/', root), { withFileTypes: true })
+  .filter(d => d.isDirectory()).map(d => d.name);
+const rnPortNames = readdirSync(new URL('mobile/react-native/src/components/', root))
+  .filter(f => /^Ino.*\.tsx?$/.test(f)).map(f => stripExt(f, 'Ino', f.endsWith('.tsx') ? '.tsx' : '.ts'));
+const flutterPortNames = readdirSync(new URL('mobile/flutter/lib/widgets/', root))
+  .filter(f => /^ino_.*\.dart$/.test(f)).map(f => stripExt(f, 'ino_', '.dart'));
+const registryNames = new Set(COMPONENT_REGISTRY.map(e => normalizeName(e.name)));
+// Each reason must explain why the pairing below is a decision, not an oversight (same bar the
+// EXEMPT-staleness check two loops down enforces for every other divergence in this file).
+//
+// This assertion's first run (2026-10-11) found 14 such components — not the 4 INO-648 knew about.
+// INO-652 backfilled 13 of them as real COMPONENT_REGISTRY entries above and deleted their
+// exemptions. The 14th, inputtags, was held back deliberately: all three of its implementations
+// sat outside the token system, so a registry entry would have declared roles the browser could
+// not resolve. INO-723 re-tokenised all three and gave it a real entry above, and this object is
+// now empty — the exemption list has no standing members and the staleness loop below keeps it
+// that way. Adding a key here is allowed but should be rare and argued; the bar is the one INO-652
+// set, "there is nothing truthful to declare," not "not yet got to it."
+const EXEMPT = {};
+let exemptChecks = 0;
+for (const dir of webComponentDirs) {
+  const n = normalizeName(dir);
+  if (!rnPortNames.includes(n) && !flutterPortNames.includes(n)) continue; // no mobile port at all — nothing to reverse-check
+  if (registryNames.has(n)) continue;
+  assert.ok(Object.prototype.hasOwnProperty.call(EXEMPT, dir),
+    `${dir}: ships a mobile port (React Native and/or Flutter) with no COMPONENT_REGISTRY entry and no EXEMPT reason — add a registry entry, or EXEMPT['${dir}'] with a written reason, naming why.`);
+  // The next assert DEREFERENCES what the one above only guarantees exists. Under fail-fast that
+  // was safe (the guard threw); under INO-809 aggregation the guard records and falls through, so
+  // an unexempted component reached `undefined.trim()` -- a TypeError that aborted the whole run
+  // and erased every later check plus all 138 contrast pairs. A recorded guard failure must skip
+  // its dependent checks, not feed them invalid state.
+  if (!Object.prototype.hasOwnProperty.call(EXEMPT, dir)) continue;
+  assert.ok(EXEMPT[dir].trim(), `EXEMPT['${dir}']: reason must not be blank`);
+  exemptChecks++;
+}
+// EXEMPT itself cannot rot into stale permission: once a real entry lands, or the directory/ports
+// disappear, the exemption must be deleted — the same "declared divergence that no longer reflects
+// an actual difference fails just as loudly" rule the per-component divergences enforce below.
+for (const dir of Object.keys(EXEMPT)) {
+  const n = normalizeName(dir);
+  assert.ok(webComponentDirs.includes(dir), `EXEMPT['${dir}']: no such web/src/app/components directory — remove the stale exemption`);
+  assert.ok(!registryNames.has(n), `EXEMPT['${dir}']: this component now has a COMPONENT_REGISTRY entry — remove the stale exemption`);
+}
+
+// ── INO-723 — undefined-custom-property assertion ──────────────────────────────────────────────
+// A `var(--ino-foo)` that tokens.css never defines is not a no-op: the whole declaration becomes
+// invalid at computed-value time and falls back to inherited/initial, NOT to the rule it meant to
+// override. A background goes transparent; a padding shorthand goes to zero. Nothing errors,
+// nothing logs, and the component looks almost right — which is exactly the silent-drift class
+// this gate exists to catch, and the one class it could not see until now. It found 22 such
+// properties in ino-inputtags and 8 in ino-select-button (INO-723); the fix for both landed in
+// the same change as this assertion, which is why it can be switched on green.
+//
+// A property defined by the component itself is fine and common (`--ino-tag-fill`,
+// `--ino-toggle-track-width`): those are internal plumbing a parent rule sets and a child reads.
+// Scope is per component directory — the unit a single owner ships — so a sibling file in the
+// same folder counts as a definition (ino-select-button.component.scss sets the --ino-control-*
+// aliases that ino-select-button-option.component.scss reads), but another component's does not.
+//
+// Comments must be stripped before matching, or a `var(--ino-x)` quoted inside a /* … */ note
+// explaining why it was REMOVED reads as a live usage and the gate stays red after the fix.
+const definedTokenProps = new Set([...css.matchAll(/(--ino-[\w-]+)\s*:/g)].map(m => m[1]));
+const stripComments = s => s.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/[^\n]*/gm, '');
+let tokenRefChecks = 0;
+for (const dir of webComponentDirs) {
+  const scssFiles = readdirSync(new URL(`web/src/app/components/${dir}/`, root)).filter(f => f.endsWith('.scss'));
+  const sources = scssFiles.map(f => [f, stripComments(read(`web/src/app/components/${dir}/${f}`))]);
+  const localProps = new Set(sources.flatMap(([, s]) => [...s.matchAll(/(--ino-[\w-]+)\s*:/g)].map(m => m[1])));
+  // A custom property can also be defined from the component's own template or class rather than
+  // its stylesheet. Angular's [style.--x]="expr" binding and an explicit style.setProperty() both
+  // write a real custom property on the element, and the .scss then reads it exactly as it would a
+  // sibling rule's declaration — the per-component "internal plumbing a parent sets and a child
+  // reads" case the comment above already sanctions, just authored in the template instead.
+  // Scanning only .scss made ino-panel-menu's --ino-panel-menu-level report as undefined even
+  // though ino-panel-menu.component.html sets it per <li> via [style.--ino-panel-menu-level];
+  // that was this gate's one false positive, found while merging to main (INO-911). It is the only
+  // instance of the pattern in the library today, so switching it on changes exactly that result.
+  // Deliberately NOT treating a var(--x, fallback) fallback as self-justifying: a fallback keeps
+  // the declaration valid but does not make a nonexistent role the right thing to point at, which
+  // is the defect class this assertion exists to catch.
+  for (const f of readdirSync(new URL(`web/src/app/components/${dir}/`, root))) {
+    if (!f.endsWith('.html') && !f.endsWith('.ts')) continue;
+    const tpl = read(`web/src/app/components/${dir}/${f}`);
+    for (const m of tpl.matchAll(/\[style\.(--ino-[\w-]+)\]/g)) localProps.add(m[1]);
+    for (const m of tpl.matchAll(/setProperty\(\s*['"`](--ino-[\w-]+)/g)) localProps.add(m[1]);
+  }
+  for (const [file, src] of sources) {
+    for (const m of src.matchAll(/var\(\s*(--ino-[\w-]+)/g)) {
+      assert.ok(definedTokenProps.has(m[1]) || localProps.has(m[1]),
+        `web/src/app/components/${dir}/${file}: reads var(${m[1]}), which tokens.css does not define and no .scss in this component declares. ` +
+        `The declaration is invalid at computed-value time and silently falls back to inherited/initial — point it at a real role, or declare the property in this component.`);
+      tokenRefChecks++;
+    }
+  }
+}
+
 let componentChecks = 0;
 for (const entry of COMPONENT_REGISTRY) {
-  assert.ok(existsSync(new URL(entry.web, root)), `${entry.name}: web path ${entry.web} does not exist`);
+  // Second instance of the guard-then-dereference pattern (see the EXEMPT loop): webColorRoles()
+  // readdirSync's this path, so a recorded "does not exist" used to fall straight through to an
+  // ENOENT that aborted the gate. Reachable from any tree whose component set is behind the
+  // registry -- measured on origin/main, where it produced a stack trace and zero evidence.
+  if (!existsSync(new URL(entry.web, root))) {
+    assert.ok(false, `${entry.name}: web path ${entry.web} does not exist`);
+    continue;
+  }
   const webRoles = webColorRoles(entry.web);
 
   const bothWebOnly = entry.mobile.reactNative === 'web-only' && entry.mobile.flutter === 'web-only';
@@ -1136,8 +1786,17 @@ for (const entry of COMPONENT_REGISTRY) {
       componentChecks++;
       continue;
     }
-    assert.ok(decl?.path, `${entry.name}/${platform}: registry entry must set either "web-only" or { path, roles }`);
-    assert.ok(existsSync(new URL(decl.path, root)), `${entry.name}/${platform}: ${decl.path} does not exist`);
+    // Same pattern again: read(decl.path) below dereferences what these two only guarantee. A
+    // missing or misspelled registry path must be reported as one defect, not become an ENOENT
+    // that erases every later component and the contrast block.
+    if (!decl?.path) {
+      assert.ok(false, `${entry.name}/${platform}: registry entry must set either "web-only" or { path, roles }`);
+      continue;
+    }
+    if (!existsSync(new URL(decl.path, root))) {
+      assert.ok(false, `${entry.name}/${platform}: ${decl.path} does not exist`);
+      continue;
+    }
     const declaredRoles = new Set(decl.roles ?? []);
     const portSource = read(decl.path);
     for (const role of declaredRoles) {
@@ -1166,27 +1825,8 @@ for (const entry of COMPONENT_REGISTRY) {
   }
 }
 
-// Reverse direction: a component that ships a mobile port but has no COMPONENT_REGISTRY
-// entry at all is never checked for role parity, declared divergences or contrast — the
-// loop above only validates entries that exist, so an unregistered port is invisible to it.
-// Enumerate web components and probe for the port-naming convention every existing entry
-// above already follows (ino_<snake>.dart / Ino<Pascal>.tsx) to catch that silently.
-const registeredNames = new Set(COMPONENT_REGISTRY.map(e => e.name));
-const toSnake = name => name.replace(/-/g, '_');
-const toPascal = name => name.split('-').map(part => part[0].toUpperCase() + part.slice(1)).join('');
-const webComponentDirs = readdirSync(new URL('web/src/app/components/', root), { withFileTypes: true })
-  .filter(d => d.isDirectory())
-  .map(d => d.name);
-for (const name of webComponentDirs) {
-  if (registeredNames.has(name)) continue;
-  const candidatePorts = [
-    `mobile/flutter/lib/widgets/ino_${toSnake(name)}.dart`,
-    `mobile/react-native/src/components/Ino${toPascal(name)}.tsx`,
-  ];
-  const foundPorts = candidatePorts.filter(p => existsSync(new URL(p, root)));
-  assert.equal(foundPorts.length, 0,
-    `${name}: mobile port(s) found (${foundPorts.join(', ')}) but no COMPONENT_REGISTRY entry exists — role parity, divergences and contrast are never checked for this component; add an entry (or 'web-only' with a reason if the port is a coincidence of naming)`);
-}
-
-console.log(`PASS: CSS mirrors; Capacitor import; ${colorChecks} color roles across 3 themes × 2 mobile ports; space/radius/targets/durations; Devanagari font pairing + line-height parity; focus-ring shape; invalid-ring shape, never-flatten rule and SC 1.4.11 budget in 3 themes; pressed-accent contrast in 3 themes; control-size scale across 3 densities + ${controlChecks} mobile port values; form-label tokens across 3 themes × 2 densities + RN/Flutter label type-scale parity; elevation scale (6 neutral + 3 brand + 2 inset) across 3 themes; data-viz layer (6 categorical + 8 sequential + 7 diverging, ${vizChecks} checks) across 3 themes; leading/tracking rhythm scale + composite type aliases across 3 densities; component registry (${COMPONENT_REGISTRY.length} components, ${componentChecks} platform checks).`);
-console.log('High-contrast token pairs (AAA text >=7; non-text borders >=3; excludes disabled/decorative subtle role);\nplus per-theme pressed-accent pairs (INO-123):\n'+measurements.join('\n'));
+if (!assertFailures.length) console.log(`PASS: CSS mirrors; Capacitor import; ${colorChecks} color roles across 3 themes × 2 mobile ports; space/radius/targets/durations; Devanagari font pairing + line-height parity; focus-ring shape; invalid-ring shape, never-flatten rule and SC 1.4.11 budget in 3 themes; pressed-accent contrast in 3 themes; control-size scale across 3 densities + ${controlChecks} mobile port values; form-label tokens across 3 themes × 2 densities + RN/Flutter label type-scale parity; elevation scale (6 neutral + 3 brand + 2 inset) across 3 themes; data-viz layer (6 categorical + 8 sequential + 7 diverging, ${vizChecks} checks) across 3 themes; leading/tracking rhythm scale + composite type aliases across 3 densities; component registry (${COMPONENT_REGISTRY.length} components, ${componentChecks} platform checks); reverse coverage against ${webComponentDirs.length} web component directories (${exemptChecks} EXEMPT, see INO-652); ${tokenRefChecks} var(--ino-*) references resolve to a defined property (INO-723).`);
+// The contrast block is printed by the exit handler, not here -- reaching this line is exactly
+// the condition that could not be relied on. All this does is record that the run DID finish,
+// so the handler can label the evidence complete rather than partial.
+evidence.complete = true;

@@ -1,0 +1,20 @@
+Demo section headings: ["Basic (one slide at a time)","N visible + step (3 visible, advances by 1)","Circular","Autoplay (opt-in)","Vertical orientation","Sizing — item gap scales","Controlled (externally driven activeIndex)","Keyboard Navigation"]
+Accessibility contract heading present: false
+Deliberate omissions heading present: false
+Raw <pre class="docs-markdown"> blocks found (should be 0 post-D5 fix): 0
+Rendered <table> elements on page: 5
+Mobile parity "React Native" mention present: true
+Sizing demo section present: true
+KEYBOARD WALKTHROUGH LOG:
+  1. Tab #14: focus on track (class=ino-carousel__track) — PASS
+  2. Reached carousel track via Tab: true
+  3. ArrowRight pressed on track — before=null
+  4. ArrowLeft pressed on track (return toward start)
+  5. End pressed — jump to last stop
+  6. Home pressed — jump to first stop
+  7. Focus element after Home: <div _ngcontent-ng-c663111279="" tabindex="0" class="ino-carousel__track" aria-label="Basic carousel"><ino-carousel-item
+  8. Computed outline on focused element: {"outline":"solid","outlineColor":"rgb(124, 92, 252)","outlineWidth":"2px"}
+Autoplay visible pause control present: 1
+Switched to theme=dark, documentElement data-theme=dark
+Switched to theme=light, documentElement data-theme=light
+Switched to theme=high-contrast, documentElement data-theme=high-contrast

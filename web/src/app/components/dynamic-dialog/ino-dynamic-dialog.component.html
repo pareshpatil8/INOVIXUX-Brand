@@ -1,0 +1,14 @@
+<ino-modal
+  [open]="!!entry()"
+  [heading]="entry()?.config?.heading ?? ''"
+  [size]="entry()?.config?.size ?? 'default'"
+  [maximizable]="!!entry()?.config?.maximizable"
+  [draggable]="!!entry()?.config?.draggable"
+  [closeOnEscape]="entry()?.config?.closeOnEscape ?? true"
+  [closeOnBackdrop]="entry()?.config?.closeOnBackdrop ?? true"
+  (closed)="onModalClosed()"
+>
+  <ng-container *ngIf="entry() as e">
+    <ng-container *ngComponentOutlet="e.component; injector: contentInjector()!"></ng-container>
+  </ng-container>
+</ino-modal>

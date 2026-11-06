@@ -1,0 +1,195 @@
+/*
+ * <ino-image> — INO-487 / INO-31 Phase B5.
+ *
+ * No literal colour/duration — every colour/motion value resolves through a semantic token in
+ * tokens.css. Logical properties only (RTL is one code path, see SPEC.md §6). No density
+ * (dense/fluid) split: sizing is caller-controlled via `width`/`height` + `fit`, a content
+ * decision rather than a control-height one — same reasoning `ino-avatar`'s SPEC.md §2 already
+ * recorded for declining the shared control-size scale.
+ */
+:host {
+  display: inline-block;
+  max-inline-size: 100%;
+}
+
+.ino-image__figure {
+  margin: 0;
+  display: inline-flex;
+  flex-direction: column;
+  max-inline-size: 100%;
+}
+
+.ino-image__trigger {
+  display: block;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+  max-inline-size: 100%;
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+}
+
+.ino-image__frame {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  max-inline-size: 100%;
+  border-radius: var(--ino-radius-md);
+  background: var(--ino-color-surface-sunken);
+  line-height: 0;
+}
+
+.ino-image__skeleton {
+  position: absolute;
+  inset: 0;
+}
+
+.ino-image__img {
+  display: block;
+  max-inline-size: 100%;
+  opacity: 1;
+  transition: opacity var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+}
+
+/* Only a frame with an explicit `width`/`height` fills it (so `fit` has a box to act on) — with
+ * neither set the image renders at its own intrinsic size (doc 26 §5 "intrinsic + fit modes"). */
+.ino-image__frame--sized .ino-image__img {
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.ino-image__img--hidden {
+  opacity: 0;
+}
+
+.ino-image__fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-inline-size: 120px;
+  min-block-size: 120px;
+  padding: var(--ino-space-4);
+  background: var(--ino-color-surface-sunken);
+  color: var(--ino-color-on-surface-muted);
+}
+
+.ino-image__fallback-slot:empty {
+  display: none;
+}
+
+.ino-image__fallback-slot:not(:empty) ~ .ino-image__fallback-icon {
+  display: none;
+}
+
+.ino-image__fallback-icon {
+  inline-size: 32px;
+  block-size: 32px;
+}
+
+.ino-image__caption {
+  margin-block-start: var(--ino-space-2);
+  color: var(--ino-color-on-surface-muted);
+  font-size: var(--ino-type-caption-size);
+  line-height: var(--ino-type-caption-line);
+}
+
+.ino-image__caption:empty {
+  display: none;
+}
+
+/* Lightbox — web-only (doc 26 §5 "Port both (base render; lightbox web-only)"). */
+.ino-image__lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: var(--ino-z-overlay);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--ino-space-6);
+}
+
+.ino-image__scrim {
+  position: absolute;
+  inset: 0;
+  background: var(--ino-color-overlay-scrim);
+}
+
+.ino-image__lightbox-panel {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--ino-space-4);
+  max-inline-size: min(90vw, 1100px);
+  max-block-size: 90vh;
+
+  &:focus-visible {
+    outline: none;
+  }
+}
+
+.ino-image__lightbox-panel--zoomed .ino-image__lightbox-viewport {
+  cursor: zoom-out;
+}
+
+.ino-image__lightbox-viewport {
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-inline-size: 100%;
+  max-block-size: calc(90vh - 56px);
+  border-radius: var(--ino-radius-lg);
+  background: var(--ino-color-surface-sunken);
+}
+
+.ino-image__lightbox-img {
+  display: block;
+  max-inline-size: 90vw;
+  max-block-size: calc(90vh - 56px);
+  object-fit: contain;
+  transition: transform var(--ino-motion-duration-base) var(--ino-motion-easing-standard);
+}
+
+.ino-image__lightbox-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--ino-space-2);
+}
+
+.ino-image__lightbox-controls button {
+  inline-size: 36px;
+  block-size: 36px;
+  border: var(--ino-border-width-hairline) solid var(--ino-color-border);
+  border-radius: var(--ino-radius-sm);
+  background: var(--ino-color-surface-raised);
+  color: var(--ino-color-on-surface);
+  cursor: pointer;
+  font-size: var(--ino-type-body-size, 14px);
+  transition: background var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  &:hover:not(:disabled) {
+    background: var(--ino-color-surface-sunken);
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+
+  &:disabled {
+    color: var(--ino-color-on-surface-subtle);
+    cursor: not-allowed;
+  }
+}
+
+.ino-image__lightbox-close {
+  inline-size: auto;
+  padding-inline: var(--ino-space-3);
+}

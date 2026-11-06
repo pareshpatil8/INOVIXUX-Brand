@@ -1,0 +1,11 @@
+<button
+  type="button"
+  class="ino-scrolltop__btn"
+  [class.ino-scrolltop__btn--visible]="visible"
+  [attr.aria-hidden]="visible ? null : true"
+  [attr.tabindex]="visible ? 0 : -1"
+  [attr.aria-label]="ariaLabel"
+  (click)="activate()"
+>
+  <span class="ino-scrolltop__icon" aria-hidden="true">▲</span>
+</button>

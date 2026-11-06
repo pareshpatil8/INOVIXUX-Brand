@@ -49,19 +49,28 @@
 
   <h2>Coverage and planned components</h2>
   <p>
-    Every PrimeNG component with no dedicated INOVIXUX build gets an explicit disposition here:
-    <strong>Tier-1</strong> (committed, unbuilt), <strong>Tier-2</strong> (open — no build
-    committed, no spec written; specify before building), or <strong>Tier-3</strong> (out of scope). None of these are built, so there are no links.
+    Every PrimeNG component with no dedicated INOVIXUX build gets an explicit disposition here, and
+    the ledger is closed — no row is left unassigned. <strong>Committed</strong> = a build phase in
+    the completion plan with its spec row written; <strong>Covered</strong> = PrimeNG's name for
+    capability we already ship, with the one-line "covered by" entry in the Status column;
+    <strong>Shipped</strong> = built since the audit snapshot. Committed and Covered rows have no
+    dedicated component page yet, so there are no links.
+  </p>
+  <p *ngIf="summary() as s">
+    <strong>{{ s.closedPercent }}% closed</strong> — {{ s.ledgerRows }} ledger rows off the
+    {{ s.baselineRows }}-row PrimeNG baseline ({{ s.implemented }} implemented,
+    {{ s.notImplemented }} not implemented, {{ s.servicesNotComponents }} service APIs that are not
+    components), {{ s.openUnassigned }} open and unassigned.
   </p>
 
-  <ng-container *ngFor="let group of tierGroups()">
-    <h3 class="docs-tier-heading">{{ group.tier }} ({{ group.items.length }})</h3>
+  <ng-container *ngFor="let group of dispositionGroups()">
+    <h3 class="docs-disposition-heading">{{ group.disposition }} ({{ group.items.length }})</h3>
     <table class="docs-table docs-table--disposition">
       <thead>
         <tr>
           <th>Component</th>
           <th>Group</th>
-          <th>Tier</th>
+          <th>Disposition</th>
           <th>Status</th>
         </tr>
       </thead>
@@ -69,7 +78,11 @@
         <tr *ngFor="let item of group.items">
           <td><code>{{ item.component }}</code></td>
           <td>{{ item.group }}</td>
-          <td><span class="docs-tier-badge" [attr.data-tier]="item.tier">{{ item.tier }}</span></td>
+          <td>
+            <span class="docs-disposition-badge" [attr.data-disposition]="item.disposition">
+              {{ item.disposition }}{{ item.phase ? ' ' + item.phase : '' }}
+            </span>
+          </td>
           <td>{{ item.status }}</td>
         </tr>
       </tbody>

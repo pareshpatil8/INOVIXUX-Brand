@@ -1,0 +1,103 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Variants — value display and format</h3>
+  <div class="demo-row">
+    <ino-knob label="Basic" [(value)]="basicValue"></ino-knob>
+    <ino-knob label="Percent template" valueTemplate="{value}%" [(value)]="percentValue"></ino-knob>
+    <ino-knob
+      label="Unit template"
+      valueTemplate="{value} dB"
+      [min]="-60"
+      [max]="0"
+      [(value)]="decibelValue"
+    ></ino-knob>
+    <ino-knob label="No centre label" [showValue]="false" [(value)]="hiddenLabelValue"></ino-knob>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Variants — min / max / step</h3>
+  <div class="demo-row">
+    <ino-knob
+      label="Stepped (0–12, step 2)"
+      [min]="0"
+      [max]="12"
+      [step]="2"
+      valueTemplate="{value} of 12"
+      [(value)]="steppedValue"
+    ></ino-knob>
+  </div>
+  <p class="demo-section__note">
+    Drag anywhere on the dial (the pointer's angle maps to a value; the 90° bottom gap snaps to
+    the nearer bound) or focus the dial and use ArrowUp/Right, ArrowDown/Left, PageUp/PageDown,
+    Home and End. <code>valueChange</code> fires once per committed step change.
+  </p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States</h3>
+  <div class="demo-row">
+    <ino-knob label="Default" [(value)]="defaultValue"></ino-knob>
+    <ino-knob label="Disabled" [disabled]="true" [(value)]="disabledValue"></ino-knob>
+    <ino-knob label="Readonly" [readonly]="true" [(value)]="readonlyValue"></ino-knob>
+    <ino-knob label="Required" [required]="true" [(value)]="requiredValue"></ino-knob>
+    <ino-knob label="Invalid" error="Level exceeds the configured safety limit" [(value)]="invalidValue"></ino-knob>
+    <ino-knob label="At min" [(value)]="atMinValue"></ino-knob>
+    <ino-knob label="At max" [(value)]="atMaxValue"></ino-knob>
+  </div>
+  <p class="demo-section__note">
+    The "dragging" state (doc 26 §5 row) is interaction-driven — press and drag any editable dial
+    to see the value arc and indicator switch to the active accent. "At min"/"at max" show the
+    at-bounds indicator stroke; keyboard steps clamp at the bounds.
+  </p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Sizing — dial sm / md / lg</h3>
+  <div class="demo-row">
+    <ino-knob label="Small" size="sm" [(value)]="smValue"></ino-knob>
+    <ino-knob label="Medium (default)" size="md" [(value)]="mdValue"></ino-knob>
+    <ino-knob label="Large" size="lg" [(value)]="lgValue"></ino-knob>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Density</h3>
+  <div class="demo-grid">
+    <div class="demo-pane" data-density="dense">
+      <p class="demo-pane__label">dense</p>
+      <ino-knob label="Dense" [(value)]="denseValue"></ino-knob>
+    </div>
+    <div class="demo-pane" data-density="fluid">
+      <p class="demo-pane__label">fluid</p>
+      <ino-knob label="Fluid" [(value)]="fluidValue"></ino-knob>
+    </div>
+  </div>
+  <p class="demo-section__note">
+    The dial is not a text-entry control and has no dense-register height row — it renders
+    identically in both densities (see <code>SPEC.md</code> §3).
+  </p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Labels</h3>
+  <div class="demo-row">
+    <ino-knob label="Output volume" valueTemplate="{value}%" [(value)]="labelledValue"></ino-knob>
+    <ino-knob label="Hint text" hint="Adjust in steps of 1" [(value)]="hintValue"></ino-knob>
+    <ino-knob ariaLabel="Zoom level" valueTemplate="{value}%" [(value)]="ariaOnlyValue"></ino-knob>
+  </div>
+  <p class="demo-section__note">
+    The third dial has no visible label — its accessible name comes from the
+    <code>ariaLabel</code> input (the §5 row's "value label + <code>aria-label</code>" cell).
+  </p>
+</section>
+
+<section class="demo-section" dir="rtl">
+  <h3 class="demo-section__title">RTL spot-check</h3>
+  <div class="demo-row">
+    <ino-knob label="مستوى الصوت" hint="نص توضيحي" valueTemplate="{value}٪" [(value)]="rtlValue"></ino-knob>
+  </div>
+  <p class="demo-section__note">
+    The dial's geometry is deliberately unmirrored in RTL — clockwise-is-more has no directional
+    locale convention (see the docs page's Accessibility contract).
+  </p>
+</section>

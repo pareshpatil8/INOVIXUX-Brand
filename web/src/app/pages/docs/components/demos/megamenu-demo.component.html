@@ -1,0 +1,119 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Variants — multi-column panels, grouped links, icons, horizontal/vertical</h3>
+  <p class="demo-section__note">
+    "Payments" and "Banking" below are panel triggers whose open panel lays out labelled columns of
+    links; "Pricing" is a plain top-level link with no panel. Activating a link navigates within
+    this docs site and fires <code>itemClick</code>, read out below.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">horizontal (default)</p>
+      <ino-megamenu [items]="productMenu" (itemClick)="onItemClick($event)"></ino-megamenu>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">vertical</p>
+      <ino-megamenu [items]="verticalMenu" orientation="vertical" (itemClick)="onItemClick($event)"></ino-megamenu>
+    </div>
+  </div>
+  <p class="demo-live">last itemClick: {{ lastClicked }}</p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States</h3>
+  <p class="demo-section__note">
+    <strong>Default/hover/focus-visible/active</strong> are live on every trigger/link above — tab
+    onto one for the focus ring, or hover for the surface-sunken fill.
+    <strong>Open-panel</strong> is the trigger's own <code>aria-expanded</code> state — click
+    "Payments" above to see the chevron rotate and the panel appear.
+    <strong>Active-item</strong> renders bold with <code>aria-current="page"</code> — see "Pricing"
+    in the active-item pane below. <strong>Disabled</strong> on a top-level item removes it from
+    Arrow-key navigation and its panel (if any) can never open. <strong>Readonly</strong> (whole
+    menu) renders every leaf as inert text while panels still open/close.
+    <strong>Loading</strong> swaps in skeleton bars with <code>aria-busy="true"</code>.
+    <strong>Empty</strong> renders the <code>emptyLabel</code> message rather than nothing.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">active-item ("Pricing")</p>
+      <ino-megamenu [items]="productMenu" activeHref="/docs/components/megamenu"></ino-megamenu>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">disabled top-level item</p>
+      <ino-megamenu [items]="withDisabledItem"></ino-megamenu>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">readonly (whole menu)</p>
+      <ino-megamenu [items]="readonlyMenu" [readonly]="true"></ino-megamenu>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">loading</p>
+      <ino-megamenu [items]="productMenu" [loading]="true"></ino-megamenu>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">empty</p>
+      <ino-megamenu [items]="[]" emptyLabel="No menu items configured"></ino-megamenu>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Sizing &amp; density</h3>
+  <p class="demo-section__note">
+    "Sizing: compact/comfortable" per the spec row applies to the bar only.
+    <code>comfortable</code> (default) reads the unsuffixed <code>--ino-control-*</code> aliases;
+    <code>compact</code> re-points to the <code>-sm</code> tier. Both compose with density — this
+    docs page runs dense (left pane); the right pane overrides to fluid via
+    <code>[data-density="fluid"]</code>. The open panel's own link rows always read the fixed
+    overlay-compact scale regardless of this size — open "Payments" in both panes to compare.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane" data-density="dense">
+      <p class="demo-pane__label">comfortable, dense</p>
+      <ino-megamenu [items]="productMenu"></ino-megamenu>
+    </div>
+    <div class="demo-pane" data-density="fluid">
+      <p class="demo-pane__label">compact, fluid</p>
+      <ino-megamenu [items]="productMenu" size="compact"></ino-megamenu>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Labels — menubar label, group headings, long-label wrapping</h3>
+  <p class="demo-section__note">
+    The spec row's "menubar label" is the <code>ariaLabel</code> input, naming the
+    <code>role="menubar"</code> landmark for assistive tech — not a visible label. No
+    <code>required</code>/help-text/error-text inputs apply (a mega menu has no bound value to
+    validate — see the narrative doc's "Deliberate omissions"). A column's own <code>heading</code>
+    is its visible group label. A long individual link label truncates with an ellipsis rather than
+    forcing the row to overflow its column.
+  </p>
+  <div class="demo-col" style="max-width: 320px;">
+    <ino-megamenu [items]="longLabelMenu" ariaLabel="Risk configuration menu"></ino-megamenu>
+  </div>
+  <div class="demo-rtl" dir="rtl" style="margin-top: var(--ino-space-4); max-width: 320px;">
+    <ino-megamenu [items]="rtlMenu"></ino-megamenu>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Keyboard contract</h3>
+  <p class="demo-section__note">
+    One tab stop on the bar itself (roving <code>tabindex</code>): <strong>ArrowRight</strong>/
+    <strong>ArrowLeft</strong> move between top-level items, wrapping; <strong>Home</strong>/
+    <strong>End</strong> jump to the first/last non-disabled item; <strong>ArrowDown</strong>,
+    <strong>Enter</strong>, or <strong>Space</strong> opens the focused item's panel and focuses its
+    first link. Inside an open panel: <strong>ArrowUp</strong>/<strong>ArrowDown</strong> move
+    within a column, wrapping; <strong>ArrowRight</strong>/<strong>ArrowLeft</strong> move to the
+    adjacent column, and at the panel's edge move to and open the adjacent top-level item's panel;
+    <strong>Home</strong>/<strong>End</strong> jump within the current column; <strong>Escape</strong>
+    closes the panel and returns focus to its trigger. <code>orientation="vertical"</code> swaps the
+    bar's own axis (<strong>ArrowUp</strong>/<strong>ArrowDown</strong> move between items,
+    <strong>ArrowRight</strong> opens a panel) — try it on the vertical pane above.
+  </p>
+</section>

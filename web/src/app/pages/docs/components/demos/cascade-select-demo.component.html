@@ -1,0 +1,294 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Drill-down (structure)</h3>
+  <p class="demo-section__note">
+    Click the trigger (or press <code>Enter</code> / <code>Space</code> / <code>ArrowDown</code>) to
+    open the panel at the root level. Rows with a <code>›</code> caret are parent options: activating
+    one <strong>replaces the panel with its children</strong> and pushes it onto the breadcrumb bar —
+    it never becomes the value (SPEC.md §2, leaf-only selection). Only a leaf commits a value and
+    closes the panel. "Antarctica" is a root-level leaf, so it is selectable without drilling at all;
+    "Canada" is a disabled parent and "Kerala" a disabled leaf — both skipped by
+    <code>ArrowUp</code>/<code>ArrowDown</code> and by typeahead.
+  </p>
+  <div class="demo-row">
+    <ino-cascade-select
+      label="Service region"
+      [options]="regions"
+      [value]="basicValue"
+      (valueChange)="onBasicValueChange($event)"
+      hint="Pick a city-level region — parent rows only narrow the list."
+    ></ino-cascade-select>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Selected value — full path on the trigger</h3>
+  <p class="demo-section__note">
+    With a leaf selected, the trigger shows the whole root-to-leaf breadcrumb
+    (<code>selectedLabel</code>), not just the leaf's own label — so "Maharashtra" reads as
+    "Asia / India / Maharashtra" and is unambiguous between trees that repeat a leaf name. Reopening
+    always starts at root, but seeds the active row on the selection's root-level ancestor ("Asia")
+    so a keyboard user does not have to re-scan the level.
+  </p>
+  <div class="demo-row">
+    <ino-cascade-select
+      label="Service region"
+      [options]="regions"
+      [value]="preselectedValue"
+      (valueChange)="onPreselectedValueChange($event)"
+    ></ino-cascade-select>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Custom option template</h3>
+  <p class="demo-section__note">
+    A projected <code>&lt;ng-template #optionTemplate let-option&gt;</code> renders each row at any
+    level, receiving the whole <code>InoCascadeSelectOption</code> — here a product name plus its SKU
+    code. The caret, active/selected styling, and the leaf-only selection rule are unchanged; only
+    the row's own content is yours.
+  </p>
+  <div class="demo-row">
+    <ino-cascade-select
+      label="Product"
+      [options]="catalogue"
+      [value]="catalogueValue"
+      (valueChange)="onCatalogueValueChange($event)"
+    >
+      <ng-template #optionTemplate let-option>
+        <span>{{ option.label }}</span>
+        <code style="margin-inline-start: var(--ino-space-2); opacity: 0.7;">{{ option.value }}</code>
+      </ng-template>
+    </ino-cascade-select>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title"><code>open-level</code> state — drilled in, breadcrumb showing</h3>
+  <p class="demo-section__note">
+    The panel below is already open <em>and</em> drilled one level in, which is the component's
+    <code>open-level</code> state (<code>.ino-cascade-select--level-open</code>, SPEC.md §5): the
+    breadcrumb bar and its <code>‹</code> back button only render below the root level, so this is
+    the only way to see them in a screenshot. Click a breadcrumb item to jump back to that level,
+    the back button (or <code>ArrowLeft</code>) to go up one. Clicking anywhere outside dismisses the
+    panel — reopen it and press <code>ArrowRight</code> on "Asia" to get back to this state.
+  </p>
+  <div class="demo-row demo-row--open-overlay">
+    <ino-cascade-select
+      #drilledInCascade
+      label="Service region"
+      [options]="regions"
+      [value]="''"
+    ></ino-cascade-select>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Empty tree</h3>
+  <p class="demo-section__note">
+    <code>[options]="[]"</code> with the panel open renders the "No options found." empty message
+    rather than a zero-height panel — the same empty-state contract <code>ino-select</code> and
+    <code>ino-listbox</code> publish. This panel is also pre-opened; click outside to dismiss it.
+  </p>
+  <div class="demo-row demo-row--open-overlay">
+    <ino-cascade-select
+      #emptyCascade
+      label="Service region (no data loaded)"
+      [options]="noOptions"
+      [value]="''"
+    ></ino-cascade-select>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States</h3>
+  <p class="demo-section__note">
+    Default, disabled, readonly, invalid and loading below are static snapshots; disabled, readonly
+    and loading all refuse to open at all. Hover / focus-visible / active are live on every enabled
+    trigger on this page — tab onto any of them to see focus-visible, and hold the pointer down for
+    active.
+  </p>
+  <div class="demo-row">
+    <ino-cascade-select
+      label="Default"
+      [options]="regions"
+      [value]="preselectedValue"
+    ></ino-cascade-select>
+
+    <ino-cascade-select
+      label="Disabled"
+      [disabled]="true"
+      [options]="regions"
+      [value]="disabledValue"
+    ></ino-cascade-select>
+
+    <ino-cascade-select
+      label="Readonly (locked)"
+      [readonly]="true"
+      [options]="regions"
+      [value]="readonlyValue"
+    ></ino-cascade-select>
+
+    <ino-cascade-select
+      label="Invalid / error"
+      [required]="true"
+      error="Select a service region"
+      [options]="regions"
+      [value]="invalidValue"
+    ></ino-cascade-select>
+
+    <ino-cascade-select
+      label="Loading"
+      [loading]="true"
+      [options]="regions"
+      [value]="loadingValue"
+    ></ino-cascade-select>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Labels — required marker, hint, error, placeholder</h3>
+  <p class="demo-section__note">
+    <code>label</code>/<code>required</code>/<code>hint</code>/<code>error</code> render through the
+    shared <code>ino-label</code> leaf and the same hint/error paragraph pair as
+    <code>ino-select</code> (SPEC.md §6). <code>hint</code> and <code>error</code> are mutually
+    exclusive in the DOM — an error replaces the hint and becomes the trigger's
+    <code>aria-describedby</code> target, with <code>role="alert"</code>. With no selection the
+    trigger shows <code>placeholder</code>, which is also what the panel's
+    <code>role="listbox"</code> falls back to for its accessible name when no label is given.
+  </p>
+  <div class="demo-row">
+    <ino-cascade-select
+      label="Required with hint"
+      [required]="true"
+      hint="Needed before the quote can be priced."
+      [options]="regions"
+      [value]="''"
+    ></ino-cascade-select>
+
+    <ino-cascade-select
+      label="Required with error"
+      [required]="true"
+      hint="This hint is replaced by the error below."
+      error="Select a service region"
+      [options]="regions"
+      [value]="''"
+    ></ino-cascade-select>
+
+    <ino-cascade-select
+      placeholder="Choose a region…"
+      [options]="regions"
+      [value]="''"
+    ></ino-cascade-select>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Sizing</h3>
+  <p class="demo-section__note">
+    <code>size</code> accepts <code>sm</code> / <code>default</code> / <code>lg</code>
+    (<code>InoControlSize</code>), the same three control-size rungs every other Tier-1 form control
+    reads, applied to the trigger, the label and the panel's rows together.
+  </p>
+  <div class="demo-row">
+    <ino-cascade-select
+      label="Small"
+      size="sm"
+      [options]="regions"
+      [value]="''"
+    ></ino-cascade-select>
+
+    <ino-cascade-select
+      label="Default"
+      size="default"
+      [options]="regions"
+      [value]="''"
+    ></ino-cascade-select>
+
+    <ino-cascade-select
+      label="Large"
+      size="lg"
+      [options]="regions"
+      [value]="''"
+    ></ino-cascade-select>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Density — dense vs. fluid</h3>
+  <p class="demo-section__note">
+    Density is a global <code>[data-density]</code> token axis, not an <code>@Input()</code>. This
+    docs page renders in the dense register by default; the pane on the right overrides to the fluid
+    row-height floor to show the contrast at the same <code>size</code>.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane" data-density="dense">
+      <p class="demo-pane__label">dense</p>
+      <ino-cascade-select label="Dense row" [options]="regions" [value]="''"></ino-cascade-select>
+    </div>
+    <div class="demo-pane" data-density="fluid">
+      <p class="demo-pane__label">fluid</p>
+      <ino-cascade-select label="Fluid row" [options]="regions" [value]="''"></ino-cascade-select>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Dense-table usage</h3>
+  <p class="demo-section__note">
+    In a dense table cell the control carries no <code>label</code> of its own — the column header
+    already names the cell, and the trigger's own accessible name comes from the text it renders
+    (the selected path, or the <code>placeholder</code> when empty). So each cell takes
+    <code>size="sm"</code> and a placeholder instead of a stacked label block.
+  </p>
+  <table class="demo-table">
+    <thead>
+      <tr>
+        <th scope="col">Account</th>
+        <th scope="col">Service region</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Northwind Bank</td>
+        <td>
+          <ino-cascade-select
+            size="sm"
+            placeholder="Set region…"
+            [options]="regions"
+            [value]="'mh'"
+          ></ino-cascade-select>
+        </td>
+      </tr>
+      <tr>
+        <td>Contoso Telecom</td>
+        <td>
+          <ino-cascade-select
+            size="sm"
+            placeholder="Set region…"
+            [options]="regions"
+            [value]="''"
+          ></ino-cascade-select>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Keyboard interaction</h3>
+  <p class="demo-section__note">
+    DOM focus never leaves the trigger (<code>role="combobox"</code>); the active row is tracked
+    logically through <code>aria-activedescendant</code>. Focus any trigger above and try:
+  </p>
+  <ul style="color: var(--ino-color-on-surface-muted); font-size: var(--ino-type-body-sm-size, 12.5px); margin: 0; padding-left: var(--ino-space-5);">
+    <li><strong>Enter / Space / ArrowDown / ArrowUp (closed):</strong> open the panel at root</li>
+    <li><strong>ArrowDown / ArrowUp (open):</strong> move the active row within the current level (clamped, no wrap)</li>
+    <li><strong>ArrowRight:</strong> drill into the active row, if it has children</li>
+    <li><strong>ArrowLeft:</strong> go back one level, if not at root</li>
+    <li><strong>Home / End:</strong> jump to the first/last enabled row in the current level</li>
+    <li><strong>Enter / Space (open):</strong> activate the active row — drill in (parent) or select + close (leaf)</li>
+    <li><strong>Printable character:</strong> typeahead within the current level only (500&nbsp;ms reset window)</li>
+    <li><strong>Escape:</strong> close the panel entirely — it does not step back a level first</li>
+    <li><strong>Tab:</strong> close without restoring focus to the trigger (focus is already moving on)</li>
+  </ul>
+</section>

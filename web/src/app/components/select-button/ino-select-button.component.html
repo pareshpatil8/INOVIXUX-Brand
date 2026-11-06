@@ -1,0 +1,18 @@
+<span *ngIf="groupLabel" [id]="groupLabelId" class="ino-select-button__group-label">{{ groupLabel }}</span>
+<div class="ino-select-button__group">
+  <ino-select-button-option
+    *ngFor="let option of options"
+    [label]="option.label"
+    [value]="option.value"
+    [icon]="option.icon || ''"
+    [ariaLabel]="option.ariaLabel || ''"
+    [name]="name"
+    [type]="inputType"
+    [size]="size"
+    [selected]="isSelected(option.value)"
+    [disabled]="disabled || !!option.disabled"
+    [readonly]="readonly"
+    [iconOnly]="iconOnly"
+    (selectedChange)="onOptionChange($event.value, $event.selected)"
+  ></ino-select-button-option>
+</div>

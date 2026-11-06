@@ -1,0 +1,120 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Variants — plain trail, icons, router integration</h3>
+  <p class="demo-section__note">
+    <code>href</code> is bound via <code>[routerLink]</code> — the links below navigate within this
+    docs site for real. The last entry in <code>items</code> is always the current page (plain
+    text, <code>aria-current="page"</code>) regardless of whether it carries an <code>href</code>.
+    Clicking a navigable crumb also fires <code>itemClick</code>, read out below each trail.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">plain trail</p>
+      <ino-breadcrumb [items]="plainTrail" (itemClick)="onItemClick($event)"></ino-breadcrumb>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">with icons</p>
+      <ino-breadcrumb [items]="iconTrail" (itemClick)="onItemClick($event)"></ino-breadcrumb>
+    </div>
+  </div>
+  <p class="demo-live">last itemClick: {{ lastClicked }}</p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Collapsed-middle overflow</h3>
+  <p class="demo-section__note">
+    <code>maxVisible</code> collapses a long trail to "first + <code>…</code> + last two" once
+    <code>items.length</code> exceeds both <code>maxVisible</code> and a floor of 3. Activate the
+    <code>…</code> button to open the popover listing the hidden middle crumbs — each is itself a
+    real navigable link.
+  </p>
+  <div class="demo-pane">
+    <p class="demo-pane__label">maxVisible = 4 (6 items, 2 hidden)</p>
+    <ino-breadcrumb [items]="longTrail" [maxVisible]="4" (itemClick)="onItemClick($event)"></ino-breadcrumb>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States</h3>
+  <p class="demo-section__note">
+    <strong>Default/hover/focus-visible/active</strong> are live on every navigable crumb above —
+    tab onto one for the focus ring, or hover for the accent underline.
+    <strong>Current-page</strong> is demonstrated by the last entry in every trail on this page.
+    <strong>Disabled</strong> (per-item) renders inert text with <code>aria-disabled</code>, never
+    navigable. <strong>Readonly</strong> (whole trail) applies the same inert-text treatment to
+    every non-current crumb. <strong>Loading</strong> swaps in a skeleton trail with
+    <code>aria-busy="true"</code> on the landmark. <strong>Empty</strong> renders nothing at all —
+    no <code>nav</code> landmark — rather than a pointless empty one.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">disabled ancestor</p>
+      <ino-breadcrumb [items]="withDisabledAncestor"></ino-breadcrumb>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">readonly (whole trail)</p>
+      <ino-breadcrumb [items]="readonlyTrail" [readonly]="true"></ino-breadcrumb>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">loading</p>
+      <ino-breadcrumb [items]="plainTrail" [loading]="true"></ino-breadcrumb>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">empty — renders nothing below this caption</p>
+      <ino-breadcrumb [items]="[]"></ino-breadcrumb>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Sizing &amp; density</h3>
+  <p class="demo-section__note">
+    "Sizing: one size" per the spec row — there is no <code>size</code> input or
+    <code>[data-size]</code> axis. The component reads the bare unsuffixed
+    <code>--ino-control-*</code> aliases directly, so density still composes for free without a
+    sizing input to coordinate: this docs page runs in the dense register (left pane); the right
+    pane overrides to fluid via <code>[data-density="fluid"]</code>.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane" data-density="dense">
+      <p class="demo-pane__label">dense</p>
+      <ino-breadcrumb [items]="plainTrail"></ino-breadcrumb>
+    </div>
+    <div class="demo-pane" data-density="fluid">
+      <p class="demo-pane__label">fluid</p>
+      <ino-breadcrumb [items]="plainTrail"></ino-breadcrumb>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Labels — wrapping and RTL</h3>
+  <p class="demo-section__note">
+    No <code>required</code>/help-text/error-text inputs apply (a breadcrumb has no bound value to
+    validate — see the narrative doc's "Deliberate omissions"). A long individual label wraps
+    inside its own crumb rather than truncating or forcing the trail to overflow its container. The
+    stylesheet uses logical properties only (<code>margin-inline-end</code> on the separator), so
+    the trail mirrors correctly under <code>dir="rtl"</code>.
+  </p>
+  <div class="demo-col" style="max-width: 360px;">
+    <ino-breadcrumb [items]="longLabelTrail"></ino-breadcrumb>
+  </div>
+  <div class="demo-rtl" dir="rtl" style="margin-top: var(--ino-space-4); max-width: 360px;">
+    <ino-breadcrumb [items]="rtlTrail"></ino-breadcrumb>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Keyboard contract</h3>
+  <p class="demo-section__note">
+    <strong>Tab</strong> moves between navigable crumb links and the <code>…</code> overflow
+    trigger — disabled/readonly crumbs are plain text and are never part of the tab order.
+    <strong>Enter</strong>/<strong>Space</strong> activate a focused link or open/close the overflow
+    trigger. Inside the opened popover, focus is trapped and <strong>Escape</strong> closes it,
+    returning focus to the <code>…</code> trigger (the same <code>[inoFocusTrap]</code> contract
+    <code>&lt;ino-popover&gt;</code> documents elsewhere).
+  </p>
+</section>

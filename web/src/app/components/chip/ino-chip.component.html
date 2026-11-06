@@ -1,0 +1,64 @@
+<ng-template #content>
+  <span class="ino-chip__icon">
+    <ng-content select="[icon]"></ng-content>
+  </span>
+  <span class="ino-chip__avatar">
+    <ng-content select="[avatar]"></ng-content>
+  </span>
+  <span class="ino-chip__label" [title]="label">{{ label }}</span>
+</ng-template>
+
+<ng-container *ngIf="!removable">
+  <button
+    *ngIf="interactive"
+    type="button"
+    class="ino-chip"
+    [disabled]="disabled"
+    [attr.aria-pressed]="ariaPressedValue"
+    [class.ino-chip--pressed]="pressable && pressed"
+    (click)="onChipClick()">
+    <ng-container *ngTemplateOutlet="content"></ng-container>
+  </button>
+
+  <span *ngIf="!interactive" class="ino-chip">
+    <ng-container *ngTemplateOutlet="content"></ng-container>
+  </span>
+</ng-container>
+
+<span
+  *ngIf="removable"
+  class="ino-chip-group"
+  role="group"
+  [attr.aria-label]="label"
+  [class.ino-chip-group--removing]="removing"
+  [class.ino-chip-group--pressed]="interactive && pressable && pressed"
+  (keydown)="onMainKeyDown($event)"
+  (animationend)="onRemoveAnimationEnd()">
+
+  <button
+    *ngIf="interactive"
+    type="button"
+    class="ino-chip__body ino-chip__body--button"
+    [disabled]="disabled || removing"
+    [attr.aria-pressed]="ariaPressedValue"
+    (click)="onChipClick()">
+    <ng-container *ngTemplateOutlet="content"></ng-container>
+  </button>
+
+  <span *ngIf="!interactive" class="ino-chip__body" tabindex="0">
+    <ng-container *ngTemplateOutlet="content"></ng-container>
+  </span>
+
+  <button
+    type="button"
+    class="ino-chip-remove"
+    [attr.aria-label]="'Remove ' + label"
+    [disabled]="disabled || readonly || removing"
+    (click)="onRemoveClick($event)">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+      <path d="M9 3L3 9M3 3L9 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+  </button>
+
+  <span class="ino-sr-only" role="status" aria-live="polite">{{ removing ? 'Removing ' + label : '' }}</span>
+</span>

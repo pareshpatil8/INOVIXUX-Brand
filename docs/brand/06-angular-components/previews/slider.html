@@ -1,0 +1,344 @@
+<!-- @dsCard group="Form" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ino-slider — single/range value slider (INO-408)</title>
+<!-- Canonical token file, linked rather than copied: this preview must repaint with the system,
+     and must never become a second place raw hex values live. -->
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-eyebrow-size);
+    letter-spacing: var(--ino-type-eyebrow-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 60ch; }
+
+  .theme-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); }
+  .theme-pane {
+    flex: 1 1 300px;
+    padding: var(--ino-space-5);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-xl);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+  }
+  .theme-pane > h3 {
+    margin: 0 0 var(--ino-space-4);
+    font-size: var(--ino-type-body-sm-size);
+    color: var(--ino-color-on-surface-muted);
+    font-weight: 600;
+  }
+
+  .row { display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--ino-space-6); }
+
+  /* Mirrors web/src/app/components/slider/ino-slider.component.scss's class names/token bindings,
+     so a divergence between this static snapshot and the shipped component is visible as a
+     visual diff — this is an illustrative snapshot, not a live Angular instance. Thumbs are
+     positioned with an inline `--pos` custom property rather than JS, since this page has no
+     interaction model. */
+  .ino-field { display: flex; flex-direction: column; gap: var(--ino-space-2); min-inline-size: 220px; }
+  .ino-field__label { font-size: var(--ino-type-label-size, var(--ino-type-body-sm-size)); font-weight: 600; }
+
+  .ino-slider__body { display: flex; align-items: center; gap: var(--ino-space-3); }
+  .ino-slider--vertical .ino-slider__body { flex-direction: column-reverse; align-items: center; inline-size: fit-content; }
+
+  .ino-slider__bound-label { font-size: var(--ino-type-body-sm-size); color: var(--ino-color-on-surface-muted); white-space: nowrap; }
+
+  .ino-slider__track {
+    position: relative; flex: 1; inline-size: 180px;
+    block-size: calc(var(--ino-control-icon-size-default) / 3);
+    border-radius: var(--ino-radius-pill);
+    background: var(--ino-color-surface-sunken);
+    border: 1px solid var(--ino-color-border);
+  }
+  .ino-slider__track--sm { block-size: calc(var(--ino-control-icon-size-sm) / 3); }
+  .ino-slider--vertical .ino-slider__track { inline-size: calc(var(--ino-control-icon-size-default) / 3); block-size: var(--ino-space-10); flex: none; }
+  .ino-slider--disabled .ino-slider__track, .ino-slider--readonly .ino-slider__track { cursor: default; }
+  .ino-slider--disabled { opacity: 0.5; }
+
+  .ino-slider__fill { position: absolute; inset-block: 0; inset-inline-start: 0; border-radius: inherit; background: var(--ino-color-accent); inline-size: var(--fill, 40%); }
+  .ino-slider__fill--range { inset-inline-start: var(--fill-start, 20%); inline-size: var(--fill-width, 40%); }
+  .ino-slider--dragging .ino-slider__fill { background: var(--ino-color-accent-active); }
+
+  .ino-slider__mark { position: absolute; inset-block-start: 50%; inline-size: 2px; block-size: 2px; border-radius: 50%; background: var(--ino-color-on-surface-muted); transform: translate(-50%, -50%); }
+
+  .ino-slider__thumb {
+    position: absolute; inset-block-start: 50%; inset-inline-start: var(--pos, 40%);
+    inline-size: var(--ino-control-icon-size-default); block-size: var(--ino-control-icon-size-default);
+    border-radius: 50%; background: var(--ino-color-on-accent); border: 2px solid var(--ino-color-accent);
+    transform: translate(-50%, -50%); cursor: grab;
+  }
+  .ino-slider__thumb--sm { inline-size: var(--ino-control-icon-size-sm); block-size: var(--ino-control-icon-size-sm); }
+  .ino-slider__thumb--hover { border-color: var(--ino-color-accent-active); }
+  .ino-slider__thumb--focus { outline: var(--ino-focus-ring); outline-offset: var(--ino-focus-ring-offset); }
+  .ino-slider__thumb--active, .ino-slider--dragging .ino-slider__thumb { cursor: grabbing; border-color: var(--ino-color-accent-active); }
+  .ino-slider--at-min .ino-slider__thumb:first-of-type,
+  .ino-slider--at-max .ino-slider__thumb:last-of-type { border-color: var(--ino-color-accent-active); }
+
+  .ino-slider__tooltip {
+    position: absolute; inset-block-end: calc(100% + var(--ino-space-2)); inset-inline-start: 50%;
+    transform: translateX(-50%); padding-inline: var(--ino-space-2); padding-block: 2px;
+    border-radius: var(--ino-radius-sm); background: var(--ino-color-on-surface); color: var(--ino-color-surface);
+    font-size: var(--ino-type-caption-size); white-space: nowrap;
+  }
+
+  .ino-slider--invalid .ino-slider__track { border-color: var(--ino-color-danger); }
+  .ino-slider__value-label { margin: 0; font-size: var(--ino-type-body-sm-size); }
+  .ino-field__hint { margin: 0; font-size: var(--ino-type-body-sm-size); color: var(--ino-color-on-surface-muted); }
+  .ino-field__error { margin: 0; font-size: var(--ino-type-body-sm-size); color: var(--ino-color-danger); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<h1>ino-slider</h1>
+<p class="lede">
+  Single-value or dual-thumb range slider. <code>range</code> switches <code>value</code> from
+  <code>number</code> to <code>[number, number]</code> (banana-in-a-box <code>valueChange</code>).
+  Pointer drag via <code>setPointerCapture</code> on the thumb, click-to-jump on the track;
+  horizontal (default) or <code>vertical</code>; optional step marks, value tooltip, min/max and
+  value labels. Track size is a local two-rung <code>sm | md</code> scale, not
+  <code>InoControlSize</code> — see <code>SPEC.md</code> §7. Full contract, keyboard map, and
+  deliberate omissions: <code>SPEC.md</code> and <code>slider.md</code>.
+</p>
+
+<h2>Theme × single slider</h2>
+<div class="theme-row">
+
+  <div class="theme-pane">
+    <h3>dark — :root (default)</h3>
+    <label class="ino-field">
+      <span class="ino-field__label">Volume</span>
+      <div class="ino-slider__body">
+        <div class="ino-slider__track">
+          <div class="ino-slider__fill" style="--fill: 42%;"></div>
+          <div class="ino-slider__thumb" style="--pos: 42%;"></div>
+        </div>
+      </div>
+    </label>
+  </div>
+
+  <div class="theme-pane" data-theme="light">
+    <h3>light — [data-theme="light"]</h3>
+    <label class="ino-field">
+      <span class="ino-field__label">Volume</span>
+      <div class="ino-slider__body">
+        <div class="ino-slider__track">
+          <div class="ino-slider__fill" style="--fill: 42%;"></div>
+          <div class="ino-slider__thumb" style="--pos: 42%;"></div>
+        </div>
+      </div>
+    </label>
+  </div>
+
+  <div class="theme-pane" data-theme="high-contrast">
+    <h3>high-contrast — [data-theme="high-contrast"]</h3>
+    <label class="ino-field">
+      <span class="ino-field__label">Volume</span>
+      <div class="ino-slider__body">
+        <div class="ino-slider__track">
+          <div class="ino-slider__fill" style="--fill: 42%;"></div>
+          <div class="ino-slider__thumb" style="--pos: 42%;"></div>
+        </div>
+      </div>
+    </label>
+  </div>
+
+</div>
+
+<h2>Density (<code>[data-density]</code>) — track size sm/md</h2>
+<div class="row">
+  <label class="ino-field" data-density="dense">
+    <span class="ino-field__label">Small track — dense</span>
+    <div class="ino-slider__body">
+      <div class="ino-slider__track ino-slider__track--sm">
+        <div class="ino-slider__fill" style="--fill: 30%;"></div>
+        <div class="ino-slider__thumb ino-slider__thumb--sm" style="--pos: 30%;"></div>
+      </div>
+    </div>
+  </label>
+  <label class="ino-field" data-density="fluid">
+    <span class="ino-field__label">Default track — fluid</span>
+    <div class="ino-slider__body">
+      <div class="ino-slider__track">
+        <div class="ino-slider__fill" style="--fill: 30%;"></div>
+        <div class="ino-slider__thumb" style="--pos: 30%;"></div>
+      </div>
+    </div>
+  </label>
+</div>
+
+<h2>States</h2>
+<div class="row">
+  <label class="ino-field">
+    <span class="ino-field__label">Default</span>
+    <div class="ino-slider__body">
+      <div class="ino-slider__track">
+        <div class="ino-slider__fill" style="--fill: 55%;"></div>
+        <div class="ino-slider__thumb" style="--pos: 55%;"></div>
+      </div>
+    </div>
+  </label>
+  <label class="ino-field">
+    <span class="ino-field__label">Hover</span>
+    <div class="ino-slider__body">
+      <div class="ino-slider__track">
+        <div class="ino-slider__fill" style="--fill: 55%;"></div>
+        <div class="ino-slider__thumb ino-slider__thumb--hover" style="--pos: 55%;"></div>
+      </div>
+    </div>
+  </label>
+  <label class="ino-field">
+    <span class="ino-field__label">Focus-visible</span>
+    <div class="ino-slider__body">
+      <div class="ino-slider__track">
+        <div class="ino-slider__fill" style="--fill: 55%;"></div>
+        <div class="ino-slider__thumb ino-slider__thumb--focus" style="--pos: 55%;"></div>
+      </div>
+    </div>
+  </label>
+  <label class="ino-field">
+    <span class="ino-field__label">Active (pressed)</span>
+    <div class="ino-slider__body">
+      <div class="ino-slider__track">
+        <div class="ino-slider__fill" style="--fill: 55%;"></div>
+        <div class="ino-slider__thumb ino-slider__thumb--active" style="--pos: 55%;"></div>
+      </div>
+    </div>
+  </label>
+  <label class="ino-field ino-slider--disabled">
+    <span class="ino-field__label">Disabled</span>
+    <div class="ino-slider__body">
+      <div class="ino-slider__track">
+        <div class="ino-slider__fill" style="--fill: 55%;"></div>
+        <div class="ino-slider__thumb" style="--pos: 55%;"></div>
+      </div>
+    </div>
+  </label>
+  <label class="ino-field">
+    <span class="ino-field__label">Readonly</span>
+    <div class="ino-slider__body ino-slider--readonly">
+      <div class="ino-slider__track">
+        <div class="ino-slider__fill" style="--fill: 55%;"></div>
+        <div class="ino-slider__thumb" style="--pos: 55%;"></div>
+      </div>
+    </div>
+  </label>
+  <label class="ino-field ino-slider--invalid">
+    <span class="ino-field__label">Invalid</span>
+    <div class="ino-slider__body">
+      <div class="ino-slider__track">
+        <div class="ino-slider__fill" style="--fill: 55%;"></div>
+        <div class="ino-slider__thumb" style="--pos: 55%;"></div>
+      </div>
+    </div>
+    <p class="ino-field__error">Required.</p>
+  </label>
+  <label class="ino-field ino-slider--dragging">
+    <span class="ino-field__label">Dragging (+ tooltip)</span>
+    <div class="ino-slider__body">
+      <div class="ino-slider__track">
+        <div class="ino-slider__fill" style="--fill: 55%;"></div>
+        <div class="ino-slider__thumb" style="--pos: 55%;">
+          <span class="ino-slider__tooltip">55</span>
+        </div>
+      </div>
+    </div>
+  </label>
+  <label class="ino-field ino-slider--at-min">
+    <span class="ino-field__label">At-min</span>
+    <div class="ino-slider__body">
+      <div class="ino-slider__track">
+        <div class="ino-slider__fill" style="--fill: 0%;"></div>
+        <div class="ino-slider__thumb" style="--pos: 0%;"></div>
+      </div>
+    </div>
+  </label>
+  <label class="ino-field ino-slider--at-max">
+    <span class="ino-field__label">At-max</span>
+    <div class="ino-slider__body">
+      <div class="ino-slider__track">
+        <div class="ino-slider__fill" style="--fill: 100%;"></div>
+        <div class="ino-slider__thumb" style="--pos: 100%;"></div>
+      </div>
+    </div>
+  </label>
+</div>
+
+<h2>Range mode — two thumbs</h2>
+<div class="row">
+  <label class="ino-field">
+    <span class="ino-field__label">Price range</span>
+    <div class="ino-slider__body">
+      <span class="ino-slider__bound-label">0</span>
+      <div class="ino-slider__track">
+        <div class="ino-slider__fill ino-slider__fill--range" style="--fill-start: 20%; --fill-width: 40%;"></div>
+        <div class="ino-slider__thumb" style="--pos: 20%;"></div>
+        <div class="ino-slider__thumb" style="--pos: 60%;"></div>
+      </div>
+      <span class="ino-slider__bound-label">1000</span>
+    </div>
+  </label>
+</div>
+
+<h2>Step marks + value/min-max labels</h2>
+<div class="row">
+  <label class="ino-field">
+    <span class="ino-field__label">Rating (step marks)</span>
+    <div class="ino-slider__body">
+      <div class="ino-slider__track">
+        <div class="ino-slider__fill" style="--fill: 60%;"></div>
+        <span class="ino-slider__mark" style="inset-inline-start: 0%;"></span>
+        <span class="ino-slider__mark" style="inset-inline-start: 20%;"></span>
+        <span class="ino-slider__mark" style="inset-inline-start: 40%;"></span>
+        <span class="ino-slider__mark" style="inset-inline-start: 60%;"></span>
+        <span class="ino-slider__mark" style="inset-inline-start: 80%;"></span>
+        <span class="ino-slider__mark" style="inset-inline-start: 100%;"></span>
+        <div class="ino-slider__thumb" style="--pos: 60%;"></div>
+      </div>
+    </div>
+    <p class="ino-slider__value-label">3</p>
+  </label>
+  <label class="ino-field">
+    <span class="ino-field__label">Budget</span>
+    <div class="ino-slider__body">
+      <span class="ino-slider__bound-label">0</span>
+      <div class="ino-slider__track">
+        <div class="ino-slider__fill" style="--fill: 70%;"></div>
+        <div class="ino-slider__thumb" style="--pos: 70%;"></div>
+      </div>
+      <span class="ino-slider__bound-label">500</span>
+    </div>
+    <p class="ino-slider__value-label">350</p>
+  </label>
+</div>
+
+<h2>Vertical orientation</h2>
+<div class="row">
+  <label class="ino-field ino-slider--vertical">
+    <span class="ino-field__label">Elevation</span>
+    <div class="ino-slider__body">
+      <div class="ino-slider__track">
+        <div class="ino-slider__fill" style="--fill: 65%;"></div>
+        <div class="ino-slider__thumb" style="--pos: 65%;"></div>
+      </div>
+    </div>
+  </label>
+</div>
+
+</body>
+</html>

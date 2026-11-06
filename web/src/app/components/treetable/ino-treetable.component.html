@@ -1,0 +1,180 @@
+<!-- TreeTable template - role=treegrid with roving tabindex -->
+
+<div class="ino-treetable__wrapper">
+  <!-- Loading skeleton -->
+  <div *ngIf="loading" class="ino-treetable__skeleton">
+    <table class="ino-treetable__table">
+      <thead class="ino-treetable__header">
+        <tr>
+          <th *ngFor="let column of columns" class="ino-treetable__header-cell">
+            <div class="ino-treetable__header-content">
+              {{ column.header }}
+            </div>
+          </th>
+        </tr>
+      </thead>
+      <tbody class="ino-treetable__body">
+        <tr *ngFor="let i of [].constructor(skeletonRowCount)" class="ino-treetable__row ino-treetable__row--skeleton">
+          <td *ngFor="let column of columns" class="ino-treetable__cell">
+            <div class="ino-treetable__skeleton-line"></div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Empty state -->
+  <div *ngIf="!loading && visibleRows.length === 0" class="ino-treetable__empty">
+    {{ emptyMessage }}
+  </div>
+
+  <!-- Actual table -->
+  <table
+    *ngIf="!loading && visibleRows.length > 0"
+    class="ino-treetable__table"
+    [attr.aria-rowcount]="visibleRows.length + 1"
+    [attr.aria-colcount]="columns.length"
+  >
+    <!-- Caption (accessible name) -->
+    <caption *ngIf="caption" class="ino-treetable__caption">
+      {{ caption }}
+    </caption>
+
+    <!-- Header -->
+    <thead class="ino-treetable__header">
+      <tr role="row">
+        <th
+          *ngFor="let column of columns; let colIndex = index"
+          role="columnheader"
+          class="ino-treetable__header-cell"
+          [class.ino-treetable__header-cell--sortable]="column.sortable"
+          [class.ino-treetable__header-cell--sorted]="currentSortColumn === colIndex"
+          [class.ino-treetable__header-cell--frozen-start]="column.frozen === 'start'"
+          [class.ino-treetable__header-cell--frozen-end]="column.frozen === 'end'"
+          [attr.aria-sort]="
+            currentSortColumn === colIndex && currentSortDirection
+              ? currentSortDirection === 'asc'
+                ? 'ascending'
+                : 'descending'
+              : null
+          "
+          [style.width.px]="column.width"
+          [style.min-width.px]="column.minWidth"
+        >
+          <div class="ino-treetable__header-content">
+            <!-- Header text -->
+            <span class="ino-treetable__header-text">{{ column.header }}</span>
+
+            <!-- Sort indicator -->
+            <button
+              *ngIf="column.sortable"
+              type="button"
+              class="ino-treetable__sort-button"
+              [attr.aria-label]="'Sort by ' + column.header"
+              [disabled]="!interactive"
+              (click)="onSortClick(colIndex)"
+            >
+              <span
+                class="ino-treetable__sort-icon"
+                [class.ino-treetable__sort-icon--asc]="
+                  currentSortColumn === colIndex && currentSortDirection === 'asc'
+                "
+                [class.ino-treetable__sort-icon--desc]="
+                  currentSortColumn === colIndex && currentSortDirection === 'desc'
+                "
+              >
+                ↕
+              </span>
+            </button>
+
+            <!-- Resize handle (if resizable) -->
+            <div
+              *ngIf="resizableColumns && column.resizable !== false"
+              class="ino-treetable__resize-handle"
+              [attr.aria-label]="'Resize ' + column.header"
+            ></div>
+          </div>
+        </th>
+      </tr>
+    </thead>
+
+    <!-- Body -->
+    <tbody class="ino-treetable__body">
+      <tr
+        *ngFor="let row of visibleRows; let rowIndex = index"
+        role="row"
+        class="ino-treetable__row"
+        [class.ino-treetable__row--loading]="row.loading"
+        [attr.aria-level]="getAriaLevel(row)"
+        [attr.aria-expanded]="getAriaExpanded(row)"
+        [attr.aria-busy]="row.loading ? true : null"
+      >
+        <td
+          #gridcell
+          *ngFor="let column of columns; let colIndex = index"
+          role="gridcell"
+          class="ino-treetable__cell"
+          [class.ino-treetable__cell--tree-column]="colIndex === 0"
+          [class.ino-treetable__cell--frozen-start]="column.frozen === 'start'"
+          [class.ino-treetable__cell--frozen-end]="column.frozen === 'end'"
+          [attr.tabindex]="getCellTabindex(rowIndex, colIndex)"
+          [attr.data-row-index]="rowIndex"
+          [attr.data-col-index]="colIndex"
+          [style.padding-inline-start.px]="colIndex === 0 ? row.level * 24 + 12 : null"
+        >
+          <!-- Tree column: chevron + content -->
+          <div *ngIf="colIndex === 0" class="ino-treetable__tree-cell-content">
+            <!-- Expand/collapse chevron -->
+            <button
+              *ngIf="row.expanded !== undefined"
+              type="button"
+              class="ino-treetable__expand-button"
+              [class.ino-treetable__expand-button--expanded]="row.expanded"
+              [attr.aria-label]="row.expanded ? 'Collapse' : 'Expand'"
+              [disabled]="!interactive || row.loading"
+              (click)="toggleExpand(row)"
+            >
+              <span class="ino-treetable__expand-icon" [attr.aria-hidden]="true">
+                {{ row.expanded ? '▼' : '▶' }}
+              </span>
+            </button>
+
+            <!-- Loading spinner for lazy-load rows -->
+            <span
+              *ngIf="row.loading"
+              class="ino-treetable__loading-spinner"
+              role="status"
+              aria-label="Loading"
+            ></span>
+
+            <!-- Leaf spacer (no chevron) -->
+            <span
+              *ngIf="row.expanded === undefined && !row.loading"
+              class="ino-treetable__leaf-spacer"
+              aria-hidden="true"
+            ></span>
+
+            <!-- Cell value -->
+            <span class="ino-treetable__cell-text">
+              {{ getCellValue(row, column.field) }}
+            </span>
+          </div>
+
+          <!-- Other columns: plain cell value -->
+          <div *ngIf="colIndex !== 0" class="ino-treetable__cell-content">
+            <span class="ino-treetable__cell-text">
+              {{ getCellValue(row, column.field) }}
+            </span>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Default empty template -->
+<ng-template #defaultEmpty>
+  <div class="ino-treetable__empty-message">
+    <p>{{ emptyMessage }}</p>
+  </div>
+</ng-template>

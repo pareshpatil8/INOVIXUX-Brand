@@ -5,7 +5,7 @@
    static and uses logical properties throughout. */
 .ino-popover {
   position: fixed;
-  z-index: 1100;
+  z-index: var(--ino-z-overlay);
   box-sizing: border-box;
   max-inline-size: min(360px, calc(100vw - var(--ino-space-4) * 2));
   padding: var(--ino-space-5);

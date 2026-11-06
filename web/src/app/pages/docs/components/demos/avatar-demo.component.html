@@ -1,0 +1,148 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Variants / Structure — image, initials, icon, fallback</h3>
+  <p class="demo-section__note">
+    Four content forms, resolved in priority order (doc 26 §5 "image/initials/icon"): the first
+    one present wins. See <code>SPEC.md</code> §1.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">image</p>
+      <ino-avatar [image]="sampleImage" alt="Jane Doe"></ino-avatar>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">initials</p>
+      <ino-avatar initials="JD" ariaLabel="Jane Doe"></ino-avatar>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">projected icon</p>
+      <ino-avatar ariaLabel="Team account">
+        <svg icon viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 21h18M9 8h1M9 12h1M9 16h1M14 8h1M14 12h1M14 16h1M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"></path>
+        </svg>
+      </ino-avatar>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">built-in fallback glyph</p>
+      <ino-avatar ariaLabel="Unknown user"></ino-avatar>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Image-error fallback</h3>
+  <p class="demo-section__note">
+    Doc 26 §5's own named state. When <code>image</code> fails to load, the component falls back
+    to <code>initials</code>, then the icon form — never a broken-image glyph. The
+    <code>image</code> URLs below are deliberately unreachable to trigger the native
+    <code>&lt;img&gt; (error)</code> event live.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">broken image → falls back to initials</p>
+      <ino-avatar [image]="brokenImage" initials="JD" alt="Jane Doe"></ino-avatar>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">broken image, no initials → falls back to glyph</p>
+      <ino-avatar [image]="brokenImage" alt="Jane Doe"></ino-avatar>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Shapes</h3>
+  <p class="demo-section__note">
+    Two shapes (doc 26 §5 "shapes"): <code>circle</code> (default) and <code>square</code>.
+  </p>
+  <div class="demo-grid">
+    @for (shape of shapes; track shape) {
+      <div class="demo-pane">
+        <p class="demo-pane__label">{{ shape }}</p>
+        <ino-avatar [shape]="shape" initials="JD" ariaLabel="Jane Doe"></ino-avatar>
+      </div>
+    }
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Sizing — xs through xl</h3>
+  <p class="demo-section__note">
+    Five steps (doc 26 §5 "xs–xl") — a dedicated scale, not the shared Wave 0 control-size scale.
+    No density split: an avatar's size is a content decision, not a row-height one. See
+    <code>SPEC.md</code> §2.
+  </p>
+  <div class="demo-grid">
+    @for (size of sizes; track size) {
+      <div class="demo-pane">
+        <p class="demo-pane__label">{{ size }}</p>
+        <ino-avatar [size]="size" initials="JD" ariaLabel="Jane Doe"></ino-avatar>
+      </div>
+    }
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Accessibility contract — decorative vs. informative</h3>
+  <p class="demo-section__note">
+    Doc 26 §5's a11y row, named explicitly. See <code>SPEC.md</code> §4 for the full rule.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">informative (default) — role="img" + aria-label</p>
+      <ino-avatar initials="JD" ariaLabel="Jane Doe, online"></ino-avatar>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">decorative — aria-hidden, no accessible name</p>
+      <span style="display: flex; align-items: center; gap: 8px;">
+        <ino-avatar initials="JD" [decorative]="true"></ino-avatar>
+        Jane Doe
+      </span>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">informative, no ariaLabel/alt — generic "Avatar" fallback</p>
+      <ino-avatar initials="JD"></ino-avatar>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States</h3>
+  <p class="demo-section__note">
+    Per <code>SPEC.md</code> §3 — presentational and non-interactive, same precedent as
+    <code>ino-tag</code>/<code>ino-meter-group</code>: no <code>hover</code>/<code>active</code>/
+    <code>focus-visible</code>/<code>disabled</code>/<code>readonly</code>/<code>invalid</code>/
+    <code>loading</code> states apply. Only <code>default</code> and the image-error fallback
+    above are carried.
+  </p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">RTL</h3>
+  <p class="demo-section__note">
+    Logical properties only (<code>inline-size</code>/<code>block-size</code>); no
+    directional properties in either stylesheet, so the host mirrors correctly under
+    <code>dir="rtl"</code> with no code-path difference.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane" dir="rtl">
+      <p class="demo-pane__label">RTL — initials</p>
+      <ino-avatar initials="جد" ariaLabel="جين دو"></ino-avatar>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Mobile — React Native + Flutter ports</h3>
+  <p class="demo-section__note">
+    Per doc 26 §5 "Port both" — <code>InoAvatar</code> ships for React Native
+    (<code>mobile/react-native/src/components/InoAvatar.tsx</code>) and Flutter
+    (<code>mobile/flutter/lib/widgets/ino_avatar.dart</code>) with the same content-form priority,
+    five-step size scale, and decorative/informative accessibility contract as web. Mobile is
+    always fluid — no density split to reconcile.
+  </p>
+</section>

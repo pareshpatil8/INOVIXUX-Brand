@@ -1,0 +1,185 @@
+/*
+ * <ino-inputcolor> — INO-499 (INO-31 Phase B5, doc 26 §5 row `ino-inputcolor`).
+ *
+ * No literal colour/space/radius/duration/font-size — every declaration resolves through a
+ * semantic role in tokens.css, logical properties only. The native swatch's own fill is the
+ * one exception by necessity (it is the browser's own `<input type="color">` chrome, not
+ * something this stylesheet paints), styled only via the `::-webkit-color-swatch`/
+ * `::-moz-color-swatch` pseudo-elements that control its border/radius, never its fill colour.
+ *
+ * Shared `.ino-field` shell, same self-contained-per-component convention every other INO-31
+ * form control's SCSS documents (no shared SCSS-include infra yet).
+ */
+.ino-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ino-space-2);
+}
+
+/* Size API (§2 contract row 3 — "sm/md/lg"; `default` is the frozen scale's middle rung,
+   see `InoControlSize`'s doc comment). Same re-pointing pattern every text-entry INO-31
+   component uses. */
+:host([data-size='sm']) {
+  --ino-control-height: var(--ino-control-height-sm);
+  --ino-control-padding-inline: var(--ino-control-padding-inline-sm);
+  --ino-control-font-size: var(--ino-control-font-size-sm);
+}
+
+:host([data-size='lg']) {
+  --ino-control-height: var(--ino-control-height-lg);
+  --ino-control-padding-inline: var(--ino-control-padding-inline-lg);
+  --ino-control-font-size: var(--ino-control-font-size-lg);
+}
+
+.ino-inputcolor__control-wrap {
+  display: flex;
+  align-items: stretch;
+  gap: var(--ino-space-2);
+}
+
+/* The native swatch is square, matching the hex field's height so the row reads as one unit
+   at every size rung — no size-specific swatch dimension needs minting. */
+.ino-inputcolor__swatch {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  background: none;
+  cursor: pointer;
+  flex: 0 0 auto;
+  inline-size: max(var(--ino-control-height, var(--ino-target-comfortable)), var(--ino-target-min));
+  block-size: max(var(--ino-control-height, var(--ino-target-comfortable)), var(--ino-target-min));
+  border-radius: var(--ino-radius-md);
+  overflow: hidden;
+
+  &::-webkit-color-swatch-wrapper {
+    padding: 0;
+    border-radius: inherit;
+  }
+
+  &::-webkit-color-swatch {
+    border: 1px solid var(--ino-color-border);
+    border-radius: inherit;
+  }
+
+  &::-moz-color-swatch {
+    border: 1px solid var(--ino-color-border);
+    border-radius: inherit;
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+
+  &:disabled {
+    cursor: default;
+  }
+}
+
+:host(.ino-inputcolor--readonly) .ino-inputcolor__swatch {
+  cursor: default;
+}
+
+.ino-inputcolor__hex-input {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  inline-size: auto;
+  /* Tabular figures keep "#rrggbb" from jittering horizontally as digits are typed/replaced —
+     same rationale `ino-inputmask`'s field uses for its own fixed-grammar text. */
+  font-family: var(--ino-font-mono, var(--ino-font-display));
+  font-variant-numeric: tabular-nums;
+}
+
+/* Base field-control chrome — same shape every INO-31 text input's `.ino-field__control` uses. */
+.ino-field__control {
+  min-block-size: max(var(--ino-control-height, var(--ino-target-comfortable)), var(--ino-row-min-height, 0px));
+  padding-inline: var(--ino-control-padding-inline, var(--ino-space-4));
+  background: var(--ino-color-surface-sunken);
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-md);
+  color: var(--ino-color-on-surface);
+  font-size: var(--ino-control-font-size, var(--ino-type-body-size));
+  transition: border-color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+
+  &:disabled {
+    cursor: default;
+  }
+
+  &::placeholder {
+    color: var(--ino-color-on-surface-muted);
+  }
+}
+
+:host(.ino-inputcolor--disabled) {
+  opacity: 0.5;
+}
+
+:host(.ino-inputcolor--disabled) .ino-inputcolor__swatch,
+:host(.ino-inputcolor--disabled) .ino-field__control {
+  pointer-events: none;
+}
+
+:host(.ino-inputcolor--invalid) .ino-field__control,
+:host(.ino-inputcolor--invalid-hex) .ino-field__control {
+  border-color: var(--ino-color-danger);
+}
+
+.ino-inputcolor__presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ino-space-2);
+}
+
+.ino-inputcolor__preset {
+  appearance: none;
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-sm);
+  padding: 0;
+  cursor: pointer;
+  inline-size: var(--ino-space-6);
+  block-size: var(--ino-space-6);
+  transition: border-color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+
+  &:hover:not(:disabled) {
+    border-color: var(--ino-color-border-strong, var(--ino-color-accent));
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.5;
+  }
+}
+
+.ino-field__hint {
+  margin: 0;
+  font-size: var(--ino-type-body-sm-size);
+  color: var(--ino-color-on-surface-muted);
+}
+
+.ino-field__error {
+  margin: 0;
+  font-size: var(--ino-type-body-sm-size);
+  color: var(--ino-color-danger);
+  font-weight: 600;
+}

@@ -1,0 +1,138 @@
+// Sizing (doc 26 §5 row: "compact/comfortable"): "comfortable" (default) reads the unsuffixed
+// --ino-control-* aliases; "compact" re-points to the -sm tier, same re-pointing shape
+// ino-nav's .ino-nav--sm uses. Deliberately NOT the density-invariant --ino-control-*-compact
+// tier (INO-425/427) — that tier exists for ephemeral overlay menus whose own items ARE the
+// density control (tokens.css §12 comment); ino-panel-menu is page-resident nav content like
+// ino-nav, not a popup, so it should keep composing with [data-density] like -sm/-lg already do
+// (tokens.css re-declares both inside §10's dense/fluid blocks). See SPEC.md §5.
+:host {
+  display: block;
+  --ino-panel-menu-row-height: var(--ino-control-height);
+  --ino-panel-menu-row-gap: var(--ino-control-gap);
+  --ino-panel-menu-row-padding-inline: var(--ino-control-padding-inline-roomy);
+  --ino-panel-menu-font-size: var(--ino-control-font-size);
+  --ino-panel-menu-icon-size: var(--ino-control-icon-size);
+}
+
+:host([data-size='compact']) {
+  --ino-panel-menu-row-height: var(--ino-control-height-sm);
+  --ino-panel-menu-row-gap: var(--ino-control-gap-sm);
+  --ino-panel-menu-row-padding-inline: var(--ino-control-padding-inline-roomy-sm);
+  --ino-panel-menu-font-size: var(--ino-control-font-size-sm);
+  --ino-panel-menu-icon-size: var(--ino-control-icon-size-sm);
+}
+
+.ino-panel-menu {
+  display: block;
+  background: var(--ino-color-surface);
+}
+
+.ino-panel-menu__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ino-panel-menu__list--nested {
+  border-inline-start: 1px solid var(--ino-color-border-soft);
+  margin-inline-start: calc(var(--ino-panel-menu-icon-size) / 2 + var(--ino-panel-menu-row-padding-inline));
+}
+
+.ino-panel-menu__row {
+  position: relative;
+}
+
+// Indent is driven by the --ino-panel-menu-level custom property set per <li> rather than a
+// SCSS loop over fixed depths — an arbitrarily deep tree needs no new CSS rule per level.
+.ino-panel-menu__header,
+.ino-panel-menu__leaf {
+  display: flex;
+  align-items: center;
+  gap: var(--ino-panel-menu-row-gap);
+  width: 100%;
+  min-height: var(--ino-panel-menu-row-height);
+  padding-inline: calc(var(--ino-panel-menu-row-padding-inline) * (var(--ino-panel-menu-level, 0) + 1)) var(--ino-panel-menu-row-padding-inline);
+  border: none;
+  background: transparent;
+  color: var(--ino-color-on-surface);
+  font: inherit;
+  font-size: var(--ino-panel-menu-font-size);
+  text-align: start;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  &:hover:not(:disabled) {
+    background: var(--ino-color-surface-sunken);
+  }
+
+  &:active:not(:disabled) {
+    background: var(--ino-color-surface-sunken);
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: calc(var(--ino-focus-ring-offset) * -1);
+  }
+
+  &:disabled,
+  &[aria-disabled='true'] {
+    color: var(--ino-color-on-surface-subtle);
+    cursor: not-allowed;
+  }
+}
+
+.ino-panel-menu__header--section {
+  font-weight: 600;
+}
+
+.ino-panel-menu__leaf--inert {
+  cursor: default;
+}
+
+.ino-panel-menu__icon {
+  flex-shrink: 0;
+  width: var(--ino-panel-menu-icon-size);
+  height: var(--ino-panel-menu-icon-size);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ino-panel-menu__label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ino-panel-menu__chevron {
+  flex-shrink: 0;
+  transition: transform var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+}
+
+.ino-panel-menu__chevron--open {
+  transform: rotate(90deg);
+}
+
+.ino-panel-menu__empty {
+  padding: var(--ino-panel-menu-row-padding-inline);
+  color: var(--ino-color-on-surface-muted);
+  font-size: var(--ino-panel-menu-font-size);
+}
+
+// Loading skeleton — aria-hidden, purely decorative (SPEC.md §8), same shimmer-free flat-bar
+// approach ino-breadcrumb's loading state uses.
+.ino-panel-menu__skeleton {
+  display: block;
+  width: 70%;
+  height: calc(var(--ino-panel-menu-font-size) * 1.1);
+  margin: calc(var(--ino-panel-menu-row-gap)) var(--ino-panel-menu-row-padding-inline);
+  border-radius: var(--ino-radius-sm);
+  background: var(--ino-color-surface-sunken);
+}
+
+.ino-panel-menu__skeleton--short {
+  width: 45%;
+}

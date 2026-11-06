@@ -1,0 +1,610 @@
+<!-- @dsCard group="Layout" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ino-accordion — variants, states, sizing (INO-435)</title>
+<!-- Canonical token file, linked rather than copied: this preview must repaint with the system,
+     and must never become a second place raw hex values live. -->
+<link rel="stylesheet" href="../../02-design-tokens/tokens.css">
+<style>
+  body {
+    margin: 0;
+    padding: var(--ino-space-7);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+    font-family: var(--ino-font-display);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+  }
+  h1 { font-size: var(--ino-type-h3-size); margin: 0 0 var(--ino-space-2); }
+  h2 {
+    font-size: var(--ino-type-label-size);
+    letter-spacing: var(--ino-type-label-tracking);
+    text-transform: uppercase;
+    color: var(--ino-color-on-surface-muted);
+    margin: var(--ino-space-7) 0 var(--ino-space-3);
+  }
+  p.lede { color: var(--ino-color-on-surface-muted); margin: 0 0 var(--ino-space-6); max-width: 60ch; }
+
+  .theme-row { display: flex; flex-wrap: wrap; gap: var(--ino-space-6); margin-block-end: var(--ino-space-6); }
+  .theme-pane {
+    flex: 1 1 320px;
+    padding: var(--ino-space-5);
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-xl);
+    background: var(--ino-color-surface);
+    color: var(--ino-color-on-surface);
+  }
+  .theme-pane > h3 {
+    margin: 0 0 var(--ino-space-4);
+    font-size: var(--ino-type-body-sm-size);
+    color: var(--ino-color-on-surface-muted);
+    font-weight: 600;
+  }
+
+  .stack { display: flex; flex-direction: column; gap: var(--ino-space-5); }
+
+  /* Mirrors web/src/app/components/accordion/ino-accordion.component.scss + ino-accordion-tab.component.scss
+     — same token bindings, so a divergence between this preview and the shipped component is visible as a
+     visual diff. */
+  .ino-accordion {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--ino-color-border);
+    border-radius: var(--ino-radius-md);
+    background: var(--ino-color-surface-raised);
+    overflow: hidden;
+  }
+
+  .ino-accordion--compact {
+    --ino-control-padding-inline-roomy: var(--ino-control-padding-inline-roomy-sm);
+  }
+
+  .ino-accordion--disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .ino-accordion--loading {
+    opacity: 0.7;
+  }
+
+  .ino-accordion-tab {
+    display: flex;
+    flex-direction: column;
+    border-block-end: 1px solid var(--ino-color-border-soft);
+  }
+
+  .ino-accordion-tab:last-child {
+    border-block-end: none;
+  }
+
+  .ino-accordion-tab--disabled {
+    opacity: 0.5;
+  }
+
+  .ino-accordion-tab__heading {
+    margin: 0;
+    padding: 0;
+    font: inherit;
+  }
+
+  .ino-accordion-tab__header {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: var(--ino-space-2);
+    padding-block: var(--ino-control-padding-inline-roomy);
+    padding-inline: var(--ino-control-padding-inline-roomy);
+    border: none;
+    background: var(--ino-color-surface-raised);
+    color: var(--ino-color-on-surface);
+    font-weight: 600;
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+    text-align: start;
+    cursor: pointer;
+    transition:
+      background-color var(--ino-motion-duration-base) var(--ino-motion-easing-standard),
+      color var(--ino-motion-duration-base) var(--ino-motion-easing-standard);
+  }
+
+  .ino-accordion-tab__header:hover:not(:disabled) {
+    background: var(--ino-color-surface-hover);
+    color: var(--ino-color-accent);
+  }
+
+  .ino-accordion-tab__header:active:not(:disabled) {
+    background: var(--ino-color-surface-active);
+    color: var(--ino-color-accent-active);
+  }
+
+  .ino-accordion-tab__header:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: calc(-1 * var(--ino-focus-ring-offset));
+    position: relative;
+    z-index: 1;
+  }
+
+  .ino-accordion-tab__header:disabled {
+    cursor: not-allowed;
+    color: var(--ino-color-on-surface-muted);
+  }
+
+  .ino-accordion-tab__header--icon-end {
+    flex-direction: row-reverse;
+    justify-content: space-between;
+  }
+
+  .ino-accordion-tab__chevron {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 1em;
+    height: 1em;
+    font-size: 11px;
+    color: var(--ino-color-on-surface-muted);
+    transform: rotate(0deg);
+  }
+
+  .ino-accordion-tab__header:hover:not(:disabled) .ino-accordion-tab__chevron {
+    color: var(--ino-color-accent);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .ino-accordion-tab__chevron {
+      transition: transform var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+    }
+  }
+
+  .ino-accordion-tab__chevron--expanded {
+    transform: rotate(90deg);
+  }
+
+  .ino-accordion-tab__header-text {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .ino-accordion-tab__body {
+    background: var(--ino-color-surface-raised);
+  }
+
+  .ino-accordion-tab__content {
+    padding-block: var(--ino-control-padding-inline-roomy);
+    padding-inline: var(--ino-control-padding-inline-roomy);
+    font-size: var(--ino-type-body-size);
+    line-height: var(--ino-type-body-line);
+    color: var(--ino-color-on-surface);
+  }
+
+  .ino-accordion-tab--expanded .ino-accordion-tab__body {
+    background: var(--ino-color-surface);
+  }
+</style>
+<script>
+  // Interactive demo script: toggle accordion tabs, handle single/multiple expand modes, Arrow key navigation
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.ino-accordion').forEach(accordion => {
+      const multiple = accordion.dataset.multiple === 'true';
+      const tabs = Array.from(accordion.querySelectorAll('.ino-accordion-tab'));
+      const headers = tabs.map(tab => tab.querySelector('.ino-accordion-tab__header'));
+
+      headers.forEach((header, index) => {
+        header.addEventListener('click', () => {
+          if (header.disabled || accordion.classList.contains('ino-accordion--disabled')) return;
+
+          const tab = tabs[index];
+          const isExpanded = tab.classList.contains('ino-accordion-tab--expanded');
+
+          // Single-expand mode: close all other tabs
+          if (!multiple && !isExpanded) {
+            tabs.forEach((t, i) => {
+              if (i !== index) {
+                t.classList.remove('ino-accordion-tab--expanded');
+                const otherHeader = headers[i];
+                const otherChevron = otherHeader.querySelector('.ino-accordion-tab__chevron');
+                const otherBody = t.querySelector('.ino-accordion-tab__body');
+                otherHeader.setAttribute('aria-expanded', 'false');
+                if (otherChevron) otherChevron.classList.remove('ino-accordion-tab__chevron--expanded');
+                if (otherBody) otherBody.hidden = true;
+              }
+            });
+          }
+
+          // Toggle the clicked tab
+          tab.classList.toggle('ino-accordion-tab--expanded');
+          const newExpanded = tab.classList.contains('ino-accordion-tab--expanded');
+          header.setAttribute('aria-expanded', newExpanded);
+          const chevron = header.querySelector('.ino-accordion-tab__chevron');
+          const body = tab.querySelector('.ino-accordion-tab__body');
+          if (chevron) chevron.classList.toggle('ino-accordion-tab__chevron--expanded', newExpanded);
+          if (body) body.hidden = !newExpanded;
+        });
+
+        // Keyboard navigation: Arrow keys, Home/End
+        header.addEventListener('keydown', (e) => {
+          if (accordion.classList.contains('ino-accordion--disabled')) return;
+
+          let targetIndex = -1;
+          if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            targetIndex = (index + 1) % headers.length;
+          } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            targetIndex = (index - 1 + headers.length) % headers.length;
+          } else if (e.key === 'Home') {
+            e.preventDefault();
+            targetIndex = 0;
+          } else if (e.key === 'End') {
+            e.preventDefault();
+            targetIndex = headers.length - 1;
+          }
+
+          if (targetIndex >= 0 && targetIndex < headers.length) {
+            headers[targetIndex].focus();
+          }
+        });
+      });
+
+      // Initialize roving tabindex
+      headers.forEach((h, i) => h.tabIndex = i === 0 ? 0 : -1);
+      headers.forEach((h) => {
+        h.addEventListener('focus', () => {
+          headers.forEach(other => other.tabIndex = -1);
+          h.tabIndex = 0;
+        });
+      });
+    });
+  });
+</script>
+</head>
+<body>
+
+<h1>Accordion — vertically stacked collapsible panels</h1>
+<p class="lede">
+  Two-component architecture: <code>&lt;ino-accordion&gt;</code> (container) + <code>&lt;ino-accordion-tab&gt;</code>
+  (individual panel). Follows the WAI-ARIA APG accordion pattern: heading+button structure, Arrow key navigation,
+  roving tabindex. Single-expand (default, radio-like mutual exclusion) vs multiple-expand modes. Two-value sizing
+  scale (compact/comfortable) per the spec row.
+</p>
+
+<h2>Single-expand mode (default) — three themes</h2>
+<div class="theme-row">
+
+  <div class="theme-pane">
+    <h3>dark — :root (default)</h3>
+    <div class="ino-accordion" data-multiple="false" role="presentation">
+      <div class="ino-accordion-tab ino-accordion-tab--expanded">
+        <h3 class="ino-accordion-tab__heading">
+          <button class="ino-accordion-tab__header" aria-expanded="true" aria-controls="body-1a">
+            <span class="ino-accordion-tab__chevron ino-accordion-tab__chevron--expanded">▸</span>
+            <span class="ino-accordion-tab__header-text">Personal Information</span>
+          </button>
+        </h3>
+        <div class="ino-accordion-tab__body" id="body-1a" role="region" aria-labelledby="header-1a">
+          <div class="ino-accordion-tab__content">
+            Customer name, date of birth, tax residency, government IDs. KYC verification status.
+          </div>
+        </div>
+      </div>
+      <div class="ino-accordion-tab">
+        <h3 class="ino-accordion-tab__heading">
+          <button class="ino-accordion-tab__header" aria-expanded="false" aria-controls="body-1b">
+            <span class="ino-accordion-tab__chevron">▸</span>
+            <span class="ino-accordion-tab__header-text">Financial Data</span>
+          </button>
+        </h3>
+        <div class="ino-accordion-tab__body" id="body-1b" role="region" hidden>
+          <div class="ino-accordion-tab__content">
+            Account balances, transaction history, credit score, risk assessment.
+          </div>
+        </div>
+      </div>
+      <div class="ino-accordion-tab">
+        <h3 class="ino-accordion-tab__heading">
+          <button class="ino-accordion-tab__header" aria-expanded="false" aria-controls="body-1c">
+            <span class="ino-accordion-tab__chevron">▸</span>
+            <span class="ino-accordion-tab__header-text">Compliance</span>
+          </button>
+        </h3>
+        <div class="ino-accordion-tab__body" id="body-1c" role="region" hidden>
+          <div class="ino-accordion-tab__content">
+            AML screening, sanctions check, PEP status, source of funds verification.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="light">
+    <h3>light — [data-theme="light"]</h3>
+    <div class="ino-accordion" data-multiple="false" role="presentation">
+      <div class="ino-accordion-tab ino-accordion-tab--expanded">
+        <h3 class="ino-accordion-tab__heading">
+          <button class="ino-accordion-tab__header" aria-expanded="true" aria-controls="body-2a">
+            <span class="ino-accordion-tab__chevron ino-accordion-tab__chevron--expanded">▸</span>
+            <span class="ino-accordion-tab__header-text">Personal Information</span>
+          </button>
+        </h3>
+        <div class="ino-accordion-tab__body" id="body-2a" role="region">
+          <div class="ino-accordion-tab__content">
+            Customer name, date of birth, tax residency, government IDs. KYC verification status.
+          </div>
+        </div>
+      </div>
+      <div class="ino-accordion-tab">
+        <h3 class="ino-accordion-tab__heading">
+          <button class="ino-accordion-tab__header" aria-expanded="false" aria-controls="body-2b">
+            <span class="ino-accordion-tab__chevron">▸</span>
+            <span class="ino-accordion-tab__header-text">Financial Data</span>
+          </button>
+        </h3>
+        <div class="ino-accordion-tab__body" id="body-2b" role="region" hidden>
+          <div class="ino-accordion-tab__content">
+            Account balances, transaction history, credit score, risk assessment.
+          </div>
+        </div>
+      </div>
+      <div class="ino-accordion-tab">
+        <h3 class="ino-accordion-tab__heading">
+          <button class="ino-accordion-tab__header" aria-expanded="false" aria-controls="body-2c">
+            <span class="ino-accordion-tab__chevron">▸</span>
+            <span class="ino-accordion-tab__header-text">Compliance</span>
+          </button>
+        </h3>
+        <div class="ino-accordion-tab__body" id="body-2c" role="region" hidden>
+          <div class="ino-accordion-tab__content">
+            AML screening, sanctions check, PEP status, source of funds verification.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="theme-pane" data-theme="high-contrast">
+    <h3>high-contrast — [data-theme="high-contrast"]</h3>
+    <div class="ino-accordion" data-multiple="false" role="presentation">
+      <div class="ino-accordion-tab ino-accordion-tab--expanded">
+        <h3 class="ino-accordion-tab__heading">
+          <button class="ino-accordion-tab__header" aria-expanded="true" aria-controls="body-3a">
+            <span class="ino-accordion-tab__chevron ino-accordion-tab__chevron--expanded">▸</span>
+            <span class="ino-accordion-tab__header-text">Personal Information</span>
+          </button>
+        </h3>
+        <div class="ino-accordion-tab__body" id="body-3a" role="region">
+          <div class="ino-accordion-tab__content">
+            Customer name, date of birth, tax residency, government IDs. KYC verification status.
+          </div>
+        </div>
+      </div>
+      <div class="ino-accordion-tab">
+        <h3 class="ino-accordion-tab__heading">
+          <button class="ino-accordion-tab__header" aria-expanded="false" aria-controls="body-3b">
+            <span class="ino-accordion-tab__chevron">▸</span>
+            <span class="ino-accordion-tab__header-text">Financial Data</span>
+          </button>
+        </h3>
+        <div class="ino-accordion-tab__body" id="body-3b" role="region" hidden>
+          <div class="ino-accordion-tab__content">
+            Account balances, transaction history, credit score, risk assessment.
+          </div>
+        </div>
+      </div>
+      <div class="ino-accordion-tab">
+        <h3 class="ino-accordion-tab__heading">
+          <button class="ino-accordion-tab__header" aria-expanded="false" aria-controls="body-3c">
+            <span class="ino-accordion-tab__chevron">▸</span>
+            <span class="ino-accordion-tab__header-text">Compliance</span>
+          </button>
+        </h3>
+        <div class="ino-accordion-tab__body" id="body-3c" role="region" hidden>
+          <div class="ino-accordion-tab__content">
+            AML screening, sanctions check, PEP status, source of funds verification.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<h2>Multiple-expand mode</h2>
+<p class="lede">Any number of tabs can be open simultaneously. No mutual-exclusion coordination.</p>
+<div class="ino-accordion" data-multiple="true" role="presentation" style="max-width: 600px;">
+  <div class="ino-accordion-tab ino-accordion-tab--expanded">
+    <h3 class="ino-accordion-tab__heading">
+      <button class="ino-accordion-tab__header" aria-expanded="true" aria-controls="body-4a">
+        <span class="ino-accordion-tab__chevron ino-accordion-tab__chevron--expanded">▸</span>
+        <span class="ino-accordion-tab__header-text">Account Setup</span>
+      </button>
+    </h3>
+    <div class="ino-accordion-tab__body" id="body-4a" role="region">
+      <div class="ino-accordion-tab__content">
+        Create username, set password, configure 2FA, link email and phone.
+      </div>
+    </div>
+  </div>
+  <div class="ino-accordion-tab ino-accordion-tab--expanded">
+    <h3 class="ino-accordion-tab__heading">
+      <button class="ino-accordion-tab__header" aria-expanded="true" aria-controls="body-4b">
+        <span class="ino-accordion-tab__chevron ino-accordion-tab__chevron--expanded">▸</span>
+        <span class="ino-accordion-tab__header-text">Payment Methods</span>
+      </button>
+    </h3>
+    <div class="ino-accordion-tab__body" id="body-4b" role="region">
+      <div class="ino-accordion-tab__content">
+        Add credit card, link bank account, set up direct debit authorization.
+      </div>
+    </div>
+  </div>
+  <div class="ino-accordion-tab">
+    <h3 class="ino-accordion-tab__heading">
+      <button class="ino-accordion-tab__header" aria-expanded="false" aria-controls="body-4c">
+        <span class="ino-accordion-tab__chevron">▸</span>
+        <span class="ino-accordion-tab__header-text">Notifications</span>
+      </button>
+    </h3>
+    <div class="ino-accordion-tab__body" id="body-4c" role="region" hidden>
+      <div class="ino-accordion-tab__content">
+        Email alerts, SMS notifications, push notification preferences.
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>Icon position: end</h2>
+<p class="lede">Chevron after the text (disclosure hint) rather than before (visual bullet).</p>
+<div class="ino-accordion" data-multiple="false" role="presentation" style="max-width: 600px;">
+  <div class="ino-accordion-tab ino-accordion-tab--expanded">
+    <h3 class="ino-accordion-tab__heading">
+      <button class="ino-accordion-tab__header ino-accordion-tab__header--icon-end" aria-expanded="true" aria-controls="body-5a">
+        <span class="ino-accordion-tab__header-text">Requirements</span>
+        <span class="ino-accordion-tab__chevron ino-accordion-tab__chevron--expanded">▸</span>
+      </button>
+    </h3>
+    <div class="ino-accordion-tab__body" id="body-5a" role="region">
+      <div class="ino-accordion-tab__content">
+        Government-issued photo ID, proof of address, tax identification number.
+      </div>
+    </div>
+  </div>
+  <div class="ino-accordion-tab">
+    <h3 class="ino-accordion-tab__heading">
+      <button class="ino-accordion-tab__header ino-accordion-tab__header--icon-end" aria-expanded="false" aria-controls="body-5b">
+        <span class="ino-accordion-tab__header-text">Upload Documents</span>
+        <span class="ino-accordion-tab__chevron">▸</span>
+      </button>
+    </h3>
+    <div class="ino-accordion-tab__body" id="body-5b" role="region" hidden>
+      <div class="ino-accordion-tab__content">
+        Drag and drop files, or click to browse. PDF, JPEG, PNG accepted.
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>Sizing: compact vs comfortable</h2>
+<p class="lede">Two-value scale (compact/comfortable) per the spec row. Compact re-points to <code>--ino-control-padding-inline-roomy-sm</code>.</p>
+<div class="stack">
+  <div>
+    <h3 style="font-size: var(--ino-type-body-sm-size); margin: 0 0 var(--ino-space-3); color: var(--ino-color-on-surface-muted);">Compact</h3>
+    <div class="ino-accordion ino-accordion--compact" data-multiple="false" role="presentation" style="max-width: 600px;">
+      <div class="ino-accordion-tab">
+        <h3 class="ino-accordion-tab__heading">
+          <button class="ino-accordion-tab__header" aria-expanded="false" aria-controls="body-6a">
+            <span class="ino-accordion-tab__chevron">▸</span>
+            <span class="ino-accordion-tab__header-text">Section 1</span>
+          </button>
+        </h3>
+        <div class="ino-accordion-tab__body" id="body-6a" role="region" hidden>
+          <div class="ino-accordion-tab__content">Compact padding for dense layouts.</div>
+        </div>
+      </div>
+      <div class="ino-accordion-tab">
+        <h3 class="ino-accordion-tab__heading">
+          <button class="ino-accordion-tab__header" aria-expanded="false" aria-controls="body-6b">
+            <span class="ino-accordion-tab__chevron">▸</span>
+            <span class="ino-accordion-tab__header-text">Section 2</span>
+          </button>
+        </h3>
+        <div class="ino-accordion-tab__body" id="body-6b" role="region" hidden>
+          <div class="ino-accordion-tab__content">Content here.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <h3 style="font-size: var(--ino-type-body-sm-size); margin: 0 0 var(--ino-space-3); color: var(--ino-color-on-surface-muted);">Comfortable (default)</h3>
+    <div class="ino-accordion" data-multiple="false" role="presentation" style="max-width: 600px;">
+      <div class="ino-accordion-tab">
+        <h3 class="ino-accordion-tab__heading">
+          <button class="ino-accordion-tab__header" aria-expanded="false" aria-controls="body-7a">
+            <span class="ino-accordion-tab__chevron">▸</span>
+            <span class="ino-accordion-tab__header-text">Section 1</span>
+          </button>
+        </h3>
+        <div class="ino-accordion-tab__body" id="body-7a" role="region" hidden>
+          <div class="ino-accordion-tab__content">Default padding for comfortable reading.</div>
+        </div>
+      </div>
+      <div class="ino-accordion-tab">
+        <h3 class="ino-accordion-tab__heading">
+          <button class="ino-accordion-tab__header" aria-expanded="false" aria-controls="body-7b">
+            <span class="ino-accordion-tab__chevron">▸</span>
+            <span class="ino-accordion-tab__header-text">Section 2</span>
+          </button>
+        </h3>
+        <div class="ino-accordion-tab__body" id="body-7b" role="region" hidden>
+          <div class="ino-accordion-tab__content">Content here.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>States: disabled (accordion-level)</h2>
+<p class="lede">Dims the whole accordion to <code>opacity: 0.5</code>, native-disables all tab toggles.</p>
+<div class="ino-accordion ino-accordion--disabled" data-multiple="false" role="presentation" style="max-width: 600px;" aria-disabled="true">
+  <div class="ino-accordion-tab">
+    <h3 class="ino-accordion-tab__heading">
+      <button class="ino-accordion-tab__header" aria-expanded="false" aria-controls="body-8a" disabled>
+        <span class="ino-accordion-tab__chevron">▸</span>
+        <span class="ino-accordion-tab__header-text">Unavailable Section</span>
+      </button>
+    </h3>
+    <div class="ino-accordion-tab__body" id="body-8a" role="region" hidden>
+      <div class="ino-accordion-tab__content">This content is locked.</div>
+    </div>
+  </div>
+</div>
+
+<h2>States: disabled (tab-level)</h2>
+<p class="lede">Locks only the specified tab's toggle. Native <code>disabled</code>, cursor <code>not-allowed</code>.</p>
+<div class="ino-accordion" data-multiple="false" role="presentation" style="max-width: 600px;">
+  <div class="ino-accordion-tab">
+    <h3 class="ino-accordion-tab__heading">
+      <button class="ino-accordion-tab__header" aria-expanded="false" aria-controls="body-9a">
+        <span class="ino-accordion-tab__chevron">▸</span>
+        <span class="ino-accordion-tab__header-text">Available Section</span>
+      </button>
+    </h3>
+    <div class="ino-accordion-tab__body" id="body-9a" role="region" hidden>
+      <div class="ino-accordion-tab__content">This tab works normally.</div>
+    </div>
+  </div>
+  <div class="ino-accordion-tab ino-accordion-tab--disabled">
+    <h3 class="ino-accordion-tab__heading">
+      <button class="ino-accordion-tab__header" aria-expanded="false" aria-controls="body-9b" disabled>
+        <span class="ino-accordion-tab__chevron">▸</span>
+        <span class="ino-accordion-tab__header-text">Locked Section</span>
+      </button>
+    </h3>
+    <div class="ino-accordion-tab__body" id="body-9b" role="region" hidden>
+      <div class="ino-accordion-tab__content">This tab is disabled.</div>
+    </div>
+  </div>
+</div>
+
+<h2>States: loading</h2>
+<p class="lede">Dims all panels to <code>opacity: 0.7</code>, host carries <code>aria-busy="true"</code>.</p>
+<div class="ino-accordion ino-accordion--loading" data-multiple="false" role="presentation" style="max-width: 600px;" aria-busy="true">
+  <div class="ino-accordion-tab">
+    <h3 class="ino-accordion-tab__heading">
+      <button class="ino-accordion-tab__header" aria-expanded="false" aria-controls="body-10a">
+        <span class="ino-accordion-tab__chevron">▸</span>
+        <span class="ino-accordion-tab__header-text">Loading data...</span>
+      </button>
+    </h3>
+    <div class="ino-accordion-tab__body" id="body-10a" role="region" hidden>
+      <div class="ino-accordion-tab__content">Content is being fetched.</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
