@@ -159,7 +159,7 @@ export function InoBadge({
         {...a11yProps}
       >
         <Text
-          style={[styles.countText, { color: textColor(), fontSize: variantSizes.fontSize }]}
+          style={[styles.countText, { color: textColor(), fontSize: sizeStyles.count[size].fontSize }]}
           accessibilityElementsHidden
         >
           {displayValue}
@@ -180,7 +180,7 @@ export function InoBadge({
         },
       ]}
     >
-      <Text style={[styles.statusText, { color: textColor(), fontSize: variantSizes.fontSize }]}>
+      <Text style={[styles.statusText, { color: textColor(), fontSize: sizeStyles.status[size].fontSize }]}>
         {label}
       </Text>
     </View>

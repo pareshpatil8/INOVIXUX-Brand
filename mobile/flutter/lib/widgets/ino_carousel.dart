@@ -174,7 +174,6 @@ class InoCarousel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.inoColors;
-    final isVertical = orientation == InoCarouselOrientation.vertical;
     final stops = _stops;
     final currentStopIndex = _currentStopIndex;
 

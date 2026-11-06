@@ -800,6 +800,24 @@ const COMPONENT_REGISTRY = [
     ],
   },
   {
+    name: 'carousel',
+    web: 'web/src/app/components/carousel',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoCarousel.tsx',
+        roles: ['accent', 'border', 'onSurface', 'surfaceRaised'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_carousel.dart',
+        roles: ['accent', 'border', 'onSurface', 'surfaceRaised'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['onSurfaceMuted', 'onSurfaceSubtle', 'surfaceSunken'], reason: 'all three are pointer- or disabled-state fills with nowhere to land on touch. surface-sunken is the nav-button hover background (ino-carousel.component.scss, `&:hover:not(:disabled)`) and on-surface-muted the indicator-dot hover fill (`.ino-carousel__indicator &:hover`) — a touch press has no separate hover phase. on-surface-subtle is the disabled nav glyph (`&:disabled`); this port instead dims the whole button with `opacity: 0.6` over the same on-surface glyph colour it already reads (InoCarousel.tsx:165), the same opacity-dimming convention InoCard uses, so the dedicated dimmer role is never reached. The port reads accent for the active indicator, border for the nav-button outline, on-surface for the nav glyph and surface-raised for the nav-button fill.' },
+      { platform: 'flutter', roles: ['onSurfaceMuted', 'onSurfaceSubtle', 'surfaceSunken'], reason: 'same as the React Native entry above — hover is a pointer concept the GestureDetector nav buttons never reach, and disabled is expressed with an Opacity(0.6) wrapper over the same on-surface glyph (ino_carousel.dart:138-139) rather than a swap to on-surface-subtle.' },
+    ],
+  },
+  {
     name: 'cascade-select',
     web: 'web/src/app/components/cascade-select',
     mobile: {
@@ -872,6 +890,24 @@ const COMPONENT_REGISTRY = [
     web: 'web/src/app/components/confirm-popup',
     mobile: { reactNative: 'web-only', flutter: 'web-only' },
     reason: 'web-only by explicit decision (INO-148, plan rev 9 §5 desktop-idiom porting rule) — same rationale as confirm-dialog above; `ino-confirm-action-sheet` already covers mobile confirm. See web/src/app/components/confirm-popup/SPEC.md §5 and docs/brand/06-angular-components/confirm-popup.md#mobile.',
+  },
+  {
+    name: 'dataview',
+    web: 'web/src/app/components/dataview',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoDataView.tsx',
+        roles: ['borderSoft', 'onSurfaceMuted'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_dataview.dart',
+        roles: ['borderSoft', 'onSurfaceMuted'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['border', 'onSurface'], reason: "border is only the midpoint stop of the web skeleton's shimmer gradient, and that gradient exists solely under `@media (prefers-reduced-motion: no-preference)` (ino-dataview.component.scss `.ino-dataview__skeleton-bar`); this port draws a flat border-soft skeleton bar with no gradient and no shimmer, so there is no midpoint colour to read. on-surface is the host and `.ino-dataview__label` body-text colour on web, where those classes wrap slotted projected content. This port is a thin generic FlatList wrapper whose item content is caller-supplied via `renderItem` (InoDataView.tsx:36), so the view never owns item text colour — the caller does. It reads on-surface-muted for its own empty message and loading spinner." },
+      { platform: 'flutter', roles: ['border', 'onSurface'], reason: "same as the React Native entry above — the skeleton is a flat border-soft Container with no shimmer gradient, and `itemBuilder` (ino_dataview.dart:23) makes item text colour the caller's concern, not the view's." },
+    ],
   },
   {
     name: 'datepicker',
@@ -1012,6 +1048,24 @@ const COMPONENT_REGISTRY = [
     divergences: [
       { platform: 'reactNative', roles: ['onSurfaceMuted', 'onSurfaceSubtle', 'dangerTextSafe'], reason: 'web composes <ino-label> internally and never references a --ino-color-* role directly in iftalabel/ino-iftalabel.component.scss (colour is entirely delegated to <ino-label>\'s own stylesheet: onSurface/onSurfaceMuted/onSurfaceSubtle/dangerTextSafe). The RN port has no separate label component to delegate to (it renders the label Text itself), so it reads the three non-default label colour roles inline. Same divergence shape the sibling floatlabel/ino-float-label wrapper (INO-141) declares for the same reason (minus the "surface" role — this component has no on-variant background cutout, SPEC.md §3). See SPEC.md §7.' },
       { platform: 'flutter', roles: ['onSurfaceMuted', 'onSurfaceSubtle', 'dangerTextSafe'], reason: 'same as the React Native entry above — ino_ifta_label.dart renders its own label Text instead of delegating to InoLabel.' },
+    ],
+  },
+  {
+    name: 'image',
+    web: 'web/src/app/components/image',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoImage.tsx',
+        roles: ['onSurfaceMuted', 'surfaceSunken'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_image.dart',
+        roles: ['onSurfaceMuted', 'surfaceSunken'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['border', 'onSurface', 'onSurfaceSubtle', 'overlayScrim', 'surfaceRaised'], reason: 'all five are lightbox chrome, and this port deliberately ships no lightbox — see its own header comment at InoImage.tsx:32, "no lightbox. The preview-on-click lightbox is web-only (no focus-trap primitive exists on this platform)". overlay-scrim is the lightbox backdrop (`.ino-image__scrim`); surface-raised, border and on-surface are the lightbox control buttons\' fill, outline and glyph (`.ino-image__lightbox-controls button`); on-surface-subtle is those controls\' disabled glyph (`&:disabled`). With no lightbox there is no scrim and no control bar to paint. The port reads surface-sunken for the placeholder/fallback box and on-surface-muted for the fallback icon and the caption.' },
+      { platform: 'flutter', roles: ['border', 'onSurface', 'onSurfaceSubtle', 'overlayScrim', 'surfaceRaised'], reason: 'same as the React Native entry above — ino_image.dart:36 carries the identical "no lightbox" declaration, so the scrim and the control-bar roles have nowhere to land.' },
     ],
   },
   {

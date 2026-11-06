@@ -128,7 +128,6 @@ class InoAccordionTab extends StatelessWidget {
         _accordionDisabled = null;
 
   const InoAccordionTab._internal({
-    super.key,
     required this.header,
     required this.child,
     this.expanded,
@@ -258,7 +257,7 @@ class InoAccordionTab extends StatelessWidget {
               child: child,
             ),
           ),
-        if (_index != null && _index! < ((_onToggle != null) ? 100 : 0))
+        if (_index != null && _index < ((_onToggle != null) ? 100 : 0))
           Container(
             height: 1,
             color: colors.borderSoft,

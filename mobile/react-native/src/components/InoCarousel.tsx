@@ -135,13 +135,15 @@ export function InoCarousel({
       accessible={false}
     >
       {/* Viewport container with nav and pause buttons */}
+      {/* No accessibilityRole: RN's AccessibilityRole has no `region` — that is web-only
+          ARIA (SPEC.md §99). Passing it was a runtime no-op, so dropping it is behaviour
+          preserving and lets tsc pass. */}
       <View
         style={{
           flexDirection: isVertical ? 'column' : 'row',
           alignItems: 'center',
           gap: space[2],
         }}
-        accessibilityRole="region"
         accessibilityLabel="Carousel"
       >
         {showNavigation && (
@@ -226,7 +228,6 @@ export function InoCarousel({
             marginTop: space[3],
           }}
           accessible={true}
-          accessibilityRole="group"
           accessibilityLabel="Choose slide"
         >
           {stops.map((stop, i) => {

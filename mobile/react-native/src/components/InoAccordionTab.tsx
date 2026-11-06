@@ -79,9 +79,11 @@ export function InoAccordionTab({
         {_iconPosition === 'end' && <Text style={[chevronStyle, isDisabled && styles.chevronDisabled]}>{chevron}</Text>}
       </Pressable>
       {isExpanded && (
+        // No accessibilityRole: RN's AccessibilityRole has no `region` — that is web-only
+        // ARIA (SPEC.md §96). Passing it was a runtime no-op, so dropping it is behaviour
+        // preserving; the panel stays reachable via its individually-accessible children.
         <View
           style={[styles.body, { paddingVertical: paddingValue, paddingHorizontal: paddingValue }]}
-          accessibilityRole="region"
           accessibilityLabel={header}
         >
           {children}
