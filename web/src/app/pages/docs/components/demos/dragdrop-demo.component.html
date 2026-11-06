@@ -1,0 +1,52 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Default</h3>
+  <p class="demo-section__note">
+    Drag with the mouse, or Tab to an item and press <code>Space</code> to pick it up, arrow keys
+    or <code>Tab</code> to reach a zone, <code>Enter</code> to drop, <code>Escape</code> to cancel.
+    Each move briefly shows the <code>dropped-flash</code> state. "Compliance sign-off" is
+    disabled and cannot be dragged.
+  </p>
+  <div class="demo-row">
+    <ino-dragdrop
+      sourceLabel="Available"
+      targetLabel="Selected"
+      [sourceItems]="defaultSource"
+      [targetItems]="defaultTarget"
+      (sourceItemsChange)="onDefaultSourceChange($event)"
+      (targetItemsChange)="onDefaultTargetChange($event)"
+    ></ino-dragdrop>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Capped target zone</h3>
+  <p class="demo-section__note">
+    <code>maxItems</code> rejects drops once the target zone is full (over-target feedback shows
+    "full" instead of "available" to both mouse and keyboard users).
+  </p>
+  <div class="demo-row">
+    <ino-dragdrop
+      sourceLabel="Available"
+      targetLabel="Selected (max 2)"
+      [sourceItems]="cappedSource"
+      [targetItems]="cappedTarget"
+      [maxItems]="2"
+      (sourceItemsChange)="onCappedSourceChange($event)"
+      (targetItemsChange)="onCappedTargetChange($event)"
+    ></ino-dragdrop>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States</h3>
+  <p class="demo-section__note">Disabled — neither zone accepts drag or drop interaction.</p>
+  <div class="demo-row">
+    <ino-dragdrop
+      sourceLabel="Available"
+      targetLabel="Selected"
+      disabled
+      [sourceItems]="disabledSource"
+      [targetItems]="disabledTarget"
+    ></ino-dragdrop>
+  </div>
+</section>

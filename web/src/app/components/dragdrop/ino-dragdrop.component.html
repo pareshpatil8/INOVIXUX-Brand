@@ -1,0 +1,56 @@
+<div class="ino-dragdrop__body">
+  <div class="ino-dragdrop__column">
+    <span class="ino-dragdrop__heading" [id]="instanceId + '-source-label'">{{ sourceLabel }}</span>
+    <ul
+      class="ino-dragdrop__list"
+      [attr.aria-labelledby]="instanceId + '-source-label'"
+      [inoDroppable]="sourceItems"
+      [inoDroppableDisabled]="disabled"
+      (inoDroppableOnDrop)="onReturnToSource($event)"
+    >
+      <li *ngIf="sourceItems.length === 0" class="ino-dragdrop__empty">All items placed.</li>
+      <li
+        *ngFor="let item of sourceItems"
+        class="ino-dragdrop__item"
+        [class.ino-dragdrop__item--disabled]="disabled || item.disabled"
+        [class.ino-dropped-flash]="isFlashed(item)"
+        [attr.aria-label]="item.label"
+        [inoDraggable]="item"
+        [inoDraggableDisabled]="disabled || !!item.disabled"
+      >
+        {{ item.label }}
+      </li>
+    </ul>
+  </div>
+
+  <div class="ino-dragdrop__column">
+    <span class="ino-dragdrop__heading" [id]="instanceId + '-target-label'">{{ targetLabel }}</span>
+    <ul
+      class="ino-dragdrop__list"
+      [class.ino-dragdrop__list--full]="isFull"
+      [attr.aria-labelledby]="instanceId + '-target-label'"
+      [attr.aria-disabled]="isFull ? 'true' : null"
+      [inoDroppable]="targetItems"
+      [inoDroppableMaxItems]="maxItems"
+      [inoDroppableDisabled]="disabled"
+      [inoDroppableAccept]="canAcceptDrop"
+      (inoDroppableOnDrop)="onDropToTarget($event)"
+    >
+      <li *ngIf="targetItems.length === 0" class="ino-dragdrop__empty">Drop items here.</li>
+      <li
+        *ngFor="let item of targetItems"
+        class="ino-dragdrop__item"
+        [class.ino-dragdrop__item--disabled]="disabled || item.disabled"
+        [class.ino-dropped-flash]="isFlashed(item)"
+        [attr.aria-label]="item.label"
+        [inoDraggable]="item"
+        [inoDraggableDisabled]="disabled || !!item.disabled"
+      >
+        {{ item.label }}
+      </li>
+    </ul>
+    <span class="ino-dragdrop__count" *ngIf="hasMaxCap">
+      {{ targetItems.length }} / {{ maxItems }}
+    </span>
+  </div>
+</div>
