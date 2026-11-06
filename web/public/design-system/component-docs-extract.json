@@ -2483,6 +2483,153 @@
         "templates": []
       }
     },
+    "dock": {
+      "name": "ino-dock",
+      "docPath": "docs/brand/06-angular-components/dock.md",
+      "a11y": "<p><strong>Roles / ARIA</strong> — <code>ul.ino-dock__bar</code> is <code>role=\"menubar\"</code> with <code>aria-orientation</code> following\n<code>position</code> (<code>horizontal</code> for <code>bottom</code>, <code>vertical</code> for <code>side</code>); each <code>li</code> is <code>role=\"none\"</code>; each\n<code>button</code> is <code>role=\"menuitem\"</code> with <code>aria-label</code> (accessible name) and <code>aria-disabled</code>/the real\n<code>disabled</code> attribute when inert. The active item additionally carries <code>aria-current=\"true\"</code>.</p>\n<p><strong>Keyboard</strong> — one roving tab stop across the strip. <code>ArrowLeft</code>/<code>ArrowRight</code> move and wrap when\n<code>position=\"bottom\"</code>; <code>ArrowUp</code>/<code>ArrowDown</code> move and wrap when <code>position=\"side\"</code> (the inactive\npair is a no-op). <code>Home</code>/<code>End</code> jump to the first/last navigable item. Disabled items are skipped\nentirely by the roving navigation and are never a tab stop. Activation is native <code>&lt;button&gt;</code>\nbehavior — click, or <code>Enter</code>/<code>Space</code> on the focused item.</p>\n<p><strong>SR announcements</strong> — there is no live region: activating an item is an immediate navigation/\ncommand, not an async state change the way a toggle's <code>aria-pressed</code> flip is. The active item's\n<code>aria-current=\"true\"</code> is announced when a screen reader lands on that button, same as any other\n<code>aria-current</code> consumer.</p>\n<p><strong>Contrast</strong> — every color is a role token (<code>--ino-color-*</code>, <code>--ino-focus-ring</code>); the active-item\nfill uses the same <code>--ino-gradient-accent</code> / <code>--ino-color-on-accent</code> pairing every checked/\nselected control in this library uses, AA-guaranteed by construction in all 3 themes.</p>\n",
+      "notes": "<ul>\n<li><strong>Neighbor magnify falloff</strong> — the full macOS effect also scales nearby icons by pointer\ndistance; that needs per-frame <code>mousemove</code> math, out of proportion for \"magnify-on-hover.\"\nOnly the hovered/focused item itself scales. (<code>SPEC.md</code> §4)</li>\n<li><strong>Viewport auto-fixing</strong> — the component never positions itself against the viewport; like\n<code>&lt;ino-speeddial&gt;</code>, the consumer anchors the host. (<code>SPEC.md</code> §1)</li>\n<li><strong>A <code>side: 'left' | 'right'</code> sub-axis</strong> — the doc 26 row is a binary <code>bottom | side</code>; <code>side</code>\nassumes a left anchor by default. (<code>SPEC.md</code> §2)</li>\n<li><strong>Drag-to-reorder</strong> — <code>items</code> order is caller-controlled; no built-in reordering.</li>\n<li><strong>Auto-hide / reveal-on-proximity</strong> — a shell-level behavior, not this component's.</li>\n<li><strong>Badges/notification dots</strong> — not in the §5 row; <code>data</code> on an item lets a consumer render its\nown badge overlay if needed.</li>\n<li><strong><code>&lt;ino-tooltip&gt;</code> composition</strong> — the visible label is a bespoke element instead, so its timing\nstays in lockstep with the magnify transform rather than composing two independent show/hide\nsystems. (<code>SPEC.md</code> §7)</li>\n<li><strong><code>ControlValueAccessor</code></strong> — not applicable; a dock is a navigation/launcher strip, not a form\ncontrol.</li>\n</ul>\n",
+      "mobile": "<p><strong>Web-only by spec.</strong> The doc 26 §5 row's mobile disposition for <code>ino-dock</code> is \"Web-only; no RN/\nFlutter port needed\": no React Native or Flutter port is planned, and none ships. Both mobile\nplatforms have their own native app-switcher/dock conventions (iOS home screen, Android\nnavigation/taskbar), so a ported web dock widget would duplicate rather than complement\nplatform-native navigation — if a mobile-specific launcher need materializes it gets its own\nspec-first ticket rather than a port of this one.</p>\n",
+      "api": {
+        "props": [
+          {
+            "name": "items",
+            "type": "InoDockItem[]",
+            "values": null,
+            "default": "[]",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "position",
+            "type": "InoDockPosition",
+            "values": [
+              "bottom",
+              "side"
+            ],
+            "default": "'bottom'",
+            "optional": true,
+            "description": "`bottom` (horizontal row) or `side` (vertical column). Default `bottom`. `side` renders with a left-edge-flavored label placement by default (SPEC.md §2) — the consumer anchors the host to whichever physical edge it needs, same as `<ino-speeddial>`."
+          },
+          {
+            "name": "size",
+            "type": "InoDockSize",
+            "values": [
+              "sm",
+              "md",
+              "lg"
+            ],
+            "default": "'md'",
+            "optional": true,
+            "description": "Icon/button size — fixed geometry, see SPEC.md §3."
+          },
+          {
+            "name": "activeId",
+            "type": "string | null",
+            "values": null,
+            "default": "null",
+            "optional": true,
+            "description": "Marks the item whose `id` matches as the current/active item (SPEC.md §6 \"active-item\") — `aria-current` + accent styling. `null` (default): no item is marked active."
+          },
+          {
+            "name": "ariaLabel",
+            "type": "string",
+            "values": null,
+            "default": "'Application dock'",
+            "optional": true,
+            "description": "Accessible name for the `menubar`."
+          },
+          {
+            "name": "magnify",
+            "type": "boolean",
+            "values": null,
+            "default": "true",
+            "optional": true,
+            "description": "Disables magnify-on-hover independent of `prefers-reduced-motion`, e.g. for a docs-page \"motion off\" toggle. Reduced motion always wins regardless of this flag."
+          }
+        ],
+        "events": [],
+        "methods": [],
+        "templates": []
+      }
+    },
+    "dragdrop": {
+      "name": "ino-dragdrop",
+      "docPath": null,
+      "a11y": null,
+      "notes": null,
+      "mobile": null,
+      "api": {
+        "props": [
+          {
+            "name": "sourceLabel",
+            "type": "string",
+            "values": null,
+            "default": "'Available'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "targetLabel",
+            "type": "string",
+            "values": null,
+            "default": "'Selected'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "sourceItems",
+            "type": "InoDragDropItem[]",
+            "values": null,
+            "default": "[]",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "targetItems",
+            "type": "InoDragDropItem[]",
+            "values": null,
+            "default": "[]",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "maxItems",
+            "type": "unknown",
+            "values": null,
+            "default": "Infinity",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          }
+        ],
+        "events": [
+          {
+            "name": "sourceItemsChange",
+            "type": "InoDragDropItem[]",
+            "description": null
+          },
+          {
+            "name": "targetItemsChange",
+            "type": "InoDragDropItem[]",
+            "description": null
+          },
+          {
+            "name": "moved",
+            "type": "InoDragDropItem",
+            "description": null
+          }
+        ],
+        "methods": [],
+        "templates": []
+      }
+    },
     "drawer": {
       "name": "ino-drawer",
       "docPath": "docs/brand/06-angular-components/drawer.md",
@@ -2599,7 +2746,7 @@
       "docPath": "docs/brand/06-angular-components/dynamic-dialog.md",
       "a11y": "<p>Inherits the full <code>&lt;ino-modal&gt;</code> a11y contract (<code>role=\"dialog\"</code>, labelled by <code>heading</code>,\n<code>[inoFocusTrap]</code> keyboard containment, Escape/backdrop dismissal). The one item the doc 26 §5 spec\nrow calls out explicitly beyond \"inherits modal\": <strong>focus-return for the service flow</strong>.</p>\n<p>No extra code is needed for it. <code>[inoFocusTrap]</code>, placed on <code>&lt;ino-modal&gt;</code>'s panel, captures\n<code>document.activeElement</code> the instant the panel mounts — still inside the synchronous continuation\nof whatever click/keydown handler called <code>dialogService.open(...)</code> — so it captures the control\nthat triggered the call, exactly the guarantee a declarative <code>&lt;ino-modal [(open)]=\"flag\"&gt;</code> caller\nalready relies on. Closing the dialog by any path (<code>ref.close()</code> from the opened component,\n<code>&lt;ino-modal&gt;</code>'s own Escape/backdrop/close-button paths, or a second <code>open()</code> superseding it)\nrestores focus to that same control via the trap's existing teardown. See <code>SPEC.md</code> §4 for the full\nreasoning.</p>\n<p>The opened component receives no implicit a11y wiring beyond what <code>&lt;ino-modal&gt;</code> already provides —\nif it needs its own <code>aria-describedby</code> or form validation messaging, that is the opened component's\nown responsibility, same as any content projected into a declarative <code>&lt;ino-modal&gt;</code>.</p>\n<hr />\n",
       "notes": "<ul>\n<li><strong>No dialog stack.</strong> <code>InoDynamicDialogService</code> tracks a single <code>current</code> entry; a second <code>open()</code>\nsupersedes the first rather than stacking. A dynamic dialog can still appear over a declarative\n<code>&lt;ino-modal&gt;</code> or <code>&lt;ino-confirm-dialog&gt;</code> opened independently — <code>[inoFocusTrap]</code>'s trap stack\nhandles that case by DOM order regardless of which API opened which panel — but two <em>dynamic</em>\ndialogs stacked on each other is out of scope for this minimal API layer. See <code>SPEC.md</code> §3.</li>\n<li><strong>No imperative <code>ViewContainerRef.createComponent()</code>.</strong> The opened component is mounted via\n<code>NgComponentOutlet</code> inside <code>&lt;ino-dynamic-dialog&gt;</code>'s existing template, not a hand-rolled\n<code>ComponentRef</code> lifecycle — see <code>SPEC.md</code> §2 for why that is the simpler, OnPush/zoneless-safe\nchoice here.</li>\n<li><strong>No <code>@Input</code> bound to the opened component.</strong> <code>NgComponentOutlet</code> has no input-binding surface\nfor an arbitrary unknown type; the DI tokens (<code>InoDynamicDialogRef</code>, <code>INO_DYNAMIC_DIALOG_DATA</code>)\nare the entire data-passing contract, the same two-token shape Angular Material's\n<code>MatDialogRef</code>/<code>MAT_DIALOG_DATA</code> use.</li>\n</ul>\n",
-      "mobile": null,
+      "mobile": "<p>Web-only — the doc 26 §5 row disposition. No React Native or Flutter port: a service that opens an\narbitrary component by type, backed by Angular DI and <code>NgComponentOutlet</code>, has no analogue in\neither mobile stack's navigation model, where the equivalent is presenting a screen/route rather\nthan opening an overlay component by type. Mirrors <code>ino-command-menu</code>/<code>ino-toolbar</code>'s web-only\ndisposition in the same table.</p>\n<hr />\n",
       "api": {
         "props": [],
         "events": [],
@@ -4901,6 +5048,96 @@
         "templates": []
       }
     },
+    "megamenu": {
+      "name": "ino-megamenu",
+      "docPath": "docs/brand/06-angular-components/megamenu.md",
+      "a11y": "<p><strong>Role / ARIA</strong> — WAI-ARIA APG <strong>Menubar</strong>: <code>ul[role=\"menubar\"][aria-label][aria-orientation]</code>,\nevery trigger and panel link <code>role=\"menuitem\"</code>, an open panel <code>role=\"menu\"</code> with\n<code>aria-labelledby</code> pointing at its trigger's id, each column <code>role=\"group\"</code> (<code>aria-labelledby</code> its\nheading id when one is given). A panel trigger carries <code>aria-haspopup=\"menu\"</code> and\n<code>aria-expanded</code>.</p>\n<p><strong>Keyboard</strong> — Full Arrow/Esc map per <a href=\"#keyboard\">Keyboard</a> above — the spec row's explicit\nrequirement. One tab stop on the bar (roving <code>tabindex</code>), a second roving 2D tab stop inside an\nopen panel; <code>Tab</code>/focus-out closes the panel.</p>\n<p><strong>Focus behavior</strong> — Opening a panel via keyboard moves focus to its first link; <code>Escape</code> returns\nfocus to the trigger that opened it. Clicking a panel link closes the panel without moving focus\nelsewhere (the navigation itself takes over).</p>\n<p><strong>Contrast</strong> — Trigger/link text, hover, active, and disabled colors resolve through tokens\naudited across all three themes by <code>node scripts/check-theme-parity.mjs</code>.</p>\n<p><strong>RTL</strong> — All spacing (<code>padding-inline</code>, <code>inset-inline-start</code>) uses logical properties; the panel\nflips sides correctly under <code>dir=\"rtl\"</code>.</p>\n<p><strong>State announcements</strong> — <code>aria-expanded</code>/<code>aria-haspopup</code>/<code>aria-controls</code> per trigger,\n<code>aria-current=\"page\"</code> on the active item/link, <code>aria-disabled=\"true\"</code> on a disabled top-level item\nor inert panel link, <code>aria-busy=\"true\"</code> on the <code>nav</code> landmark while <code>loading</code>.</p>\n<hr />\n",
+      "notes": "<p><strong>PrimeNG mapping.</strong> PrimeNG 22.1.1 <code>MegaMenu</code>'s <code>model</code> (<code>MegaMenuItem[]</code>, each with an\n<code>items: MegaMenuItem[][]</code> grid of columns) maps onto this component's <code>items</code>/<code>columns</code>/\n<code>column.items</code>, flattened to exactly two levels (column → link) rather than PrimeNG's own\narbitrarily-nested <code>items</code> grid cells.</p>\n<p><strong>No invalid/error state.</strong> The §2 standard state set includes invalid/error, but a mega menu has\nno bound value to validate — it is a navigation structure, not a form control. See <code>SPEC.md</code> §7\n(same reasoning <code>ino-breadcrumb</code>'s and <code>ino-panel-menu</code>'s own <code>SPEC.md</code>s record).</p>\n<p><strong>No hover-to-open.</strong> Deliberately click/keyboard-only — see <code>SPEC.md</code> §8 for why a hover-intent\ntimer was not implemented.</p>\n<hr />\n",
+      "mobile": "<p><strong>Web-only</strong> per the spec row's Notes/mobile disposition — the same disposition doc 26 gives\n<code>ino-context-menu</code>/<code>ino-toolbar</code> for the same reason (a desktop/wide-viewport site-header idiom).\nNo React Native or Flutter port ships with this issue.</p>\n",
+      "api": {
+        "props": [
+          {
+            "name": "items",
+            "type": "InoMegaMenuItem[]",
+            "values": null,
+            "default": "[]",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "ariaLabel",
+            "type": "string",
+            "values": null,
+            "default": "'Main menu'",
+            "optional": true,
+            "description": "Accessible name for the `menubar` — the spec row's \"menubar label\"."
+          },
+          {
+            "name": "orientation",
+            "type": "'horizontal' | 'vertical'",
+            "values": [
+              "horizontal",
+              "vertical"
+            ],
+            "default": "'horizontal'",
+            "optional": true,
+            "description": "`horizontal | vertical` — the row's Variants/Structure axis (doc 26 §5). Swaps which arrow pair moves between top-level items and which pair opens/closes a panel. See `SPEC.md` §3."
+          },
+          {
+            "name": "size",
+            "type": "'compact' | 'comfortable'",
+            "values": [
+              "compact",
+              "comfortable"
+            ],
+            "default": "'comfortable'",
+            "optional": true,
+            "description": "`compact | comfortable` — the row's own two-tier scale, same shape `ino-panel-menu` uses for its page-resident trigger bar. Composes with dense/fluid density. Panel link rows always use the fixed overlay-compact control scale regardless of this input — see `SPEC.md` §4."
+          },
+          {
+            "name": "activeHref",
+            "type": "string",
+            "values": null,
+            "default": null,
+            "optional": true,
+            "description": "`href` of the current top-level item or panel link — drives the \"active-item\" state (`aria-current=\"page\"` + active styling)."
+          },
+          {
+            "name": "readonly",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": "Renders every leaf (top-level and panel) as inert text; panels still open/close so the structure stays browsable. See `SPEC.md` §6."
+          },
+          {
+            "name": "loading",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": "Renders a skeleton bar instead of `items`."
+          },
+          {
+            "name": "emptyLabel",
+            "type": "string",
+            "values": null,
+            "default": "'No items'",
+            "optional": true,
+            "description": "Message shown when `items` is empty (and not `loading`)."
+          }
+        ],
+        "events": [
+          {
+            "name": "itemClick",
+            "type": "InoMegaMenuItem | InoMegaMenuLink",
+            "description": null
+          }
+        ],
+        "methods": [],
+        "templates": []
+      }
+    },
     "menu": {
       "name": "ino-menu",
       "docPath": "docs/brand/06-angular-components/menu.md",
@@ -7052,7 +7289,7 @@
       "name": "ino-slider",
       "docPath": "docs/brand/06-angular-components/slider.md",
       "a11y": "<p><strong>Role / ARIA</strong> — <code>role=\"slider\"</code> on <strong>each thumb</strong> (not the host element): a range slider is two\nindependent APG slider widgets sharing one visual track, per the ARIA Authoring Practices Guide.\n<code>aria-valuenow</code> always; <code>aria-valuemin</code>/<code>aria-valuemax</code> are the <em>effective</em> bounds for that\nthumb — the lower thumb's max is the upper thumb's current value (and vice versa) in range mode,\nnever the slider's global <code>min</code>/<code>max</code>, so a screen reader never announces a range the thumb can't\nactually reach. <code>aria-orientation</code> is <code>\"horizontal\"</code> (default) or <code>\"vertical\"</code>. <code>aria-label</code> is\nderived from <code>label</code>; range mode suffixes <code>\"(minimum)\"</code>/<code>\"(maximum)\"</code> so the two thumbs are\ndistinguishable without visual context. <code>aria-disabled</code>/<code>aria-readonly</code> are set when\n<code>disabled</code>/<code>readonly</code> are true — <code>slider</code> is one of the ARIA roles that supports <code>aria-readonly</code>\n(unlike, say, <code>button</code>). <code>aria-invalid</code> is not applicable to <code>role=\"slider\"</code> per the ARIA spec; the\nerror text still renders as a <code>role=\"alert\"</code> paragraph, matching every other form control's\nerror-surface convention.</p>\n<p><strong>Keyboard</strong> — APG slider pattern, per focused thumb:</p>\n<table>\n<thead>\n<tr>\n<th>Key</th>\n<th>Behavior</th>\n</tr>\n</thead>\n<tbody><tr>\n<td>ArrowRight / ArrowUp</td>\n<td>Increment by <code>step</code></td>\n</tr>\n<tr>\n<td>ArrowLeft / ArrowDown</td>\n<td>Decrement by <code>step</code></td>\n</tr>\n<tr>\n<td>PageUp</td>\n<td>Increment by <code>step * 10</code></td>\n</tr>\n<tr>\n<td>PageDown</td>\n<td>Decrement by <code>step * 10</code></td>\n</tr>\n<tr>\n<td>Home</td>\n<td>Jump to <code>min</code></td>\n</tr>\n<tr>\n<td>End</td>\n<td>Jump to <code>max</code></td>\n</tr>\n<tr>\n<td>Tab</td>\n<td>Move focus to the other thumb (range mode) or the next control</td>\n</tr>\n</tbody></table>\n<p>All keys call <code>event.preventDefault()</code> so the page does not scroll while a thumb has focus.</p>\n<p><strong>Contrast</strong> — WCAG 2.2 AA, gated by <code>check-theme-parity</code>.</p>\n<p><strong>RTL</strong> — logical properties only (<code>inset-inline-*</code>, <code>padding-inline</code>); vertical orientation is\nthe one place this component isn't purely logical-property-driven (there is no directional\nconvention for \"up is more\" vs. \"down is more\" that RTL flips), so its geometry is measured from\nthe track's own bottom edge rather than mirrored — see <code>SPEC.md</code> §3.</p>\n<p>Full contract: <code>SPEC.md</code> §9.</p>\n<hr />\n",
-      "notes": null,
+      "notes": "<ul>\n<li><strong>Animated transition on programmatic value changes.</strong> Thumb position updates immediately; no\neased transition when <code>value</code> is set from outside. Drag/keyboard interaction is already\ninstant-feedback by design (dragging <em>is</em> the animation). Revisit if a docs demo shows the\nsnap reading as jarring.</li>\n<li><strong>Custom (non-uniform) step arrays.</strong> <code>step</code> is a single uniform number; PrimeNG's <code>Slider</code>\ndoesn't support this either, noted for completeness.</li>\n</ul>\n<p><strong>PrimeNG mapping:</strong> PrimeNG <code>Slider</code> → <code>ino-slider</code>; single/range, horizontal/vertical, step,\nmin/max are all covered. Full table: <code>SPEC.md</code> §10.</p>\n<hr />\n",
       "mobile": "<ul>\n<li><strong>Capacitor</strong> — not a separate port; the same Angular component/CSS render in the Capacitor\nWebView.</li>\n<li><strong>React Native / Flutter</strong> — shipped in this issue\n(<code>mobile/react-native/src/components/InoSlider.tsx</code>,\n<code>mobile/flutter/lib/widgets/ino_slider.dart</code>).<ul>\n<li><strong>React Native</strong>: a from-scratch <code>PanResponder</code>-drawn track + thumb(s), computing value from\nthe gesture's <code>pageX</code>/<code>pageY</code> relative to the track's measured layout (<code>onLayout</code> +\n<code>measureInWindow</code>) — the RN equivalent of this component's <code>getBoundingClientRect()</code> +\n<code>pointermove</code> pattern. RN has no native <code>role=\"slider\"</code>; the ARIA-equivalent substitution is\n<code>accessibilityRole=\"adjustable\"</code> with <code>accessibilityActions</code>/<code>onAccessibilityAction</code> for\nincrement/decrement (VoiceOver/TalkBack swipe up/down) and <code>accessibilityValue={{min, max, now}}</code> for the numeric announcement — the same substitution <code>InoDatepicker</code>/<code>InoSelect</code>/\n<code>InoAutocomplete</code> document for their own overlay idioms.</li>\n<li><strong>Flutter</strong>: wraps Material's <code>Slider</code>/<code>RangeSlider</code>, themed via <code>SliderThemeData</code>\n(<code>activeTrackColor</code>, <code>inactiveTrackColor</code>, <code>thumbColor</code>, <code>overlayColor</code>) rather than a\nfrom-scratch custom-painted widget — Flutter's built-in slider already implements the\ndrag/keyboard/semantics contract this spec asks for, so theming it is the correct-effort\nchoice here (unlike RN, which has no built-in slider primitive to theme).</li>\n<li>Both ports default <code>showMarks</code>/<code>showTooltip</code>/<code>showMinMaxLabels</code>/<code>showValueLabel</code> to the same\n<code>false</code> defaults as web — parity is in the <em>capability</em>, not a mobile-specific default.</li>\n</ul>\n</li>\n</ul>\n<p>Full notes: <code>SPEC.md</code> §11.</p>\n",
       "api": {
         "props": [
@@ -8685,10 +8922,10 @@
     },
     "toolbar": {
       "name": "ino-toolbar",
-      "docPath": null,
-      "a11y": null,
-      "notes": null,
-      "mobile": null,
+      "docPath": "docs/brand/06-angular-components/toolbar.md",
+      "a11y": "<p><strong>Role / ARIA</strong></p>\n<ul>\n<li><code>role=\"toolbar\"</code> on the host element</li>\n<li><code>aria-label</code> (required input) names the toolbar</li>\n<li>Roving tabindex on toolbar items (first item gets <code>tabindex=\"0\"</code>, others <code>\"-1\"</code>)</li>\n</ul>\n<p><strong>Keyboard</strong> — See Keyboard Navigation table above. Arrow keys and Home/End do NOT capture\nfocus when a text input, textarea, or select has focus (per WCAG 2.1.1 and APG guidelines).</p>\n<p><strong>Contrast</strong> — Toolbar background is <code>--ino-color-surface</code>, border is <code>--ino-color-border</code>. Both\nresolve to audited pairs per theme; no toolbar-specific contrast assertions needed (tokens already\ncover it).</p>\n<p><strong>Targets</strong> — Toolbar itself is not a target (structural container). Controls projected into slots\nare responsible for meeting the 24px SC 2.5.8 floor — this is enforced on <code>ino-button</code> and\nform-field components independently.</p>\n<p><strong>RTL</strong> — Uses <code>padding-inline</code>, <code>padding-block</code>, <code>border-block-end</code> (not <code>padding-left</code>/<code>top</code>/\n<code>border-bottom</code>). Mirrors under <code>dir=\"rtl\"</code> with no second stylesheet.</p>\n<p><strong>Overflow scrolling</strong> — <code>overflow-x: auto</code> on the toolbar container with <code>flex-wrap: nowrap</code> and\n<code>flex-shrink: 0</code> on all slotted children. When content exceeds the toolbar width, horizontal\nscrolling activates. Focused toolbar items automatically scroll into view during arrow-key\nnavigation, ensuring keyboard accessibility without requiring a separate scroll container tabstop.</p>\n<hr />\n",
+      "notes": "<ul>\n<li><strong><code>density</code> input.</strong> An earlier implementation had <code>@Input() density: 'dense' | 'comfortable'</code>,\nwhich duplicated the design system's own <code>[data-density]</code> axis and created a second conflicting\ndensity register. Removed in favor of the global attribute (CTO review, INO-443 defect 3).</li>\n<li><strong>Dynamic slot detection.</strong> An earlier implementation used <code>querySelector('[slot=\"...\"]')</code> to\nconditionally render slot containers only when content was projected. This created a chicken-and-egg\ndeadlock in Angular Ivy (content isn't attached until the view renders, but the view was gated on\ndetecting the content). <code>@ContentChildren</code> is no help either — it cannot query an attribute\nselector like <code>[slot=\"start\"]</code>, only a directive, which every <code>slot=\"start\"</code> call site would have\nto adopt. Current implementation always renders all three slot containers and collapses the unused\nones with <code>:empty { display: none }</code>, the same idiom <code>ino-card</code>/<code>ino-panel</code>/<code>ino-drawer</code> use for\noptional projected-content wrappers, so an unused slot is zero-width <strong>and</strong> contributes no <code>gap</code>\ngutter (CTO review, INO-443 defect 7; gutter fixed in INO-864).</li>\n</ul>\n<hr />\n",
+      "mobile": "<table>\n<thead>\n<tr>\n<th>Track</th>\n<th>Status</th>\n<th>Notes</th>\n</tr>\n</thead>\n<tbody><tr>\n<td>Capacitor</td>\n<td>Not a port</td>\n<td>Renders the same Angular component and the same CSS (INO-31 plan rev 9 §5 rule) — done the moment the web component passes.</td>\n</tr>\n<tr>\n<td>React Native</td>\n<td>Not ported</td>\n<td>Web-only per doc 26 §5 row specification</td>\n</tr>\n<tr>\n<td>Flutter</td>\n<td>Not ported</td>\n<td>Web-only per doc 26 §5 row specification</td>\n</tr>\n</tbody></table>\n",
       "api": {
         "props": [
           {
@@ -8713,6 +8950,10 @@
           },
           {
             "name": "[slot='end']",
+            "description": null
+          },
+          {
+            "name": "default",
             "description": null
           }
         ]

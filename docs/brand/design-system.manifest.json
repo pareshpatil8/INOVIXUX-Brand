@@ -8,7 +8,7 @@
     "tablet": "641-900px",
     "desktop": ">900px"
   },
-  "componentCount": 87,
+  "componentCount": 90,
   "components": [
     {
       "name": "ino-accordion",
@@ -1922,6 +1922,127 @@
           "type": "string",
           "values": null,
           "default": "''",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-dock",
+      "slug": "dock",
+      "className": "InoDockComponent",
+      "sourcePath": "web/src/app/components/dock/ino-dock.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "items",
+          "type": "InoDockItem[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "position",
+          "type": "InoDockPosition",
+          "values": [
+            "bottom",
+            "side"
+          ],
+          "default": "'bottom'",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "InoDockSize",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "'md'",
+          "optional": true
+        },
+        {
+          "name": "activeId",
+          "type": "string | null",
+          "values": null,
+          "default": "null",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Application dock'",
+          "optional": true
+        },
+        {
+          "name": "magnify",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-dragdrop",
+      "slug": "dragdrop",
+      "className": "InoDragdropComponent",
+      "sourcePath": "web/src/app/components/dragdrop/ino-dragdrop.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "sourceLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Available'",
+          "optional": true
+        },
+        {
+          "name": "targetLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Selected'",
+          "optional": true
+        },
+        {
+          "name": "sourceItems",
+          "type": "InoDragDropItem[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "targetItems",
+          "type": "InoDragDropItem[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "maxItems",
+          "type": "unknown",
+          "values": null,
+          "default": "Infinity",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
           "optional": true
         }
       ],
@@ -3888,6 +4009,83 @@
           "type": "number",
           "values": null,
           "default": "100",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-megamenu",
+      "slug": "megamenu",
+      "className": "InoMegaMenuComponent",
+      "sourcePath": "web/src/app/components/megamenu/ino-megamenu.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "items",
+          "type": "InoMegaMenuItem[]",
+          "values": null,
+          "default": "[]",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Main menu'",
+          "optional": true
+        },
+        {
+          "name": "orientation",
+          "type": "'horizontal' | 'vertical'",
+          "values": [
+            "horizontal",
+            "vertical"
+          ],
+          "default": "'horizontal'",
+          "optional": true
+        },
+        {
+          "name": "size",
+          "type": "'compact' | 'comfortable'",
+          "values": [
+            "compact",
+            "comfortable"
+          ],
+          "default": "'comfortable'",
+          "optional": true
+        },
+        {
+          "name": "activeHref",
+          "type": "string",
+          "values": null,
+          "default": null,
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "emptyLabel",
+          "type": "string",
+          "values": null,
+          "default": "'No items'",
           "optional": true
         }
       ],

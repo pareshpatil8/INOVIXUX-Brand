@@ -25,6 +25,7 @@ import { ToolbarDemoComponent } from './demos/toolbar-demo.component';
 import { BreadcrumbDemoComponent } from './demos/breadcrumb-demo.component';
 import { PanelDemoComponent } from './demos/panel-demo.component';
 import { PanelMenuDemoComponent } from './demos/panel-menu-demo.component';
+import { MegaMenuDemoComponent } from './demos/megamenu-demo.component';
 import { DynamicDialogDemoComponent } from './demos/dynamic-dialog-demo.component';
 import { MenuDemoComponent } from './demos/menu-demo.component';
 import { DividerDemoComponent } from './demos/divider-demo.component';
@@ -51,6 +52,7 @@ import { TerminalDemoComponent } from './demos/terminal-demo.component';
 import { KnobDemoComponent } from './demos/knob-demo.component';
 import { InputColorDemoComponent } from './demos/inputcolor-demo.component';
 import { EditorDemoComponent } from './demos/editor-demo.component';
+import { DockDemoComponent } from './demos/dock-demo.component';
 
 /**
  * Slug -> hand-authored demo component, for components whose §2 Component Publish Contract
@@ -134,6 +136,11 @@ export const CUSTOM_DEMOS: Record<string, Type<unknown>> = {
   // — is driven by that array. See `panel-menu/SPEC.md` for the full state/sizing contract this
   // demo exercises.
   'panel-menu': PanelMenuDemoComponent,
+  // `items: InoMegaMenuItem[]` is the same recursive-array gap `panel-menu`/`menu` hit (empty
+  // array default), and the whole visible surface — triggers, open panels, grouped columns — is
+  // driven by that nested array. See `megamenu/SPEC.md` for the full state/sizing contract this
+  // demo exercises.
+  'megamenu': MegaMenuDemoComponent,
   // `<ino-dynamic-dialog>` has zero `@Input`s — it is a slot driven entirely by
   // `InoDynamicDialogService`, not a component the generic `*ngComponentOutlet`-with-inputs
   // renderer can demonstrate anything through. See `dynamic-dialog-demo.component.ts`.
@@ -263,4 +270,10 @@ export const CUSTOM_DEMOS: Record<string, Type<unknown>> = {
   // paste, char limit/at-limit, format-toggle announcements — are interaction-driven. See
   // `editor/SPEC.md` for the full contract.
   'editor': EditorDemoComponent,
+  // `items: InoDockItem[]` hits the same `defaultValueFor()` empty-array gap `menu`/
+  // `breadcrumb`/`panel-menu` hit, and `size`/`position` are type-alias inputs the manifest
+  // extractor can't enumerate (no Size/Position axis rows). The generic renderer would mount an
+  // empty pill with no items, no position/size composition, and no way to demonstrate
+  // magnify-on-hover or the active-item state. See `dock/SPEC.md` for the full contract.
+  'dock': DockDemoComponent,
 };

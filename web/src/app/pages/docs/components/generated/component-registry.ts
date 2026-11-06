@@ -25,6 +25,8 @@ import { InoContextMenuComponent } from '../../../../components/context-menu/ino
 import { InoDataViewComponent } from '../../../../components/dataview/ino-dataview.component';
 import { InoDatePickerComponent } from '../../../../components/datepicker/ino-datepicker.component';
 import { InoDividerComponent } from '../../../../components/divider/ino-divider.component';
+import { InoDockComponent } from '../../../../components/dock/ino-dock.component';
+import { InoDragdropComponent } from '../../../../components/dragdrop/ino-dragdrop.component';
 import { InoDrawerComponent } from '../../../../components/drawer/ino-drawer.component';
 import { InoDynamicDialogComponent } from '../../../../components/dynamic-dialog/ino-dynamic-dialog.component';
 import { InoEditorComponent } from '../../../../components/editor/ino-editor.component';
@@ -50,6 +52,7 @@ import { InoKeyfilterComponent } from '../../../../components/keyfilter/ino-keyf
 import { InoKnobComponent } from '../../../../components/knob/ino-knob.component';
 import { InoLabelComponent } from '../../../../components/label/ino-label.component';
 import { InoListboxComponent } from '../../../../components/listbox/ino-listbox.component';
+import { InoMegaMenuComponent } from '../../../../components/megamenu/ino-megamenu.component';
 import { InoMenuComponent } from '../../../../components/menu/ino-menu.component';
 import { InoMeterGroupComponent } from '../../../../components/meter-group/ino-meter-group.component';
 import { InoMetricPanelComponent } from '../../../../components/metric-panel/ino-metric-panel.component';
@@ -114,6 +117,8 @@ export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'dataview': InoDataViewComponent,
   'datepicker': InoDatePickerComponent,
   'divider': InoDividerComponent,
+  'dock': InoDockComponent,
+  'dragdrop': InoDragdropComponent,
   'drawer': InoDrawerComponent,
   'dynamic-dialog': InoDynamicDialogComponent,
   'editor': InoEditorComponent,
@@ -139,6 +144,7 @@ export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'knob': InoKnobComponent,
   'label': InoLabelComponent,
   'listbox': InoListboxComponent,
+  'megamenu': InoMegaMenuComponent,
   'menu': InoMenuComponent,
   'meter-group': InoMeterGroupComponent,
   'metric-panel': InoMetricPanelComponent,
