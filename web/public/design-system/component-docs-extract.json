@@ -6940,6 +6940,134 @@
         "templates": []
       }
     },
+    "rating": {
+      "name": "ino-rating",
+      "docPath": "docs/brand/06-angular-components/rating.md",
+      "a11y": "<p><strong>Role / ARIA</strong> — <code>role=\"radiogroup\"</code> on the container, with <code>aria-label</code> from <code>label</code>, falling\nback to <code>ariaLabel</code>, then <code>'Rating'</code>. <code>aria-disabled</code>/<code>aria-readonly</code> are set on the group when\n<code>disabled</code>/<code>readonly</code> are true — <code>radiogroup</code> supports <code>aria-readonly</code> directly, unlike the bare\n<code>radio</code>/<code>group</code> roles (a gotcha this program already hit on <code>ino-toggle-button</code>), so no per-star\nworkaround is needed. Each star carries <code>role=\"radio\"</code>, <code>aria-checked</code> (<code>true</code> only for the star\nmatching <code>value</code>), <code>aria-label</code> (\"N star\"/\"N stars\"), and <code>aria-posinset</code>/<code>aria-setsize</code> for\nposition announcements. <code>hint</code>/<code>error</code> are referenced via <code>aria-describedby</code> on the group.</p>\n<p><strong>Keyboard</strong> — APG radiogroup pattern (selection follows focus):</p>\n<table>\n<thead>\n<tr>\n<th>Key</th>\n<th>Behavior</th>\n</tr>\n</thead>\n<tbody><tr>\n<td>ArrowRight / ArrowDown</td>\n<td>Move to and select the next star (clamped at <code>count</code>)</td>\n</tr>\n<tr>\n<td>ArrowLeft / ArrowUp</td>\n<td>Move to and select the previous star (clamped at <code>1</code>)</td>\n</tr>\n<tr>\n<td>Home</td>\n<td>Jump to and select the first star</td>\n</tr>\n<tr>\n<td>End</td>\n<td>Jump to and select the last star</td>\n</tr>\n<tr>\n<td>Space / Enter</td>\n<td>Confirm selection of the focused star</td>\n</tr>\n<tr>\n<td>Tab</td>\n<td>Move focus to the next control (one tab stop for the whole group)</td>\n</tr>\n</tbody></table>\n<p>All keys call <code>event.preventDefault()</code> so the page does not scroll while the group has focus.</p>\n<p><strong>Focus behavior</strong> — only one star is ever in the Tab sequence (roving tabindex): it defaults to\nthe star matching <code>value</code> (or star 1 when <code>value</code> is <code>0</code>), then tracks whichever star was last\ninteracted with — independently of <code>value</code>, so a cancel-to-clear click keeps focus on the clicked\nstar rather than jumping back to star 1. <code>:focus-visible</code> draws the standard <code>--ino-focus-ring</code>;\nthe high-contrast theme's 3px ring override flows through the token.</p>\n<p><strong>SR announcements</strong> — landing on a star announces its label, checked state, and position\nnatively (standard radiogroup behavior — no custom live region needed). Setting <code>error</code> injects a\n<code>role=\"alert\"</code> message announced immediately.</p>\n<p><strong>Contrast</strong> — WCAG 2.2 AA in all 3 themes, gated by <code>check-theme-parity</code>. Both the filled-star\nrole (<code>--ino-color-warning</code>) and the empty-star role (<code>--ino-color-on-surface-muted</code>) are\nnon-text/icon roles (3:1 minimum).</p>\n<p><strong>RTL</strong> — logical properties only in CSS. Arrow-key selection is deliberately <em>not</em> mirrored in\nRTL, matching the <code>ino-knob</code>/<code>ino-slider</code> precedent: ArrowRight always moves to the next star in\nDOM order regardless of locale, the same convention native radiogroups and sliders already use.</p>\n<p>Full contract: <code>SPEC.md</code> §8.</p>\n<hr />\n",
+      "notes": "<ul>\n<li><strong>No half-star increments</strong> — the spec row says \"integer values\" explicitly; PrimeNG's <code>0.5</code>\nstep mode is not supported.</li>\n<li><strong>No innerHTML/SVG custom icons</strong> — <code>iconFilled</code>/<code>iconEmpty</code> render via auto-escaped text\ninterpolation, never <code>[innerHTML]</code>, avoiding an XSS surface for a cosmetic input.</li>\n<li><strong>No separate cancel icon</strong> — see <a href=\"#clearcancel-toggle\">Clear/cancel toggle</a>.</li>\n<li><strong>No form <code>ControlValueAccessor</code></strong> — matches every other INO-31 control to date\n(<code>value</code>/<code>valueChange</code> two-way binding only); CVA adoption is a fleet-wide decision.</li>\n</ul>\n<p><strong>PrimeNG mapping:</strong> PrimeNG <code>Rating</code> → <code>ino-rating</code>; star count, readonly, disabled, and the\ncancel affordance are all covered (PrimeNG's dedicated cancel icon becomes the click-selected-\nstar-to-clear gesture; its <code>onIcon</code>/<code>offIcon</code> template inputs become the plain <code>iconFilled</code>/\n<code>iconEmpty</code> string inputs; its optional half-star stepping is deliberately absent — \"integer\nvalues\" per the spec row).</p>\n<hr />\n",
+      "mobile": "<ul>\n<li><strong>Disposition: Port both</strong> (doc 26 §5 row: \"Port both\"). <code>mobile/flutter/lib/widgets/ino_rating.dart</code>\nand <code>mobile/react-native/src/components/InoRating.tsx</code> reproduce the same variant/state surface:\nconfigurable <code>count</code>, custom icon glyphs, <code>cancelable</code> clear-on-tap-selected, <code>sm</code>/<code>md</code>/<code>lg</code>\nsizing, <code>readonly</code>, <code>disabled</code>, and an invalid/error state.</li>\n<li><strong>Hover-preview is web-only</strong> — touch has no hover; both mobile ports omit it by platform\nconstraint, the same carry-forward <code>ino-slider</code>'s mobile ports already document for pointer-only\nstates.</li>\n<li><strong>Keyboard parity</strong> — Flutter and RN both expose the same tap-to-select interaction; the Arrow\nkey radiogroup pattern is a desktop/web-input-method concept and has no mobile equivalent (no\nhardware keyboard assumption), matching every other INO-31 mobile port's keyboard carve-out.</li>\n<li><strong>Capacitor</strong> — the Angular component/CSS render in the Capacitor WebView unchanged, including\nhover-preview on devices with an attached pointer.</li>\n</ul>\n",
+      "api": {
+        "props": [
+          {
+            "name": "label",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "hint",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "error",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "ariaLabel",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": "Explicit accessible name when no visible `label` is wanted. `label` wins when both are set."
+          },
+          {
+            "name": "size",
+            "type": "InoRatingSize",
+            "values": [
+              "sm",
+              "md",
+              "lg"
+            ],
+            "default": "'md'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "count",
+            "type": "number",
+            "values": null,
+            "default": "5",
+            "optional": true,
+            "description": "Configurable star count (the row's \"configurable star count\" variant)."
+          },
+          {
+            "name": "iconFilled",
+            "type": "string",
+            "values": null,
+            "default": "'★'",
+            "optional": true,
+            "description": "Filled-star glyph. Plain text content, not an icon-font dependency — any single glyph or short string works (\"custom icons\" variant), e.g. a heart ('♥') for a \"likes\" rating."
+          },
+          {
+            "name": "iconEmpty",
+            "type": "string",
+            "values": null,
+            "default": "'☆'",
+            "optional": true,
+            "description": "Empty-star glyph, rendered for every star above the current/previewed value."
+          },
+          {
+            "name": "cancelable",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": "Clear/cancel toggle: clicking the already-selected star clears `value` to 0."
+          },
+          {
+            "name": "required",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "readonly",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "value",
+            "type": "number",
+            "values": null,
+            "default": "0",
+            "optional": true,
+            "description": "Integer 0..count — 0 means \"unrated\". No half-star increments (the row's \"integer values\" variant); see SPEC.md §7 for the deliberate omission vs PrimeNG's half-star support."
+          }
+        ],
+        "events": [
+          {
+            "name": "valueChange",
+            "type": "number",
+            "description": null
+          }
+        ],
+        "methods": [],
+        "templates": []
+      }
+    },
     "scrolltop": {
       "name": "ino-scrolltop",
       "docPath": null,

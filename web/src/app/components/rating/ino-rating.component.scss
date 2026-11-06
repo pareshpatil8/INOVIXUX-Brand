@@ -1,0 +1,90 @@
+/*
+ * <ino-rating> — INO-471 (INO-31 Phase B5, doc 26 §5 row `ino-rating`).
+ *
+ * No literal colour/space/radius/duration/font-size — every declaration resolves through a
+ * semantic role in tokens.css, logical properties only. Star glyphs are plain text content sized
+ * via `font-size`, not SVG — the glyph scale reuses the frozen Wave 0 space scale directly (same
+ * frozen-tokens constraint `ino-knob`/`ino-slider` worked under): sm = --ino-space-5 (20px),
+ * md = --ino-space-6 (24px), lg = --ino-space-7 (32px).
+ */
+
+.ino-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ino-space-2);
+  inline-size: fit-content;
+}
+
+:host {
+  --ino-rating-star-size: var(--ino-space-6);
+}
+
+:host([data-size='sm']) {
+  --ino-rating-star-size: var(--ino-space-5);
+}
+
+:host([data-size='lg']) {
+  --ino-rating-star-size: var(--ino-space-7);
+}
+
+.ino-rating__group {
+  display: flex;
+  align-items: center;
+  gap: var(--ino-space-1);
+}
+
+:host(.ino-rating--disabled) .ino-rating__group {
+  opacity: 0.5;
+}
+
+.ino-rating__star {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--ino-rating-star-size);
+  line-height: 1;
+  color: var(--ino-color-on-surface-muted);
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+  border-radius: var(--ino-radius-sm);
+  transition: color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+.ino-rating__star--filled {
+  color: var(--ino-color-warning);
+}
+
+:host(.ino-rating--disabled) .ino-rating__star,
+:host(.ino-rating--readonly) .ino-rating__star {
+  cursor: default;
+}
+
+.ino-rating__star:focus-visible {
+  outline: var(--ino-focus-ring);
+  outline-offset: var(--ino-focus-ring-offset);
+}
+
+/* Invalid — non-text 3:1 boundary on the group, matching `ino-knob`/`ino-slider` precedent. */
+:host(.ino-rating--invalid) .ino-rating__group {
+  outline: var(--ino-invalid-ring);
+  outline-offset: var(--ino-space-1);
+  border-radius: var(--ino-radius-sm);
+}
+
+.ino-field__hint {
+  margin: 0;
+  font-size: var(--ino-type-body-sm-size);
+  color: var(--ino-color-on-surface-muted);
+}
+
+.ino-field__error {
+  margin: 0;
+  font-size: var(--ino-type-body-sm-size);
+  color: var(--ino-color-danger);
+  font-weight: 600;
+}

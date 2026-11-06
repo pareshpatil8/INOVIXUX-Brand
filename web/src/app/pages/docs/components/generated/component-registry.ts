@@ -70,6 +70,7 @@ import { InoPopoverComponent } from '../../../../components/popover/ino-popover.
 import { InoProgressBarComponent } from '../../../../components/progress-bar/ino-progress-bar.component';
 import { InoProgressSpinnerComponent } from '../../../../components/progress-spinner/ino-progress-spinner.component';
 import { InoRadioGroupComponent } from '../../../../components/radio-group/ino-radio-group.component';
+import { InoRatingComponent } from '../../../../components/rating/ino-rating.component';
 import { InoScrolltopComponent } from '../../../../components/scrolltop/ino-scrolltop.component';
 import { InoSelectComponent } from '../../../../components/select/ino-select.component';
 import { InoSelectButtonComponent } from '../../../../components/select-button/ino-select-button.component';
@@ -163,6 +164,7 @@ export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'progress-bar': InoProgressBarComponent,
   'progress-spinner': InoProgressSpinnerComponent,
   'radio-group': InoRadioGroupComponent,
+  'rating': InoRatingComponent,
   'scrolltop': InoScrolltopComponent,
   'select': InoSelectComponent,
   'select-button': InoSelectButtonComponent,
