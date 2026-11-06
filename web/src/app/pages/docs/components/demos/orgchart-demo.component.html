@@ -1,0 +1,129 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Variants — connectors + expand/collapse subtrees</h3>
+  <div class="demo-col">
+    <ino-orgchart label="Company structure" [value]="basicTree"></ino-orgchart>
+  </div>
+  <p class="demo-section__note">
+    Default node rendering is <code>label</code> + <code>sublabel</code>; connectors are CSS
+    borders (half-rails + drop stubs) in <code>--ino-color-border</code>, so they reflow with
+    zoom, density and RTL. Branch cards carry a chevron toggler — subtrees start expanded, and
+    collapsing hides the subtree and its connectors (<code>aria-expanded</code> tracks it).
+    Keyboard: one tab stop; ArrowDown expands/descends, ArrowUp collapses/ascends,
+    ArrowLeft/Right move between siblings, Home/End jump the row.
+  </p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Node templates</h3>
+  <div class="demo-col">
+    <ino-orgchart label="Templated nodes" [value]="templatedTree">
+      <ng-template let-node>
+        <span aria-hidden="true">{{ node.data }}</span>
+        <strong>{{ node.label }}</strong>
+      </ng-template>
+    </ino-orgchart>
+  </div>
+  <p class="demo-section__note">
+    One projected <code>ng-template</code> renders inside every card with the node as context
+    (<code>let-node</code>); <code>node.data</code> is an opaque bag the component never reads.
+    The card chrome — selection, focus ring, connectors — stays with the component, so a custom
+    template cannot break the a11y contract.
+  </p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Selection (selectionMode="single")</h3>
+  <div class="demo-col">
+    <ino-orgchart
+      label="Pick an owner"
+      selectionMode="single"
+      [value]="selectableTree"
+      [(selected)]="selected"
+    ></ino-orgchart>
+  </div>
+  <p class="demo-section__note">
+    Click or Enter/Space selects by <code>node.value</code> (currently
+    <code>{{ selected || 'none' }}</code>); activating the selected node again clears the
+    selection — a chart selection is a highlight, not a form commitment. The selected card pairs
+    <code>--ino-color-accent</code> with <code>--ino-color-accent-text-safe</code>. The default
+    <code>selectionMode="none"</code> renders no <code>aria-selected</code> at all.
+  </p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States</h3>
+  <div class="demo-col">
+    <ino-orgchart label="Loading" [loading]="true" [value]="loadingTree"></ino-orgchart>
+    <ino-orgchart label="Disabled chart" [disabled]="true" [value]="disabledTree"></ino-orgchart>
+    <ino-orgchart
+      label="Disabled node"
+      selectionMode="single"
+      [value]="disabledNodeTree"
+    ></ino-orgchart>
+    <ino-orgchart label="Empty" [value]="emptyTree"></ino-orgchart>
+  </div>
+  <p class="demo-section__note">
+    Loading is chart-level — <code>aria-busy</code>, a spinner overlay, interaction suppressed
+    (per-branch lazy loading is a deliberate omission). A disabled chart leaves the tab order
+    entirely; a disabled <em>node</em> is skipped by traversal and selection but its subtree stays
+    reachable. Hover and focus-visible are interaction-driven — tab in and traverse with arrows to
+    see the roving focus ring.
+  </p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Sizing — zoom scales (0.75 / 1 / 1.5)</h3>
+  <div class="demo-col">
+    <ino-orgchart label="zoom 0.75" [zoom]="0.75" [value]="zoomOutTree"></ino-orgchart>
+    <ino-orgchart label="zoom 1 (default)" [value]="zoomDefaultTree"></ino-orgchart>
+    <ino-orgchart label="zoom 1.5" [zoom]="1.5" [value]="zoomInTree"></ino-orgchart>
+  </div>
+  <p class="demo-section__note">
+    <code>zoom</code> (clamped to 0.5–2) multiplies <code>--ino-control-font-size</code> on the
+    chart surface and every internal length is in <code>em</code> — cards, text, gaps and
+    connectors scale together with real layout reflow, not a blurry
+    <code>transform: scale()</code>. Wide charts scroll inside the component's own scroller, never
+    the page.
+  </p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Density</h3>
+  <div class="demo-grid">
+    <div class="demo-pane" data-density="dense">
+      <p class="demo-pane__label">dense</p>
+      <ino-orgchart label="Dense" [value]="denseTree"></ino-orgchart>
+    </div>
+    <div class="demo-pane" data-density="fluid">
+      <p class="demo-pane__label">fluid</p>
+      <ino-orgchart label="Fluid" [value]="fluidTree"></ino-orgchart>
+    </div>
+  </div>
+  <p class="demo-section__note">
+    Density composes with zoom for free: dense re-points <code>--ino-control-font-size</code>, the
+    base the zoom factor multiplies.
+  </p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Labels — chart label</h3>
+  <div class="demo-col">
+    <ino-orgchart label="Visible chart label (aria-labelledby)" [value]="labelledTree"></ino-orgchart>
+    <ino-orgchart ariaLabel="Reporting lines (no visible label)" [value]="ariaOnlyTree"></ino-orgchart>
+  </div>
+  <p class="demo-section__note">
+    The chart label names the <code>role="tree"</code> via <code>aria-labelledby</code>;
+    <code>ariaLabel</code> covers label-less instances. Long node labels wrap inside the card
+    (<code>max-inline-size: 14em</code>) instead of stretching the chart.
+  </p>
+</section>
+
+<section class="demo-section" dir="rtl">
+  <h3 class="demo-section__title">RTL spot-check</h3>
+  <div class="demo-col">
+    <ino-orgchart label="الهيكل التنظيمي" [value]="rtlTree"></ino-orgchart>
+  </div>
+  <p class="demo-section__note">
+    هندسة الموصلات بخصائص منطقية بالكامل — الصفوف والفروع تنعكس تلقائيًا.
+  </p>
+</section>

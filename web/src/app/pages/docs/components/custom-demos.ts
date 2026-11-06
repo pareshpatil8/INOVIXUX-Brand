@@ -53,6 +53,7 @@ import { KnobDemoComponent } from './demos/knob-demo.component';
 import { InputColorDemoComponent } from './demos/inputcolor-demo.component';
 import { EditorDemoComponent } from './demos/editor-demo.component';
 import { DockDemoComponent } from './demos/dock-demo.component';
+import { OrgchartDemoComponent } from './demos/orgchart-demo.component';
 
 /**
  * Slug -> hand-authored demo component, for components whose §2 Component Publish Contract
@@ -276,4 +277,10 @@ export const CUSTOM_DEMOS: Record<string, Type<unknown>> = {
   // empty pill with no items, no position/size composition, and no way to demonstrate
   // magnify-on-hover or the active-item state. See `dock/SPEC.md` for the full contract.
   'dock': DockDemoComponent,
+  // `value: InoOrgChartNode | null` is an object tree (the same empty-default gap `tree`/
+  // `treetable`/`colorpicker` hit), `selectionMode`/`zoom` are a union and a clamped number the
+  // single-axis grid never binds, and the §5 row's signature behaviors — expand/collapse
+  // subtrees, Arrow traversal, select/deselect, custom node templates — are interaction- and
+  // content-projection-driven. See `orgchart/SPEC.md` for the full contract.
+  'orgchart': OrgchartDemoComponent,
 };

@@ -1,0 +1,80 @@
+<div class="ino-orgchart__wrap" [class.ino-orgchart__wrap--disabled]="disabled">
+  <div *ngIf="label" [id]="labelId" class="ino-orgchart__label">{{ label }}</div>
+
+  <div class="ino-orgchart__scroller" [style.font-size]="'calc(var(--ino-control-font-size) * ' + zoom + ')'">
+    <ul
+      *ngIf="root; else emptyState"
+      class="ino-orgchart__tree"
+      role="tree"
+      [attr.aria-labelledby]="label ? labelId : null"
+      [attr.aria-label]="!label && ariaLabel ? ariaLabel : null"
+      [attr.aria-disabled]="disabled ? true : null"
+      [attr.aria-busy]="loading || null"
+    >
+      <ng-container *ngTemplateOutlet="subtree; context: { nodes: [root] }"></ng-container>
+    </ul>
+
+    <span *ngIf="loading" class="ino-orgchart__spinner" aria-hidden="true"></span>
+  </div>
+</div>
+
+<ng-template #emptyState>
+  <p
+    class="ino-orgchart__empty"
+    role="tree"
+    [attr.aria-labelledby]="label ? labelId : null"
+    [attr.aria-label]="!label && ariaLabel ? ariaLabel : null"
+  >No data.</p>
+</ng-template>
+
+<!-- Recursive rendering: the connector CSS needs real parent/child DOM nesting, while the
+     keyboard logic stays on the flat visible-row model — SPEC.md §1. -->
+<ng-template #subtree let-nodes="nodes">
+  <li *ngFor="let node of nodes" class="ino-orgchart__item" role="none">
+    <div
+      [id]="nodeId(node)"
+      role="treeitem"
+      class="ino-orgchart__node"
+      [class.ino-orgchart__node--selected]="isSelected(node)"
+      [class.ino-orgchart__node--disabled]="node.disabled"
+      [class.ino-orgchart__node--selectable]="selectionMode === 'single' && !node.disabled"
+      [attr.tabindex]="node.disabled || disabled ? null : (isActiveTabStop(node) ? 0 : -1)"
+      [attr.aria-level]="(rowOf(node)?.level ?? 0) + 1"
+      [attr.aria-expanded]="hasChildren(node) ? isExpanded(node) : null"
+      [attr.aria-selected]="selectionMode === 'single' ? isSelected(node) : null"
+      [attr.aria-disabled]="node.disabled || null"
+      (click)="activateNode(node)"
+      (keydown)="onNodeKeydown($event, node)"
+    >
+      <ng-container *ngIf="nodeTemplate; else defaultNode">
+        <ng-container *ngTemplateOutlet="nodeTemplate; context: { $implicit: node }"></ng-container>
+      </ng-container>
+      <ng-template #defaultNode>
+        <span class="ino-orgchart__node-label">{{ node.label }}</span>
+        <span *ngIf="node.sublabel" class="ino-orgchart__node-sublabel">{{ node.sublabel }}</span>
+      </ng-template>
+    </div>
+
+    <!-- Keyboard expand/collapse rides the Arrow map on the treeitem (SPEC.md §5); the toggler is
+         a pointer affordance only, so it stays out of the tab order like ino-tree's chevron. -->
+    <button
+      *ngIf="collapsible && hasChildren(node)"
+      type="button"
+      class="ino-orgchart__toggle"
+      tabindex="-1"
+      aria-hidden="true"
+      [disabled]="disabled || loading || node.disabled"
+      (click)="toggleExpand(node, $event)"
+    >
+      <span
+        class="ino-orgchart__chevron"
+        [class.ino-orgchart__chevron--collapsed]="!isExpanded(node)"
+        aria-hidden="true"
+      >▾</span>
+    </button>
+
+    <ul *ngIf="hasChildren(node) && isExpanded(node)" role="group" class="ino-orgchart__children">
+      <ng-container *ngTemplateOutlet="subtree; context: { nodes: node.children }"></ng-container>
+    </ul>
+  </li>
+</ng-template>
