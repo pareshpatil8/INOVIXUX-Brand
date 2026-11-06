@@ -8,7 +8,7 @@
     "tablet": "641-900px",
     "desktop": ">900px"
   },
-  "componentCount": 92,
+  "componentCount": 93,
   "components": [
     {
       "name": "ino-accordion",
@@ -2920,6 +2920,115 @@
           "type": "boolean",
           "values": null,
           "default": "true",
+          "optional": true
+        }
+      ],
+      "variants": null,
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-imagecompare",
+      "slug": "imagecompare",
+      "className": "InoImagecompareComponent",
+      "sourcePath": "web/src/app/components/imagecompare/ino-imagecompare.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "beforeSrc",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "afterSrc",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "beforeAlt",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "afterAlt",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "beforeLabel",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "afterLabel",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "orientation",
+          "type": "InoImagecompareOrientation",
+          "values": [
+            "horizontal",
+            "vertical"
+          ],
+          "default": "'horizontal'",
+          "optional": true
+        },
+        {
+          "name": "value",
+          "type": "number",
+          "values": null,
+          "default": "50",
+          "optional": true
+        },
+        {
+          "name": "step",
+          "type": "number",
+          "values": null,
+          "default": "1",
+          "optional": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "values": null,
+          "default": "'Image comparison'",
+          "optional": true
+        },
+        {
+          "name": "aspectRatio",
+          "type": "string",
+          "values": null,
+          "default": "'16 / 9'",
           "optional": true
         }
       ],

@@ -1,0 +1,167 @@
+/*
+ * <ino-imagecompare> — INO-489 / INO-31 B5. No literal colour except the corner-label scrim
+ * (SPEC.md §7, a deliberate documented exception) — every other declaration resolves through
+ * tokens.css.
+ *
+ * The host has no intrinsic size of its own (SPEC.md §3): it fills the consumer's inline-size
+ * and falls back to `aspect-ratio` (bound from the host's `[style.aspect-ratio]`, see the
+ * component) for block-size unless the consumer sets one directly.
+ */
+:host {
+  display: block;
+  position: relative;
+  inline-size: 100%;
+  overflow: hidden;
+  border-radius: var(--ino-radius-md);
+  outline: none;
+}
+
+.ino-imagecompare__frame {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  touch-action: none;
+  cursor: col-resize;
+}
+
+:host([data-orientation='vertical']) .ino-imagecompare__frame {
+  cursor: row-resize;
+}
+
+.ino-imagecompare__img {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* The before layer is the same full-frame image as the after layer, revealed through a
+   `clip-path: inset()` computed in the component (SPEC.md §2) rather than a shrinking wrapper —
+   a width/height-constrained wrapper would rescale the image as it shrinks instead of revealing
+   a window onto a fixed-size image underneath. */
+.ino-imagecompare__img--before {
+  z-index: 1;
+}
+
+/* Corner captions (SPEC.md §7): fixed to the frame's own corners, independent of the clip
+   boundary, on a dark scrim so they stay legible over an arbitrary photo in all 3 themes — the
+   one non-token colour pairing in this component, flagged rather than silently shipped. */
+.ino-imagecompare__label {
+  position: absolute;
+  z-index: 2;
+  padding-block: var(--ino-space-1);
+  padding-inline: var(--ino-space-2);
+  border-radius: var(--ino-radius-sm);
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: var(--ino-control-font-size-compact);
+  line-height: 1.4;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+:host([data-orientation='horizontal']) .ino-imagecompare__label--before {
+  inset-inline-start: var(--ino-space-3);
+  inset-block-start: var(--ino-space-3);
+}
+
+:host([data-orientation='horizontal']) .ino-imagecompare__label--after {
+  inset-inline-end: var(--ino-space-3);
+  inset-block-start: var(--ino-space-3);
+}
+
+:host([data-orientation='vertical']) .ino-imagecompare__label--before {
+  inset-inline-start: var(--ino-space-3);
+  inset-block-start: var(--ino-space-3);
+}
+
+:host([data-orientation='vertical']) .ino-imagecompare__label--after {
+  inset-inline-start: var(--ino-space-3);
+  inset-block-end: var(--ino-space-3);
+}
+
+/* Handle: a full-cross-axis bar at `value%` along the active axis (SPEC.md §4/§5). */
+.ino-imagecompare__handle {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ino-color-surface);
+  cursor: inherit;
+}
+
+:host([data-orientation='horizontal']) .ino-imagecompare__handle {
+  inset-block-start: 0;
+  block-size: 100%;
+  inline-size: 4px;
+  transform: translateX(-50%);
+}
+
+:host([data-orientation='vertical']) .ino-imagecompare__handle {
+  inset-inline-start: 0;
+  inline-size: 100%;
+  block-size: 4px;
+  transform: translateY(-50%);
+}
+
+.ino-imagecompare__handle:focus-visible {
+  outline: var(--ino-focus-ring);
+  outline-offset: var(--ino-focus-ring-offset);
+}
+
+.ino-imagecompare__grip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 36px;
+  block-size: 36px;
+  border-radius: var(--ino-radius-pill);
+  background: var(--ino-color-surface);
+  border: 2px solid var(--ino-color-accent);
+  box-shadow: var(--ino-shadow-lg);
+}
+
+:host([data-orientation='vertical']) .ino-imagecompare__grip {
+  transform: rotate(90deg);
+}
+
+.ino-imagecompare__handle:hover .ino-imagecompare__grip {
+  background: var(--ino-color-surface-sunken);
+}
+
+/* active (pressed) + dragging (SPEC.md §6) share the same pressed-grip look; dragging holds it
+   for the whole gesture rather than just the initial pointerdown frame. */
+.ino-imagecompare__handle:active .ino-imagecompare__grip,
+:host(.ino-imagecompare--dragging) .ino-imagecompare__grip {
+  transform: scale(0.95);
+}
+
+:host([data-orientation='vertical']) .ino-imagecompare__handle:active .ino-imagecompare__grip,
+:host([data-orientation='vertical'].ino-imagecompare--dragging) .ino-imagecompare__grip {
+  transform: rotate(90deg) scale(0.95);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ino-imagecompare__grip {
+    transition: transform var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+      background var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+  }
+}
+
+/* disabled (SPEC.md §6): handle only — the images stay fully visible, disabling a comparison
+   doesn't need to also dim the photos. */
+:host(.ino-imagecompare--disabled) .ino-imagecompare__frame {
+  cursor: default;
+}
+
+:host(.ino-imagecompare--disabled) .ino-imagecompare__grip {
+  opacity: 0.5;
+}
+
+:host(.ino-imagecompare--readonly) .ino-imagecompare__frame {
+  cursor: default;
+}

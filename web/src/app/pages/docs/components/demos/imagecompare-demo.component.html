@@ -1,0 +1,58 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Live example — horizontal (default)</h3>
+  <p class="demo-section__note">
+    Drag the handle, or Tab to it and use <kbd>←</kbd>/<kbd>→</kbd>/<kbd>Home</kbd>/<kbd>End</kbd>
+    to move it. <code>value</code> is the percent of the "before" (night) image shown.
+  </p>
+  <div class="imagecompare-stage">
+    <ino-imagecompare
+      [beforeSrc]="beforeSrc"
+      [afterSrc]="afterSrc"
+      beforeAlt="Night sky landscape"
+      afterAlt="Daytime landscape"
+      beforeLabel="Before"
+      afterLabel="After"
+      [(value)]="horizontalValue"
+    ></ino-imagecompare>
+  </div>
+  <p class="demo-live">value: {{ horizontalValue }}% before shown</p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Orientation — vertical</h3>
+  <p class="demo-section__note">
+    <code>orientation="vertical"</code> moves the handle along the block axis; the handle bar
+    becomes a full-width horizontal strip instead of a full-height vertical one.
+  </p>
+  <div class="imagecompare-stage">
+    <ino-imagecompare
+      orientation="vertical"
+      [beforeSrc]="beforeSrc"
+      [afterSrc]="afterSrc"
+      beforeAlt="Night sky landscape"
+      afterAlt="Daytime landscape"
+      beforeLabel="Before"
+      afterLabel="After"
+      [(value)]="verticalValue"
+    ></ino-imagecompare>
+  </div>
+  <p class="demo-live">value: {{ verticalValue }}% before shown</p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Disabled</h3>
+  <p class="demo-section__note">
+    The handle is not a tab stop and ignores drag/keyboard input; the images themselves stay
+    fully visible.
+  </p>
+  <div class="imagecompare-stage">
+    <ino-imagecompare
+      [beforeSrc]="beforeSrc"
+      [afterSrc]="afterSrc"
+      beforeAlt="Night sky landscape"
+      afterAlt="Daytime landscape"
+      [disabled]="true"
+      [(value)]="disabledValue"
+    ></ino-imagecompare>
+  </div>
+</section>

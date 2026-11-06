@@ -3727,6 +3727,133 @@
         ]
       }
     },
+    "imagecompare": {
+      "name": "ino-imagecompare",
+      "docPath": "docs/brand/06-angular-components/imagecompare.md",
+      "a11y": "<p><strong>Roles / ARIA</strong> — <code>div.ino-imagecompare__handle</code> is <code>role=\"slider\"</code> with <code>aria-valuemin=\"0\"</code>,\n<code>aria-valuemax=\"100\"</code>, <code>aria-valuenow\"</code> = the rounded <code>value</code>, <code>aria-orientation\"</code> = <code>orientation</code>,\n<code>aria-label</code> (from <code>ariaLabel</code>), and <code>aria-disabled</code>/<code>aria-readonly</code> when applicable. Both\n<code>&lt;img&gt;</code> layers are <code>aria-hidden</code> — the handle's <code>aria-valuetext</code> is the one accessible\ndescription of the comparison state.</p>\n<p><strong><code>aria-valuetext</code></strong> — <code>`${value}% before shown`</code>, e.g. <code>\"62% before shown\"</code>. A bare\n<code>aria-valuenow=\"62\"</code> would announce \"62\" with no unit, which is why the doc-26 row calls out\n<code>aria-valuetext</code> specifically.</p>\n<p><strong>Keyboard</strong> — <code>ArrowRight</code>/<code>ArrowUp</code> increment by <code>step</code>; <code>ArrowLeft</code>/<code>ArrowDown</code> decrement\n(not orientation-swapped — the right/up pair always increments, matching every other\nslider-shaped control in this library). <code>PageUp</code>/<code>PageDown</code> move by <code>step * 10</code>. <code>Home</code>/<code>End</code>\njump to <code>0</code>/<code>100</code>.</p>\n<p><strong>Pointer</strong> — drag the handle (pointer capture, same idiom <code>&lt;ino-slider&gt;</code>'s thumb uses), or click\nanywhere on the frame to jump the handle to that position.</p>\n<p><strong>Contrast</strong> — every colour except the corner-label scrim is a role token\n(<code>--ino-color-*</code>, <code>--ino-focus-ring</code>), AA-guaranteed by construction in all 3 themes.</p>\n",
+      "notes": "<ul>\n<li><strong>Loading/invalid/empty states</strong> — no async data source, no validity concept for a reveal\nslider.</li>\n<li><strong>A fixed dark scrim behind the corner labels</strong> — the one non-token colour pairing in this\ncomponent; flagged rather than silently shipped. (<code>SPEC.md</code> §7)</li>\n<li><strong>Lazy-loading / responsive <code>srcset</code></strong> — out of this component's <code>@Input</code> surface; a consumer\nlayering its own wrapper can add <code>loading=\"lazy\"</code> there.</li>\n<li><strong>Zoom/pan on either image</strong> — not in the §5 row; this is a reveal slider, not an image viewer.</li>\n<li><strong>A visible percent readout</strong> — the doc row asks for <code>aria-valuetext</code> (AT-facing), not a\nsighted-user-facing badge; a consumer wanting one composes it from <code>(valueChange)</code>.</li>\n<li><strong><code>ControlValueAccessor</code></strong> — not applicable; <code>value</code>/<code>valueChange</code> is a plain two-way-bindable\npair, the same shape <code>&lt;ino-slider&gt;</code>'s single-thumb mode uses.</li>\n</ul>\n",
+      "mobile": "<p><strong>Web-only by spec.</strong> The doc 26 §5 row's mobile disposition for <code>ino-imagecompare</code> is\n\"Web-only\": no React Native or Flutter port is planned, and none ships.</p>\n",
+      "api": {
+        "props": [
+          {
+            "name": "beforeSrc",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "afterSrc",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "beforeAlt",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "afterAlt",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "beforeLabel",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": "Fixed corner captions — pinned to the frame's corners, not the clip boundary (SPEC.md §7)."
+          },
+          {
+            "name": "afterLabel",
+            "type": "string",
+            "values": null,
+            "default": "''",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "orientation",
+            "type": "InoImagecompareOrientation",
+            "values": [
+              "horizontal",
+              "vertical"
+            ],
+            "default": "'horizontal'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "value",
+            "type": "number",
+            "values": null,
+            "default": "50",
+            "optional": true,
+            "description": "Percent of the \"before\" image shown, `0`–`100`. See SPEC.md §2."
+          },
+          {
+            "name": "step",
+            "type": "number",
+            "values": null,
+            "default": "1",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "readonly",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "ariaLabel",
+            "type": "string",
+            "values": null,
+            "default": "'Image comparison'",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "aspectRatio",
+            "type": "string",
+            "values": null,
+            "default": "'16 / 9'",
+            "optional": true,
+            "description": "CSS `aspect-ratio` value used while the consumer hasn't fixed the host's own block-size — see SPEC.md §3."
+          }
+        ],
+        "events": [
+          {
+            "name": "valueChange",
+            "type": "number",
+            "description": null
+          }
+        ],
+        "methods": [],
+        "templates": []
+      }
+    },
     "input": {
       "name": "ino-input",
       "docPath": "docs/brand/06-angular-components/input.md",

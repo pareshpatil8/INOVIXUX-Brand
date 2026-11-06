@@ -56,6 +56,7 @@ import { DockDemoComponent } from './demos/dock-demo.component';
 import { OrgchartDemoComponent } from './demos/orgchart-demo.component';
 import { RatingDemoComponent } from './demos/rating-demo.component';
 import { DragdropDemoComponent } from './demos/dragdrop-demo.component';
+import { ImagecompareDemoComponent } from './demos/imagecompare-demo.component';
 
 /**
  * Slug -> hand-authored demo component, for components whose §2 Component Publish Contract
@@ -290,6 +291,7 @@ export const CUSTOM_DEMOS: Record<string, Type<unknown>> = {
   // zones, over-target/dropped-flash feedback, `maxItems` capacity — is interaction-driven. See
   // `dragdrop/SPEC.md` for the full contract.
   'dragdrop': DragdropDemoComponent,
+  'imagecompare': ImagecompareDemoComponent,
   // `size` is the known type-alias-`size` gap (same as `knob`/`slider`), and the §5 row's
   // signature behaviors — hover-preview, cancelable click-to-clear, Arrow-key
   // selection-follows-focus — are interaction-driven. See `rating/SPEC.md` for the full contract.

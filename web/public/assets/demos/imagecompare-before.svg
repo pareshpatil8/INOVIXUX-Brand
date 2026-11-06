@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" width="320" height="200" role="img" aria-label="">
+  <!-- INO-489 imagecompare-demo sample ("before" layer): a night-sky variant of
+       image-sample.svg's landscape so the before/after reveal is visually obvious without a
+       network fetch. Plain hex, not tokens — same reasoning as image-sample.svg: a decorative
+       demo asset carries no brand/theme meaning of its own. -->
+  <rect width="320" height="200" fill="#0B1024"/>
+  <circle cx="256" cy="48" r="18" fill="#E6E9F5"/>
+  <circle cx="40" cy="30" r="2" fill="#E6E9F5"/>
+  <circle cx="80" cy="60" r="1.5" fill="#E6E9F5"/>
+  <circle cx="140" cy="20" r="1.5" fill="#E6E9F5"/>
+  <circle cx="200" cy="40" r="2" fill="#E6E9F5"/>
+  <path d="M0 160 L90 70 L150 130 L200 90 L320 180 L320 200 L0 200 Z" fill="#1A2440"/>
+  <path d="M0 180 L70 120 L140 170 L210 130 L320 190 L320 200 L0 200 Z" fill="#111733"/>
+</svg>
