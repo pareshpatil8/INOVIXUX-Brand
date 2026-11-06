@@ -107,7 +107,7 @@ export function InoFieldset({
       ) : null}
 
       {error ? (
-        <Text accessibilityRole="alert" style={[styles.error, { color: colors.danger }]}>
+        <Text accessibilityRole="alert" style={[styles.error, { color: colors.dangerTextSafe }]}>
           {error}
         </Text>
       ) : null}

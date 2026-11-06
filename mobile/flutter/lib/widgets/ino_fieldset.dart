@@ -133,7 +133,7 @@ class InoFieldset extends StatelessWidget {
                   padding: const EdgeInsets.only(top: InoSpace.s2),
                   child: Text(
                     error!,
-                    style: TextStyle(fontWeight: FontWeight.w600, color: colors.danger),
+                    style: TextStyle(fontWeight: FontWeight.w600, color: colors.dangerTextSafe),
                   ),
                 ),
             ],
