@@ -5,6 +5,7 @@ import { Type } from '@angular/core';
 
 import { InoAccordionComponent } from '../../../../components/accordion/ino-accordion.component';
 import { InoAlertComponent } from '../../../../components/alert/ino-alert.component';
+import { InoAnimateonscrollComponent } from '../../../../components/animateonscroll/ino-animateonscroll.component';
 import { InoAutocompleteComponent } from '../../../../components/autocomplete/ino-autocomplete.component';
 import { InoAutofocusComponent } from '../../../../components/autofocus/ino-autofocus.component';
 import { InoAvatarComponent } from '../../../../components/avatar/ino-avatar.component';
@@ -100,6 +101,7 @@ import { InoVirtualScrollerComponent } from '../../../../components/virtual-scro
 export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'accordion': InoAccordionComponent,
   'alert': InoAlertComponent,
+  'animateonscroll': InoAnimateonscrollComponent,
   'autocomplete': InoAutocompleteComponent,
   'autofocus': InoAutofocusComponent,
   'avatar': InoAvatarComponent,
