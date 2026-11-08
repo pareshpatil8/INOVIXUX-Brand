@@ -1,0 +1,132 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Two forms, one implementation — enter/leave classes</h3>
+  <p class="demo-section__note">
+    Scroll inside the box. The first card carries <code>[inoAnimateOnScroll]</code> directly; the
+    second wraps its content in <code>&lt;ino-animateonscroll&gt;</code> — same implementation via
+    <code>hostDirectives</code>, so there is nothing to compare beyond the spelling. Both animate in
+    with <code>aos-rise</code>, a keyframe animation whose <code>from</code> pose carries the
+    hidden/offset state: before the first intersection the cards are fully visible in their natural
+    CSS state, never pre-hidden. The first card also sets a leave class, <code>aos-fall</code>, so
+    it re-animates on every pass (the default, repeat mode).
+  </p>
+  <div class="demo-aos__viewport" tabindex="0" role="group" aria-label="Scroll-reveal demo: two forms">
+    <div class="demo-aos__spacer">Scroll down inside this box ↓</div>
+    <div
+      class="demo-aos__card"
+      inoAnimateOnScroll
+      inoAnimateOnScrollEnterClass="aos-rise"
+      inoAnimateOnScrollLeaveClass="aos-fall"
+      (inoAnimateOnScrollEnter)="directiveEnters.set(directiveEnters() + 1)"
+      (inoAnimateOnScrollLeave)="directiveLeaves.set(directiveLeaves() + 1)"
+    >
+      <strong>Directive form — <code>[inoAnimateOnScroll]</code></strong>
+      <span>Enter class <code>aos-rise</code>, leave class <code>aos-fall</code>: replays on every cycle.</span>
+    </div>
+    <div class="demo-aos__spacer">Keep scrolling ↓</div>
+    <ino-animateonscroll
+      class="demo-aos__card"
+      enterClass="aos-rise"
+      (enter)="elementEnters.set(elementEnters() + 1)"
+    >
+      <strong>Element form — <code>&lt;ino-animateonscroll&gt;</code></strong>
+      <span>No leave class: on leave the enter class is simply removed, re-arming the next entry.</span>
+    </ino-animateonscroll>
+    <div class="demo-aos__spacer">End of box</div>
+  </div>
+  <p class="demo-live">
+    directive enters: {{ directiveEnters() }} · directive leaves: {{ directiveLeaves() }} ·
+    element enters: {{ elementEnters() }}
+  </p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Once vs repeat — <code>inoAnimateOnScrollOnce</code></h3>
+  <p class="demo-section__note">
+    Scroll the pair out of view and back a few times. The <em>once</em> card animates on its first
+    reveal only — the observer disconnects there, the enter classes stay applied, and its counter
+    can never pass 1. The <em>repeat</em> card re-animates on every re-entry because its enter class
+    is genuinely removed on leave, which is what re-arms the CSS animation.
+  </p>
+  <div class="demo-aos__viewport" tabindex="0" role="group" aria-label="Scroll-reveal demo: once vs repeat">
+    <div class="demo-aos__spacer">Scroll down, then back up, then down again ↓</div>
+    <div class="demo-row">
+      <div
+        class="demo-aos__card demo-col"
+        inoAnimateOnScroll
+        inoAnimateOnScrollEnterClass="aos-rise"
+        inoAnimateOnScrollOnce
+        (inoAnimateOnScrollEnter)="onceEnters.set(onceEnters() + 1)"
+      >
+        <strong>Once</strong>
+        <span><code>inoAnimateOnScrollOnce</code>: first reveal only, then the observer disconnects.</span>
+      </div>
+      <div
+        class="demo-aos__card demo-col"
+        inoAnimateOnScroll
+        inoAnimateOnScrollEnterClass="aos-rise"
+        (inoAnimateOnScrollEnter)="repeatEnters.set(repeatEnters() + 1)"
+      >
+        <strong>Repeat (default)</strong>
+        <span>Re-animates on every enter/leave cycle.</span>
+      </div>
+    </div>
+    <div class="demo-aos__spacer">End of box</div>
+  </div>
+  <p class="demo-live">once enters: {{ onceEnters() }} · repeat enters: {{ repeatEnters() }}</p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Threshold — <code>inoAnimateOnScrollThreshold</code></h3>
+  <p class="demo-section__note">
+    Scroll slowly. The left card fires at threshold <code>0.15</code> — as soon as a meaningful
+    sliver is inside the box. The right card waits for <code>0.9</code>: nine tenths of it must be
+    visible before its enter fires, so it animates noticeably later on the same scroll.
+    <code>inoAnimateOnScrollRootMargin</code> shifts the same boundary geometrically instead —
+    a positive margin starts the animation before the element arrives, a negative one delays it
+    until the element is well inside.
+  </p>
+  <div class="demo-aos__viewport" tabindex="0" role="group" aria-label="Scroll-reveal demo: threshold">
+    <div class="demo-aos__spacer">Scroll down slowly ↓</div>
+    <div class="demo-row">
+      <div
+        class="demo-aos__card demo-col"
+        inoAnimateOnScroll
+        inoAnimateOnScrollEnterClass="aos-rise"
+        inoAnimateOnScrollLeaveClass="aos-fall"
+        [inoAnimateOnScrollThreshold]="0.15"
+        (inoAnimateOnScrollEnter)="sliverEnters.set(sliverEnters() + 1)"
+      >
+        <strong>threshold 0.15</strong>
+        <span>Fires on the first sliver.</span>
+      </div>
+      <div
+        class="demo-aos__card demo-col"
+        inoAnimateOnScroll
+        inoAnimateOnScrollEnterClass="aos-rise"
+        inoAnimateOnScrollLeaveClass="aos-fall"
+        [inoAnimateOnScrollThreshold]="0.9"
+        (inoAnimateOnScrollEnter)="fullEnters.set(fullEnters() + 1)"
+      >
+        <strong>threshold 0.9</strong>
+        <span>Waits until almost fully visible.</span>
+      </div>
+    </div>
+    <div class="demo-aos__spacer">End of box</div>
+  </div>
+  <p class="demo-live">0.15 enters: {{ sliverEnters() }} · 0.9 enters: {{ fullEnters() }}</p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Reduced motion</h3>
+  <p class="demo-section__note">
+    Under <code>prefers-reduced-motion: reduce</code> the directive applies no class and emits no
+    event — the preference is re-read at every observer callback, so flipping the OS setting
+    mid-session takes effect on the next scroll without a reload. Because the cards above are never
+    pre-hidden, a reduced-motion visitor simply sees them, static, exactly where they would have
+    animated to — and every counter on this page holds still, demonstrating that events and classes
+    can never disagree. Flip the OS setting and scroll the boxes above to verify.
+  </p>
+  <p class="demo-live">
+    prefers-reduced-motion on this visit: {{ reducedMotion ? 'reduce' : 'no-preference' }}
+  </p>
+</section>
