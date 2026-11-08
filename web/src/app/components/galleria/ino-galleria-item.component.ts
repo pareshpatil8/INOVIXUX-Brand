@@ -1,8 +1,10 @@
 import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'ino-galleria-item',
   standalone: true,
+  imports: [CommonModule],
   template: `
     <img [src]="src" [alt]="alt" class="ino-galleria-item__image" />
     <div class="ino-galleria-item__caption" *ngIf="caption">{{ caption }}</div>

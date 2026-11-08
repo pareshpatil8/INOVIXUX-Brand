@@ -133,6 +133,11 @@ Both densities ship in all three color themes (dark/light/high-contrast) and are
 `check-theme-parity`. The `size` input (`sm`/`default`/`lg`) affects the stage's minimum height
 for responsive layouts.
 
+Density is read from the nearest ancestor's `[data-density]` attribute via `:host-context()`
+(the same idiom `ino-badge`/`ino-paginator`/`ino-select-button-option` use for ancestor reads),
+not a component `@Input()` — matching `ino-toolbar`'s documented convention. Set `[data-density]`
+on a container (e.g. `<body>` or a feature root), not on `<ino-galleria>` itself.
+
 ---
 
 ## 11. Stage sizing is "stage scales," not "item scales"

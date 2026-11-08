@@ -255,6 +255,11 @@ $border-color: var(--ino-color-surface-raised);
       opacity: 1;
     }
   }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 }
 
 .ino-galleria__indicators {
@@ -287,6 +292,11 @@ $border-color: var(--ino-color-surface-raised);
   &.ino-galleria__indicator--active {
     background: var(--ino-color-accent);
     transform: scale(1.2);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 }
 
@@ -405,8 +415,11 @@ $border-color: var(--ino-color-surface-raised);
   right: var(--ino-space-3);
 }
 
-// Density variants
-:host([data-density='dense']) {
+// Density variants — read from the nearest ancestor's [data-density], the same
+// `:host-context()` idiom ino-badge/ino-paginator/ino-select-button-option use (INO-926):
+// `:host([data-density=...])` only matches the attribute on <ino-galleria> itself, which
+// nothing ever sets, so this block was unreachable as written.
+:host-context([data-density='dense']) {
   .ino-galleria__control-btn {
     width: 36px;
     height: 36px;
@@ -422,7 +435,7 @@ $border-color: var(--ino-color-surface-raised);
   }
 }
 
-:host([data-density='fluid']) {
+:host-context([data-density='fluid']) {
   .ino-galleria__control-btn {
     width: 48px;
     height: 48px;

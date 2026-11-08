@@ -20,12 +20,13 @@ import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 
 import { InoControlSize } from '../control-size';
+import { InoFocusTrapDirective } from '../focus-trap/ino-focus-trap.directive';
 import { InoGalleriaItemComponent } from './ino-galleria-item.component';
 
 @Component({
   selector: 'ino-galleria',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, InoFocusTrapDirective],
   templateUrl: './ino-galleria.component.html',
   styleUrl: './ino-galleria.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -37,6 +38,8 @@ import { InoGalleriaItemComponent } from './ino-galleria-item.component';
     '[attr.data-size]': 'size',
     '[attr.data-loading]': 'loading || null',
     '[attr.data-playing]': 'playing || null',
+    '[attr.data-disabled]': 'disabled || null',
+    '[attr.aria-disabled]': 'disabled || null',
   },
 })
 export class InoGalleriaComponent implements AfterContentInit, OnChanges, OnDestroy {
@@ -47,6 +50,7 @@ export class InoGalleriaComponent implements AfterContentInit, OnChanges, OnDest
   @Input({ transform: booleanAttribute }) showIndicators = true;
   @Input({ transform: booleanAttribute }) showFullscreen = true;
   @Input({ transform: booleanAttribute }) loading = false;
+  @Input({ transform: booleanAttribute }) disabled = false;
   @Input() ariaLabel = 'Gallery';
   @Input({ transform: numberAttribute }) activeIndex?: number;
 
@@ -119,6 +123,9 @@ export class InoGalleriaComponent implements AfterContentInit, OnChanges, OnDest
   }
 
   protected goTo(index: number): void {
+    if (this.disabled) {
+      return;
+    }
     const clamped = this.clampIndex(index);
     if (clamped === this.activeIdx) {
       return;
@@ -197,6 +204,9 @@ export class InoGalleriaComponent implements AfterContentInit, OnChanges, OnDest
   }
 
   protected onKeydown(event: KeyboardEvent): void {
+    if (this.disabled) {
+      return;
+    }
     const rtl = this.isRtl();
     const forwardKey = 'ArrowRight';
     const backwardKey = 'ArrowLeft';
