@@ -1,0 +1,9 @@
+// Behaviour, not surface — no colour, spacing, radius, elevation, duration or type to
+// contribute; the caller's enter/leave classes own every visual. `display: block` (not
+// `contents`) for the same reason `<ino-autofocus>` records: `contents` removes the host from
+// layout, and this host is exactly what IntersectionObserver measures and what the enter/leave
+// classes animate — it must be a real box. There are no theme branches here and nothing for
+// `check-theme-parity.mjs` to resolve.
+:host {
+  display: block;
+}
