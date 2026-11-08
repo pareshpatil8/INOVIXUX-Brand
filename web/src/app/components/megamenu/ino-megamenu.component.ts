@@ -1,4 +1,14 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, booleanAttribute } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Injector,
+  Input,
+  Output,
+  afterNextRender,
+  booleanAttribute,
+  inject,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
@@ -29,6 +39,8 @@ import { InoMegaMenuColumn, InoMegaMenuItem, InoMegaMenuLink } from './ino-megam
   },
 })
 export class InoMegaMenuComponent {
+  private readonly injector = inject(Injector);
+
   @Input() items: InoMegaMenuItem[] = [];
   /** Accessible name for the `menubar` — the spec row's "menubar label". */
   @Input() ariaLabel = 'Main menu';
@@ -176,6 +188,15 @@ export class InoMegaMenuComponent {
     }
   }
 
+  /** Closes any open panel without returning focus — used when bar navigation (arrow/Home/End)
+   * is about to move focus to a different trigger, so a panel opened on the trigger being left
+   * does not stay open with nothing focused inside it (see SPEC.md keyboard map). */
+  private closeOpenPanel(): void {
+    if (this.openIndex !== null) {
+      this.closePanel(false);
+    }
+  }
+
   /** Closes the panel when focus leaves the panel container entirely (click/Tab-out). */
   protected onPanelFocusOut(event: FocusEvent): void {
     const next = event.relatedTarget as HTMLElement | null;
@@ -203,6 +224,7 @@ export class InoMegaMenuComponent {
       const pos = navigable.indexOf(index);
       const delta = event.key === axis.next ? 1 : -1;
       const nextPos = (pos + delta + navigable.length) % navigable.length;
+      this.closeOpenPanel();
       this.focusedIndex = navigable[nextPos];
       queueMicrotask(() => document.getElementById(this.triggerId(this.focusedIndex))?.focus());
       return;
@@ -210,6 +232,7 @@ export class InoMegaMenuComponent {
 
     if (event.key === 'Home') {
       event.preventDefault();
+      this.closeOpenPanel();
       this.focusedIndex = navigable[0] ?? 0;
       queueMicrotask(() => document.getElementById(this.triggerId(this.focusedIndex))?.focus());
       return;
@@ -217,6 +240,7 @@ export class InoMegaMenuComponent {
 
     if (event.key === 'End') {
       event.preventDefault();
+      this.closeOpenPanel();
       this.focusedIndex = navigable[navigable.length - 1] ?? 0;
       queueMicrotask(() => document.getElementById(this.triggerId(this.focusedIndex))?.focus());
       return;
@@ -225,7 +249,7 @@ export class InoMegaMenuComponent {
     if ((event.key === this.panelOpenKey() || event.key === 'Enter' || event.key === ' ') && this.hasPanel(item) && !item.disabled) {
       event.preventDefault();
       this.openPanelAndFocus(index, 0, 0);
-      queueMicrotask(() => this.focusPanelCell(index, 0, 0));
+      this.focusPanelCellAfterOpen(index, 0, 0);
       return;
     }
 
@@ -237,6 +261,15 @@ export class InoMegaMenuComponent {
 
   private focusPanelCell(triggerIndex: number, column: number, row: number): void {
     document.getElementById(`${this.panelId(triggerIndex)}-${column}-${row}`)?.focus();
+  }
+
+  /** Focuses a panel cell that is opening on this same tick — the panel's `*ngIf` DOM node does
+   * not exist yet, and under zoneless change detection a bare `queueMicrotask` can run before
+   * Angular's own render flush creates it. `afterNextRender` waits for that render instead of
+   * racing it. Already-rendered panel cells (arrow/Home/End navigation within an open panel) use
+   * `queueMicrotask` as before since no race exists there. */
+  private focusPanelCellAfterOpen(triggerIndex: number, column: number, row: number): void {
+    afterNextRender(() => this.focusPanelCell(triggerIndex, column, row), { injector: this.injector });
   }
 
   protected onPanelKeydown(event: KeyboardEvent, triggerIndex: number, columns: InoMegaMenuColumn[]): void {
@@ -296,7 +329,7 @@ export class InoMegaMenuComponent {
       const nextItem = this.items[nextTrigger];
       if (this.hasPanel(nextItem)) {
         this.openPanelAndFocus(nextTrigger, 0, 0);
-        queueMicrotask(() => this.focusPanelCell(nextTrigger, 0, 0));
+        this.focusPanelCellAfterOpen(nextTrigger, 0, 0);
       } else {
         this.closePanel(true);
         this.focusedIndex = nextTrigger;

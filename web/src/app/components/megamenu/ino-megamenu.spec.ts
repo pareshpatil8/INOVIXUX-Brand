@@ -193,6 +193,50 @@ describe('InoMegaMenuComponent', () => {
     expect(fixture.nativeElement.querySelectorAll('.ino-megamenu__link--inert').length).toBe(3);
   });
 
+  it('moves focus to the first panel link on ArrowDown (INO-931)', async () => {
+    fixture.componentRef.setInput('items', items);
+    fixture.detectChanges();
+
+    const trigger = focusedTrigger();
+    trigger.focus();
+    trigger.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(trigger.getAttribute('aria-expanded')).toBe('true');
+    expect(fixture.nativeElement.ownerDocument.activeElement).toBe(panelLinks()[0]);
+  });
+
+  it('moves focus to the first panel link on Enter and Space (INO-931)', async () => {
+    for (const key of ['Enter', ' ']) {
+      fixture.componentRef.setInput('items', items);
+      fixture.detectChanges();
+
+      const trigger = focusedTrigger();
+      trigger.focus();
+      trigger.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true }));
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      expect(fixture.nativeElement.ownerDocument.activeElement).toBe(panelLinks()[0]);
+    }
+  });
+
+  it('closes an open panel instead of leaving it stranded when roving to the next trigger (INO-931)', () => {
+    fixture.componentRef.setInput('items', items);
+    fixture.detectChanges();
+
+    triggers()[0].click();
+    fixture.detectChanges();
+    expect(triggers()[0].getAttribute('aria-expanded')).toBe('true');
+
+    focusedTrigger().dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    fixture.detectChanges();
+
+    expect(triggers()[0].getAttribute('aria-expanded')).toBe('false');
+    expect(fixture.nativeElement.querySelector('.ino-megamenu__panel')).toBeNull();
+  });
+
   it('renders a loading skeleton instead of items', () => {
     fixture.componentRef.setInput('items', items);
     fixture.componentRef.setInput('loading', true);
