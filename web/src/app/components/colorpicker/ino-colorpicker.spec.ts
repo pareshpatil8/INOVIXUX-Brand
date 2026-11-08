@@ -74,6 +74,8 @@ describe('InoColorPickerComponent', () => {
   it('does not emit valueChange on SB-panel pointermove (drag), only on pointerup (commit)', () => {
     const emitted: (string | null)[] = [];
     component.valueChange.subscribe((v) => emitted.push(v));
+    component.toggleOpen();
+    fixture.detectChanges();
     const panel = sbPanel(fixture);
     Object.defineProperty(panel, 'getBoundingClientRect', {
       value: () => ({ left: 0, top: 0, width: 200, height: 200, right: 200, bottom: 200 }),
@@ -95,6 +97,8 @@ describe('InoColorPickerComponent', () => {
   it('hue bar keyboard ArrowRight/End adjust and commit immediately', () => {
     const emitted: (string | null)[] = [];
     component.valueChange.subscribe((v) => emitted.push(v));
+    component.toggleOpen();
+    fixture.detectChanges();
     const bar = hueBar(fixture);
 
     bar.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight' }));
@@ -151,6 +155,29 @@ describe('InoColorPickerComponent', () => {
 
   it('disabled suppresses pointer/keyboard interaction on the hue bar', () => {
     component.disabled = true;
+    fixture.detectChanges();
+    // toggleOpen() no-ops while disabled; open the panel directly to reach the hue bar.
+    component.openPanel();
+    fixture.detectChanges();
+    const emitted: (string | null)[] = [];
+    component.valueChange.subscribe((v) => emitted.push(v));
+    const bar = hueBar(fixture);
+    bar.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight' }));
+    expect(emitted.length).toBe(0);
+  });
+
+  it('readonly applies the host class (visual cursor treatment hook), keeps the swatch focusable, and suppresses keyboard interaction', () => {
+    fixture.componentRef.setInput('readonly', true);
+    fixture.detectChanges();
+
+    const host = fixture.nativeElement as HTMLElement;
+    expect(host.classList.contains('ino-colorpicker--readonly')).toBe(true);
+
+    const swatch = host.querySelector('.ino-colorpicker__swatch') as HTMLButtonElement;
+    expect(swatch.disabled).toBe(false);
+
+    // toggleOpen() no-ops while readonly; open the panel directly to reach the hue bar.
+    component.openPanel();
     fixture.detectChanges();
     const emitted: (string | null)[] = [];
     component.valueChange.subscribe((v) => emitted.push(v));

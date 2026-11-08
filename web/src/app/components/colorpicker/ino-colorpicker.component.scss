@@ -302,6 +302,18 @@
   opacity: 0.5;
 }
 
+/* Readonly — mirrors ino-slider's pattern (ino-slider.component.scss): no opacity change (the
+   value must stay fully legible), just drop the interactive cursor affordance on every draggable
+   surface plus the swatch trigger. The swatch stays `[disabled]="disabled"`-only in the template
+   (not `disabled || readonly`) so it keeps focus/AT-announcement like other readonly form fields
+   (SPEC.md §9 / docs checklist row 8). */
+:host(.ino-colorpicker--readonly) .ino-colorpicker__swatch,
+:host(.ino-colorpicker--readonly) .ino-colorpicker__sb-panel,
+:host(.ino-colorpicker--readonly) .ino-colorpicker__hue-bar,
+:host(.ino-colorpicker--readonly) .ino-colorpicker__alpha-bar {
+  cursor: default;
+}
+
 .ino-colorpicker__sr-status {
   position: absolute;
   inline-size: 1px;
