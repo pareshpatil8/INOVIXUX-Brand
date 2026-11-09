@@ -8,3 +8,4 @@ node_modules/
 # artifacts instead.
 web/e2e-results/
 web/e2e-report/
+.claude/settings.local.json
