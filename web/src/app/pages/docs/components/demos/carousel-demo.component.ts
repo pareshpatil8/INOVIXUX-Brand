@@ -68,6 +68,28 @@ import { InoCarouselItemComponent } from '../../../../components/carousel/ino-ca
     </div>
 
     <div class="demo-section">
+      <h3 class="demo-heading">Density (dense/fluid via data-density)</h3>
+      <p class="demo-note">
+        Density is the global <code>[data-density]</code> cascade, not a carousel input — the row
+        height floors rather than shrinks below the 32px control row in dense mode.
+      </p>
+      <div class="demo-size-row">
+        <div data-density="dense">
+          <span class="demo-size-label">dense</span>
+          <ino-carousel ariaLabel="Dense density carousel" [visibleCount]="3">
+            <ino-carousel-item *ngFor="let slide of slides" class="demo-slide">{{ slide }}</ino-carousel-item>
+          </ino-carousel>
+        </div>
+        <div data-density="fluid">
+          <span class="demo-size-label">fluid</span>
+          <ino-carousel ariaLabel="Fluid density carousel" [visibleCount]="3">
+            <ino-carousel-item *ngFor="let slide of slides" class="demo-slide">{{ slide }}</ino-carousel-item>
+          </ino-carousel>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo-section">
       <h3 class="demo-heading">Controlled (externally driven activeIndex)</h3>
       <p class="demo-note">Current slide: {{ controlledIndex + 1 }} of {{ slides.length }}</p>
       <ino-carousel
@@ -147,6 +169,12 @@ import { InoCarouselItemComponent } from '../../../../components/carousel/ino-ca
         flex-shrink: 0;
         font-size: var(--ino-font-size-sm);
         color: var(--ino-color-on-surface-muted);
+      }
+
+      .demo-size-row > [data-density] {
+        display: flex;
+        flex-direction: column;
+        gap: var(--ino-space-2);
       }
     `,
   ],
