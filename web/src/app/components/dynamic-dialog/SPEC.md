@@ -77,7 +77,7 @@ opening the new one. Stacking a dynamic dialog over another *is* still possible 
 caller from opening a declarative `<ino-modal>` or `<ino-confirm-dialog>` on top of a dynamic one,
 and `[inoFocusTrap]`'s trap stack (focus-trap/SPEC.md) handles that by DOM order regardless of
 which API opened which panel — but two *dynamic* dialogs stacked on each other is out of scope for
-this "minimal UI" API layer. The stale-`closeFn` id guard (`ino-dynamic-dialog.service.ts`) exists
+this "minimal UI" API layer. The stale-`closeFn` id guard (`web/src/app/services/dynamic-dialog.service.ts`) exists
 so a superseded dialog's async close handler, if one is still in flight, can never resolve or tear
 down the dialog that replaced it.
 
@@ -128,6 +128,6 @@ above). `<p-dynamicDialog>` (the mount-once host) → `<ino-dynamic-dialog>`.
 | `ng build` (web) | ✅ passes |
 | `node scripts/check-theme-parity.mjs` | ✅ passes (unmodified — no new colour role; the component has no stylesheet) |
 | `node scripts/check-ds-adherence.mjs --json`, filtered to `components/dynamic-dialog/` | ✅ zero violations |
-| Unit test | `ino-dynamic-dialog.service.spec.ts` — `open()`/`close()` resolves `onClose` with the given result; unresolved `open()` superseded by a second `open()` resolves the first with `undefined`; a stale `close()` call from an already-superseded entry is a no-op (doesn't resolve or affect the new entry); `dismiss()` with nothing open is a no-op |
+| Unit test | `web/src/app/services/dynamic-dialog.service.spec.ts` — `open()`/`close()` resolves `onClose` with the given result; unresolved `open()` superseded by a second `open()` resolves the first with `undefined`; a stale `close()` call from an already-superseded entry is a no-op (doesn't resolve or affect the new entry); `dismiss()` with nothing open is a no-op |
 | Hardcoded colour/space/radius/duration/font-size | none — no stylesheet (§1) |
 | `[data-theme]` branch in the component | none |

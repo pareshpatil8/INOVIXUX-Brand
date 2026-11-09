@@ -132,7 +132,7 @@ attribute directive, but both have an idiomatic non-visual "reject this keystrok
   handler (same single-character, non-composing guard as web — RN's `onKeyPress` fires per native
   key on both platforms) plus an `onChangeText` guard for IME-composed/autocomplete-inserted text
   that never produced a `onKeyPress` call. `mobile/react-native/src/components/InoKeyfilter.ts`
-  (no JSX, so `.ts` not `.tsx`, matching `keyfilter-presets.ts`'s own split from the directive).
+  (no JSX, so .ts not .tsx, matching `keyfilter-presets.ts`'s own split from the directive).
 
 Both ports share the exact same preset semantics as `keyfilter-presets.ts` (leading `-`, single
 `.`, the ASCII alpha/alphanum classes) — re-implemented per-platform rather than imported, since

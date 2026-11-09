@@ -153,8 +153,8 @@ primitive to carry the same behaviour:
   that calls `ref.current?.focus()` on mount and again whenever `options.trigger` changes — the
   same route-change mechanism as the web directive's `inoAutofocusTrigger`, since React Navigation
   reuses screen instances across param-only navigations exactly the way Angular's `Router` reuses
-  component instances. `mobile/react-native/src/components/InoAutofocus.ts` (no JSX, so `.ts` not
-  `.tsx`, matching `InoKeyfilter.ts`'s own split from a widget).
+  component instances. `mobile/react-native/src/components/InoAutofocus.ts` (no JSX, so .ts not
+  .tsx, matching `InoKeyfilter.ts`'s own split from a widget).
 - **Flutter**: `InoAutofocus`, a small `StatefulWidget` wrapping a `FocusNode` and a `child`
   builder, requesting focus in `initState` and again in `didUpdateWidget` when a `trigger` value
   changes. Flutter's own `autofocus: true` property (already used by `ino_input.dart` and others)

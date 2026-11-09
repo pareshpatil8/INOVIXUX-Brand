@@ -35,7 +35,7 @@
  */
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
-import { relative, join, dirname, basename } from 'node:path';
+import { relative, join, dirname, basename, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
@@ -147,8 +147,12 @@ function resolves(candidate, specFile) {
   if (candidate.includes('…') || candidate.includes('...')) return resolvesElided(candidate);
   if (fileSet.has(candidate)) return true;                                   // repo-relative
   const dir = dirname(specFile);
-  if (fileSet.has(`${dir}/${candidate}`)) return true;                       // same directory
-  if (fileSet.has(`${dirname(dir)}/${candidate}`)) return true;              // sibling component
+  if (fileSet.has(`${dir}/${candidate}`)) return true;                       // same directory (bare name)
+  if (fileSet.has(`${dirname(dir)}/${candidate}`)) return true;              // sibling component (bare name)
+  if (candidate.startsWith('./') || candidate.startsWith('../')) {
+    const normalized = normalize(join(dir, candidate)).split('\\').join('/');
+    if (fileSet.has(normalized)) return true;                                // explicit ./ or ../ relative to this SPEC
+  }
   if (!candidate.includes('/') && byBasename.has(candidate)) return true;    // bare filename
   return false;
 }

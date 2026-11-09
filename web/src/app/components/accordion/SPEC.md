@@ -174,9 +174,10 @@ matches `<ino-panel>`'s chevron treatment.
   `accessibilityState={{ expanded, disabled }}`, `accessibilityRole="button"` on the header;
   no heading wrapper in RN (heading semantics are not portable). Roving tabindex is not ported
   (RN has no tabindex concept); keyboard navigation is omitted (mobile is touch-first).
-- **Flutter** — `mobile/flutter/lib/widgets/ino_accordion.dart` (container),
-  `ino_accordion_tab.dart` (tab). Uses `GestureDetector` + `Semantics(button: true, expanded: ...)`,
-  same "no heading wrapper, no roving tabindex" scope as RN.
+- **Flutter** — `mobile/flutter/lib/widgets/ino_accordion.dart` (both `InoAccordion`, the
+  container, and `InoAccordionTab`, the tab, live in this one file). Uses `GestureDetector` +
+  `Semantics(button: true, expanded: ...)`, same "no heading wrapper, no roving tabindex" scope
+  as RN.
 - **Capacitor** — not a separate port; the same Angular component/CSS renders inside the Capacitor
   WebView, same "Capacitor is not a port" call every other B2 component makes.
 

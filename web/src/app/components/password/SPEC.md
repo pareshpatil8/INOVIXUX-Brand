@@ -33,7 +33,7 @@ an opt-in extra) renders a 4-segment bar plus a text label (`Too weak`/`Weak`/`F
 is announced as the user types, without the mid-keystroke interruption `aria-live="assertive"`
 would cause.
 
-Score is a fixed built-in heuristic (`scorePassword` in the `.ts` file) — length ≥ 8, upper+lower
+Score is a fixed built-in heuristic (`scorePassword` in `ino-password.component.ts`) — length ≥ 8, upper+lower
 case present, a digit present, a symbol present, plus a length ≥ 12 bonus, capped at 4 — not
 pluggable. This is deliberately **not** the same mechanism as `policyRules` (§3): the meter is one
 opinionated coarse signal, the policy panel is the place a caller states actual requirements. A
@@ -142,7 +142,7 @@ for this issue.
 Touches only `web/src/app/components/password/**`,
 `mobile/react-native/src/components/InoPassword.tsx`,
 `mobile/flutter/lib/widgets/ino_password.dart`, this issue's docs page + preview
-(`docs/brand/06-angular-components/password.md`, `previews/password.html`), the generated
+(`docs/brand/06-angular-components/password.md`, `docs/brand/06-angular-components/previews/password.html`), the generated
 `component-registry.ts` / `design-system.manifest.json` / `web/public/design-system/manifest.json`
 / `_ds_manifest.json` (all regenerated via their own scripts, never hand-edited). No change to
 `web/src/tokens.css` — every value this component needed already existed (`--ino-color-warning`

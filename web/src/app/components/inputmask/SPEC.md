@@ -146,7 +146,7 @@ Both ports carry the incomplete/invalid visual states and the format description
 Touches only `web/src/app/components/inputmask/**`,
 `mobile/react-native/src/components/InoInputMask.tsx`,
 `mobile/flutter/lib/widgets/ino_inputmask.dart`, this issue's docs page + preview
-(`docs/brand/06-angular-components/inputmask.md`, `previews/inputmask.html`), and the generated
+(`docs/brand/06-angular-components/inputmask.md`, `docs/brand/06-angular-components/previews/inputmask.html`), and the generated
 `design-system.manifest.json` / `web/public/design-system/manifest.json` /
 `component-docs-extract.json` (all regenerated via their own scripts, never hand-edited). No
 change to `web/src/tokens.css` — every value this component needed already existed.
