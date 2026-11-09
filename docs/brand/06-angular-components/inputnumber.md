@@ -28,6 +28,20 @@ states, and full APG spinbutton semantics.
 
 ---
 
+## Labels and fields
+
+| Field | Input | Rendered as | Notes |
+|---|---|---|---|
+| Label | `label="..."` | `<ino-label>` with `for` pointing to the input's `id` | Associates the label with the spinbutton for screen readers |
+| Required marker | `required={true}` | Asterisk appended to the label | Rendered by `<ino-label>` when `required` is true |
+| Hint text | `hint="..."` | Muted caption below the input | Always visible, descriptive guidance |
+| Error text | `error="..."` | `<p role="alert">` below the input, `--ino-color-danger-text-safe` | Sets `aria-invalid="true"` and `aria-describedby` on the input |
+
+All label/field text reads `--ino-color-on-surface` (label), `--ino-color-on-surface-muted` (hint),
+or `--ino-color-danger-text-safe` (error) — audited by `check-theme-parity` across all three themes.
+
+---
+
 ## Formatting modes
 
 Three modes control how the value is **formatted for display** (not how it is stored):

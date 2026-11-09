@@ -38,6 +38,12 @@ trade-off. Full reasoning: `SPEC.md` §3.
 label mid-way down a vertical rule in either the PrimeNG benchmark or Material's divider). Full
 reasoning: `SPEC.md` §1.
 
+### States
+
+This component is presentational and has no interactive state. There is no `:hover`, `:focus-visible`,
+`:active`, `:disabled`, `:readonly`, or `:invalid` treatment — the component is not focusable and
+never changes appearance beyond the statically configured `thickness` and `orientation`.
+
 ---
 
 ## Accessibility contract

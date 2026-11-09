@@ -54,6 +54,27 @@ ino-dock
             └── .ino-dock__label       tooltip-style visible label, hover/focus-within only
 ```
 
+## Sizing
+
+`size: 'sm' | 'md' | 'lg'` (default `'md'`) — deliberately **not** the shared `InoControlSize`
+union (`'sm' | 'default' | 'lg'`) the form controls use, and deliberately **density-immune**.
+
+| `size` | Button diameter | Icon font size |
+|---|---|---|
+| `sm` | 36px | 16px |
+| `md` (default) | 44px | `--ino-control-icon-size-default` (20px) |
+| `lg` | 52px | `--ino-control-icon-size-lg` (24px) |
+
+The diameters are fixed px literals, not `--ino-control-height-*` lookups. They match the **fluid**
+control-height scale's own numbers, so a dock keeps the same geometry in the dense register that
+the docs portal renders in — density describes form-row rhythm, and a floating icon strip is not a
+form row. Driving them from tokens would shrink the `sm` rung to 28px under dense, which is wrong
+for a dock. This is the same idiom `<ino-speeddial>` documents for its FAB diameters. Full
+reasoning: `SPEC.md` §3.
+
+`size` is applied as `data-size` on the host, so the scale is a pure CSS concern with no
+per-size template branch.
+
 ## States
 
 | State | Behavior |

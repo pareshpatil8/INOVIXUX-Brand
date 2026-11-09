@@ -154,7 +154,7 @@ Full contract: `SPEC.md` §9.
 
 ---
 
-## Deliberate omissions and PrimeNG mapping
+## Deliberate omissions
 
 - **Animated transition on programmatic value changes.** Thumb position updates immediately; no
   eased transition when `value` is set from outside. Drag/keyboard interaction is already
@@ -163,8 +163,8 @@ Full contract: `SPEC.md` §9.
 - **Custom (non-uniform) step arrays.** `step` is a single uniform number; PrimeNG's `Slider`
   doesn't support this either, noted for completeness.
 
-PrimeNG `Slider` → `ino-slider`; single/range, horizontal/vertical, step, min/max are all covered.
-Full table: `SPEC.md` §10.
+**PrimeNG mapping:** PrimeNG `Slider` → `ino-slider`; single/range, horizontal/vertical, step,
+min/max are all covered. Full table: `SPEC.md` §10.
 
 ---
 

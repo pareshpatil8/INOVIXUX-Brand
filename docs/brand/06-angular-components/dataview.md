@@ -61,6 +61,32 @@ Grid gap rebinds from the existing `--ino-control-padding-inline-sm`/`-default`/
 
 ---
 
+## Labels and fields
+
+`<ino-dataview>` takes a `label`, but it is **not a form field** — the `label` is the region's
+visible caption (the "list label" doc 26 §5 calls for, the role a table caption plays), not a
+control label. So the §2.4 form-field furniture does not apply here, and that is a deliberate
+contract rather than an omission:
+
+| §2.4 element | Applies? | Why |
+|---|---|---|
+| Visible label | **Yes** — `label="..."` | Rendered as `<span class="ino-dataview__label">` in the header row, alongside the layout switcher |
+| Required marker | No | There is nothing to fill in. A data view presents rows; it collects no value, so "required" has no meaning |
+| Help / hint text | No | Guidance belongs to whatever form or page owns the view, not to the region caption |
+| Error text | No | The component has no validity state. The nearest things are the empty state (`emptyMessage` / the `inoDataViewEmpty` slot) and `loading`, both documented under States |
+
+**Naming resolution** — exactly one accessible name is applied, never both:
+
+| `label` | Result on the list region |
+|---|---|
+| Set | `aria-labelledby` points at the caption's generated id; `aria-label` is left off, so the visible text and the accessible name cannot drift apart |
+| Empty (default) | `aria-label` falls back to `ariaLabel` (default `"Data view"`); no caption is rendered |
+
+The header row renders only when `label` or `showLayoutSwitcher` is set, so a captionless view with
+the switcher hidden adds no empty chrome.
+
+---
+
 ## Variants
 
 | Named in the issue | Shipped | Surface |

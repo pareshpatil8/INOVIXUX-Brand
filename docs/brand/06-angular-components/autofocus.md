@@ -73,6 +73,33 @@ dialog-adjacent fields outside a trap, prefilled forms) need.
 
 ---
 
+## States
+
+The directive has **no visual state of its own**. It renders nothing, owns no host styling, and
+adds no class or attribute that CSS could key off — so there is no `default`, `:hover`,
+`:focus-visible`, `:active`, `:disabled`, `:readonly` or `:invalid` treatment to document. Any
+state you see after it runs belongs to the element it focused, which keeps its own `:focus-visible`
+ring from that component's contract.
+
+What it has instead is **activation behaviour**:
+
+| Condition | Behaviour |
+|---|---|
+| `inoAutofocus` is `true` (default) on init | Resolves the target and focuses it once, deferred a microtask so projected content and `@if` branches are laid out first |
+| `inoAutofocus` is `false` | Inert — no focus call, no side effect. Re-checked inside the deferred callback too, so flipping it off in the same tick cancels the pending focus |
+| Any bound input changes after the first activation | Re-runs placement. `inoAutofocusTrigger` is the input that exists purely to drive this; `ngOnInit` owns the first activation, so a trigger present from the start does not double-focus |
+| `focusNow()` called | Same placement, run imperatively for a re-run that isn't a bound-input change (an async response callback) |
+| Host is inside `[inoFocusTrap]` / `<ino-focus-trap>` | **Stands down entirely** — the trap owns initial focus. This is a guard, not a race; see the Accessibility contract below |
+| `inoAutofocusTarget` omitted | Focuses the host if the host is itself focusable, else its first focusable descendant |
+| `inoAutofocusTarget` set but matching nothing focusable | Focuses **nothing** — there is no fallback to the host in this branch, on the grounds that an explicit selector is a statement of intent and silently focusing something else would be worse than focusing nothing. Never throws |
+| `inoAutofocusPreventScroll` is `true` | Focuses with `{ preventScroll: true }`, so the page does not jump to the target |
+
+Because focus placement is a one-shot mechanism rather than a rendered state, the `disabled`
+question lands on the *target*: `isFocusable()` screens disabled elements out during resolution, so
+a disabled target resolves to `null` rather than being focused.
+
+---
+
 ## Accessibility contract
 
 **Role / ARIA.** None of its own — a mechanism, not content.
