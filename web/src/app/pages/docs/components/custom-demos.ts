@@ -39,7 +39,6 @@ import { TreeTableDemoComponent } from './demos/treetable-demo.component';
 import { BadgeDemoComponent } from './demos/badge-demo.component';
 import { DataViewDemoComponent } from './demos/dataview-demo.component';
 import { AutofocusDemoComponent } from './demos/autofocus-demo.component';
-import { AnimateonscrollDemoComponent } from './demos/animateonscroll-demo.component';
 import { TreeDemoComponent } from './demos/tree-demo.component';
 import { AvatarDemoComponent } from './demos/avatar-demo.component';
 import { AvatarGroupDemoComponent } from './demos/avatar-group-demo.component';
@@ -213,11 +212,6 @@ export const CUSTOM_DEMOS: Record<string, Type<unknown>> = {
   // real focusable targets to show placement, `inoAutofocusDelay` and the opt-out. See
   // `autofocus/SPEC.md` §2.
   'autofocus': AutofocusDemoComponent,
-  // Behaviour-only directive, same disposition as `autofocus`/`keyfilter` — the element form's
-  // whole template is `<ng-content>`, so the generic renderer mounts it and shows nothing. A
-  // scroll-reveal additionally needs scrollable viewports for the observer to have a boundary to
-  // cross, and keyframe enter/leave classes for it to apply. See `animateonscroll/SPEC.md` §2.
-  'animateonscroll': AnimateonscrollDemoComponent,
   // `nodes: InoTreeNode[]` is the same recursive-array gap `treetable`/`menu`/`panel-menu`/
   // `breadcrumb`/`cascade-select` hit (empty array default), and the whole visible surface —
   // tree structure, expand/collapse, basic/checkbox selection, lazy loading, filter — is driven by
