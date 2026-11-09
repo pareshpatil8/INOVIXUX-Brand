@@ -154,6 +154,24 @@ describe('InoFocusTrapDirective', () => {
     expect(tabbableIds).not.toContain('middle');
   });
 
+  it('reclaims focus when the focused control is disabled out from under it (INO-948)', async () => {
+    await flush();
+    const first = byId(fixture, 'first');
+    expect(document.activeElement).toBe(first);
+
+    // Real browsers blur a focused control the instant it becomes `disabled` and fall back to
+    // <body> *without* firing `focusin` anywhere — the escape hatch the previous test exercises
+    // never sees this path. `relatedTarget: null` on `blur`/`focusout` is that fallback's only
+    // signature, and jsdom reproduces it faithfully off a plain `.blur()` call.
+    (first as HTMLButtonElement).disabled = true;
+    first.blur();
+    fixture.detectChanges();
+    await flush();
+
+    expect(document.activeElement).not.toBe(document.body);
+    expect(byId(fixture, 'first').parentElement!.contains(document.activeElement)).toBe(true);
+  });
+
   it('pulls focus back when it escapes the container', () => {
     byId(fixture, 'outside').focus();
 

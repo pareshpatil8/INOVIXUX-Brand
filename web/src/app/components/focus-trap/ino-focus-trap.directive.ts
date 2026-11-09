@@ -129,6 +129,7 @@ export class InoFocusTrapDirective implements OnInit, OnChanges, OnDestroy {
     this.trailing = createSentinel();
     this.leading.addEventListener('focus', this.onLeadingFocus);
     this.trailing.addEventListener('focus', this.onTrailingFocus);
+    this.host.addEventListener('focusout', this.onHostFocusOut);
     this.seatSentinels();
 
     this.observer = new MutationObserver(() => this.seatSentinels());
@@ -160,6 +161,7 @@ export class InoFocusTrapDirective implements OnInit, OnChanges, OnDestroy {
 
     this.leading?.removeEventListener('focus', this.onLeadingFocus);
     this.trailing?.removeEventListener('focus', this.onTrailingFocus);
+    this.host.removeEventListener('focusout', this.onHostFocusOut);
     this.leading?.remove();
     this.trailing?.remove();
     this.leading = null;
@@ -208,6 +210,27 @@ export class InoFocusTrapDirective implements OnInit, OnChanges, OnDestroy {
   /** Focus reached the trailing sentinel, i.e. Tab off the last element — wrap to the start. */
   private readonly onTrailingFocus = (): void => {
     this.moveFocus(this.tabbables()[0]);
+  };
+
+  /**
+   * Catches a browser behavior the document-level `focusin` guard cannot see: when the element
+   * that currently holds focus becomes `disabled` (e.g. a zoom button hitting its clamp), the
+   * browser drops focus to `<body>` *without* dispatching a `focusin` anywhere — there is no
+   * "focus landed outside the trap" event to react to, just the absence of one. `focusout` is the
+   * only signal available, and `relatedTarget === null` is its signature for "focus went nowhere"
+   * (as opposed to moving to another real element, which already re-enters via `focusin`). Deferred
+   * a tick because `relatedTarget` reflects the browser's synchronous fallback-to-`body` move, not
+   * wherever Angular's own change detection settles focus immediately after.
+   */
+  private readonly onHostFocusOut = (event: FocusEvent): void => {
+    if (!this.active || event.relatedTarget !== null) {
+      return;
+    }
+    queueMicrotask(() => {
+      if (this.active && !this.contains(activeElement())) {
+        this.reclaimFocus();
+      }
+    });
   };
 
   private focusInitial(): void {
