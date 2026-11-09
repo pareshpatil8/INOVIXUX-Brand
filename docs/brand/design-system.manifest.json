@@ -8,7 +8,7 @@
     "tablet": "641-900px",
     "desktop": ">900px"
   },
-  "componentCount": 93,
+  "componentCount": 94,
   "components": [
     {
       "name": "ino-accordion",
@@ -117,6 +117,63 @@
         "warning",
         "danger"
       ],
+      "viewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    },
+    {
+      "name": "ino-animateonscroll",
+      "slug": "animateonscroll",
+      "className": "InoAnimateonscrollComponent",
+      "sourcePath": "web/src/app/components/animateonscroll/ino-animateonscroll.component.ts",
+      "previewPath": null,
+      "inputs": [
+        {
+          "name": "enabled",
+          "type": "boolean",
+          "values": null,
+          "default": "true",
+          "optional": true
+        },
+        {
+          "name": "enterClass",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "leaveClass",
+          "type": "string",
+          "values": null,
+          "default": "''",
+          "optional": true
+        },
+        {
+          "name": "threshold",
+          "type": "number",
+          "values": null,
+          "default": "0.1",
+          "optional": true
+        },
+        {
+          "name": "rootMargin",
+          "type": "string",
+          "values": null,
+          "default": "'0px'",
+          "optional": true
+        },
+        {
+          "name": "once",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        }
+      ],
+      "variants": null,
       "viewports": [
         "mobile",
         "tablet",
@@ -2694,6 +2751,13 @@
         },
         {
           "name": "loading",
+          "type": "boolean",
+          "values": null,
+          "default": "false",
+          "optional": true
+        },
+        {
+          "name": "disabled",
           "type": "boolean",
           "values": null,
           "default": "false",
