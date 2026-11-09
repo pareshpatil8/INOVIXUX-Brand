@@ -20,6 +20,9 @@ import { InoKnobComponent } from '../../../../components/knob/ino-knob.component
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class KnobDemoComponent {
+  // Structure (anatomy)
+  protected anatomyValue = 45;
+
   // Variants — value display and format
   protected basicValue = 60;
   protected percentValue = 75;
@@ -51,6 +54,7 @@ export class KnobDemoComponent {
   protected labelledValue = 55;
   protected hintValue = 25;
   protected ariaOnlyValue = 80;
+  protected longLabelValue = 40;
 
   // RTL
   protected rtlValue = 70;

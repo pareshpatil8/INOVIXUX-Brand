@@ -1,4 +1,63 @@
 <section class="demo-section">
+  <h3 class="demo-section__title">Structure (anatomy)</h3>
+  <p class="demo-section__note">
+    One <code>&lt;svg viewBox="0 0 100 100"&gt;</code> holding five parts; the rendered diameter
+    comes from the host's <code>--ino-knob-dial</code> custom property alone, so every part scales
+    proportionally across the three dial sizes.
+  </p>
+  <table class="demo-table">
+    <thead>
+      <tr>
+        <th>Part</th>
+        <th>Element</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Range arc</td>
+        <td><code>path.ino-knob__range</code></td>
+        <td>
+          Full 270° sweep, surface-sunken stroke; danger stroke when <code>error</code> is set
+        </td>
+      </tr>
+      <tr>
+        <td>Value arc</td>
+        <td><code>path.ino-knob__value</code></td>
+        <td>
+          <code>min</code> → current value, accent stroke; accent-active while hovered/dragging
+        </td>
+      </tr>
+      <tr>
+        <td>Handle</td>
+        <td><code>g.ino-knob__handle</code></td>
+        <td>The focusable <code>role="slider"</code> element (one tab stop)</td>
+      </tr>
+      <tr>
+        <td>Indicator</td>
+        <td><code>circle.ino-knob__indicator</code></td>
+        <td>Dot at the value's angle on the arc</td>
+      </tr>
+      <tr>
+        <td>Value label</td>
+        <td><code>text.ino-knob__text</code></td>
+        <td>
+          Centre, <code>valueTemplate</code>-formatted, <code>aria-hidden</code> (duplicates
+          <code>aria-valuetext</code>)
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="demo-row">
+    <ino-knob
+      label="Anatomy reference"
+      valueTemplate="{value}%"
+      [(value)]="anatomyValue"
+    ></ino-knob>
+  </div>
+</section>
+
+<section class="demo-section">
   <h3 class="demo-section__title">Variants — value display and format</h3>
   <div class="demo-row">
     <ino-knob label="Basic" [(value)]="basicValue"></ino-knob>
@@ -27,9 +86,9 @@
     ></ino-knob>
   </div>
   <p class="demo-section__note">
-    Drag anywhere on the dial (the pointer's angle maps to a value; the 90° bottom gap snaps to
-    the nearer bound) or focus the dial and use ArrowUp/Right, ArrowDown/Left, PageUp/PageDown,
-    Home and End. <code>valueChange</code> fires once per committed step change.
+    Drag anywhere on the dial (the pointer's angle maps to a value; the 90° bottom gap snaps to the
+    nearer bound) or focus the dial and use ArrowUp/Right, ArrowDown/Left, PageUp/PageDown, Home and
+    End. <code>valueChange</code> fires once per committed step change.
   </p>
 </section>
 
@@ -40,13 +99,17 @@
     <ino-knob label="Disabled" [disabled]="true" [(value)]="disabledValue"></ino-knob>
     <ino-knob label="Readonly" [readonly]="true" [(value)]="readonlyValue"></ino-knob>
     <ino-knob label="Required" [required]="true" [(value)]="requiredValue"></ino-knob>
-    <ino-knob label="Invalid" error="Level exceeds the configured safety limit" [(value)]="invalidValue"></ino-knob>
+    <ino-knob
+      label="Invalid"
+      error="Level exceeds the configured safety limit"
+      [(value)]="invalidValue"
+    ></ino-knob>
     <ino-knob label="At min" [(value)]="atMinValue"></ino-knob>
     <ino-knob label="At max" [(value)]="atMaxValue"></ino-knob>
   </div>
   <p class="demo-section__note">
-    The "dragging" state (doc 26 §5 row) is interaction-driven — press and drag any editable dial
-    to see the value arc and indicator switch to the active accent. "At min"/"at max" show the
+    The "dragging" state (doc 26 §5 row) is interaction-driven — press and drag any editable dial to
+    see the value arc and indicator switch to the active accent. "At min"/"at max" show the
     at-bounds indicator stroke; keyboard steps clamp at the bounds.
   </p>
 </section>
@@ -89,12 +152,30 @@
     The third dial has no visible label — its accessible name comes from the
     <code>ariaLabel</code> input (the §5 row's "value label + <code>aria-label</code>" cell).
   </p>
+  <p class="demo-section__note">
+    <code>&lt;ino-label&gt;</code> sets no <code>white-space</code>/<code>text-overflow</code>, so a
+    long label wraps onto multiple lines rather than truncating — shown here at
+    <code>size="sm"</code>, where horizontal space next to the dial is tightest.
+  </p>
+  <div class="demo-col" style="max-width: 200px">
+    <ino-knob
+      size="sm"
+      label="Maximum monthly spend across all linked payment instruments (this label is intentionally long to demonstrate wrapping behavior in constrained layouts)"
+      valueTemplate="{value}%"
+      [(value)]="longLabelValue"
+    ></ino-knob>
+  </div>
 </section>
 
 <section class="demo-section" dir="rtl">
   <h3 class="demo-section__title">RTL spot-check</h3>
   <div class="demo-row">
-    <ino-knob label="مستوى الصوت" hint="نص توضيحي" valueTemplate="{value}٪" [(value)]="rtlValue"></ino-knob>
+    <ino-knob
+      label="مستوى الصوت"
+      hint="نص توضيحي"
+      valueTemplate="{value}٪"
+      [(value)]="rtlValue"
+    ></ino-knob>
   </div>
   <p class="demo-section__note">
     The dial's geometry is deliberately unmirrored in RTL — clockwise-is-more has no directional
