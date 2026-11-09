@@ -1,0 +1,117 @@
+/*
+ * <ino-dataview> — INO-454 / INO-31 Phase B3.
+ *
+ * No literal colour/space/radius/duration/font-size — every declaration resolves through a
+ * semantic role in tokens.css. Logical properties only; the header/items/footer stack and the
+ * grid's `auto-fill` track list both reflow for RTL without a second code path.
+ */
+:host(.ino-dataview) {
+  display: block;
+  font-family: var(--ino-font-display);
+  color: var(--ino-color-on-surface);
+
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      transition: none !important;
+      animation: none !important;
+    }
+  }
+}
+
+/*
+ * Grid gap scale (doc 26 §5 — "Sizing: grid gap scales"). Reuses the existing
+ * `--ino-control-padding-inline-*` aliases rather than inventing a new token: those already
+ * resolve correctly per `size` AND per `[data-density]` (tokens.css §12), so rebinding them here
+ * is the same idiom `ino-paginator.component.scss` uses for its own size rows — see SPEC.md §3.
+ */
+:host([data-size='sm']) {
+  --ino-dataview-gap: var(--ino-control-padding-inline-sm);
+}
+:host([data-size='default']) {
+  --ino-dataview-gap: var(--ino-control-padding-inline-default);
+}
+:host([data-size='lg']) {
+  --ino-dataview-gap: var(--ino-control-padding-inline-lg);
+}
+
+.ino-dataview__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ino-space-3);
+  margin-block-end: var(--ino-space-3);
+}
+
+.ino-dataview__label {
+  font: var(--ino-type-label);
+  color: var(--ino-color-on-surface);
+}
+
+.ino-dataview__items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ino-dataview-gap, var(--ino-space-4));
+  padding: 0;
+  margin: 0;
+}
+
+.ino-dataview__items--grid {
+  display: grid;
+  /* grid-template-columns set inline per gridMinColumnWidth — content-dependent, not a token. */
+}
+
+.ino-dataview__item {
+  min-inline-size: 0;
+}
+
+.ino-dataview__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-block: var(--ino-space-7);
+  color: var(--ino-color-on-surface-muted);
+}
+
+.ino-dataview__empty-message {
+  margin: 0;
+  font: var(--ino-type-body);
+}
+
+.ino-dataview__footer {
+  margin-block-start: var(--ino-space-4);
+}
+
+/* Loading skeleton — same shimmer idiom as ino-table/ino-virtual-scroller (independent keyframe
+   per component, by established convention). */
+.ino-dataview__skeleton-bar {
+  display: block;
+  inline-size: 100%;
+  block-size: var(--ino-control-height, 32px);
+  border-radius: var(--ino-radius-md);
+  background: var(--ino-color-border-soft);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ino-dataview__skeleton-bar {
+    background: linear-gradient(90deg, var(--ino-color-border-soft) 0%, var(--ino-color-border) 50%, var(--ino-color-border-soft) 100%);
+    background-size: 200% 100%;
+    animation: ino-dataview-shimmer var(--ino-motion-duration-slow) var(--ino-motion-easing-standard) infinite;
+  }
+}
+
+@keyframes ino-dataview-shimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+.ino-dataview__sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

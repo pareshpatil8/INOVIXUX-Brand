@@ -1,0 +1,179 @@
+// Zero hardcoded values (DoD row 1): every colour/space/radius/duration/font-size below resolves
+// through a semantic token. Off-window slides are removed via [hidden] on ino-carousel-item
+// itself (SPEC.md §2), not clipped here — this stylesheet only lays out the visible window, the
+// nav/pause chrome, and the indicator strip.
+
+:host {
+  display: block;
+  --ino-control-gap: var(--ino-control-gap-default);
+}
+
+:host([data-size='sm']) {
+  --ino-control-gap: var(--ino-control-gap-sm);
+}
+
+:host([data-size='lg']) {
+  --ino-control-gap: var(--ino-control-gap-lg);
+}
+
+.ino-carousel__viewport {
+  display: flex;
+  align-items: center;
+  gap: var(--ino-space-2);
+}
+
+:host([data-orientation='vertical']) .ino-carousel__viewport {
+  flex-direction: column;
+}
+
+.ino-carousel__track {
+  display: flex;
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  gap: var(--ino-control-gap);
+  overflow: hidden;
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+}
+
+:host([data-orientation='vertical']) .ino-carousel__track {
+  flex-direction: column;
+  min-block-size: 0;
+}
+
+.ino-carousel__nav {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--ino-target-min);
+  block-size: var(--ino-target-min);
+  background: var(--ino-color-surface-raised);
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-pill);
+  color: var(--ino-color-on-surface);
+  font-size: var(--ino-type-h3-size);
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  &:hover:not(:disabled) {
+    background: var(--ino-color-surface-sunken);
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+
+  &:disabled {
+    color: var(--ino-color-on-surface-subtle);
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
+// Same directional-glyph mirroring `ino-tabs.component.scss` documents: the ‹/› chevrons point at
+// a physical edge, so RTL flips them even though every box here is already logical.
+:host(:dir(rtl)) .ino-carousel__nav {
+  transform: scaleX(-1);
+}
+
+:host([data-orientation='vertical']) .ino-carousel__nav {
+  transform: rotate(90deg);
+}
+
+:host([data-orientation='vertical']:dir(rtl)) .ino-carousel__nav {
+  // Vertical prev/next direction does not depend on inline reading direction — undo the RTL
+  // mirror on top of the vertical rotation.
+  transform: rotate(90deg) scaleX(1);
+}
+
+.ino-carousel__play-pause {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--ino-target-min);
+  block-size: var(--ino-target-min);
+  background: transparent;
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-pill);
+  color: var(--ino-color-on-surface);
+  cursor: pointer;
+  transition: background-color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  &:hover {
+    background: var(--ino-color-surface-sunken);
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+
+  &[aria-pressed='true'] {
+    color: var(--ino-color-accent);
+  }
+}
+
+.ino-carousel__indicators {
+  display: flex;
+  justify-content: center;
+  gap: var(--ino-space-2);
+  margin-block-start: var(--ino-space-3);
+}
+
+.ino-carousel__indicator {
+  position: relative;
+  inline-size: var(--ino-space-2);
+  block-size: var(--ino-space-2);
+  padding: 0;
+  border: none;
+  border-radius: var(--ino-radius-pill);
+  background: var(--ino-color-border);
+  cursor: pointer;
+  transition: background-color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  // Pointer target floor (SC 2.5.8): the painted dot is 8px, well under --ino-target-min — the
+  // hit box is grown with a transparent pseudo-element rather than visually enlarging the dot.
+  &::before {
+    content: '';
+    position: absolute;
+    inset: calc((var(--ino-space-2) - var(--ino-target-min)) / 2);
+  }
+
+  &:hover {
+    background: var(--ino-color-on-surface-muted);
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+}
+
+.ino-carousel__indicator--active {
+  background: var(--ino-color-accent);
+}
+
+// Same clip idiom ino-tabs/ino-alert use for a visually-hidden status node that still reaches AT.
+.ino-carousel__sr-status {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ino-carousel__nav,
+  .ino-carousel__play-pause,
+  .ino-carousel__indicator {
+    transition: none;
+  }
+}

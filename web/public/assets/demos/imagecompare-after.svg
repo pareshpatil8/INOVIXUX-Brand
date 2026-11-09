@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" width="320" height="200" role="img" aria-label="">
+  <!-- INO-489 imagecompare-demo sample ("after" layer): a bright daytime variant of the same
+       landscape composition as imagecompare-before.svg, so dragging the handle reads as a
+       day/night reveal. Plain hex, not tokens — same reasoning as image-sample.svg. -->
+  <rect width="320" height="200" fill="#8FD3F4"/>
+  <circle cx="256" cy="48" r="22" fill="#FFD75E"/>
+  <path d="M0 160 L90 70 L150 130 L200 90 L320 180 L320 200 L0 200 Z" fill="#6FAE6E"/>
+  <path d="M0 180 L70 120 L140 170 L210 130 L320 190 L320 200 L0 200 Z" fill="#4C8C4A"/>
+</svg>

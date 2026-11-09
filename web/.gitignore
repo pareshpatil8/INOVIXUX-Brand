@@ -38,6 +38,13 @@ yarn-error.log
 testem.log
 /typings
 __screenshots__/
+# ...with ONE deliberate exception (INO-393). `e2e/__screenshots__/` holds the committed
+# D-gate 3b pixel baselines — the gate diffs against these, so they are source, not output,
+# and must be tracked. The blanket rule above predates the gate (42ca1be) and silently made
+# `git add web/e2e/__screenshots__` a no-op, which is why seeding could not be completed as
+# doc 29 §4.2 describes it. Transient Playwright output lives in e2e-report/ and e2e-results/
+# and stays ignored.
+!/e2e/__screenshots__/
 
 # System files
 .DS_Store

@@ -1,0 +1,62 @@
+<div
+  class="ino-speeddial"
+  [class.ino-speeddial--open]="open"
+  [attr.data-type]="type"
+  [attr.data-direction]="direction"
+  [attr.data-size]="size"
+>
+  <div
+    *ngIf="mask && open"
+    class="ino-speeddial__mask"
+    aria-hidden="true"
+    (click)="close(false)"
+  ></div>
+
+  <button
+    type="button"
+    class="ino-speeddial__fab"
+    aria-haspopup="menu"
+    [attr.aria-expanded]="open"
+    [attr.aria-controls]="menuId"
+    [attr.aria-label]="ariaLabel"
+    [disabled]="disabled"
+    (click)="onFabClick()"
+    (keydown)="onFabKeydown($event)"
+  >
+    <span class="ino-speeddial__fab-icon" aria-hidden="true">{{ icon }}</span>
+  </button>
+
+  <!-- Permanently mounted so open/close transitions run; hidden state is
+       visibility:hidden + aria-hidden + tabindex=-1, never *ngIf. -->
+  <ul
+    class="ino-speeddial__menu"
+    role="menu"
+    [attr.id]="menuId"
+    [attr.aria-label]="ariaLabel"
+    [attr.aria-hidden]="open ? null : 'true'"
+    (keydown)="onMenuKeydown($event)"
+  >
+    <li
+      *ngFor="let item of items; let i = index; trackBy: trackByIndex"
+      role="none"
+      class="ino-speeddial__action"
+      [class.ino-speeddial__action--disabled]="item.disabled"
+      [style.transform]="actionTransform(i)"
+      [style.transition-delay]="actionDelay(i)"
+    >
+      <button
+        type="button"
+        role="menuitem"
+        class="ino-speeddial__action-btn"
+        [attr.aria-label]="item.label"
+        [attr.aria-disabled]="item.disabled ? 'true' : null"
+        [attr.tabindex]="tabindexFor(item, i)"
+        (click)="onItemActivate($event, item)"
+        (focus)="focusedIndex = i"
+      >
+        <span class="ino-speeddial__action-icon" aria-hidden="true">{{ item.icon }}</span>
+      </button>
+      <span class="ino-speeddial__action-label" aria-hidden="true">{{ item.label }}</span>
+    </li>
+  </ul>
+</div>

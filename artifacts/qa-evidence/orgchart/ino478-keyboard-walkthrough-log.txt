@@ -1,0 +1,42 @@
+theme=light applied=light screenshot saved
+theme=dark applied=dark screenshot saved
+theme=high-contrast applied=high-contrast screenshot saved
+Click root treeitem -> {"role":"treeitem","label":"Amara OseiCEO","expanded":"true","selected":null,"level":"1","tabindex":"0"}
+roving tabindex inside tree: tabindex=0 count=1 (expect 1)
+Tab (forward, out of component) -> {"role":"treeitem","label":"🏢Amara Osei","expanded":"true","selected":null,"level":"1","tabindex":"0"}
+FAIL: Tab stopped on another treeitem instead of leaving the component (one-tab-stop contract)
+Shift+Tab (back into component) -> {"role":"treeitem","label":"Amara OseiCEO","expanded":"true","selected":null,"level":"1","tabindex":"0"}
+Re-click root -> {"role":"treeitem","label":"Amara OseiCEO","expanded":"true","selected":null,"level":"1","tabindex":"0"}
+ArrowDown -> {"role":"treeitem","label":"Jun ParkCTO","expanded":"true","selected":null,"level":"2","tabindex":"0"}
+ArrowDown again -> {"role":"treeitem","label":"Platform8 engineers","expanded":null,"selected":null,"level":"3","tabindex":"0"}
+ArrowRight -> {"role":"treeitem","label":"Web5 engineers","expanded":null,"selected":null,"level":"3","tabindex":"0"}
+ArrowLeft -> {"role":"treeitem","label":"Platform8 engineers","expanded":null,"selected":null,"level":"3","tabindex":"0"}
+ArrowUp -> {"role":"treeitem","label":"Jun ParkCTO","expanded":"true","selected":null,"level":"2","tabindex":"0"}
+Home -> {"role":"treeitem","label":"Jun ParkCTO","expanded":"true","selected":null,"level":"2","tabindex":"0"}
+End -> {"role":"treeitem","label":"Sam IdowuCPO","expanded":null,"selected":null,"level":"2","tabindex":"0"}
+Enter -> {"role":"treeitem","label":"Sam IdowuCPO","expanded":null,"selected":null,"level":"2","tabindex":"0"}
+Space (toggle) -> {"role":"treeitem","label":"Sam IdowuCPO","expanded":null,"selected":null,"level":"2","tabindex":"0"}
+[selection] initial item: "Amara OseiCEO" aria-selected=false
+[selection] initial item: "Jun ParkCTO" aria-selected=true
+[selection] initial item: "Platform8 engineers" aria-selected=false
+[selection] initial item: "Web5 engineers" aria-selected=false
+[selection] initial item: "Mobile4 engineers" aria-selected=false
+[selection] initial item: "Rosa AlvarezCFO" aria-selected=false
+[selection] initial item: "Finance ops3 analysts" aria-selected=false
+[selection] initial item: "Sam IdowuCPO" aria-selected=false
+[selection] after click -> {"label":"Amara OseiCEO","selected":"true"}
+[selection] after Enter -> {"label":"Amara OseiCEO","selected":"false"}
+[selection] after 2nd Enter (deselect) -> {"label":"Amara OseiCEO","selected":"true"}
+[selection] after Space (reselect) -> {"label":"Amara OseiCEO","selected":"false"}
+[selection] post-interaction item: "Amara OseiCEO" aria-selected=false
+[selection] post-interaction item: "Jun ParkCTO" aria-selected=false
+[selection] post-interaction item: "Platform8 engineers" aria-selected=false
+[selection] post-interaction item: "Web5 engineers" aria-selected=false
+[selection] post-interaction item: "Mobile4 engineers" aria-selected=false
+[selection] post-interaction item: "Rosa AlvarezCFO" aria-selected=false
+[selection] post-interaction item: "Finance ops3 analysts" aria-selected=false
+[selection] post-interaction item: "Sam IdowuCPO" aria-selected=false
+[selection] clicked Jun Park (click-to-select a different node) -> aria-selected=true
+[states] section count matched: 1
+zoom scales section screenshot saved
+RTL spot-check screenshot saved

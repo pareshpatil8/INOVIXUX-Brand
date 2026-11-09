@@ -1,0 +1,38 @@
+<fieldset
+  class="ino-fieldset"
+  [class.ino-fieldset--sm]="size === 'sm'"
+  [class.ino-fieldset--lg]="size === 'lg'"
+  [class.ino-fieldset--collapsed]="collapsible && collapsed"
+  [class.ino-fieldset--invalid]="!!error"
+  [class.ino-fieldset--loading]="loading"
+  [disabled]="disabled"
+  [attr.aria-busy]="loading ? 'true' : null"
+  [attr.aria-invalid]="error ? 'true' : null"
+  [attr.aria-describedby]="error ? errorId : null"
+>
+  <legend *ngIf="legend" class="ino-fieldset__legend">
+    <button
+      *ngIf="collapsible; else plainLegend"
+      type="button"
+      class="ino-fieldset__toggle"
+      [disabled]="disabled"
+      [attr.aria-disabled]="readonly ? 'true' : null"
+      [attr.aria-expanded]="!collapsed"
+      [attr.aria-controls]="contentId"
+      (click)="onToggle()"
+    >
+      <span class="ino-fieldset__chevron" [class.ino-fieldset__chevron--expanded]="!collapsed" aria-hidden="true">▸</span>
+      <span class="ino-fieldset__legend-text">{{ legend }}</span>
+    </button>
+    <ng-template #plainLegend>{{ legend }}</ng-template>
+  </legend>
+
+  <div class="ino-fieldset__content" [id]="contentId" [hidden]="collapsible && collapsed">
+    <ng-content></ng-content>
+    <div class="ino-fieldset__spinner-wrap" *ngIf="loading" aria-hidden="true">
+      <span class="ino-fieldset__spinner"></span>
+    </div>
+  </div>
+
+  <p *ngIf="error" [id]="errorId" class="ino-fieldset__error" role="alert">{{ error }}</p>
+</fieldset>

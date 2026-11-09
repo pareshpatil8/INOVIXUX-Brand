@@ -1,0 +1,155 @@
+<nav
+  class="ino-megamenu"
+  [class.ino-megamenu--vertical]="orientation === 'vertical'"
+  [attr.aria-label]="ariaLabel"
+  [attr.aria-busy]="loading ? true : null">
+
+  <ul
+    *ngIf="!loading && items.length"
+    class="ino-megamenu__bar"
+    role="menubar"
+    [attr.aria-orientation]="orientation">
+    <li
+      *ngFor="let item of items; let i = index; trackBy: trackByIndex"
+      class="ino-megamenu__bar-item"
+      role="none">
+
+      <button
+        *ngIf="hasPanel(item)"
+        type="button"
+        [id]="triggerId(i)"
+        role="menuitem"
+        class="ino-megamenu__trigger"
+        [class.ino-megamenu__trigger--active]="isActiveItem(item)"
+        [disabled]="item.disabled || null"
+        [attr.aria-haspopup]="'menu'"
+        [attr.aria-expanded]="isOpen(i)"
+        [attr.aria-controls]="panelId(i)"
+        [attr.aria-current]="isActiveItem(item) ? 'page' : null"
+        [attr.aria-disabled]="item.disabled ? true : null"
+        [attr.tabindex]="tabIndexFor(i)"
+        (click)="onBarItemClick(item, i)"
+        (keydown)="onTriggerKeydown($event, i)">
+        <span *ngIf="item.icon" class="ino-megamenu__icon" aria-hidden="true">{{ item.icon }}</span>
+        <span class="ino-megamenu__label">{{ item.label }}</span>
+        <span class="ino-megamenu__chevron" [class.ino-megamenu__chevron--open]="isOpen(i)" aria-hidden="true">&#9662;</span>
+      </button>
+
+      <a
+        *ngIf="!hasPanel(item) && isNavigable(item)"
+        [id]="triggerId(i)"
+        role="menuitem"
+        class="ino-megamenu__trigger ino-megamenu__trigger--link"
+        [class.ino-megamenu__trigger--active]="isActiveItem(item)"
+        [routerLink]="item.href"
+        [attr.aria-current]="isActiveItem(item) ? 'page' : null"
+        [attr.tabindex]="tabIndexFor(i)"
+        (click)="onBarItemClick(item, i)"
+        (keydown)="onTriggerKeydown($event, i)">
+        <span *ngIf="item.icon" class="ino-megamenu__icon" aria-hidden="true">{{ item.icon }}</span>
+        <span class="ino-megamenu__label">{{ item.label }}</span>
+      </a>
+
+      <button
+        *ngIf="!hasPanel(item) && isCommand(item)"
+        type="button"
+        [id]="triggerId(i)"
+        role="menuitem"
+        class="ino-megamenu__trigger"
+        [class.ino-megamenu__trigger--active]="isActiveItem(item)"
+        [attr.tabindex]="tabIndexFor(i)"
+        (click)="onBarItemClick(item, i)"
+        (keydown)="onTriggerKeydown($event, i)">
+        <span *ngIf="item.icon" class="ino-megamenu__icon" aria-hidden="true">{{ item.icon }}</span>
+        <span class="ino-megamenu__label">{{ item.label }}</span>
+      </button>
+
+      <span
+        *ngIf="isInert(item)"
+        [id]="triggerId(i)"
+        role="menuitem"
+        class="ino-megamenu__trigger ino-megamenu__trigger--inert"
+        [attr.aria-disabled]="item.disabled ? true : null"
+        [attr.tabindex]="tabIndexFor(i)"
+        (keydown)="onTriggerKeydown($event, i)">
+        <span *ngIf="item.icon" class="ino-megamenu__icon" aria-hidden="true">{{ item.icon }}</span>
+        <span class="ino-megamenu__label">{{ item.label }}</span>
+      </span>
+
+      <div
+        *ngIf="hasPanel(item) && isOpen(i)"
+        [id]="panelId(i)"
+        class="ino-megamenu__panel"
+        role="menu"
+        [attr.aria-labelledby]="triggerId(i)"
+        [style.--ino-megamenu-panel-columns]="item.columns?.length || 1"
+        (keydown)="onPanelKeydown($event, i, item.columns || [])"
+        (focusout)="onPanelFocusOut($event)">
+        <div
+          *ngFor="let column of item.columns; let c = index; trackBy: trackByIndex"
+          class="ino-megamenu__column"
+          role="group"
+          [attr.aria-labelledby]="column.heading ? columnHeadingId(i, c) : null">
+          <div *ngIf="column.heading" [id]="columnHeadingId(i, c)" class="ino-megamenu__column-heading">{{ column.heading }}</div>
+
+          <ng-container *ngFor="let link of column.items; let r = index; trackBy: trackByIndex">
+            <a
+              *ngIf="isNavigable(link)"
+              [id]="panelId(i) + '-' + c + '-' + r"
+              role="menuitem"
+              class="ino-megamenu__link"
+              [class.ino-megamenu__link--active]="isActiveItem(link)"
+              [routerLink]="link.href"
+              [attr.aria-current]="isActiveItem(link) ? 'page' : null"
+              [attr.tabindex]="isPanelTabStop(c, r) ? 0 : -1"
+              (click)="onLinkClick(link)">
+              <span *ngIf="link.icon" class="ino-megamenu__icon" aria-hidden="true">{{ link.icon }}</span>
+              <span class="ino-megamenu__link-text">
+                <span class="ino-megamenu__link-label">{{ link.label }}</span>
+                <span *ngIf="link.description" class="ino-megamenu__link-description">{{ link.description }}</span>
+              </span>
+            </a>
+
+            <button
+              *ngIf="isCommand(link)"
+              type="button"
+              [id]="panelId(i) + '-' + c + '-' + r"
+              role="menuitem"
+              class="ino-megamenu__link ino-megamenu__link--command"
+              [class.ino-megamenu__link--active]="isActiveItem(link)"
+              [attr.tabindex]="isPanelTabStop(c, r) ? 0 : -1"
+              (click)="onLinkClick(link)">
+              <span *ngIf="link.icon" class="ino-megamenu__icon" aria-hidden="true">{{ link.icon }}</span>
+              <span class="ino-megamenu__link-text">
+                <span class="ino-megamenu__link-label">{{ link.label }}</span>
+                <span *ngIf="link.description" class="ino-megamenu__link-description">{{ link.description }}</span>
+              </span>
+            </button>
+
+            <span
+              *ngIf="isInert(link)"
+              [id]="panelId(i) + '-' + c + '-' + r"
+              role="menuitem"
+              class="ino-megamenu__link ino-megamenu__link--inert"
+              [attr.aria-disabled]="link.disabled ? true : null"
+              [attr.tabindex]="isPanelTabStop(c, r) ? 0 : -1">
+              <span *ngIf="link.icon" class="ino-megamenu__icon" aria-hidden="true">{{ link.icon }}</span>
+              <span class="ino-megamenu__link-text">
+                <span class="ino-megamenu__link-label">{{ link.label }}</span>
+                <span *ngIf="link.description" class="ino-megamenu__link-description">{{ link.description }}</span>
+              </span>
+            </span>
+          </ng-container>
+        </div>
+      </div>
+    </li>
+  </ul>
+
+  <div *ngIf="!loading && !items.length" class="ino-megamenu__empty">{{ emptyLabel }}</div>
+
+  <ul *ngIf="loading" class="ino-megamenu__bar ino-megamenu__bar--loading" aria-hidden="true" role="none">
+    <li class="ino-megamenu__bar-item"><span class="ino-megamenu__skeleton"></span></li>
+    <li class="ino-megamenu__bar-item"><span class="ino-megamenu__skeleton"></span></li>
+    <li class="ino-megamenu__bar-item"><span class="ino-megamenu__skeleton ino-megamenu__skeleton--short"></span></li>
+  </ul>
+</nav>

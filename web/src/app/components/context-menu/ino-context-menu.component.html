@@ -1,0 +1,70 @@
+<div
+  #menuRoot
+  class="ino-context-menu__overlay"
+  role="menu"
+  [attr.aria-label]="ariaLabel"
+  [style.top]="position.top"
+  [style.left]="position.left"
+  *ngIf="visible"
+>
+  <div
+    #menuItem
+    *ngFor="let item of items; let i = index; trackBy: trackByIndex"
+    [class.ino-context-menu__item]="!item.separator"
+    [class.ino-context-menu__item--disabled]="item.disabled"
+    [class.ino-context-menu__item--has-children]="item.children && item.children.length > 0"
+    [class.ino-context-menu__separator]="item.separator"
+    [attr.role]="item.separator ? 'separator' : 'menuitem'"
+    [attr.aria-disabled]="item.disabled ? 'true' : null"
+    [attr.aria-haspopup]="item.children && item.children.length > 0 ? 'menu' : null"
+    [attr.aria-expanded]="item.children && item.children.length > 0 ? (openSubmenu === item ? 'true' : 'false') : null"
+    [attr.tabindex]="item.separator || item.disabled ? null : isItemFocused(item, i) ? '0' : '-1'"
+    [attr.id]="'ino-menu-item-' + i"
+    (click)="!item.separator && !item.disabled && onItemActivate($event, item, i)"
+    (mouseenter)="item.children && item.children.length > 0 && onSubmenuMouseEnter(item, i)"
+    (mouseleave)="item.children && item.children.length > 0 && onSubmenuMouseLeave(item)"
+  >
+    <ng-container *ngIf="!item.separator">
+      <span *ngIf="item.icon" class="ino-context-menu__icon" aria-hidden="true">
+        {{ item.icon }}
+      </span>
+      <span class="ino-context-menu__label">{{ item.label }}</span>
+      <span
+        *ngIf="item.children && item.children.length > 0"
+        class="ino-context-menu__chevron"
+        aria-hidden="true"
+      >
+        ›
+      </span>
+    </ng-container>
+  </div>
+
+  <!-- Submenu rendered as sibling (not nested in menuitem) -->
+  <div
+    *ngIf="openSubmenu && openSubmenu.children"
+    #submenu
+    class="ino-context-menu__submenu"
+    role="menu"
+    [attr.aria-label]="openSubmenu.label + ' submenu'"
+    [style.top]="submenuPosition.top"
+    [style.left]="submenuPosition.left"
+  >
+    <div
+      *ngFor="let child of openSubmenu.children; let j = index"
+      [class.ino-context-menu__item]="!child.separator"
+      [class.ino-context-menu__item--disabled]="child.disabled"
+      [class.ino-context-menu__separator]="child.separator"
+      [attr.role]="child.separator ? 'separator' : 'menuitem'"
+      [attr.aria-disabled]="child.disabled ? 'true' : null"
+      [attr.tabindex]="child.separator || child.disabled ? null : isSubmenuItemFocused(child, j) ? '0' : '-1'"
+      (click)="!child.separator && !child.disabled && onItemActivate($event, child, j)"
+    >
+      <ng-container *ngIf="!child.separator">
+        <span *ngIf="child.icon" class="ino-context-menu__icon" aria-hidden="true">
+          {{ child.icon }}
+        </span>
+        <span class="ino-context-menu__label">{{ child.label }}</span>
+      </ng-container>
+    </div>
+  </div>
+</div>

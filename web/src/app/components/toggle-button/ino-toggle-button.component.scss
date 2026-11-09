@@ -1,0 +1,156 @@
+/*
+ * Size API — doc 26 §2 row 3. Full `--ino-control-*` alias set (height/padding/font/icon/gap),
+ * the same subset `ino-button` reads — a toggle button is a full-height pressable label, unlike
+ * `ino-toggle`'s compact track/thumb shape (which only needs the icon-size trio). The base rule
+ * never hardcodes a value: it reads the bare unsuffixed alias, and the two size classes below
+ * only re-point aliases, so density ([data-density] in tokens.css §12) composes for free.
+ */
+.ino-toggle-button {
+  --ino-toggle-button-height: var(--ino-control-height);
+  --ino-toggle-button-padding-inline: var(--ino-control-padding-inline-roomy);
+  --ino-toggle-button-font-size: var(--ino-control-font-size);
+  --ino-toggle-button-icon-size: var(--ino-control-icon-size);
+  --ino-toggle-button-gap: var(--ino-control-gap);
+
+  &[data-size='sm'] {
+    --ino-toggle-button-height: var(--ino-control-height-sm);
+    --ino-toggle-button-padding-inline: var(--ino-control-padding-inline-roomy-sm);
+    --ino-toggle-button-font-size: var(--ino-control-font-size-sm);
+    --ino-toggle-button-icon-size: var(--ino-control-icon-size-sm);
+    --ino-toggle-button-gap: var(--ino-control-gap-sm);
+  }
+
+  &[data-size='lg'] {
+    --ino-toggle-button-height: var(--ino-control-height-lg);
+    --ino-toggle-button-padding-inline: var(--ino-control-padding-inline-roomy-lg);
+    --ino-toggle-button-font-size: var(--ino-control-font-size-lg);
+    --ino-toggle-button-icon-size: var(--ino-control-icon-size-lg);
+    --ino-toggle-button-gap: var(--ino-control-gap-lg);
+  }
+}
+
+/*
+ * Two faces. Unpressed reads the same shape `ino-button`'s `secondary` variant uses (bordered,
+ * surface-raised fill); pressed reads the same shape its `primary` variant uses (filled with
+ * `--ino-gradient-accent`). Reusing those two already-audited pairs, rather than inventing a
+ * third visual language, is the whole point of calling this component's two states "faces" of
+ * one button rather than two different components.
+ */
+.ino-toggle-button__control {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ino-toggle-button-gap);
+  min-height: var(--ino-toggle-button-height);
+  padding-block: 0;
+  padding-inline: var(--ino-toggle-button-padding-inline);
+  border-radius: var(--ino-radius-md);
+  border: 1px solid var(--ino-color-border);
+  background: var(--ino-color-surface-raised);
+  color: var(--ino-color-on-surface);
+  font-family: var(--ino-font-display);
+  font-size: var(--ino-toggle-button-font-size);
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  transition: background var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+    border-color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+    color var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+    filter var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+    box-shadow var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  /* State 2 — hover (unpressed face: border tints toward accent, same as ino-button secondary).
+     Excludes readonly directly in the selector, same convention ino-toggle uses. */
+  &:hover:not(:disabled):not(.ino-toggle-button__control--readonly) {
+    border-color: var(--ino-color-accent);
+  }
+
+  /* State 4 — focus-visible. */
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+
+  /* State 3 — active/pressed-down (unpressed face). */
+  &:active:not(:disabled):not(.ino-toggle-button__control--readonly) {
+    border-color: var(--ino-color-accent-active);
+    background: var(--ino-color-surface-sunken);
+  }
+
+  /* State 5 — disabled. */
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  /* State 7 — invalid. Same `--ino-invalid-ring` channel ino-checkbox/ino-toggle paint. */
+  &[aria-invalid='true'] {
+    box-shadow: var(--ino-invalid-ring);
+  }
+
+  /* State 6 — readonly. Content stays legible, control stays focusable; only the interactive
+     affordances (hover/active above) withdraw — same trade ino-toggle documents. */
+  &.ino-toggle-button__control--readonly {
+    cursor: default;
+  }
+}
+
+/* The pressed face — the "on" side of the button. */
+.ino-toggle-button__control--pressed {
+  background: var(--ino-gradient-accent);
+  border-color: transparent;
+  color: var(--ino-color-on-accent);
+
+  &:hover:not(:disabled):not(.ino-toggle-button__control--readonly) {
+    border-color: transparent;
+    filter: brightness(1.08);
+  }
+
+  /* Pressed-down while already pressed: flat accent replaces the gradient, matching ino-button's
+     primary press treatment — "held down" reads the same whether the control is a button or a
+     toggle button. */
+  &:active:not(:disabled):not(.ino-toggle-button__control--readonly) {
+    background: var(--ino-color-accent-active);
+    filter: none;
+  }
+}
+
+.ino-toggle-button__icon {
+  font-size: var(--ino-toggle-button-icon-size);
+  line-height: 1;
+}
+
+/* State 8 — loading/busy. The label/icon stay on screen; a spinner joins them, matching
+   ino-button/ino-toggle's spinner treatment. The control is natively disabled while loading
+   (template `[disabled]="disabled || loading"`). */
+.ino-toggle-button__spinner {
+  inline-size: calc(var(--ino-toggle-button-icon-size) * 0.7);
+  block-size: calc(var(--ino-toggle-button-icon-size) * 0.7);
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  border-inline-start-color: transparent; /* logical, not border-top — RTL-safe */
+  flex: none;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: ino-toggle-button-spin var(--ino-motion-duration-slow) linear infinite;
+  }
+}
+
+@keyframes ino-toggle-button-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.ino-toggle-button__error {
+  margin: var(--ino-space-1) 0 0;
+  font-size: var(--ino-type-body-sm-size);
+  color: var(--ino-color-danger);
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ino-toggle-button__control {
+    transition: none;
+  }
+}

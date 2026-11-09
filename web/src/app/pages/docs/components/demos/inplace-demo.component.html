@@ -1,0 +1,113 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Variants/Structure — display slot ↔ edit slot swap</h3>
+  <div class="demo-row">
+    <ino-inplace [(editing)]="basicEditing">
+      <ng-template inoInplaceDisplay>{{ name }}</ng-template>
+      <ng-template inoInplaceEdit>
+        <input [(ngModel)]="name" aria-label="Name" />
+      </ng-template>
+    </ino-inplace>
+  </div>
+  <p class="demo-section__note">
+    Click the name to open the editor; press Enter or move focus elsewhere to close it — the §5
+    row's "close on blur/Enter".
+  </p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Lazy content</h3>
+  <div class="demo-row">
+    <ino-inplace [editing]="lazyEditing" (editingChange)="onLazyEditingChange($event)">
+      <ng-template inoInplaceDisplay>Click to edit (opened {{ mountCount }}×)</ng-template>
+      <ng-template inoInplaceEdit>
+        <input value="fresh every open" aria-label="Edit field" />
+      </ng-template>
+    </ino-inplace>
+  </div>
+  <p class="demo-section__note">
+    The edit template mounts only when editing starts — never created up front and hidden
+    (<code>SPEC.md</code> §3). The open count above only increments on each actual mount.
+  </p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Multi-field editor — blur between fields does not close</h3>
+  <div class="demo-row">
+    <ino-inplace [(editing)]="multiEditing">
+      <ng-template inoInplaceDisplay>{{ firstName }} {{ lastName }}</ng-template>
+      <ng-template inoInplaceEdit>
+        <input [(ngModel)]="firstName" aria-label="First name" />
+        <input [(ngModel)]="lastName" aria-label="Last name" />
+      </ng-template>
+    </ino-inplace>
+  </div>
+  <p class="demo-section__note">
+    Tab between the two fields — focus stays inside the editor subtree, so it does not close
+    mid-edit. Tab (or click) out of both fields closes it.
+  </p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Multi-line editor — Enter does not close</h3>
+  <div class="demo-row">
+    <ino-inplace [(editing)]="notesEditing">
+      <ng-template inoInplaceDisplay>{{ notes }}</ng-template>
+      <ng-template inoInplaceEdit>
+        <textarea [(ngModel)]="notes" aria-label="Notes" rows="3"></textarea>
+      </ng-template>
+    </ino-inplace>
+  </div>
+  <p class="demo-section__note">
+    Enter inserts a newline inside a <code>&lt;textarea&gt;</code> instead of closing — the
+    multi-line carve-out (<code>SPEC.md</code> §5). Click outside to close.
+  </p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States</h3>
+  <div class="demo-row">
+    <ino-inplace [(editing)]="disabledEditing" [disabled]="true">
+      <ng-template inoInplaceDisplay>Disabled</ng-template>
+      <ng-template inoInplaceEdit><input aria-label="Disabled field" /></ng-template>
+    </ino-inplace>
+    <ino-inplace [(editing)]="readonlyEditing" [readonly]="true">
+      <ng-template inoInplaceDisplay>Readonly</ng-template>
+      <ng-template inoInplaceEdit><input aria-label="Readonly field" /></ng-template>
+    </ino-inplace>
+  </div>
+  <p class="demo-section__note">
+    "Disabled" dims and blocks the trigger entirely (native <code>disabled</code>). "Readonly"
+    blocks opening too, but stays legible and tabbable (<code>aria-readonly</code>) — neither
+    responds to a click.
+  </p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Labels — edit affordance labeled</h3>
+  <div class="demo-row">
+    <ino-inplace [(editing)]="priceEditing" ariaLabel="Edit price">
+      <ng-template inoInplaceDisplay>{{ price }}</ng-template>
+      <ng-template inoInplaceEdit>
+        <input [(ngModel)]="price" aria-label="Price" />
+      </ng-template>
+    </ino-inplace>
+  </div>
+  <p class="demo-section__note">
+    The trigger's accessible name comes from <code>ariaLabel</code> ("Edit price") independent of
+    the display content, since bare values like a price have no label of their own.
+  </p>
+</section>
+
+<section class="demo-section" dir="rtl">
+  <h3 class="demo-section__title">RTL spot-check</h3>
+  <div class="demo-row">
+    <ino-inplace [(editing)]="basicEditing" ariaLabel="تعديل">
+      <ng-template inoInplaceDisplay>جين دو</ng-template>
+      <ng-template inoInplaceEdit><input aria-label="الاسم" /></ng-template>
+    </ino-inplace>
+  </div>
+  <p class="demo-section__note">
+    Logical CSS properties only — no directional keyboard axis to mirror (unlike
+    <code>ino-rating</code>/<code>ino-knob</code>'s Arrow-key axes).
+  </p>
+</section>

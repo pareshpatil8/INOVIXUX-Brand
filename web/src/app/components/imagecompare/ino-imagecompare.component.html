@@ -1,0 +1,48 @@
+<div
+  #frame
+  class="ino-imagecompare__frame"
+  (pointerdown)="onFramePointerDown($event, frame)"
+>
+  <img
+    *ngIf="afterSrc"
+    class="ino-imagecompare__img ino-imagecompare__img--after"
+    [src]="afterSrc"
+    [alt]="afterAlt"
+    aria-hidden="true"
+  />
+
+  <img
+    *ngIf="beforeSrc"
+    class="ino-imagecompare__img ino-imagecompare__img--before"
+    [src]="beforeSrc"
+    [alt]="beforeAlt"
+    [style.clip-path]="clipPath"
+    aria-hidden="true"
+  />
+
+  <span *ngIf="beforeLabel" class="ino-imagecompare__label ino-imagecompare__label--before">{{ beforeLabel }}</span>
+  <span *ngIf="afterLabel" class="ino-imagecompare__label ino-imagecompare__label--after">{{ afterLabel }}</span>
+
+  <div
+    class="ino-imagecompare__handle"
+    role="slider"
+    [tabindex]="handleTabIndex"
+    [style.inset-inline-start.%]="orientation === 'horizontal' ? value : null"
+    [style.inset-block-start.%]="orientation === 'vertical' ? value : null"
+    [attr.aria-label]="ariaLabel"
+    [attr.aria-valuemin]="0"
+    [attr.aria-valuemax]="100"
+    [attr.aria-valuenow]="value"
+    [attr.aria-valuetext]="valueText"
+    [attr.aria-orientation]="orientation"
+    [attr.aria-disabled]="disabled ? true : null"
+    [attr.aria-readonly]="readonly ? true : null"
+    (pointerdown)="onHandlePointerDown($event, frame)"
+    (pointermove)="onHandlePointerMove($event)"
+    (pointerup)="onHandlePointerUp($event)"
+    (pointercancel)="onHandlePointerUp($event)"
+    (keydown)="onKeyDown($event)"
+  >
+    <span class="ino-imagecompare__grip" aria-hidden="true"></span>
+  </div>
+</div>

@@ -1,0 +1,82 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Variants — star count and custom icons</h3>
+  <div class="demo-row">
+    <ino-rating label="Basic (5 stars)" [(value)]="basicValue"></ino-rating>
+    <ino-rating label="Configurable count (10)" [count]="10" [(value)]="tenStarValue"></ino-rating>
+    <ino-rating label="Custom icon (heart)" iconFilled="♥" iconEmpty="♡" [(value)]="heartValue"></ino-rating>
+    <ino-rating label="Cancelable" [cancelable]="true" [(value)]="cancelableValue"></ino-rating>
+  </div>
+  <p class="demo-section__note">
+    "Cancelable" clears to 0 when you click the already-selected star — the §5 row's clear/cancel
+    toggle (see <code>SPEC.md</code> §2). Values are always whole numbers (the row's "integer
+    values" variant) — there is no half-star increment.
+  </p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States</h3>
+  <div class="demo-row">
+    <ino-rating label="Default" [(value)]="defaultValue"></ino-rating>
+    <ino-rating label="Unrated" [(value)]="unratedValue"></ino-rating>
+    <ino-rating label="Disabled" [disabled]="true" [(value)]="disabledValue"></ino-rating>
+    <ino-rating label="Readonly" [readonly]="true" [(value)]="readonlyValue"></ino-rating>
+    <ino-rating label="Required" [required]="true" [(value)]="requiredValue"></ino-rating>
+    <ino-rating label="Invalid" error="Select a rating before submitting" [(value)]="invalidValue"></ino-rating>
+  </div>
+  <p class="demo-section__note">
+    "Hover-preview" (the §5 row's state) is interaction-driven — hover any editable rating to see
+    the preview fill up to the pointer without committing <code>value</code>.
+  </p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Sizing — sm / md / lg</h3>
+  <div class="demo-row">
+    <ino-rating label="Small" size="sm" [(value)]="smValue"></ino-rating>
+    <ino-rating label="Medium (default)" size="md" [(value)]="mdValue"></ino-rating>
+    <ino-rating label="Large" size="lg" [(value)]="lgValue"></ino-rating>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Density</h3>
+  <div class="demo-grid">
+    <div class="demo-pane" data-density="dense">
+      <p class="demo-pane__label">dense</p>
+      <ino-rating label="Dense" [(value)]="denseValue"></ino-rating>
+    </div>
+    <div class="demo-pane" data-density="fluid">
+      <p class="demo-pane__label">fluid</p>
+      <ino-rating label="Fluid" [(value)]="fluidValue"></ino-rating>
+    </div>
+  </div>
+  <p class="demo-section__note">
+    Stars are not a text-entry control and have no dense-register height row — they render
+    identically in both densities (see <code>SPEC.md</code> §5).
+  </p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Labels</h3>
+  <div class="demo-row">
+    <ino-rating label="Service quality" [(value)]="labelledValue"></ino-rating>
+    <ino-rating label="Hint text" hint="Rate your experience from 1 to 5" [(value)]="hintValue"></ino-rating>
+    <ino-rating ariaLabel="Product rating" [(value)]="ariaOnlyValue"></ino-rating>
+  </div>
+  <p class="demo-section__note">
+    The third rating has no visible label — its accessible name comes from the
+    <code>ariaLabel</code> input (the §5 row's "own label" cell). "Value announced" falls out of
+    native radiogroup semantics: focusing the checked star announces its label and position.
+  </p>
+</section>
+
+<section class="demo-section" dir="rtl">
+  <h3 class="demo-section__title">RTL spot-check</h3>
+  <div class="demo-row">
+    <ino-rating label="تقييم الخدمة" hint="قيّم تجربتك" [(value)]="rtlValue"></ino-rating>
+  </div>
+  <p class="demo-section__note">
+    Arrow-key selection is deliberately unmirrored in RTL, matching the <code>ino-knob</code>/
+    <code>ino-slider</code> precedent (see the docs page's Accessibility contract).
+  </p>
+</section>

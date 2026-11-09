@@ -1,0 +1,92 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Variants — inline vs popover</h3>
+  <div class="demo-row">
+    <ino-colorpicker
+      label="Popover (default)"
+      [(value)]="popoverValue"
+    ></ino-colorpicker>
+
+    <ino-colorpicker
+      label="Inline"
+      [inline]="true"
+      [(value)]="inlineValue"
+    ></ino-colorpicker>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Variants — hex/RGB input + preset swatches</h3>
+  <div class="demo-row">
+    <ino-colorpicker
+      label="Preset swatches"
+      [presets]="presets"
+      [(value)]="presetValue"
+    ></ino-colorpicker>
+
+    <ino-colorpicker
+      label="No alpha bar"
+      [showAlpha]="false"
+      [(value)]="noAlphaValue"
+    ></ino-colorpicker>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States</h3>
+  <div class="demo-row">
+    <ino-colorpicker label="Default" [(value)]="defaultValue"></ino-colorpicker>
+    <ino-colorpicker label="Disabled" [disabled]="true" [(value)]="disabledValue"></ino-colorpicker>
+    <ino-colorpicker label="Readonly" [readonly]="true" [(value)]="readonlyValue"></ino-colorpicker>
+    <ino-colorpicker label="Required" [required]="true" [(value)]="requiredValue"></ino-colorpicker>
+    <ino-colorpicker label="Invalid" error="Pick a color that meets contrast requirements" [(value)]="invalidValue"></ino-colorpicker>
+  </div>
+  <p class="demo-section__note">
+    "Dragging" and "invalid-hex" states (doc 26 §5 row) are interaction-driven, not demonstrable
+    as a static box — drag the saturation/brightness panel or either bar to see the dragging
+    state (swatch/thumbs update live; <code>valueChange</code> fires on release, not per pixel —
+    see the component's class doc comment), or type an unparseable string into any Hex field to
+    see the invalid-hex error.
+  </p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Sizing — swatch sm / md</h3>
+  <div class="demo-row">
+    <ino-colorpicker label="Small swatch" swatchSize="sm" [(value)]="smallSwatchValue"></ino-colorpicker>
+    <ino-colorpicker label="Medium swatch (default)" swatchSize="md" [(value)]="mediumSwatchValue"></ino-colorpicker>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Density</h3>
+  <div class="demo-grid">
+    <div class="demo-pane" data-density="dense">
+      <p class="demo-pane__label">dense</p>
+      <ino-colorpicker label="Dense row" [(value)]="densityDenseValue"></ino-colorpicker>
+    </div>
+    <div class="demo-pane" data-density="fluid">
+      <p class="demo-pane__label">fluid</p>
+      <ino-colorpicker label="Fluid row" [(value)]="densityFluidValue"></ino-colorpicker>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Labels</h3>
+  <div class="demo-row">
+    <ino-colorpicker label="Brand accent color" [(value)]="labeledValue"></ino-colorpicker>
+    <ino-colorpicker label="Hint text" hint="Used for primary buttons and links" [(value)]="hintValue"></ino-colorpicker>
+    <ino-colorpicker label="Error text" error="This color fails WCAG contrast on white" [(value)]="errorValue"></ino-colorpicker>
+    <ino-colorpicker
+      label="A long label that wraps across more than one line to confirm truncation/wrapping behavior stays legible"
+      [(value)]="longLabelValue"
+    ></ino-colorpicker>
+  </div>
+</section>
+
+<section class="demo-section" dir="rtl">
+  <h3 class="demo-section__title">RTL spot-check</h3>
+  <div class="demo-row">
+    <ino-colorpicker label="لون العلامة التجارية" hint="نص توضيحي" [(value)]="rtlValue"></ino-colorpicker>
+  </div>
+</section>

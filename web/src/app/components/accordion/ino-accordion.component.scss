@@ -1,0 +1,33 @@
+/* Container for accordion tabs. Single sizing axis (doc 26 §5: "compact/comfortable") scales
+   tab header/body padding via `--ino-control-padding-inline-roomy(-sm)` — reading the bare alias
+   (already re-declared under both [data-density] blocks in tokens.css §10/§12) means dense/fluid
+   density composes for free, no branch needed here. See SPEC.md. */
+.ino-accordion {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-md);
+  background: var(--ino-color-surface-raised);
+  overflow: hidden;
+}
+
+/* INO-835: host-level state classes applied via host: metadata must use :host(.class) to match
+   the host element's _nghost-* attribute; bare .class compiles to [_ngcontent-*] which only
+   matches descendants. See ino-card.component.html:6-7 for the working template-based pattern. */
+:host(.ino-accordion--compact) {
+  --ino-control-padding-inline-roomy: var(--ino-control-padding-inline-roomy-sm);
+}
+
+:host(.ino-accordion--disabled) {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+:host(.ino-accordion--loading) {
+  opacity: 0.7;
+}
+
+.ino-accordion__inner {
+  display: flex;
+  flex-direction: column;
+}

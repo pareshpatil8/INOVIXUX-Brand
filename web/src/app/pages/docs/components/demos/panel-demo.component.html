@@ -1,0 +1,168 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Variants/Structure — plain container, collapsible, footer slot</h3>
+  <p class="demo-section__note">
+    Most panels are static grouping (<code>collapsible="false"</code>, the default) — plain header
+    text with no interactive affordance. Setting <code>collapsible</code> renders the whole header
+    bar as a disclosure button (<code>aria-expanded</code> + <code>aria-controls</code>). The
+    <code>[ino-panel-footer]</code> slot renders an optional actions bar, same idiom as
+    <code>[ino-card-footer]</code>.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">collapsible="false" (plain header)</p>
+      <ino-panel header="Shipping address">
+        <p>123 Market Street, Suite 400</p>
+        <p>San Francisco, CA 94103</p>
+      </ino-panel>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">collapsible="true"</p>
+      <ino-panel header="Advanced options" [collapsible]="true" [(collapsed)]="collapsibleOpen">
+        <p>Retry attempts, timeout, and webhook overrides live here.</p>
+      </ino-panel>
+      <p class="demo-live">collapsed = {{ collapsibleOpen }}</p>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">footer slot — actions bar</p>
+      <ino-panel header="Draft invoice">
+        <p>12 line items, due 2026-11-15.</p>
+        <div ino-panel-footer class="demo-row">
+          <button ino-button variant="ghost" (click)="onDiscard()">Discard</button>
+          <button ino-button variant="primary" (click)="onSave()">Save</button>
+        </div>
+      </ino-panel>
+      <p class="demo-live">last action = {{ lastAction }}</p>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States</h3>
+  <p class="demo-section__note">
+    <code>disabled</code> dims the whole panel and native-disables the toggle. <code>readonly</code>
+    only locks the collapse toggle (behavior-only, no corresponding ARIA attribute —
+    <code>region</code> doesn't support readonly any more than <code>group</code> does, SPEC.md
+    §2); content stays fully interactive. <code>loading</code> dims the body and shows a spinner
+    (<code>aria-busy</code>) while the header/footer stay visible. <code>invalid</code>/
+    <code>empty</code> are not carried — a panel has no value of its own to validate (SPEC.md §2).
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">disabled</p>
+      <ino-panel header="Payout details" [disabled]="true">
+        <p>Account •••• 4821, Routing •••• 0098</p>
+      </ino-panel>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">collapsible + readonly — toggle inert, stays focusable</p>
+      <ino-panel header="Locked section" [collapsible]="true" [readonly]="true" [collapsed]="false">
+        <p>Reference ID: KYB-20412</p>
+      </ino-panel>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">loading</p>
+      <ino-panel header="Fetching document list" [loading]="true">
+        <p>Document type: —</p>
+      </ino-panel>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">collapsed — content removed from the a11y tree</p>
+      <ino-panel header="Archived notes" [collapsible]="true" [collapsed]="collapsedExample">
+        <p>Reviewed 2026-09-12</p>
+      </ino-panel>
+      <p class="demo-live">collapsed = {{ collapsedExample }}</p>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Sizing — sm / md / lg (padding scale)</h3>
+  <p class="demo-section__note">
+    <code>size</code> re-points <code>--ino-control-padding-inline-roomy</code> (doc 26 §5:
+    "padding scales") for the header, body, and footer bars uniformly — one axis, unlike
+    <code>&lt;ino-card&gt;</code>'s separate <code>padding</code>/<code>size</code> knobs
+    (SPEC.md §1).
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">size="sm"</p>
+      <ino-panel header="Compact section" size="sm">
+        <p>Content</p>
+      </ino-panel>
+    </div>
+    <div class="demo-pane">
+      <p class="demo-pane__label">size="md" (default)</p>
+      <ino-panel header="Default section" size="md">
+        <p>Content</p>
+      </ino-panel>
+    </div>
+    <div class="demo-pane">
+      <p class="demo-pane__label">size="lg"</p>
+      <ino-panel header="Roomy section" size="lg">
+        <p>Content</p>
+      </ino-panel>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Density — dense vs. fluid</h3>
+  <p class="demo-section__note">
+    Density is a global <code>[data-density]</code> token axis, not a per-component
+    <code>@Input()</code>. <code>--ino-control-padding-inline-roomy</code> is re-declared under
+    both <code>[data-density]</code> blocks, so density composes with <code>size</code> for free.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane" data-density="dense">
+      <p class="demo-pane__label">dense</p>
+      <ino-panel header="Dense section">
+        <p>Content</p>
+      </ino-panel>
+    </div>
+    <div class="demo-pane" data-density="fluid">
+      <p class="demo-pane__label">fluid</p>
+      <ino-panel header="Fluid section">
+        <p>Content</p>
+      </ino-panel>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Labels — header wrapping, RTL, landmark</h3>
+  <p class="demo-section__note">
+    <code>header</code> is the component's one label — <code>aria-labelledby</code> wires it to the
+    <code>role="region"</code> host so assistive tech announces the panel as a named landmark
+    (SPEC.md §3). The stylesheet uses logical properties only (<code>padding-inline</code>,
+    <code>border-block-end</code>/<code>-start</code>), so it mirrors correctly under
+    <code>dir="rtl"</code>.
+  </p>
+  <div class="demo-col" style="max-width: 360px;">
+    <ino-panel header="A longer header that wraps across more than one line in a narrow pane" [collapsible]="true">
+      <p>Content</p>
+    </ino-panel>
+  </div>
+  <div class="demo-rtl" dir="rtl" style="margin-top: var(--ino-space-4); max-width: 360px;">
+    <ino-panel header="تفاصيل الفوترة" [collapsible]="true">
+      <p>12 عنصرًا، تاريخ الاستحقاق 2026-11-15.</p>
+    </ino-panel>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Keyboard contract</h3>
+  <p class="demo-section__note">
+    When <code>collapsible</code>, the header is a native <code>&lt;button&gt;</code>:
+    <strong>Tab</strong> reaches it as a normal stop (readonly instances stay reachable too — only
+    a <code>disabled</code> panel's toggle leaves the tab order, via native
+    <code>disabled</code>); <strong>Space</strong> or <strong>Enter</strong> toggles
+    <code>collapsed</code> and emits <code>collapsedChange</code> (native button activation, no
+    custom keydown handling). When not <code>collapsible</code>, the header has no tab stop at
+    all.
+  </p>
+</section>

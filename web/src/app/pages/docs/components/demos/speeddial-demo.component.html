@@ -1,0 +1,128 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Live example — linear up, labels, disabled action</h3>
+  <p class="demo-section__note">
+    Click the FAB (or focus it and press <kbd>Enter</kbd>/<kbd>↓</kbd>) to expand. Navigate with
+    <kbd>↓</kbd>/<kbd>↑</kbd>/<kbd>Home</kbd>/<kbd>End</kbd>, activate with <kbd>Enter</kbd>,
+    close with <kbd>Escape</kbd> (focus returns to the FAB) or by clicking outside. Hover or
+    focus an action to see its label. "Share (locked)" is disabled: muted, skipped by keyboard
+    navigation, not activatable.
+  </p>
+  <div class="speeddial-stage">
+    <ino-speeddial
+      [items]="actions"
+      ariaLabel="Document actions"
+      (itemClick)="onActivate($event.item.label)"
+      (openChange)="onOpenChange($event)"
+    ></ino-speeddial>
+  </div>
+  <p class="demo-live">open: {{ dialOpen }} · last action: {{ lastAction }}</p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Directions — linear up / down / left / right</h3>
+  <p class="demo-section__note">
+    Directions are physical (a FAB anchors to a screen corner, not text flow); an RTL layout
+    passes the mirrored direction at the call site. Horizontal dials show action labels below
+    the buttons so labels never overlap neighbouring actions.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">up (default)</p>
+      <div class="speeddial-stage">
+        <ino-speeddial [items]="actions" direction="up" ariaLabel="Actions, expands up"></ino-speeddial>
+      </div>
+    </div>
+    <div class="demo-pane">
+      <p class="demo-pane__label">down</p>
+      <div class="speeddial-stage speeddial-stage--top">
+        <ino-speeddial [items]="actions" direction="down" ariaLabel="Actions, expands down"></ino-speeddial>
+      </div>
+    </div>
+    <div class="demo-pane">
+      <p class="demo-pane__label">left</p>
+      <div class="speeddial-stage speeddial-stage--center speeddial-stage--short" style="justify-content: flex-end">
+        <ino-speeddial [items]="actions" direction="left" ariaLabel="Actions, expands left"></ino-speeddial>
+      </div>
+    </div>
+    <div class="demo-pane">
+      <p class="demo-pane__label">right</p>
+      <div class="speeddial-stage speeddial-stage--center speeddial-stage--short" style="justify-content: flex-start">
+        <ino-speeddial [items]="actions" direction="right" ariaLabel="Actions, expands right"></ino-speeddial>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Circle &amp; quarter-circle</h3>
+  <p class="demo-section__note">
+    <code>type="circle"</code> spreads actions on a full ring around the FAB;
+    <code>type="quarter-circle"</code> uses a 90° arc opening into the quadrant named by
+    <code>direction</code>. <code>radius</code> sets the ring distance in px.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">circle, radius 80</p>
+      <div class="speeddial-stage speeddial-stage--center">
+        <ino-speeddial [items]="actions" type="circle" [radius]="80" ariaLabel="Actions, circle layout"></ino-speeddial>
+      </div>
+    </div>
+    <div class="demo-pane">
+      <p class="demo-pane__label">quarter-circle, up-left</p>
+      <div class="speeddial-stage" style="justify-content: flex-end">
+        <ino-speeddial [items]="actions" type="quarter-circle" direction="up-left" [radius]="90" ariaLabel="Actions, quarter-circle layout"></ino-speeddial>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Mask</h3>
+  <p class="demo-section__note">
+    <code>[mask]="true"</code> renders a full-viewport scrim behind the open dial
+    (<code>--ino-color-overlay-scrim</code>). Clicking the scrim closes the dial.
+  </p>
+  <div class="speeddial-stage">
+    <ino-speeddial [items]="actions" [mask]="true" ariaLabel="Actions with mask"></ino-speeddial>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Sizing — fab sm / md / lg × density</h3>
+  <p class="demo-section__note">
+    The FAB reuses the shared control-height scale as its diameter: <code>sm</code> 36px,
+    <code>md</code> 44px (default), <code>lg</code> 52px. Action buttons stay one fixed 36px
+    size on every FAB size. Diameters are fixed px, so the dense/fluid density register leaves
+    the dial unchanged — the panes below prove it composes in both.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane" data-density="dense">
+      <p class="demo-pane__label">dense — sm / md / lg</p>
+      <div class="speeddial-stage speeddial-stage--short" style="gap: var(--ino-space-6)">
+        <ino-speeddial [items]="actions" size="sm" ariaLabel="Small dial (dense)"></ino-speeddial>
+        <ino-speeddial [items]="actions" size="md" ariaLabel="Medium dial (dense)"></ino-speeddial>
+        <ino-speeddial [items]="actions" size="lg" ariaLabel="Large dial (dense)"></ino-speeddial>
+      </div>
+    </div>
+    <div class="demo-pane" data-density="fluid">
+      <p class="demo-pane__label">fluid — sm / md / lg</p>
+      <div class="speeddial-stage speeddial-stage--short" style="gap: var(--ino-space-6)">
+        <ino-speeddial [items]="actions" size="sm" ariaLabel="Small dial (fluid)"></ino-speeddial>
+        <ino-speeddial [items]="actions" size="md" ariaLabel="Medium dial (fluid)"></ino-speeddial>
+        <ino-speeddial [items]="actions" size="lg" ariaLabel="Large dial (fluid)"></ino-speeddial>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States — disabled dial</h3>
+  <p class="demo-section__note">
+    <code>[disabled]="true"</code> disables the FAB trigger itself: native <code>disabled</code>,
+    muted fill, no shadow, never opens. (Open and disabled-action states are demonstrated in the
+    live example above.)
+  </p>
+  <div class="speeddial-stage speeddial-stage--short">
+    <ino-speeddial [items]="actions" [disabled]="true" ariaLabel="Disabled dial"></ino-speeddial>
+  </div>
+</section>

@@ -1,0 +1,149 @@
+<div class="ino-galleria__content">
+  <!-- Main stage area -->
+  <div
+    #stageArea
+    class="ino-galleria__stage"
+    (keydown)="onKeydown($event)"
+    tabindex="0"
+    [attr.aria-label]="rangeLabel"
+  >
+    <div class="ino-galleria__stage-wrapper" *ngIf="currentItem; else emptyState">
+      <img
+        [src]="currentItem.src"
+        [alt]="currentItem.alt"
+        class="ino-galleria__stage-image"
+        [attr.aria-busy]="loading"
+      />
+      <div class="ino-galleria__loading" *ngIf="loading" aria-hidden="true"></div>
+    </div>
+    <ng-template #emptyState>
+      <div class="ino-galleria__empty">No images</div>
+    </ng-template>
+
+    <!-- Caption overlay -->
+    <div class="ino-galleria__caption-overlay" *ngIf="currentItem?.caption">
+      <div class="ino-galleria__caption">{{ currentItem.caption }}</div>
+      <div class="ino-galleria__count" *ngIf="items.length">
+        {{ activeIdx + 1 }} / {{ items.length }}
+      </div>
+    </div>
+
+    <!-- Controls overlay -->
+    <div class="ino-galleria__controls-overlay">
+      <button
+        class="ino-galleria__control-btn ino-galleria__control-btn--prev"
+        (click)="prev()"
+        [disabled]="disabled || (isAtStart && items.length > 0)"
+        aria-label="Previous image"
+      >
+        <span aria-hidden="true">‹</span>
+      </button>
+      <button
+        class="ino-galleria__control-btn ino-galleria__control-btn--next"
+        (click)="next()"
+        [disabled]="disabled || (isAtEnd && items.length > 0)"
+        aria-label="Next image"
+      >
+        <span aria-hidden="true">›</span>
+      </button>
+    </div>
+
+    <!-- Autoplay control -->
+    <div class="ino-galleria__autoplay-control" *ngIf="items.length > 1">
+      <button
+        class="ino-galleria__play-btn"
+        (click)="togglePlaying()"
+        [attr.aria-pressed]="playing"
+        [attr.aria-label]="playing ? 'Pause autoplay' : 'Start autoplay'"
+      >
+        <span aria-hidden="true">{{ playing ? '⏸' : '▶' }}</span>
+      </button>
+    </div>
+
+    <!-- Fullscreen button -->
+    <button
+      class="ino-galleria__fullscreen-btn"
+      (click)="openFullscreen()"
+      *ngIf="showFullscreen && items.length > 0"
+      aria-label="Fullscreen"
+    >
+      <span aria-hidden="true">⛶</span>
+    </button>
+  </div>
+
+  <!-- Thumbnail strip -->
+  <div class="ino-galleria__thumbnails" *ngIf="showThumbnails && items.length > 1" role="tablist">
+    <button
+      *ngFor="let item of items; let i = index"
+      class="ino-galleria__thumbnail"
+      [class.ino-galleria__thumbnail--active]="i === activeIdx"
+      (click)="goTo(i)"
+      [disabled]="disabled"
+      [attr.aria-selected]="i === activeIdx"
+      role="tab"
+      [attr.aria-label]="'Image ' + (i + 1)"
+    >
+      <img [src]="item.src" [alt]="'Thumbnail ' + (i + 1)" />
+    </button>
+  </div>
+
+  <!-- Indicators -->
+  <div class="ino-galleria__indicators" *ngIf="showIndicators && items.length > 1" role="tablist">
+    <button
+      *ngFor="let item of items; let i = index"
+      class="ino-galleria__indicator"
+      [class.ino-galleria__indicator--active]="i === activeIdx"
+      (click)="goTo(i)"
+      [disabled]="disabled"
+      [attr.aria-selected]="i === activeIdx"
+      role="tab"
+      [attr.aria-label]="'Go to image ' + (i + 1)"
+    >
+    </button>
+  </div>
+</div>
+
+<!-- Fullscreen dialog overlay -->
+<div class="ino-galleria__fullscreen" *ngIf="fullscreenActive" (keydown)="onFullscreenKeydown($event)">
+  <div
+    class="ino-galleria__fullscreen-content"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Fullscreen gallery"
+    tabindex="-1"
+    inoFocusTrap
+  >
+    <button
+      class="ino-galleria__fullscreen-close"
+      (click)="closeFullscreen()"
+      aria-label="Close fullscreen"
+    >
+      <span aria-hidden="true">✕</span>
+    </button>
+
+    <div class="ino-galleria__fullscreen-stage">
+      <img
+        [src]="currentItem?.src || ''"
+        [alt]="currentItem?.alt || ''"
+        class="ino-galleria__fullscreen-image"
+      />
+    </div>
+
+    <button
+      class="ino-galleria__fullscreen-prev"
+      (click)="prev()"
+      [disabled]="isAtStart"
+      aria-label="Previous image"
+    >
+      <span aria-hidden="true">‹</span>
+    </button>
+    <button
+      class="ino-galleria__fullscreen-next"
+      (click)="next()"
+      [disabled]="isAtEnd"
+      aria-label="Next image"
+    >
+      <span aria-hidden="true">›</span>
+    </button>
+  </div>
+</div>

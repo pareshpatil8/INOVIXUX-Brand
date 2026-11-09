@@ -38,23 +38,26 @@
   }
 }
 
-.docs-tier-heading {
+.docs-disposition-heading {
   margin-top: var(--ino-space-6);
 }
 
-.docs-tier-badge {
+.docs-disposition-badge {
   display: inline-block;
   padding: var(--ino-space-1) var(--ino-space-2);
   border-radius: var(--ino-radius-sm);
   font-family: var(--ino-font-mono);
   font-size: 11px;
   border: 1px solid var(--ino-color-border);
+  white-space: nowrap;
 
-  &[data-tier='Tier-1'] {
+  // Committed = scheduled work, warning-toned like the old Tier-1 badge. Covered = closed with no
+  // build owed, so it reads back like Shipped rather than like a gap.
+  &[data-disposition='Committed'] {
     color: var(--ino-color-status-warning, var(--ino-color-on-surface));
   }
 
-  &[data-tier='Tier-3'] {
+  &[data-disposition='Covered'] {
     color: var(--ino-color-on-surface-subtle);
   }
 }

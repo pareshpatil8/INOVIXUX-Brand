@@ -1,0 +1,76 @@
+/*
+ * <ino-scrolltop> — INO-867 / INO-31 B4 (rebuild). No literal colour/space — every declaration
+ * resolves through tokens.css. One size only (doc 26 §5 row): a 44px circular button, same
+ * control-height as a default ino-button, so it never gets its own size scale.
+ *
+ * `target="window"` fixes the host to the viewport; `target="parent"` switches to `position:
+ * absolute` so the host tracks its own DOM parent instead (that parent must establish a
+ * positioning context — documented in SPEC.md §1, same contract a native `position: absolute`
+ * child always carries).
+ */
+:host {
+  position: fixed;
+  inset-block-end: var(--ino-space-6);
+  inset-inline-end: var(--ino-space-6);
+  z-index: var(--ino-z-overlay);
+}
+
+:host([data-target='parent']) {
+  position: absolute;
+}
+
+.ino-scrolltop__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 44px;
+  block-size: 44px;
+  border: none;
+  border-radius: 50%;
+  background: var(--ino-gradient-accent);
+  color: var(--ino-color-on-accent);
+  box-shadow: var(--ino-elevation-neutral-3);
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+    transform var(--ino-motion-duration-fast) var(--ino-motion-easing-standard),
+    visibility 0s;
+
+  &:hover {
+    filter: brightness(1.08);
+  }
+
+  &:active {
+    background: var(--ino-color-accent-active);
+    filter: none;
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+}
+
+/* Permanently-mounted node (SPEC.md §3) — visibility toggles via this class + the template's
+   aria-hidden/tabindex bindings, never *ngIf, so a screen reader's accessibility-tree walk and
+   a sighted hover-probe both see one stable node instead of one that appears/disappears. */
+.ino-scrolltop__btn--visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ino-scrolltop__btn {
+    transform: translateY(8px);
+  }
+
+  .ino-scrolltop__btn--visible {
+    transform: translateY(0);
+  }
+}
+
+.ino-scrolltop__icon {
+  font-size: 16px;
+  line-height: 1;
+}

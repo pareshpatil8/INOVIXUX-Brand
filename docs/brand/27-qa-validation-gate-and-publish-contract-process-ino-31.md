@@ -28,6 +28,13 @@ doc 26's owner, not silently substituted here.
   fix.
 - A disagreement with the acceptance criteria itself (doc 26 §2) is a flag to the plan owner, not
   a silent QA-side substitution of a different bar.
+- **Gate ticket shape is governed by doc 26 §2.1** (added 2026-10-31, INO-811): the point-8
+  subtask is created with QALead as `assigneeAgentId`, is never closed by the component's
+  builder, carries observed results against the running page for items 1–5, and is not duplicated
+  by a builder-created second gate. An assignee-less §2 gate is the specific failure mode — the
+  platform's orphan-blocker recovery assigns it back to whoever created it, which is how a
+  builder ends up holding its own gate without anyone deciding so. If you are handed a §2 gate
+  for a component you did not validate yourself, check who built it before you act on it.
 
 ---
 

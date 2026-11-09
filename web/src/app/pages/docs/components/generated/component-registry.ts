@@ -3,92 +3,196 @@
 // Slug -> component class lookup for the /docs/components/:slug live-example renderer.
 import { Type } from '@angular/core';
 
+import { InoAccordionComponent } from '../../../../components/accordion/ino-accordion.component';
 import { InoAlertComponent } from '../../../../components/alert/ino-alert.component';
+import { InoAnimateonscrollComponent } from '../../../../components/animateonscroll/ino-animateonscroll.component';
+import { InoAutocompleteComponent } from '../../../../components/autocomplete/ino-autocomplete.component';
+import { InoAutofocusComponent } from '../../../../components/autofocus/ino-autofocus.component';
+import { InoAvatarComponent } from '../../../../components/avatar/ino-avatar.component';
+import { InoAvatarGroupComponent } from '../../../../components/avatar-group/ino-avatar-group.component';
+import { InoBadgeComponent } from '../../../../components/badge/ino-badge.component';
+import { InoBreadcrumbComponent } from '../../../../components/breadcrumb/ino-breadcrumb.component';
 import { InoButtonComponent } from '../../../../components/button/ino-button.component';
 import { InoCardComponent } from '../../../../components/card/ino-card.component';
+import { InoCarouselComponent } from '../../../../components/carousel/ino-carousel.component';
+import { InoCascadeSelectComponent } from '../../../../components/cascade-select/ino-cascade-select.component';
 import { InoCheckboxComponent } from '../../../../components/checkbox/ino-checkbox.component';
+import { InoChipComponent } from '../../../../components/chip/ino-chip.component';
+import { InoColorPickerComponent } from '../../../../components/colorpicker/ino-colorpicker.component';
+import { InoCommandMenuComponent } from '../../../../components/command-menu/ino-command-menu.component';
 import { InoConfirmDialogComponent } from '../../../../components/confirm-dialog/ino-confirm-dialog.component';
 import { InoConfirmPopupComponent } from '../../../../components/confirm-popup/ino-confirm-popup.component';
+import { InoContextMenuComponent } from '../../../../components/context-menu/ino-context-menu.component';
+import { InoDataViewComponent } from '../../../../components/dataview/ino-dataview.component';
 import { InoDatePickerComponent } from '../../../../components/datepicker/ino-datepicker.component';
+import { InoDividerComponent } from '../../../../components/divider/ino-divider.component';
+import { InoDockComponent } from '../../../../components/dock/ino-dock.component';
+import { InoDragdropComponent } from '../../../../components/dragdrop/ino-dragdrop.component';
 import { InoDrawerComponent } from '../../../../components/drawer/ino-drawer.component';
+import { InoDynamicDialogComponent } from '../../../../components/dynamic-dialog/ino-dynamic-dialog.component';
+import { InoEditorComponent } from '../../../../components/editor/ino-editor.component';
 import { InoFeatureGridComponent } from '../../../../components/feature-grid/ino-feature-grid.component';
+import { InoFieldsetComponent } from '../../../../components/fieldset/ino-fieldset.component';
 import { InoFileUploadComponent } from '../../../../components/file-upload/ino-file-upload.component';
 import { InoFloatLabelComponent } from '../../../../components/floatlabel/ino-floatlabel.component';
 import { InoFocusTrapComponent } from '../../../../components/focus-trap/ino-focus-trap.component';
 import { InoFooterComponent } from '../../../../components/footer/ino-footer.component';
+import { InoGalleriaComponent } from '../../../../components/galleria/ino-galleria.component';
 import { InoHeroComponent } from '../../../../components/hero/ino-hero.component';
 import { InoIconFieldComponent } from '../../../../components/icon-field/ino-icon-field.component';
 import { InoIftaLabelComponent } from '../../../../components/iftalabel/ino-iftalabel.component';
+import { InoImageComponent } from '../../../../components/image/ino-image.component';
+import { InoImagecompareComponent } from '../../../../components/imagecompare/ino-imagecompare.component';
+import { InoInplaceComponent } from '../../../../components/inplace/ino-inplace.component';
 import { InoInputComponent } from '../../../../components/input/ino-input.component';
 import { InoInputGroupComponent } from '../../../../components/input-group/ino-input-group.component';
 import { InoInputOtpComponent } from '../../../../components/input-otp/ino-input-otp.component';
+import { InoInputColorComponent } from '../../../../components/inputcolor/ino-inputcolor.component';
+import { InoInputMaskComponent } from '../../../../components/inputmask/ino-inputmask.component';
+import { InoInputNumberComponent } from '../../../../components/inputnumber/ino-inputnumber.component';
+import { InoInputTagsComponent } from '../../../../components/inputtags/ino-inputtags.component';
+import { InoKeyfilterComponent } from '../../../../components/keyfilter/ino-keyfilter.component';
+import { InoKnobComponent } from '../../../../components/knob/ino-knob.component';
 import { InoLabelComponent } from '../../../../components/label/ino-label.component';
+import { InoListboxComponent } from '../../../../components/listbox/ino-listbox.component';
+import { InoMegaMenuComponent } from '../../../../components/megamenu/ino-megamenu.component';
+import { InoMenuComponent } from '../../../../components/menu/ino-menu.component';
 import { InoMeterGroupComponent } from '../../../../components/meter-group/ino-meter-group.component';
 import { InoMetricPanelComponent } from '../../../../components/metric-panel/ino-metric-panel.component';
 import { InoModalComponent } from '../../../../components/modal/ino-modal.component';
 import { InoMultiSelectComponent } from '../../../../components/multiselect/ino-multiselect.component';
 import { InoNavComponent } from '../../../../components/nav/ino-nav.component';
+import { InoOrderListComponent } from '../../../../components/orderlist/ino-orderlist.component';
+import { InoOrgchartComponent } from '../../../../components/orgchart/ino-orgchart.component';
 import { InoPaginatorComponent } from '../../../../components/paginator/ino-paginator.component';
+import { InoPanelComponent } from '../../../../components/panel/ino-panel.component';
+import { InoPanelMenuComponent } from '../../../../components/panel-menu/ino-panel-menu.component';
+import { InoPasswordComponent } from '../../../../components/password/ino-password.component';
+import { InoPickListComponent } from '../../../../components/picklist/ino-picklist.component';
 import { InoPopoverComponent } from '../../../../components/popover/ino-popover.component';
 import { InoProgressBarComponent } from '../../../../components/progress-bar/ino-progress-bar.component';
 import { InoProgressSpinnerComponent } from '../../../../components/progress-spinner/ino-progress-spinner.component';
 import { InoRadioGroupComponent } from '../../../../components/radio-group/ino-radio-group.component';
+import { InoRatingComponent } from '../../../../components/rating/ino-rating.component';
+import { InoScrolltopComponent } from '../../../../components/scrolltop/ino-scrolltop.component';
 import { InoSelectComponent } from '../../../../components/select/ino-select.component';
+import { InoSelectButtonComponent } from '../../../../components/select-button/ino-select-button.component';
 import { InoSkeletonComponent } from '../../../../components/skeleton/ino-skeleton.component';
+import { InoSliderComponent } from '../../../../components/slider/ino-slider.component';
+import { InoSpeedDialComponent } from '../../../../components/speeddial/ino-speeddial.component';
+import { InoSplitterComponent } from '../../../../components/splitter/ino-splitter.component';
 import { InoStepperComponent } from '../../../../components/stepper/ino-stepper.component';
 import { InoTableComponent } from '../../../../components/table/ino-table.component';
 import { InoTabsComponent } from '../../../../components/tabs/ino-tabs.component';
 import { InoTagComponent } from '../../../../components/tag/ino-tag.component';
+import { InoTerminalComponent } from '../../../../components/terminal/ino-terminal.component';
 import { InoTextareaComponent } from '../../../../components/textarea/ino-textarea.component';
 import { InoTierCardComponent } from '../../../../components/tier-card/ino-tier-card.component';
 import { InoTimelineComponent } from '../../../../components/timeline/ino-timeline.component';
 import { InoToastContainerComponent } from '../../../../components/toast-container/ino-toast-container.component';
 import { InoToggleComponent } from '../../../../components/toggle/ino-toggle.component';
+import { InoToggleButtonComponent } from '../../../../components/toggle-button/ino-toggle-button.component';
+import { InoToolbarComponent } from '../../../../components/toolbar/ino-toolbar.component';
 import { InoTooltipComponent } from '../../../../components/tooltip/ino-tooltip.component';
+import { InoTreeComponent } from '../../../../components/tree/ino-tree.component';
+import { InoTreeSelectComponent } from '../../../../components/treeselect/ino-treeselect.component';
+import { InoTreeTableComponent } from '../../../../components/treetable/ino-treetable.component';
 import { InoVirtualScrollerComponent } from '../../../../components/virtual-scroller/ino-virtual-scroller.component';
 
 export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
+  'accordion': InoAccordionComponent,
   'alert': InoAlertComponent,
+  'animateonscroll': InoAnimateonscrollComponent,
+  'autocomplete': InoAutocompleteComponent,
+  'autofocus': InoAutofocusComponent,
+  'avatar': InoAvatarComponent,
+  'avatar-group': InoAvatarGroupComponent,
+  'badge': InoBadgeComponent,
+  'breadcrumb': InoBreadcrumbComponent,
   'button': InoButtonComponent,
   'card': InoCardComponent,
+  'carousel': InoCarouselComponent,
+  'cascade-select': InoCascadeSelectComponent,
   'checkbox': InoCheckboxComponent,
+  'chip': InoChipComponent,
+  'colorpicker': InoColorPickerComponent,
+  'command-menu': InoCommandMenuComponent,
   'confirm-dialog': InoConfirmDialogComponent,
   'confirm-popup': InoConfirmPopupComponent,
+  'context-menu': InoContextMenuComponent,
+  'dataview': InoDataViewComponent,
   'datepicker': InoDatePickerComponent,
+  'divider': InoDividerComponent,
+  'dock': InoDockComponent,
+  'dragdrop': InoDragdropComponent,
   'drawer': InoDrawerComponent,
+  'dynamic-dialog': InoDynamicDialogComponent,
+  'editor': InoEditorComponent,
   'feature-grid': InoFeatureGridComponent,
+  'fieldset': InoFieldsetComponent,
   'file-upload': InoFileUploadComponent,
   'floatlabel': InoFloatLabelComponent,
   'focus-trap': InoFocusTrapComponent,
   'footer': InoFooterComponent,
+  'galleria': InoGalleriaComponent,
   'hero': InoHeroComponent,
   'icon-field': InoIconFieldComponent,
   'iftalabel': InoIftaLabelComponent,
+  'image': InoImageComponent,
+  'imagecompare': InoImagecompareComponent,
+  'inplace': InoInplaceComponent,
   'input': InoInputComponent,
   'input-group': InoInputGroupComponent,
   'input-otp': InoInputOtpComponent,
+  'inputcolor': InoInputColorComponent,
+  'inputmask': InoInputMaskComponent,
+  'inputnumber': InoInputNumberComponent,
+  'inputtags': InoInputTagsComponent,
+  'keyfilter': InoKeyfilterComponent,
+  'knob': InoKnobComponent,
   'label': InoLabelComponent,
+  'listbox': InoListboxComponent,
+  'megamenu': InoMegaMenuComponent,
+  'menu': InoMenuComponent,
   'meter-group': InoMeterGroupComponent,
   'metric-panel': InoMetricPanelComponent,
   'modal': InoModalComponent,
   'multiselect': InoMultiSelectComponent,
   'nav': InoNavComponent,
+  'orderlist': InoOrderListComponent,
+  'orgchart': InoOrgchartComponent,
   'paginator': InoPaginatorComponent,
+  'panel': InoPanelComponent,
+  'panel-menu': InoPanelMenuComponent,
+  'password': InoPasswordComponent,
+  'picklist': InoPickListComponent,
   'popover': InoPopoverComponent,
   'progress-bar': InoProgressBarComponent,
   'progress-spinner': InoProgressSpinnerComponent,
   'radio-group': InoRadioGroupComponent,
+  'rating': InoRatingComponent,
+  'scrolltop': InoScrolltopComponent,
   'select': InoSelectComponent,
+  'select-button': InoSelectButtonComponent,
   'skeleton': InoSkeletonComponent,
+  'slider': InoSliderComponent,
+  'speeddial': InoSpeedDialComponent,
+  'splitter': InoSplitterComponent,
   'stepper': InoStepperComponent,
   'table': InoTableComponent,
   'tabs': InoTabsComponent,
   'tag': InoTagComponent,
+  'terminal': InoTerminalComponent,
   'textarea': InoTextareaComponent,
   'tier-card': InoTierCardComponent,
   'timeline': InoTimelineComponent,
   'toast-container': InoToastContainerComponent,
   'toggle': InoToggleComponent,
+  'toggle-button': InoToggleButtonComponent,
+  'toolbar': InoToolbarComponent,
   'tooltip': InoTooltipComponent,
+  'tree': InoTreeComponent,
+  'treeselect': InoTreeSelectComponent,
+  'treetable': InoTreeTableComponent,
   'virtual-scroller': InoVirtualScrollerComponent,
 };

@@ -1,0 +1,248 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Variants — single-expand (default) vs multiple-expand</h3>
+  <p class="demo-section__note">
+    <code>[multiple]="false"</code> (default) enforces radio-like mutual exclusion: opening one tab
+    closes all others. <code>[multiple]="true"</code> allows any number of tabs open simultaneously.
+    Both modes follow the WAI-ARIA APG accordion pattern — the difference is only in close-others
+    logic.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">single-expand (default)</p>
+      <ino-accordion>
+        <ino-accordion-tab header="First Section" [expanded]="true">
+          <p>This tab starts expanded. Opening another tab will collapse this one.</p>
+        </ino-accordion-tab>
+        <ino-accordion-tab header="Second Section">
+          <p>Click the header to expand this section and collapse the first.</p>
+        </ino-accordion-tab>
+        <ino-accordion-tab header="Third Section">
+          <p>At most one section can be expanded in single-expand mode.</p>
+        </ino-accordion-tab>
+      </ino-accordion>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">multiple-expand</p>
+      <ino-accordion [multiple]="true">
+        <ino-accordion-tab header="First Section" [expanded]="true">
+          <p>Multiple sections can be expanded simultaneously.</p>
+        </ino-accordion-tab>
+        <ino-accordion-tab header="Second Section" [expanded]="true">
+          <p>This tab is also expanded by default.</p>
+        </ino-accordion-tab>
+        <ino-accordion-tab header="Third Section">
+          <p>All tabs operate independently — no mutual exclusion.</p>
+        </ino-accordion-tab>
+      </ino-accordion>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Icon position — start (default) vs end</h3>
+  <p class="demo-section__note">
+    <code>[iconPosition]="start"</code> (default) places the chevron before the text, reading as a
+    visual bullet. <code>[iconPosition]="end"</code> places it after the text, reading as a disclosure
+    hint. The parent accordion cascades this value to all tabs.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">icon start (default)</p>
+      <ino-accordion iconPosition="start">
+        <ino-accordion-tab header="Products" [expanded]="true">
+          <p>Chevron before the header text.</p>
+        </ino-accordion-tab>
+        <ino-accordion-tab header="Services">
+          <p>PrimeNG default, reads as a visual bullet.</p>
+        </ino-accordion-tab>
+      </ino-accordion>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">icon end</p>
+      <ino-accordion iconPosition="end">
+        <ino-accordion-tab header="Products" [expanded]="true">
+          <p>Chevron after the header text.</p>
+        </ino-accordion-tab>
+        <ino-accordion-tab header="Services">
+          <p>Reads as a disclosure hint (some enterprise UIs).</p>
+        </ino-accordion-tab>
+      </ino-accordion>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Nested accordions</h3>
+  <p class="demo-section__note">
+    An <code>&lt;ino-accordion&gt;</code> inside an <code>&lt;ino-accordion-tab&gt;</code>'s content.
+    The inner accordion's tabs should have <code>headingLevel</code> one rank deeper than the outer
+    accordion's tabs (caller responsibility, no automatic detection). Arrow keys do not cross accordion
+    boundaries — each is a separate roving-tabindex group.
+  </p>
+  <div class="demo-pane">
+    <p class="demo-pane__label">nested (h3 outer, h4 inner)</p>
+    <ino-accordion headingLevel="3">
+      <ino-accordion-tab header="Account Settings" [expanded]="true">
+        <ino-accordion [multiple]="true" headingLevel="4">
+          <ino-accordion-tab header="Profile">
+            <p>Name, email, avatar — inner accordion tab content.</p>
+          </ino-accordion-tab>
+          <ino-accordion-tab header="Security">
+            <p>Password, 2FA, sessions — inner accordion tab content.</p>
+          </ino-accordion-tab>
+        </ino-accordion>
+      </ino-accordion-tab>
+      <ino-accordion-tab header="Billing">
+        <p>Outer accordion tab content (not nested).</p>
+      </ino-accordion-tab>
+    </ino-accordion>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States</h3>
+  <p class="demo-section__note">
+    <strong>Default/hover/focus-visible/active</strong> are live on every tab header above — tab onto
+    one for the focus ring, or hover for the accent color transition.
+    <strong>Expanded</strong> is controlled by the <code>expanded</code> @Input; the body region is
+    <code>[hidden]</code> when collapsed.
+    <strong>Disabled (tab-level)</strong> locks only that tab's toggle.
+    <strong>Disabled (accordion-level)</strong> dims the whole accordion.
+    <strong>Loading</strong> dims all panels with <code>aria-busy="true"</code>.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">disabled tab</p>
+      <ino-accordion>
+        <ino-accordion-tab header="Active Tab" [expanded]="true">
+          <p>This tab is toggleable.</p>
+        </ino-accordion-tab>
+        <ino-accordion-tab header="Disabled Tab" [disabled]="true">
+          <p>This content is not accessible.</p>
+        </ino-accordion-tab>
+      </ino-accordion>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">accordion disabled</p>
+      <ino-accordion [disabled]="true">
+        <ino-accordion-tab header="Section 1" [expanded]="true">
+          <p>Whole accordion is disabled.</p>
+        </ino-accordion-tab>
+        <ino-accordion-tab header="Section 2">
+          <p>No tab is toggleable.</p>
+        </ino-accordion-tab>
+      </ino-accordion>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">loading</p>
+      <ino-accordion [loading]="true">
+        <ino-accordion-tab header="Section 1" [expanded]="true">
+          <p>Accordion is loading data.</p>
+        </ino-accordion-tab>
+        <ino-accordion-tab header="Section 2">
+          <p>All panels dimmed, aria-busy="true".</p>
+        </ino-accordion-tab>
+      </ino-accordion>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Sizing — compact vs comfortable</h3>
+  <p class="demo-section__note">
+    Two-value scale per the spec row (not sm/md/lg). <code>size="compact"</code> maps to
+    <code>--ino-control-padding-inline-roomy-sm</code>; <code>size="comfortable"</code> (default)
+    reads the bare alias. Density still composes for free: this docs page runs in the dense register
+    (left pane); the right pane overrides to fluid via <code>[data-density="fluid"]</code>.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">compact</p>
+      <ino-accordion size="compact">
+        <ino-accordion-tab header="Products" [expanded]="true">
+          <p>Reduced padding for dense UIs.</p>
+        </ino-accordion-tab>
+        <ino-accordion-tab header="Services">
+          <p>Compact size.</p>
+        </ino-accordion-tab>
+      </ino-accordion>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">comfortable (default)</p>
+      <ino-accordion size="comfortable">
+        <ino-accordion-tab header="Products" [expanded]="true">
+          <p>Default padding, more breathing room.</p>
+        </ino-accordion-tab>
+        <ino-accordion-tab header="Services">
+          <p>Comfortable size.</p>
+        </ino-accordion-tab>
+      </ino-accordion>
+    </div>
+
+    <div class="demo-pane" data-density="fluid">
+      <p class="demo-pane__label">comfortable + fluid density</p>
+      <ino-accordion size="comfortable">
+        <ino-accordion-tab header="Products" [expanded]="true">
+          <p>Density override applied to this pane only.</p>
+        </ino-accordion-tab>
+        <ino-accordion-tab header="Services">
+          <p>Larger targets in fluid mode.</p>
+        </ino-accordion-tab>
+      </ino-accordion>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Keyboard navigation (APG accordion pattern)</h3>
+  <p class="demo-section__note">
+    <strong>Tab</strong> enters the accordion at the first tab header; once inside, roving tabindex
+    keeps only the focused header tabbable. <strong>ArrowDown</strong> moves focus to the next tab
+    (wraps); <strong>ArrowUp</strong> moves to the previous tab (wraps). <strong>Home</strong> jumps
+    to the first tab; <strong>End</strong> jumps to the last tab. <strong>Enter/Space</strong> toggles
+    the focused tab. Try it on the accordion below with your keyboard.
+  </p>
+  <div class="demo-pane">
+    <p class="demo-pane__label">keyboard walkthrough</p>
+    <ino-accordion>
+      <ino-accordion-tab header="First Section (Tab here to start)" [expanded]="true">
+        <p>Use ArrowDown to move focus to the next tab.</p>
+      </ino-accordion-tab>
+      <ino-accordion-tab header="Second Section">
+        <p>Use ArrowUp to move focus to the previous tab.</p>
+      </ino-accordion-tab>
+      <ino-accordion-tab header="Third Section">
+        <p>Use Home to jump to the first tab, End to jump here.</p>
+      </ino-accordion-tab>
+      <ino-accordion-tab header="Fourth Section">
+        <p>Press Enter or Space to toggle the focused tab.</p>
+      </ino-accordion-tab>
+    </ino-accordion>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">RTL support (logical properties)</h3>
+  <p class="demo-section__note">
+    All spacing uses logical properties (<code>padding-block</code>/<code>-inline</code>,
+    <code>border-block-end</code>). Icon-end variant uses <code>flex-direction: row-reverse</code>.
+    Text alignment is <code>start</code>. No <code>left</code>/<code>right</code> anywhere. The demo
+    below applies <code>dir="rtl"</code> to the pane.
+  </p>
+  <div class="demo-pane" dir="rtl">
+    <p class="demo-pane__label">RTL (dir="rtl")</p>
+    <ino-accordion iconPosition="start">
+      <ino-accordion-tab header="المنتجات" [expanded]="true">
+        <p>Chevron flips to the trailing edge in RTL.</p>
+      </ino-accordion-tab>
+      <ino-accordion-tab header="الخدمات">
+        <p>All spacing and alignment mirror correctly.</p>
+      </ino-accordion-tab>
+    </ino-accordion>
+  </div>
+</section>

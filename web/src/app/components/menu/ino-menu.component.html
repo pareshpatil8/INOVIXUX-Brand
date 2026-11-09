@@ -1,0 +1,84 @@
+<ng-template #menuBody>
+  <div
+    *ngIf="isEmpty"
+    class="ino-menu__item ino-menu__item--empty"
+    role="menuitem"
+    aria-disabled="true"
+  >{{ emptyLabel }}</div>
+
+  <ng-container *ngIf="!isEmpty">
+    <ng-container *ngFor="let group of rootGroups; trackBy: trackByGroupIndex">
+      <div *ngIf="group.separatorBefore" class="ino-menu__separator" role="separator"></div>
+
+      <div
+        *ngIf="isGrouped"
+        class="ino-menu__group"
+        role="group"
+        [attr.aria-label]="group.label || null"
+      >
+        <ng-container *ngFor="let item of group.items; trackBy: trackByItem">
+          <ng-container *ngTemplateOutlet="itemTpl; context: { item: item, depth: 0 }"></ng-container>
+        </ng-container>
+      </div>
+
+      <ng-container *ngIf="!isGrouped">
+        <ng-container *ngFor="let item of group.items; trackBy: trackByItem">
+          <ng-container *ngTemplateOutlet="itemTpl; context: { item: item, depth: 0 }"></ng-container>
+        </ng-container>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+</ng-template>
+
+<ng-container *ngIf="mode === 'static'">
+  <ng-container *ngTemplateOutlet="menuBody"></ng-container>
+</ng-container>
+
+<div
+  *ngIf="mode === 'popup' && open"
+  #popupPanel
+  class="ino-menu__popup-panel"
+  role="menu"
+  [attr.aria-label]="ariaLabel"
+  tabindex="-1"
+  [style.top.px]="popupTop"
+  [style.left.px]="popupLeft"
+  (focusout)="onPanelFocusOut($event)"
+>
+  <ng-container *ngTemplateOutlet="menuBody"></ng-container>
+</div>
+
+<ng-template #itemTpl let-item="item" let-depth="depth">
+  <a
+    class="ino-menu__item"
+    role="menuitem"
+    [class.ino-menu__item--disabled]="item.disabled"
+    [attr.aria-disabled]="item.disabled ? 'true' : null"
+    [attr.aria-haspopup]="hasChildren(item) ? 'menu' : null"
+    [attr.aria-expanded]="hasChildren(item) ? (isSubmenuOpen(depth, item) ? 'true' : 'false') : null"
+    [attr.tabindex]="item.disabled ? null : (isFocused(depth, item) ? 0 : -1)"
+    [attr.data-menu-item-id]="itemId(item)"
+    [attr.data-menu-depth]="depth"
+    [routerLink]="!item.disabled && item.href ? item.href : null"
+    (click)="onItemClick($event, item, depth)"
+    (keydown)="onItemKeydown($event, item, depth)"
+  >
+    <span *ngIf="item.icon" class="ino-menu__icon" aria-hidden="true">{{ item.icon }}</span>
+    <span class="ino-menu__label">{{ item.label }}</span>
+    <span *ngIf="hasChildren(item)" class="ino-menu__chevron" aria-hidden="true">&rsaquo;</span>
+  </a>
+
+  <div
+    *ngIf="hasChildren(item) && isSubmenuOpen(depth, item)"
+    class="ino-menu__submenu"
+    role="menu"
+    [attr.aria-label]="item.label + ' submenu'"
+    [attr.data-menu-submenu-for]="itemId(item)"
+    [style.top.px]="submenuPosition(item)?.top ?? 0"
+    [style.left.px]="submenuPosition(item)?.left ?? 0"
+  >
+    <ng-container *ngFor="let child of item.children; trackBy: trackByItem">
+      <ng-container *ngTemplateOutlet="itemTpl; context: { item: child, depth: depth + 1 }"></ng-container>
+    </ng-container>
+  </div>
+</ng-template>

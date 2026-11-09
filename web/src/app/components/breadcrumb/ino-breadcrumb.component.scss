@@ -1,0 +1,194 @@
+/*
+ * Size API — doc 26 §2 row 3. "Sizing: one size" per the spec row, so there is no `[data-size]`
+ * axis to maintain: every length below reads the bare unsuffixed `--ino-control-*` alias
+ * (ino-toggle-button's "INO-124 idiom" minus the sm/lg re-point blocks), which already resolves
+ * to the dense/fluid-correct value per tokens.css §12 — density composes for free.
+ */
+.ino-breadcrumb {
+  --ino-breadcrumb-font-size: var(--ino-control-font-size);
+  --ino-breadcrumb-gap: var(--ino-control-gap);
+  --ino-breadcrumb-icon-size: var(--ino-control-icon-size);
+  display: block;
+  min-height: var(--ino-control-height);
+}
+
+.ino-breadcrumb__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ino-breadcrumb__crumb {
+  display: flex;
+  align-items: center;
+  gap: var(--ino-space-1);
+  min-height: var(--ino-control-height);
+}
+
+/* Separators are generated content, not DOM list items — the APG breadcrumb pattern's
+ * recommended approach, so the accessible list carries only the real crumbs (and the ellipsis
+ * trigger), never a decorative "/" that would otherwise need `aria-hidden` bookkeeping of its
+ * own. Logical-direction-only so it flips for free under `dir="rtl"` (no left/right/top/bottom
+ * anywhere in this file). */
+.ino-breadcrumb__crumb:not(:first-child)::before {
+  content: '/';
+  margin-inline-end: var(--ino-space-1);
+  color: var(--ino-color-on-surface-muted);
+  font-family: var(--ino-font-display);
+}
+
+.ino-breadcrumb__icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: var(--ino-breadcrumb-icon-size);
+  line-height: 1;
+}
+
+/* INO-786/INO-723: --ino-control-line-height does not exist in tokens.css. --ino-breadcrumb-font-size
+   resolves to --ino-control-font-size, which is itself --ino-type-body-size, so the matching
+   line-height is the body role's, not a control alias. */
+.ino-breadcrumb__label {
+  font-family: var(--ino-font-display);
+  font-size: var(--ino-breadcrumb-font-size);
+  line-height: var(--ino-type-body-line);
+}
+
+/* State 1 — default (link). */
+.ino-breadcrumb__label--link {
+  color: var(--ino-color-on-surface-muted);
+  text-decoration: none;
+  border-radius: var(--ino-radius-sm);
+
+  /* State 2 — hover. */
+  &:hover {
+    color: var(--ino-color-accent);
+    text-decoration: underline;
+  }
+
+  /* State 4 — focus-visible. */
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+
+  /* State 3 — active/pressed. */
+  &:active {
+    color: var(--ino-color-accent-active);
+  }
+}
+
+/* State: current-page — the spec row's additional state beyond the §2 standard set. Plain text,
+ * never a link: there is no reason to navigate to the page already showing. */
+.ino-breadcrumb__label--current {
+  color: var(--ino-color-on-surface);
+  font-weight: 600;
+}
+
+/* State 5 — disabled (per-item; a non-navigable ancestor crumb, or the whole trail under
+ * `[readonly]`). Deliberately the same 0.6-opacity/no-pointer treatment every other component in
+ * this library uses for `disabled`, not the lighter `readonly` treatment (0.8 opacity) those
+ * components reserve for still-focusable controls — a disabled/readonly breadcrumb crumb is
+ * inert text, nothing to focus. */
+.ino-breadcrumb__label--disabled {
+  color: var(--ino-color-on-surface-muted);
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ino-breadcrumb__crumb--ellipsis {
+  position: relative;
+}
+
+.ino-breadcrumb__ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--ino-space-5);
+  min-height: var(--ino-space-5);
+  padding: 0 var(--ino-space-1);
+  border: none;
+  border-radius: var(--ino-radius-sm);
+  background: transparent;
+  color: var(--ino-color-on-surface-muted);
+  font-family: var(--ino-font-display);
+  font-size: var(--ino-breadcrumb-font-size);
+  line-height: 1;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--ino-color-accent);
+    background: var(--ino-color-surface-sunken);
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+}
+
+.ino-breadcrumb__hidden-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ino-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  min-width: max-content;
+}
+
+.ino-breadcrumb__hidden-link {
+  color: var(--ino-color-on-surface-muted);
+  font-family: var(--ino-font-display);
+  font-size: var(--ino-breadcrumb-font-size);
+  text-decoration: none;
+
+  &:hover {
+    color: var(--ino-color-accent);
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+}
+
+.ino-breadcrumb__hidden-link--disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* State: loading — skeleton trail instead of real items; `aria-busy="true"` on the host `<nav>`
+ * carries the announcement (template), so this list is `aria-hidden` and purely decorative. */
+.ino-breadcrumb__list--loading {
+  gap: var(--ino-space-2);
+}
+
+.ino-breadcrumb__skeleton {
+  inline-size: 4.5em;
+  block-size: calc(var(--ino-breadcrumb-font-size) * var(--ino-type-body-line));
+  border-radius: var(--ino-radius-sm);
+  background: var(--ino-color-surface-sunken);
+
+  &--current {
+    inline-size: 7em;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: ino-breadcrumb-skeleton-pulse var(--ino-motion-duration-slow) ease-in-out infinite;
+  }
+}
+
+@keyframes ino-breadcrumb-skeleton-pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ino-breadcrumb__skeleton {
+    animation: none;
+  }
+}

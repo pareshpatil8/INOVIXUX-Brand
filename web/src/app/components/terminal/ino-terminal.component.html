@@ -1,0 +1,57 @@
+<div
+  class="ino-terminal"
+  [class.ino-terminal--focused]="focused"
+  [class.ino-terminal--disabled]="disabled"
+  [attr.data-size]="size"
+>
+  <div
+    #logEl
+    class="ino-terminal__log"
+    role="log"
+    aria-live="polite"
+    [attr.id]="logId"
+    [attr.aria-label]="ariaLabel + ' output'"
+    tabindex="-1"
+    (click)="onLogClick()"
+  >
+    <div
+      *ngFor="let line of lines; trackBy: trackByIndex"
+      class="ino-terminal__line"
+      [attr.data-line-type]="line.type"
+    >
+      <span *ngIf="line.type === 'input'" class="ino-terminal__line-prompt" aria-hidden="true">{{ prompt }}</span>
+      <span class="ino-terminal__line-text">{{ line.text }}</span>
+    </div>
+  </div>
+
+  <span *ngIf="busy" class="ino-terminal__sr-status" role="status">Running…</span>
+
+  <div *ngIf="!readonly" class="ino-terminal__input-row">
+    <ng-container *ngIf="!busy">
+      <span class="ino-terminal__prompt" aria-hidden="true">{{ prompt }}</span>
+      <input
+        #inputEl
+        type="text"
+        class="ino-terminal__input"
+        autocomplete="off"
+        autocapitalize="off"
+        spellcheck="false"
+        [attr.id]="inputId"
+        [attr.aria-label]="ariaLabel + ' command input'"
+        [attr.aria-controls]="logId"
+        [value]="inputValue"
+        [disabled]="disabled"
+        (input)="onInputChange($event)"
+        (keydown)="onInputKeydown($event)"
+        (focus)="onInputFocus()"
+        (blur)="onInputBlur()"
+      />
+    </ng-container>
+    <div *ngIf="busy" class="ino-terminal__busy-row" aria-hidden="true">
+      <span class="ino-terminal__prompt">{{ prompt }}</span>
+      <span class="ino-terminal__busy-dots">
+        <span></span><span></span><span></span>
+      </span>
+    </div>
+  </div>
+</div>

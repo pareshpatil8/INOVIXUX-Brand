@@ -1,0 +1,159 @@
+{
+  "theme_light": {
+    "pressed": "true",
+    "treeRole": 11,
+    "rowCount": 22,
+    "consoleErrors": []
+  },
+  "theme_dark": {
+    "pressed": "true",
+    "treeRole": 11,
+    "rowCount": 22,
+    "consoleErrors": []
+  },
+  "theme_high-contrast": {
+    "pressed": "true",
+    "treeRole": 11,
+    "rowCount": 22,
+    "consoleErrors": []
+  },
+  "keyboard": {
+    "steps": [
+      {
+        "action": "Tab to first treeitem",
+        "state": {
+          "role": "treeitem",
+          "level": "1",
+          "expanded": "false",
+          "checked": null,
+          "tabindex": "0",
+          "text": "▸Engineering"
+        }
+      },
+      {
+        "action": "ArrowDown",
+        "state": {
+          "role": "treeitem",
+          "level": "1",
+          "expanded": "false",
+          "checked": null,
+          "tabindex": "-1",
+          "text": "▸Compliance"
+        }
+      },
+      {
+        "action": "ArrowRight (expand)",
+        "state": {
+          "role": "treeitem",
+          "level": "1",
+          "expanded": "false",
+          "checked": null,
+          "tabindex": "-1",
+          "text": "▸Compliance"
+        }
+      },
+      {
+        "action": "ArrowDown into child",
+        "state": {
+          "role": "treeitem",
+          "level": "1",
+          "expanded": null,
+          "checked": null,
+          "tabindex": "-1",
+          "text": "Design"
+        }
+      },
+      {
+        "action": "ArrowLeft (to parent)",
+        "state": {
+          "role": "treeitem",
+          "level": "1",
+          "expanded": null,
+          "checked": null,
+          "tabindex": "-1",
+          "text": "Design"
+        }
+      },
+      {
+        "action": "End",
+        "state": {
+          "role": "treeitem",
+          "level": "1",
+          "expanded": null,
+          "checked": null,
+          "tabindex": "-1",
+          "text": "Design"
+        }
+      },
+      {
+        "action": "Home",
+        "state": {
+          "role": "treeitem",
+          "level": "1",
+          "expanded": "false",
+          "checked": null,
+          "tabindex": "0",
+          "text": "▸Engineering"
+        }
+      },
+      {
+        "action": "Enter (activate)",
+        "state": {
+          "role": "treeitem",
+          "level": "1",
+          "expanded": "false",
+          "checked": null,
+          "tabindex": "0",
+          "text": "▸Engineering"
+        }
+      },
+      {
+        "action": "Space (activate)",
+        "state": {
+          "role": "treeitem",
+          "level": "1",
+          "expanded": "false",
+          "checked": null,
+          "tabindex": "0",
+          "text": "▸Engineering"
+        }
+      },
+      {
+        "action": "Shift+Tab to filter input",
+        "onFilter": true
+      },
+      {
+        "action": "ArrowDown from filter into tree",
+        "state": {
+          "role": "treeitem",
+          "level": "1",
+          "expanded": "false",
+          "checked": null,
+          "tabindex": "0",
+          "text": "▸Engineering"
+        }
+      }
+    ],
+    "consoleErrors": []
+  },
+  "focus_loss_repro": {
+    "before": {
+      "tag": "LI",
+      "role": "treeitem",
+      "text": "▸Engineering",
+      "inTree": true
+    },
+    "afterExpand": {
+      "tag": "LI",
+      "role": "treeitem",
+      "text": "▸Engineering",
+      "inTree": true
+    },
+    "afterArrowDownStuck": {
+      "tag": "LI",
+      "role": "treeitem",
+      "text": "Payments platform",
+      "inTree": true
+    }
+  }
+}

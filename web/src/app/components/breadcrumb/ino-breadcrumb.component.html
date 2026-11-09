@@ -1,0 +1,62 @@
+<nav
+  *ngIf="items.length || loading"
+  class="ino-breadcrumb"
+  [attr.aria-label]="ariaLabel"
+  [attr.aria-busy]="loading ? true : null">
+  <ol *ngIf="!loading" class="ino-breadcrumb__list">
+    <ng-container *ngFor="let node of nodes; let i = index; trackBy: trackByIndex">
+      <li *ngIf="node.kind === 'item'" class="ino-breadcrumb__crumb">
+        <span *ngIf="node.item.icon" class="ino-breadcrumb__icon" aria-hidden="true">{{ node.item.icon }}</span>
+
+        <span
+          *ngIf="node.isCurrent"
+          class="ino-breadcrumb__label ino-breadcrumb__label--current"
+          aria-current="page">{{ node.item.label }}</span>
+
+        <a
+          *ngIf="!node.isCurrent && isNavigable(node.item, node.isCurrent)"
+          class="ino-breadcrumb__label ino-breadcrumb__label--link"
+          [routerLink]="node.item.href"
+          (click)="onItemClick(node.item)">{{ node.item.label }}</a>
+
+        <span
+          *ngIf="!node.isCurrent && !isNavigable(node.item, node.isCurrent)"
+          class="ino-breadcrumb__label"
+          [class.ino-breadcrumb__label--disabled]="node.item.disabled"
+          [attr.aria-disabled]="node.item.disabled ? true : null">{{ node.item.label }}</span>
+      </li>
+
+      <li *ngIf="node.kind === 'ellipsis'" class="ino-breadcrumb__crumb ino-breadcrumb__crumb--ellipsis">
+        <button
+          type="button"
+          #ellipsisTrigger
+          class="ino-breadcrumb__ellipsis"
+          [attr.aria-label]="ellipsisLabel"
+          [attr.aria-expanded]="hiddenPopover.open"
+          (click)="hiddenPopover.toggle($event)">&hellip;</button>
+
+        <ino-popover #hiddenPopover [ariaLabel]="ellipsisLabel" position="bottom">
+          <ul class="ino-breadcrumb__hidden-list">
+            <li *ngFor="let hidden of node.hidden; trackBy: trackByIndex">
+              <a
+                *ngIf="isNavigable(hidden, false)"
+                class="ino-breadcrumb__hidden-link"
+                [routerLink]="hidden.href"
+                (click)="onItemClick(hidden); hiddenPopover.hide()">{{ hidden.label }}</a>
+              <span
+                *ngIf="!isNavigable(hidden, false)"
+                class="ino-breadcrumb__hidden-link ino-breadcrumb__hidden-link--disabled"
+                [attr.aria-disabled]="hidden.disabled ? true : null">{{ hidden.label }}</span>
+            </li>
+          </ul>
+        </ino-popover>
+      </li>
+    </ng-container>
+  </ol>
+
+  <ol *ngIf="loading" class="ino-breadcrumb__list ino-breadcrumb__list--loading" aria-hidden="true">
+    <li class="ino-breadcrumb__skeleton"></li>
+    <li class="ino-breadcrumb__skeleton"></li>
+    <li class="ino-breadcrumb__skeleton ino-breadcrumb__skeleton--current"></li>
+  </ol>
+</nav>

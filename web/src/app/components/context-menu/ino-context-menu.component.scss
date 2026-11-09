@@ -1,0 +1,129 @@
+// ino-context-menu — right-click context menu with nested submenus
+// Spec: web/src/app/components/context-menu/SPEC.md
+// Sizing: compact only (--ino-control-*-compact tokens)
+
+:host {
+  display: contents; // Host is not rendered, only the overlay
+}
+
+.ino-context-menu__overlay {
+  position: fixed;
+  z-index: var(--ino-z-overlay);
+  min-width: 12rem;
+  max-width: 20rem;
+
+  background: var(--ino-color-surface);
+  // Stronger border for WCAG 1.4.11 contrast when shadow is unavailable
+  border: 1px solid var(--ino-color-border-strong, var(--ino-color-on-surface-muted));
+  border-radius: var(--ino-radius-md);
+  box-shadow: var(--ino-shadow-lg);
+
+  padding-block: var(--ino-control-gap-compact);
+
+  // Focus trap: items cycle within menu
+  &:focus-within {
+    outline: none;
+  }
+}
+
+.ino-context-menu__item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--ino-control-gap-compact);
+
+  min-height: var(--ino-control-height-compact);
+  padding-inline: var(--ino-control-padding-inline-compact);
+
+  font-size: var(--ino-control-font-size-compact);
+  color: var(--ino-color-on-surface);
+
+  cursor: pointer;
+  user-select: none;
+
+  // Hover state
+  &:hover:not(&--disabled) {
+    background: var(--ino-color-surface-sunken);
+    color: var(--ino-color-accent);
+  }
+
+  // Focus-visible state (roving tabindex)
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: calc(-1 * var(--ino-focus-ring-offset));
+    background: var(--ino-color-surface-sunken);
+  }
+
+  // Active (pressed) state
+  &:active:not(&--disabled) {
+    color: var(--ino-color-accent-active);
+  }
+
+  // Disabled state
+  &--disabled {
+    color: var(--ino-color-on-surface-muted);
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  // Item with children (submenu trigger)
+  &--has-children {
+    padding-inline-end: calc(var(--ino-control-padding-inline-compact) * 2);
+  }
+}
+
+.ino-context-menu__icon {
+  flex-shrink: 0;
+  width: var(--ino-control-icon-size-compact, 16px);
+  height: var(--ino-control-icon-size-compact, 16px);
+  line-height: 1;
+}
+
+.ino-context-menu__label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ino-context-menu__chevron {
+  position: absolute;
+  inset-inline-end: var(--ino-control-padding-inline-compact);
+  color: var(--ino-color-on-surface-muted);
+  font-size: 1.25em;
+  line-height: 1;
+}
+
+.ino-context-menu__separator {
+  height: 1px;
+  margin-block: calc(var(--ino-control-gap-compact) / 2);
+  margin-inline: var(--ino-control-padding-inline-compact);
+  background: var(--ino-color-border);
+}
+
+// Submenu (rendered as sibling, positioned absolutely)
+.ino-context-menu__submenu {
+  position: fixed;
+  z-index: calc(var(--ino-z-overlay) + 1);
+
+  min-width: 12rem;
+  max-width: 20rem;
+
+  background: var(--ino-color-surface);
+  // Stronger border for WCAG 1.4.11 contrast when shadow is unavailable
+  border: 1px solid var(--ino-color-border-strong, var(--ino-color-on-surface-muted));
+  border-radius: var(--ino-radius-md);
+  box-shadow: var(--ino-shadow-lg);
+
+  padding-block: var(--ino-control-gap-compact);
+
+  // TODO: Add viewport-edge collision detection for leftward flip
+  // For now, submenu always opens to the right (will overflow if near edge)
+}
+
+// Hidden state (visibility controlled by *ngIf in template)
+:host:not(.ino-context-menu--visible) {
+  .ino-context-menu__overlay {
+    display: none;
+  }
+}

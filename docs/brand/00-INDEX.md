@@ -156,7 +156,13 @@ Spec → Build → Docs → QA → publish flow every component issue now carrie
 INO-369). And [`28-pages-deploy-gate-ino-31.md`](28-pages-deploy-gate-ino-31.md) — the deploy side
 of that gate (doc 26 §7 D-gate 4, INO-376): the public docs site now publishes only from an
 annotated `qa-approved-*` tag naming the QA sign-offs it rests on, so **a merge to `main` no longer
-changes the live site**. How to cut a publish tag is in that doc §4.
+changes the live site**. How to cut a publish tag is in that doc §4. And
+[`29-ci-gates-d3-ino-31.md`](29-ci-gates-d3-ino-31.md) — the three machine gates that run *before*
+QA gets there (doc 26 §7 D-gate 3, INO-375): Playwright interaction smoke (overlay anchored to its
+trigger, focus trap, APG keyboard maps), per-component × per-theme visual snapshots diffed in CI,
+and a docs-completeness lint that fails the build when a component's page is missing its §2
+sections. Read §4 of that doc before touching a visual baseline, and §6 for what these gates
+deliberately do **not** cover.
 
 ## 9. Open decisions (not blocking anything, answer whenever convenient)
 

@@ -1,0 +1,68 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Variants — value + preset swatches</h3>
+  <div class="demo-row">
+    <ino-inputcolor label="Unset" [(value)]="unsetValue"></ino-inputcolor>
+    <ino-inputcolor label="Committed value" [(value)]="committedValue"></ino-inputcolor>
+    <ino-inputcolor label="Preset swatches" [presets]="presets" [(value)]="presetValue"></ino-inputcolor>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States</h3>
+  <div class="demo-row">
+    <ino-inputcolor label="Default" [(value)]="defaultValue"></ino-inputcolor>
+    <ino-inputcolor label="Disabled" [disabled]="true" [(value)]="disabledValue"></ino-inputcolor>
+    <ino-inputcolor label="Readonly" [readonly]="true" [(value)]="readonlyValue"></ino-inputcolor>
+    <ino-inputcolor label="Required" [required]="true" [(value)]="requiredValue"></ino-inputcolor>
+    <ino-inputcolor label="Invalid" error="Pick a color that meets contrast requirements" [(value)]="invalidValue"></ino-inputcolor>
+  </div>
+  <p class="demo-section__note">
+    "invalid-hex" (doc 26 §5 row) is interaction-driven, not demonstrable as a static box — type
+    an unparseable string (e.g. "not-a-color") into any Hex field above and blur it to see the
+    error; clearing the field back to empty and blurring leaves the committed value untouched.
+  </p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Sizing — sm / default / lg</h3>
+  <div class="demo-row">
+    <ino-inputcolor label="Small" size="sm" [(value)]="smValue"></ino-inputcolor>
+    <ino-inputcolor label="Default" size="default" [(value)]="defaultSizeValue"></ino-inputcolor>
+    <ino-inputcolor label="Large" size="lg" [(value)]="lgValue"></ino-inputcolor>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Density</h3>
+  <div class="demo-grid">
+    <div class="demo-pane" data-density="dense">
+      <p class="demo-pane__label">dense</p>
+      <ino-inputcolor label="Dense row" [(value)]="densityDenseValue"></ino-inputcolor>
+    </div>
+    <div class="demo-pane" data-density="fluid">
+      <p class="demo-pane__label">fluid</p>
+      <ino-inputcolor label="Fluid row" [(value)]="densityFluidValue"></ino-inputcolor>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Labels</h3>
+  <div class="demo-row">
+    <ino-inputcolor label="Brand accent color" [(value)]="labeledValue"></ino-inputcolor>
+    <ino-inputcolor label="Hint text" hint="Used for primary buttons and links" [(value)]="hintValue"></ino-inputcolor>
+    <ino-inputcolor label="Error text" error="This color fails WCAG contrast on white" [(value)]="errorValue"></ino-inputcolor>
+    <ino-inputcolor
+      label="A long label that wraps across more than one line to confirm truncation/wrapping behavior stays legible"
+      [(value)]="longLabelValue"
+    ></ino-inputcolor>
+    <ino-inputcolor ariaLabel="Accent color, no visible label" [(value)]="ariaOnlyValue"></ino-inputcolor>
+  </div>
+</section>
+
+<section class="demo-section" dir="rtl">
+  <h3 class="demo-section__title">RTL spot-check</h3>
+  <div class="demo-row">
+    <ino-inputcolor label="لون العلامة التجارية" hint="نص توضيحي" [(value)]="rtlValue"></ino-inputcolor>
+  </div>
+</section>

@@ -1,0 +1,61 @@
+<div class="ino-field ino-inputcolor__field">
+  <ino-label
+    *ngIf="label"
+    [for]="fieldId"
+    [required]="required"
+    [disabled]="disabled"
+    [invalid]="!!error"
+    [readonly]="readonly"
+  >{{ label }}</ino-label>
+
+  <!-- Swatch (native picker trigger) + hex text twin — the "text alternative" the spec row
+       names, since input[type=color] exposes no readable/typeable text value of its own. -->
+  <span class="ino-inputcolor__control-wrap">
+    <input
+      #swatch
+      type="color"
+      class="ino-inputcolor__swatch"
+      [id]="swatchId"
+      [value]="swatchHex"
+      [disabled]="disabled"
+      [attr.aria-label]="accessibleSwatchLabel"
+      [attr.aria-describedby]="describedBy"
+      (click)="onSwatchClick($event)"
+      (input)="onSwatchInput($event)"
+    />
+
+    <input
+      type="text"
+      class="ino-field__control ino-inputcolor__hex-input"
+      [id]="fieldId"
+      [value]="hexInputValue"
+      placeholder="#rrggbb"
+      autocomplete="off"
+      spellcheck="false"
+      [disabled]="disabled"
+      [readonly]="readonly"
+      [attr.aria-invalid]="(hexInputInvalid || !!error) ? true : null"
+      [attr.aria-describedby]="describedBy"
+      (input)="onHexInput($event)"
+      (blur)="onHexBlur()"
+    />
+  </span>
+
+  <!-- Preset swatches — doc 26 §5 row's "preset swatches" structure cell. Omitted entirely when
+       the caller supplies none (SPEC.md §1); no default palette ships with the component. -->
+  <span *ngIf="presets.length" class="ino-inputcolor__presets" role="group" [attr.aria-label]="(label || 'Color') + ' presets'">
+    <button
+      *ngFor="let preset of presets"
+      type="button"
+      class="ino-inputcolor__preset"
+      [disabled]="disabled || readonly"
+      [style.background-color]="preset"
+      [attr.aria-label]="'Set color to ' + preset"
+      (click)="selectPreset(preset)"
+    ></button>
+  </span>
+
+  <p *ngIf="hint && !error && !hexInputInvalid" [id]="hintId" class="ino-field__hint">{{ hint }}</p>
+  <p *ngIf="error" [id]="errorId" class="ino-field__error" role="alert">{{ error }}</p>
+  <p *ngIf="hexInputInvalid && !error" class="ino-field__error" role="alert">Enter a valid hex color, e.g. #rrggbb</p>
+</div>

@@ -1,0 +1,140 @@
+/* `.ino-field` shell re-declared per control (no-shared-partial convention — see
+   `ino-listbox.component.scss`'s header comment). */
+.ino-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ino-space-2);
+}
+
+/* Sizing (doc 26 §5 row: "compact/comfortable") — same axis/re-point idiom as `ino-orderlist`;
+   see that component's SPEC.md §5. */
+:host {
+  --ino-picklist-row-height: var(--ino-control-height);
+  --ino-picklist-row-padding-inline: var(--ino-control-padding-inline-roomy);
+  --ino-picklist-font-size: var(--ino-control-font-size);
+}
+
+:host([data-size='compact']) {
+  --ino-picklist-row-height: var(--ino-control-height-sm);
+  --ino-picklist-row-padding-inline: var(--ino-control-padding-inline-roomy-sm);
+  --ino-picklist-font-size: var(--ino-control-font-size-sm);
+}
+
+.ino-picklist__body {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ino-space-3);
+}
+
+.ino-picklist__pane {
+  flex: 1 1 0;
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ino-space-2);
+}
+
+.ino-picklist__list {
+  margin: 0;
+  padding: var(--ino-space-1) 0;
+  list-style: none;
+  block-size: calc(var(--ino-picklist-row-height) * 8);
+  overflow-y: auto;
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-md);
+  background: var(--ino-color-surface-sunken);
+
+  &[aria-disabled='true'] {
+    opacity: 0.5;
+  }
+}
+
+.ino-picklist__option {
+  padding: 0 var(--ino-picklist-row-padding-inline);
+  min-block-size: var(--ino-picklist-row-height);
+  display: flex;
+  align-items: center;
+  gap: var(--ino-space-3);
+  color: var(--ino-color-on-surface);
+  font-size: var(--ino-picklist-font-size);
+  cursor: pointer;
+
+  &:hover:not(.ino-picklist__option--disabled) {
+    background: var(--ino-color-surface-raised);
+    box-shadow: var(--ino-hover-ring);
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: calc(-1 * var(--ino-focus-ring-offset));
+    background: var(--ino-color-surface-raised);
+  }
+
+  &.ino-picklist__option--selected {
+    color: var(--ino-color-accent-text-safe);
+    font-weight: 600;
+    background: var(--ino-color-surface-raised);
+  }
+
+  &.ino-picklist__option--disabled {
+    color: var(--ino-color-on-surface-subtle);
+    cursor: not-allowed;
+  }
+
+  /* `moved-flash` state (doc 26 §5) — same mechanism `ino-orderlist` uses, see that component's
+     SPEC.md §4. */
+  &.ino-picklist__option--moved-flash {
+    background: var(--ino-color-surface-raised);
+    box-shadow: var(--ino-active-ring);
+
+    @media (prefers-reduced-motion: no-preference) {
+      transition: background var(--ino-motion-duration-slow), box-shadow var(--ino-motion-duration-slow);
+    }
+  }
+}
+
+.ino-picklist__checkbox {
+  inline-size: 16px;
+  block-size: 16px;
+  flex: 0 0 auto;
+  accent-color: var(--ino-color-accent);
+  pointer-events: none;
+}
+
+.ino-picklist__empty {
+  padding: var(--ino-space-4);
+  color: var(--ino-color-on-surface-muted);
+  font-size: var(--ino-type-body-sm-size);
+  text-align: center;
+}
+
+.ino-picklist__controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ino-space-2);
+  flex: 0 0 auto;
+  align-self: center;
+}
+
+.ino-picklist__hint {
+  margin: 0;
+  font-size: var(--ino-type-body-sm-size);
+  color: var(--ino-color-on-surface-muted);
+}
+
+.ino-picklist__error {
+  margin: 0;
+  font-size: var(--ino-type-body-sm-size);
+  color: var(--ino-color-danger);
+  font-weight: 600;
+}
+
+.ino-field--disabled {
+  .ino-picklist__list {
+    opacity: 0.5;
+  }
+
+  .ino-picklist__hint {
+    color: var(--ino-color-on-surface-subtle);
+  }
+}

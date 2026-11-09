@@ -1,0 +1,39 @@
+<div class="ino-field ino-rating__field">
+  <ino-label
+    *ngIf="label"
+    [for]="groupId"
+    [required]="required"
+    [disabled]="disabled"
+    [invalid]="!!error"
+    [readonly]="readonly"
+  >{{ label }}</ino-label>
+
+  <div
+    [id]="groupId"
+    class="ino-rating__group"
+    role="radiogroup"
+    [attr.aria-label]="accessibleName"
+    [attr.aria-disabled]="disabled ? true : null"
+    [attr.aria-readonly]="readonly ? true : null"
+    [attr.aria-describedby]="error ? errorId : (hint ? hintId : null)"
+    (keydown)="onKeyDown($event)"
+    (pointerleave)="onGroupLeave()"
+  >
+    <span
+      *ngFor="let star of stars"
+      class="ino-rating__star"
+      [class.ino-rating__star--filled]="isFilled(star)"
+      role="radio"
+      [attr.tabindex]="disabled ? -1 : (star === rovingIndex ? 0 : -1)"
+      [attr.aria-checked]="star === value"
+      [attr.aria-label]="starLabel(star)"
+      [attr.aria-posinset]="star"
+      [attr.aria-setsize]="count"
+      (click)="onStarClick(star)"
+      (pointerenter)="onStarEnter(star)"
+    >{{ isFilled(star) ? iconFilled : iconEmpty }}</span>
+  </div>
+
+  <p *ngIf="hint && !error" [id]="hintId" class="ino-field__hint">{{ hint }}</p>
+  <p *ngIf="error" [id]="errorId" class="ino-field__error" role="alert">{{ error }}</p>
+</div>

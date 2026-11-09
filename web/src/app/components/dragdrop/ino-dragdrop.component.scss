@@ -1,0 +1,108 @@
+/* Visual feedback classes are the caller's contract to style (SPEC.md §3.5) — this file is
+   `<ino-dragdrop>`'s OWN styling of them, not a shared partial other callers of the bare
+   directives must use. `.ino-dragging-active` / `.ino-drop-zone-active` / `.ino-dropped-flash`
+   are the directives' default class names (SPEC.md §4.1/§4.2 defaults). */
+:host {
+  display: block;
+}
+
+.ino-dragdrop__body {
+  display: flex;
+  gap: var(--ino-space-4);
+  align-items: flex-start;
+}
+
+.ino-dragdrop__column {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ino-space-2);
+  min-inline-size: 0;
+}
+
+.ino-dragdrop__heading {
+  font-size: var(--ino-control-font-size-sm);
+  font-weight: 600;
+  color: var(--ino-color-on-surface-muted);
+}
+
+.ino-dragdrop__list {
+  margin: 0;
+  padding: var(--ino-space-1);
+  list-style: none;
+  min-block-size: calc(var(--ino-control-height) * 3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--ino-space-1);
+  border: 1px dashed var(--ino-color-border);
+  border-radius: var(--ino-radius-md);
+  background: var(--ino-color-surface-sunken);
+  transition: border-color var(--ino-motion-duration-fast) ease, background-color var(--ino-motion-duration-fast) ease;
+
+  &[aria-disabled='true'] {
+    opacity: 0.6;
+  }
+}
+
+/* over-target (SPEC.md §2 row 2 extra) — applied by the directive while a drag is over, or
+   while keyboard focus is carrying onto, this zone. */
+.ino-dragdrop__list.ino-drop-zone-active {
+  border-color: var(--ino-color-accent);
+  border-style: solid;
+  background: var(--ino-color-surface-raised);
+}
+
+.ino-dragdrop__list--full:not(.ino-drop-zone-active) {
+  border-color: var(--ino-color-warning);
+}
+
+.ino-dragdrop__empty {
+  padding: var(--ino-control-padding-inline-roomy);
+  color: var(--ino-color-on-surface-muted);
+  font-size: var(--ino-control-font-size-sm);
+  text-align: center;
+}
+
+.ino-dragdrop__item {
+  padding: 0 var(--ino-control-padding-inline-roomy);
+  min-block-size: var(--ino-control-height);
+  display: flex;
+  align-items: center;
+  color: var(--ino-color-on-surface);
+  font-size: var(--ino-control-font-size);
+  background: var(--ino-color-surface);
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-sm);
+  cursor: grab;
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+
+  &[aria-grabbed='true'],
+  &.ino-dragging-active {
+    cursor: grabbing;
+    border-color: var(--ino-color-accent);
+    box-shadow: var(--ino-active-ring);
+  }
+
+  &--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+/* dropped-flash (SPEC.md §2 row 2 extra) — 200ms pulse on both source and target, timed by
+   `InoDragdropComponent.flash()` / `InoDroppableDirective.flashDropped()`. */
+.ino-dropped-flash {
+  background: var(--ino-color-success) !important;
+  color: var(--ino-color-on-success);
+  border-color: var(--ino-color-success) !important;
+}
+
+.ino-dragdrop__count {
+  font-size: var(--ino-control-font-size-sm);
+  color: var(--ino-color-on-surface-muted);
+  text-align: end;
+}

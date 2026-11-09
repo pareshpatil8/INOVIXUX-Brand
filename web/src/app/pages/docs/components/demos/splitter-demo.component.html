@@ -1,0 +1,181 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Variants/Structure — horizontal, vertical, nested, collapse handles</h3>
+  <p class="demo-section__note">
+    <code>orientation="horizontal"</code> (default) lays panels side by side; <code>"vertical"</code>
+    stacks them. Nesting needs no special wiring — the vertical splitter below is just the second
+    panel's projected content inside the horizontal one. A <code>collapsible</code> panel's toggle
+    renders on its nearer gutter (SPEC.md §5); drag any gutter, or Tab to it and use Arrow keys.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">horizontal — 3 panels, explicit sizes</p>
+      <div style="block-size: 220px;">
+        <ino-splitter orientation="horizontal" (sizesChange)="onSizesChange($event)">
+          <ino-splitter-panel [size]="30" [minSize]="15">
+            <div style="padding: var(--ino-space-3);">Navigation</div>
+          </ino-splitter-panel>
+          <ino-splitter-panel [size]="45" [minSize]="20">
+            <div style="padding: var(--ino-space-3);">Main content</div>
+          </ino-splitter-panel>
+          <ino-splitter-panel [size]="25" [minSize]="15">
+            <div style="padding: var(--ino-space-3);">Inspector</div>
+          </ino-splitter-panel>
+        </ino-splitter>
+      </div>
+      <p class="demo-live">sizesChange = {{ lastSizes ?? '(not yet resized)' }}</p>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">nested — vertical splitter inside the main-content panel</p>
+      <div style="block-size: 220px;">
+        <ino-splitter orientation="horizontal">
+          <ino-splitter-panel [size]="30" [minSize]="15">
+            <div style="padding: var(--ino-space-3);">Navigation</div>
+          </ino-splitter-panel>
+          <ino-splitter-panel [size]="70" [minSize]="30">
+            <ino-splitter orientation="vertical">
+              <ino-splitter-panel [minSize]="20">
+                <div style="padding: var(--ino-space-3);">Editor</div>
+              </ino-splitter-panel>
+              <ino-splitter-panel [minSize]="20">
+                <div style="padding: var(--ino-space-3);">Console</div>
+              </ino-splitter-panel>
+            </ino-splitter>
+          </ino-splitter-panel>
+        </ino-splitter>
+      </div>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">collapse handles — first panel collapsible (sidebar pattern)</p>
+      <div style="block-size: 220px;">
+        <ino-splitter orientation="horizontal" (panelCollapsedChange)="onPanelCollapsedChange($event)">
+          <ino-splitter-panel [size]="25" [minSize]="15" [collapsible]="true">
+            <div style="padding: var(--ino-space-3);">Sidebar</div>
+          </ino-splitter-panel>
+          <ino-splitter-panel [size]="75" [minSize]="30">
+            <div style="padding: var(--ino-space-3);">Main content</div>
+          </ino-splitter-panel>
+        </ino-splitter>
+      </div>
+      <p class="demo-live">panelCollapsedChange = {{ lastCollapsed ? (lastCollapsed | json) : '(not yet toggled)' }}</p>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States</h3>
+  <p class="demo-section__note">
+    Default/hover/focus-visible/active are all live on every example above — hover or Tab to a
+    gutter line to see them. <strong>Dragging</strong> (the spec row's state beyond the §2
+    standard set) highlights the gutter being dragged and shows a resize cursor for the whole
+    drag, even past the gutter's own thin hit area (SPEC.md §6). <strong>Disabled</strong> and
+    <strong>readonly</strong> are `@Input`s, shown below. <strong>Empty</strong> — a splitter with
+    a single panel renders zero gutters.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">disabled — dimmed, inert, gutters out of tab order</p>
+      <div style="block-size: 160px;">
+        <ino-splitter orientation="horizontal" [disabled]="true">
+          <ino-splitter-panel [minSize]="15">
+            <div style="padding: var(--ino-space-3);">A</div>
+          </ino-splitter-panel>
+          <ino-splitter-panel [minSize]="15">
+            <div style="padding: var(--ino-space-3);">B</div>
+          </ino-splitter-panel>
+        </ino-splitter>
+      </div>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">readonly — gutter stays tab-stoppable, resize/collapse no-op</p>
+      <div style="block-size: 160px;">
+        <ino-splitter orientation="horizontal" [readonly]="true">
+          <ino-splitter-panel [minSize]="15" [collapsible]="true">
+            <div style="padding: var(--ino-space-3);">A</div>
+          </ino-splitter-panel>
+          <ino-splitter-panel [minSize]="15">
+            <div style="padding: var(--ino-space-3);">B</div>
+          </ino-splitter-panel>
+        </ino-splitter>
+      </div>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">empty state — one panel, zero gutters</p>
+      <div style="block-size: 160px;">
+        <ino-splitter orientation="horizontal">
+          <ino-splitter-panel>
+            <div style="padding: var(--ino-space-3);">Only panel — fills 100%, no separator renders</div>
+          </ino-splitter-panel>
+        </ino-splitter>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Sizing — gutter tokens (no sm/default/lg scale)</h3>
+  <p class="demo-section__note">
+    Per the spec row, there is no per-instance size axis. The gutter's interactive hit width reads
+    <code>--ino-target-min</code> (24px, the existing WCAG 2.2 SC 2.5.8 token) and its visible line
+    reads <code>--ino-border-width-hairline</code> (1px, the same token <code>ino-divider</code>
+    already uses) — both reused rather than new primitives, since tokens.css is frozen after Wave 0
+    (SPEC.md, header note).
+  </p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Density — dense vs. fluid</h3>
+  <p class="demo-section__note">
+    Gutter sizing is density-invariant by design (same reasoning <code>ino-divider</code>'s
+    <code>--ino-border-width-*</code> tokens and <code>ino-context-menu</code>/<code>ino-menu</code>'s
+    <code>-compact</code> tier already use) — both panes below render identically.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane" data-density="dense">
+      <p class="demo-pane__label">dense</p>
+      <div style="block-size: 160px;">
+        <ino-splitter orientation="horizontal">
+          <ino-splitter-panel [minSize]="15"><div style="padding: var(--ino-space-3);">A</div></ino-splitter-panel>
+          <ino-splitter-panel [minSize]="15"><div style="padding: var(--ino-space-3);">B</div></ino-splitter-panel>
+        </ino-splitter>
+      </div>
+    </div>
+    <div class="demo-pane" data-density="fluid">
+      <p class="demo-pane__label">fluid</p>
+      <div style="block-size: 160px;">
+        <ino-splitter orientation="horizontal">
+          <ino-splitter-panel [minSize]="15"><div style="padding: var(--ino-space-3);">A</div></ino-splitter-panel>
+          <ino-splitter-panel [minSize]="15"><div style="padding: var(--ino-space-3);">B</div></ino-splitter-panel>
+        </ino-splitter>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Labels — n/a</h3>
+  <p class="demo-section__note">
+    Per the spec row, this component has no label of its own: a splitter divides layout, it
+    doesn't name a value. Each collapse toggle still carries its own dynamic
+    <code>aria-label</code> ("Collapse panel before gutter" / "Expand panel before gutter", etc.) —
+    see the collapse-handle example above.
+  </p>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Keyboard contract</h3>
+  <p class="demo-section__note">
+    Each gutter is <code>role="separator"</code>, always in the tab order (a splitter has no single
+    "current" gutter the way a tablist has a current tab). On a focused gutter:
+    <strong>ArrowLeft</strong>/<strong>ArrowRight</strong> (horizontal) or
+    <strong>ArrowUp</strong>/<strong>ArrowDown</strong> (vertical) resize by
+    <code>resizeStep</code> (default 5%); <strong>Home</strong> collapses the panel before the
+    gutter to its <code>minSize</code>; <strong>End</strong> pushes the panel after it down to its
+    own <code>minSize</code>. RTL flips the horizontal Arrow-key mapping to match the visual
+    direction (SPEC.md §4). Collapse toggles are plain <code>&lt;button&gt;</code>s — Tab/Enter/
+    Space, no custom handling needed.
+  </p>
+</section>

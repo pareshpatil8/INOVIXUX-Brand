@@ -1,0 +1,43 @@
+<section
+  class="ino-panel"
+  [class.ino-panel--sm]="size === 'sm'"
+  [class.ino-panel--lg]="size === 'lg'"
+  [class.ino-panel--collapsed]="collapsible && collapsed"
+  [class.ino-panel--disabled]="disabled"
+  [class.ino-panel--loading]="loading"
+  role="region"
+  [attr.aria-labelledby]="header ? headerId : null"
+  [attr.aria-disabled]="disabled ? 'true' : null"
+  [attr.aria-busy]="loading ? 'true' : null"
+>
+  <header class="ino-panel__header" *ngIf="header">
+    <button
+      *ngIf="collapsible; else plainHeader"
+      type="button"
+      class="ino-panel__toggle"
+      [id]="headerId"
+      [disabled]="disabled"
+      [attr.aria-disabled]="readonly ? 'true' : null"
+      [attr.aria-expanded]="!collapsed"
+      [attr.aria-controls]="contentId"
+      (click)="onToggle()"
+    >
+      <span class="ino-panel__chevron" [class.ino-panel__chevron--expanded]="!collapsed" aria-hidden="true">▸</span>
+      <span class="ino-panel__header-text">{{ header }}</span>
+    </button>
+    <ng-template #plainHeader>
+      <span class="ino-panel__header-text" [id]="headerId">{{ header }}</span>
+    </ng-template>
+  </header>
+
+  <div class="ino-panel__body" [id]="contentId" [hidden]="collapsible && collapsed">
+    <ng-content></ng-content>
+    <div class="ino-panel__spinner-wrap" *ngIf="loading" aria-hidden="true">
+      <span class="ino-panel__spinner"></span>
+    </div>
+  </div>
+
+  <footer class="ino-panel__footer">
+    <ng-content select="[ino-panel-footer]"></ng-content>
+  </footer>
+</section>

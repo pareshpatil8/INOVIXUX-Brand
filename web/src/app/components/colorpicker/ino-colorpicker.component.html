@@ -1,0 +1,200 @@
+<div class="ino-field" [class.ino-field--disabled]="disabled">
+  <ino-label
+    *ngIf="label && !inline"
+    [for]="fieldId"
+    [required]="required"
+    [disabled]="disabled"
+    [invalid]="!!error"
+    [readonly]="readonly"
+  >{{ label }}</ino-label>
+
+  <!-- Trigger (overlay mode only): swatch button (opens the panel) + a typeable hex field — the
+       "combobox" half of the dialog/combobox hybrid a11y contract (class doc comment). -->
+  <span *ngIf="!inline" class="ino-colorpicker__control-wrap">
+    <button
+      #trigger
+      type="button"
+      class="ino-colorpicker__swatch"
+      [id]="fieldId"
+      [disabled]="disabled"
+      [attr.aria-haspopup]="'dialog'"
+      [attr.aria-expanded]="panelOpen"
+      [attr.aria-controls]="panelOpen ? panelId : null"
+      [attr.aria-label]="(label ? label + ' — ' : '') + (hasValue ? ('color ' + value + ', opens color picker') : 'opens color picker, no color selected')"
+      [style.background-color]="hasValue ? currentHex : null"
+      (click)="toggleOpen()"
+    >
+      <svg *ngIf="!hasValue" class="ino-colorpicker__swatch-empty" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <rect x="2" y="2" width="20" height="20" rx="4" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <line x1="4" y1="20" x2="20" y2="4" stroke="currentColor" stroke-width="1.4"/>
+      </svg>
+    </button>
+
+    <input
+      #hexTrigger
+      type="text"
+      class="ino-field__control ino-colorpicker__hex-input"
+      role="combobox"
+      [value]="hexInputValue"
+      [placeholder]="placeholder"
+      [disabled]="disabled"
+      [readonly]="readonly"
+      [attr.aria-haspopup]="'dialog'"
+      [attr.aria-expanded]="panelOpen"
+      [attr.aria-controls]="panelOpen ? panelId : null"
+      [attr.aria-invalid]="(hexInputInvalid || !!error) ? true : null"
+      [attr.aria-describedby]="error ? errorId : (hint ? hintId : null)"
+      [attr.aria-label]="label ? (label + ' hex value') : 'Hex color value'"
+      (input)="onHexInput($event)"
+      (blur)="onHexBlur()"
+      (focus)="openPanel()"
+    />
+
+    <!-- Overlay backdrop + popover panel — nested inside the trigger's own positioned wrapper,
+         not a sibling of it (INO-364, see ino-datepicker's identical note). `appendTo="body"`
+         reparents to `document.body` and switches to `position:fixed` portal coordinates. -->
+    <div
+      *ngIf="panelOpen"
+      #overlay
+      class="ino-colorpicker__overlay"
+      [class.ino-colorpicker__overlay--portal]="appendTo === 'body'"
+      [style.top.px]="appendTo === 'body' ? portalTop : null"
+      [style.left.px]="appendTo === 'body' ? portalLeft : null"
+      (keydown)="onKeydown($event)"
+    >
+      <div class="ino-colorpicker__scrim" (click)="onBackdropClick()"></div>
+      <div
+        class="ino-colorpicker__panel"
+        [id]="panelId"
+        role="dialog"
+        aria-modal="true"
+        [attr.aria-label]="label || 'Color picker'"
+        inoFocusTrap
+        [inoFocusTrapInitialFocus]="'.ino-colorpicker__sb-panel'"
+      >
+        <ng-container *ngTemplateOutlet="pickerBody"></ng-container>
+      </div>
+    </div>
+  </span>
+
+  <p *ngIf="hint && !error && !hexInputInvalid && !inline" [id]="hintId" class="ino-field__hint">{{ hint }}</p>
+  <p *ngIf="error && !inline" [id]="errorId" class="ino-field__error" role="alert">{{ error }}</p>
+  <p *ngIf="hexInputInvalid && !error && !inline" class="ino-field__error" role="alert">Enter a valid hex color, e.g. #RRGGBB</p>
+
+  <!-- Inline mode: picker body renders directly, no trigger/overlay/focus-trap. -->
+  <div *ngIf="inline" class="ino-colorpicker__panel ino-colorpicker__panel--inline">
+    <ng-container *ngTemplateOutlet="pickerBody"></ng-container>
+  </div>
+
+  <span class="ino-colorpicker__sr-status" aria-live="polite">{{ announceText }}</span>
+</div>
+
+<ng-template #pickerBody>
+  <div
+    #sbPanel
+    class="ino-colorpicker__sb-panel"
+    [attr.tabindex]="disabled ? null : 0"
+    role="slider"
+    aria-label="Saturation and brightness"
+    [attr.aria-valuemin]="0"
+    [attr.aria-valuemax]="100"
+    [attr.aria-valuenow]="brightnessRounded"
+    [attr.aria-valuetext]="sbValueText"
+    [attr.aria-disabled]="disabled ? true : null"
+    [style.background-color]="pureHueHex"
+    (pointerdown)="onSbPointerDown($event, sbPanel)"
+    (pointermove)="onSbPointerMove($event, sbPanel)"
+    (pointerup)="onSbPointerUp($event)"
+    (pointercancel)="onSbPointerUp($event)"
+    (keydown)="onSbKeydown($event)"
+  >
+    <span
+      class="ino-colorpicker__sb-thumb"
+      [style.inset-inline-start.%]="sbThumbX"
+      [style.inset-block-start.%]="sbThumbY"
+      [style.background-color]="opaqueHex"
+    ></span>
+  </div>
+
+  <div class="ino-colorpicker__bars">
+    <div
+      #hueBar
+      class="ino-colorpicker__hue-bar"
+      [attr.tabindex]="disabled ? null : 0"
+      role="slider"
+      aria-label="Hue"
+      [attr.aria-valuemin]="0"
+      [attr.aria-valuemax]="360"
+      [attr.aria-valuenow]="hueRounded"
+      [attr.aria-disabled]="disabled ? true : null"
+      [style.background]="hueBarGradient"
+      (pointerdown)="onHuePointerDown($event, hueBar)"
+      (pointermove)="onHuePointerMove($event, hueBar)"
+      (pointerup)="onHuePointerUp($event)"
+      (pointercancel)="onHuePointerUp($event)"
+      (keydown)="onHueKeydown($event)"
+    >
+      <span class="ino-colorpicker__bar-thumb" [style.inset-inline-start.%]="hueThumbX"></span>
+    </div>
+
+    <div
+      *ngIf="showAlpha"
+      #alphaBar
+      class="ino-colorpicker__alpha-bar"
+      [attr.tabindex]="disabled ? null : 0"
+      role="slider"
+      aria-label="Alpha"
+      [attr.aria-valuemin]="0"
+      [attr.aria-valuemax]="100"
+      [attr.aria-valuenow]="alphaRounded"
+      [attr.aria-disabled]="disabled ? true : null"
+      [style.background-image]="alphaBarGradient"
+      (pointerdown)="onAlphaPointerDown($event, alphaBar)"
+      (pointermove)="onAlphaPointerMove($event, alphaBar)"
+      (pointerup)="onAlphaPointerUp($event)"
+      (pointercancel)="onAlphaPointerUp($event)"
+      (keydown)="onAlphaKeydown($event)"
+    >
+      <span class="ino-colorpicker__bar-thumb" [style.inset-inline-start.%]="alphaThumbX"></span>
+    </div>
+  </div>
+
+  <div class="ino-colorpicker__fields">
+    <label class="ino-colorpicker__field">
+      <span class="ino-colorpicker__field-label">Hex</span>
+      <input
+        type="text"
+        [value]="hexInputValue"
+        [disabled]="disabled"
+        [readonly]="readonly"
+        [attr.aria-invalid]="hexInputInvalid ? true : null"
+        (input)="onHexInput($event)"
+        (blur)="onHexBlur()"
+      />
+    </label>
+    <label class="ino-colorpicker__field ino-colorpicker__field--channel">
+      <span class="ino-colorpicker__field-label">R</span>
+      <input type="number" min="0" max="255" [value]="rgbInputs.r" [disabled]="disabled" [readonly]="readonly" (change)="onRgbChange('r', $event)" (blur)="onRgbBlur()" />
+    </label>
+    <label class="ino-colorpicker__field ino-colorpicker__field--channel">
+      <span class="ino-colorpicker__field-label">G</span>
+      <input type="number" min="0" max="255" [value]="rgbInputs.g" [disabled]="disabled" [readonly]="readonly" (change)="onRgbChange('g', $event)" (blur)="onRgbBlur()" />
+    </label>
+    <label class="ino-colorpicker__field ino-colorpicker__field--channel">
+      <span class="ino-colorpicker__field-label">B</span>
+      <input type="number" min="0" max="255" [value]="rgbInputs.b" [disabled]="disabled" [readonly]="readonly" (change)="onRgbChange('b', $event)" (blur)="onRgbBlur()" />
+    </label>
+  </div>
+
+  <div *ngIf="presets.length" class="ino-colorpicker__presets" role="group" aria-label="Preset colors">
+    <button
+      *ngFor="let preset of presets"
+      type="button"
+      class="ino-colorpicker__preset"
+      [style.background]="preset"
+      [attr.aria-label]="'Preset color ' + preset"
+      [disabled]="disabled || readonly"
+      (click)="selectPreset(preset)"
+    ></button>
+  </div>
+</ng-template>

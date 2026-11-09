@@ -57,6 +57,17 @@ collapse to no animation under `prefers-reduced-motion: reduce`.
 
 ---
 
+## Labels and fields
+
+`label` renders through the shared `ino-label` leaf (`[required]` for the decorative `*`,
+`[invalid]="!!error"` for the danger treatment) and also group-labels the cell set via
+`aria-labelledby`; when no `label` is set the group instead falls back to a generic
+`aria-label="One-time code"` so the control is never unnamed. `hint`/`error` render as a paragraph
+below the cells, `error` taking priority, both wired via `aria-describedby`; `error` also marks
+every cell `aria-invalid` and paints the danger border.
+
+---
+
 ## Accessibility contract
 
 **Role / ARIA** — the box row is `role="group"`, labelled via `aria-labelledby` pointing at

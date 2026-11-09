@@ -1,0 +1,11 @@
+<div class="ino-toolbar" role="toolbar" [attr.aria-label]="ariaLabel">
+  <div class="ino-toolbar__start" *ngIf="hasStartContent">
+    <ng-content select="[slot='start']"></ng-content>
+  </div>
+  <div class="ino-toolbar__center" *ngIf="hasCenterContent">
+    <ng-content select="[slot='center']"></ng-content>
+  </div>
+  <div class="ino-toolbar__end" *ngIf="hasEndContent">
+    <ng-content select="[slot='end']"></ng-content>
+  </div>
+</div>

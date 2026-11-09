@@ -9,7 +9,12 @@
 > Supersedes the snapshot in doc 24 (which predated INO-317/INO-318 landing). Source of truth:
 > `docs/brand/design-system.manifest.json` (43 components, generated from source),
 > `scripts/check-theme-parity.mjs` COMPONENT_REGISTRY (per-platform parity),
-> `web/public/design-system/component-disposition.json` (tier itemization, 69 rows).
+> `web/public/design-system/component-disposition.json` (disposition itemization, 69 rows).
+>
+> **Amended 2026-09-30 (INO-503):** the tier axis in §0 and §3 below is retired. The board directed
+> the full 101-component catalog (`f55baa72`), so doc 26 §5 rev 2 commits every distinct row to a
+> build phase and closes the rest as alias rows — 0 rows are open or declined. Doc 24 §2.1 holds the
+> reconciled ledger; the "Tier-2" framing in §3.2/§3.3/§3.6 below reads as "Committed, unbuilt".
 
 ---
 
@@ -21,8 +26,10 @@
 | **Implemented** with a dedicated INOVIXUX component | **38** (was 33; +5 Tier-1 under INO-318) |
 | Partially reachable (InputNumber/InputPassword via `<ino-input type>`) | 2 |
 | Not implemented — **Tier-1 committed** | **0** (all cleared) |
-| Not implemented — Tier-2 open (specify before building) | 49 |
-| Not implemented — Tier-3 formally declined | 15 |
+| ~~Not implemented — Tier-2 open (specify before building)~~ | ~~49~~ → **0 open** |
+| ~~Not implemented — Tier-3 formally declined~~ | ~~15~~ → **0 declined** |
+| Not implemented — **Committed** to a doc 26 §5 build phase | **52** (B1 12 · B2 12 · B3 5 · B4 5 · B5 18) |
+| Not implemented — **Covered** by capability we already ship (alias rows) | **12** |
 | INOVIXUX-only marketing components (no PrimeNG counterpart) | 5 |
 | **Portal** (PrimeNG-style, per-component routes) | **Built (INO-317)** — live on Pages after merge to `main` |
 

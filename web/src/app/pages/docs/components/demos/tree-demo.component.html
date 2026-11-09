@@ -1,0 +1,149 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Structure — basic selection</h3>
+  <p class="demo-section__note">
+    <code>selectionMode="basic"</code> (default), single selection. Click a row, or use Arrow keys
+    to move the roving tab stop and Enter/Space to activate it. The always-visible filter box above
+    the tree searches the whole loaded tree and auto-expands matching branches.
+  </p>
+  <div class="demo-pane">
+    <ino-tree
+      label="Org chart"
+      [nodes]="basicNodes"
+      [value]="basicValue"
+      (valueChange)="onBasicValueChange($event)"
+    ></ino-tree>
+    <p class="demo-pane__note">Selected: {{ basicValue || '(none)' }}</p>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Structure — basic, multiple</h3>
+  <p class="demo-section__note">
+    <code>[multiple]="true"</code> toggles a row's membership without replacing other selections —
+    plain row selection, not the checkbox cascade below.
+  </p>
+  <div class="demo-pane">
+    <ino-tree
+      label="Favorite teams"
+      [nodes]="multipleNodes"
+      [multiple]="true"
+      [value]="multipleValue"
+      (valueChange)="onMultipleValueChange($event)"
+    ></ino-tree>
+    <p class="demo-pane__note">Selected: {{ multipleValue.length ? multipleValue.join(', ') : '(none)' }}</p>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Structure — checkbox selection, partial-checked</h3>
+  <p class="demo-section__note">
+    <code>selectionMode="checkbox"</code> always allows multiple selection. Checking a branch
+    cascades to every loaded descendant; a branch with some but not all descendants checked renders
+    <code>aria-checked="mixed"</code> (the "partial-checked" state, doc 26 §5).
+  </p>
+  <div class="demo-pane">
+    <ino-tree
+      label="Permissions"
+      selectionMode="checkbox"
+      [nodes]="checkboxNodes"
+      [value]="checkboxValue"
+      (valueChange)="onCheckboxValueChange($event)"
+    ></ino-tree>
+    <p class="demo-pane__note">Granted: {{ checkboxValue.length ? checkboxValue.join(', ') : '(none)' }}</p>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Lazy loading</h3>
+  <p class="demo-section__note">
+    A node with <code>hasChildren: true</code> and no loaded <code>children</code> renders the
+    expand affordance anyway. Expanding it emits <code>loadChildren</code>; this demo sets that
+    node's own <code>loading</code> flag (replacing its chevron with a spinner — the "loading
+    branch" state) for 600ms before pushing children back in. Expand "Archived reports" below.
+  </p>
+  <div class="demo-pane">
+    <ino-tree
+      label="Reports"
+      [nodes]="lazyNodes"
+      [value]="lazyValue"
+      (valueChange)="onLazyValueChange($event)"
+      (loadChildren)="onLoadChildren($event)"
+    ></ino-tree>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Size — compact vs comfortable</h3>
+  <p class="demo-section__note">
+    <code>size="compact"</code>/<code>size="comfortable"</code> (default) is doc 26 §5's own
+    padding axis, independent of <code>[data-density]</code> — both compose for free since the
+    underlying token is redefined per density.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">compact</p>
+      <ino-tree label="Compact tree" size="compact" [nodes]="compactNodes"></ino-tree>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">comfortable (default)</p>
+      <ino-tree label="Comfortable tree" size="comfortable" [nodes]="fluidNodes"></ino-tree>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States — disabled, readonly, invalid, loading</h3>
+  <p class="demo-section__note">
+    <code>[disabled]="true"</code> removes every row from the focus order.
+    <code>[readonly]="true"</code> keeps rows focusable but blocks activation.
+    <code>[error]="'...'"</code> sets <code>aria-invalid</code> and renders an alert message.
+    <code>[loading]="true"</code> is the component-level async flag — distinct from a per-node
+    "loading branch" state (see the lazy-loading demo above).
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">disabled</p>
+      <ino-tree label="Disabled tree" [nodes]="disabledNodes" [value]="disabledValue" [disabled]="true"></ino-tree>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">readonly</p>
+      <ino-tree label="Readonly tree" [nodes]="readonlyNodes" [value]="readonlyValue" [readonly]="true"></ino-tree>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">invalid</p>
+      <ino-tree label="Invalid tree" [nodes]="invalidNodes" required error="Select at least one team."></ino-tree>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">loading (component)</p>
+      <ino-tree label="Loading tree" [nodes]="loadingNodes" [loading]="true"></ino-tree>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Empty state</h3>
+  <p class="demo-section__note">
+    When <code>[nodes]="[]"</code>, the tree shows "No options." in place of rows. Typing into the
+    filter box with zero matches shows "No matches." instead — try it in any demo above.
+  </p>
+  <div class="demo-pane">
+    <ino-tree label="Empty tree" [nodes]="emptyNodes"></ino-tree>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Keyboard navigation</h3>
+  <p class="demo-section__note">Follows the WAI-ARIA APG tree view pattern with roving tabindex:</p>
+  <ul class="demo-section__list">
+    <li><kbd>Tab</kbd> moves focus into/out of the tree (to the roving tab stop)</li>
+    <li><kbd>ArrowDown</kbd>/<kbd>ArrowUp</kbd> move the roving tab stop to the next/previous enabled row</li>
+    <li><kbd>ArrowRight</kbd> expands a collapsed branch, or moves into its first child if already expanded</li>
+    <li><kbd>ArrowLeft</kbd> collapses an expanded branch, or moves to its parent</li>
+    <li><kbd>Home</kbd>/<kbd>End</kbd> jump to the first/last visible row</li>
+    <li><kbd>Enter</kbd>/<kbd>Space</kbd> activates the row (select/toggle/check depending on <code>selectionMode</code>)</li>
+  </ul>
+</section>

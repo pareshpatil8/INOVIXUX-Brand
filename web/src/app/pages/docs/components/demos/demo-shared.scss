@@ -36,6 +36,14 @@
   gap: var(--ino-space-6);
 }
 
+/* A row holding a control whose overlay panel is deliberately left open for the screenshot
+   (INO-731: ino-cascade-select's `open-level` breadcrumb state and its empty-tree message can only
+   be seen while the panel is up). The panel is absolutely positioned, so without reserved space it
+   lands on top of the next section's heading. */
+.demo-row--open-overlay {
+  padding-block-end: 11rem;
+}
+
 .demo-col {
   display: flex;
   flex-direction: column;
@@ -55,6 +63,14 @@
   background: var(--ino-color-surface-raised);
 }
 
+// INO-746: a pane whose control is genuinely wider than one auto-fit column. Without it the
+// control shrinks to fit and ellipses its labels, which reads as a rendering defect on a docs page
+// even though it is the component behaving correctly. Use only where the extra width is needed —
+// deliberate truncation is demonstrated on purpose elsewhere.
+.demo-pane--wide {
+  grid-column: span 2;
+}
+
 .demo-pane__label {
   font-family: var(--ino-font-mono);
   font-size: 11px;
@@ -65,7 +81,7 @@
 // Density override panes (dense/fluid) — the docs layout itself is fixed to
 // [data-density="dense"] (`docs-layout.component.ts`), so the "fluid" pane needs an explicit
 // override to show the contrast the §2 contract requires.
-.demo-pane[data-density] {
+.demo-pane[data-density="fluid"] {
   --ino-row-min-height: var(--ino-target-comfortable);
 }
 
@@ -89,6 +105,105 @@
     letter-spacing: 0.04em;
     color: var(--ino-color-on-surface-subtle);
   }
+}
+
+// Keyfilter demo field chrome (`keyfilter-demo.component.html`, INO-693). The component paints
+// nothing, so its demo has to supply the field itself: these are a plain `<input>`'s stand-in for
+// whatever real field (normally `<ino-input>`) a consumer attaches the filter to — not a second
+// input style for anyone else to reuse. Same role the static
+// `docs/brand/06-angular-components/previews/keyfilter.html` card's demo chrome plays.
+.demo-row--keyfilter {
+  align-items: start;
+}
+
+.demo-keyfilter {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ino-space-2);
+  max-width: 26ch;
+}
+
+.demo-keyfilter__label {
+  font-size: var(--ino-type-label-size);
+  color: var(--ino-color-on-surface-muted);
+
+  code {
+    color: var(--ino-color-on-surface-subtle);
+  }
+}
+
+.demo-keyfilter__input {
+  min-height: var(--ino-control-height-default);
+  padding-inline: var(--ino-space-4);
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-md);
+  background: var(--ino-color-surface);
+  color: var(--ino-color-on-surface);
+  font: inherit;
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+}
+
+.demo-keyfilter__hint,
+.demo-keyfilter__readout {
+  margin: 0;
+  font-size: var(--ino-type-label-size);
+  color: var(--ino-color-on-surface-muted);
+}
+
+.demo-keyfilter__readout {
+  color: var(--ino-color-on-surface-subtle);
+}
+
+// The visual half of the `inoKeyfilterReject` feedback — the audible half is `.demo-live`.
+// Reduced motion keeps the ring (the signal) and drops only the animation (the decoration).
+.demo-keyfilter.is-rejected .demo-keyfilter__input {
+  animation: demo-keyfilter-reject var(--ino-motion-duration-slow)
+    var(--ino-motion-easing-standard) 1;
+}
+
+.demo-keyfilter.is-rejected .demo-keyfilter__readout {
+  color: var(--ino-color-danger-text-safe);
+}
+
+@keyframes demo-keyfilter-reject {
+  0%,
+  60% {
+    box-shadow: var(--ino-invalid-ring);
+    border-color: var(--ino-color-danger);
+  }
+  100% {
+    box-shadow: none;
+    border-color: var(--ino-color-border);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .demo-keyfilter.is-rejected .demo-keyfilter__input {
+    animation: none;
+    box-shadow: var(--ino-invalid-ring);
+    border-color: var(--ino-color-danger);
+  }
+}
+
+// Monospace readout chrome, in two uses. (1) A shared polite live region for a demo that needs one
+// (keyfilter's rejection announcements) — visible on purpose, since the point is to show the
+// caller-supplied announcement the component itself declines to make. (2) A plain (non-live) state
+// readout under an instance, where the demo prints a binding back so a caption can't go stale after
+// a reviewer clicks (toggle-button's `pressed`/`aria-invalid`) — no `role`/`aria-live` there, since
+// the component already announces that state itself via `aria-pressed`.
+.demo-live {
+  margin: var(--ino-space-4) 0 0;
+  padding: var(--ino-space-2) var(--ino-space-3);
+  border-radius: var(--ino-radius-md);
+  background: var(--ino-color-surface-sunken);
+  color: var(--ino-color-on-surface);
+  font-family: var(--ino-font-mono);
+  font-size: var(--ino-type-label-size);
+  min-height: var(--ino-space-6);
 }
 
 .demo-rtl {
@@ -136,4 +251,142 @@
 
 .demo-constrained__spacer {
   height: var(--ino-space-7);
+}
+
+// Right-click target for directive-based demos (INO-810: ino-context-menu). Token-bound, same rule
+// as the rest of this file.
+.demo-trigger {
+  border: 2px dashed var(--ino-color-border);
+  border-radius: var(--ino-radius-md);
+  padding: var(--ino-space-5);
+  background: var(--ino-color-surface-raised);
+  color: var(--ino-color-on-surface);
+  cursor: context-menu;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--ino-space-8);
+
+  &:hover {
+    border-color: var(--ino-color-on-surface-subtle);
+    background: var(--ino-color-surface-sunken);
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+.demo-trigger--compact {
+  min-height: var(--ino-space-7);
+  padding: var(--ino-space-3);
+  font-size: var(--ino-type-body-sm-size, 12.5px);
+}
+
+// ino-dataview demo item templates (INO-454) — token-bound only, same rule as the rest of this file.
+.dataview-demo__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ino-space-3);
+  padding: var(--ino-space-2) var(--ino-space-3);
+  border-radius: var(--ino-radius-md);
+  background: var(--ino-color-surface-raised);
+}
+
+.dataview-demo__row-name {
+  color: var(--ino-color-on-surface);
+}
+
+.dataview-demo__row-status {
+  color: var(--ino-color-on-surface-muted);
+  font-size: var(--ino-type-body-sm-size, 12.5px);
+}
+
+.dataview-demo__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ino-space-2);
+  padding: var(--ino-space-4);
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-md);
+  background: var(--ino-color-surface-raised);
+}
+
+.dataview-demo__card-name {
+  color: var(--ino-color-on-surface);
+}
+
+.dataview-demo__card-status {
+  color: var(--ino-color-on-surface-muted);
+  font-size: var(--ino-type-body-sm-size, 12.5px);
+}
+
+// Scroll-reveal demo harness ([inoAnimateOnScroll], INO-501). The `aos-*` classes are the demo's
+// copyable baseline for the directive's enter/leave class contract: keyframe animations whose
+// `from` pose carries the hidden/offset state, so content is hidden only for the animation's own
+// duration and never statically pre-hidden (animateonscroll SPEC.md §3.1). opacity/transform
+// only — compositor-side, zero layout shift. Token-bound, same rule as the rest of this file.
+.demo-aos__viewport {
+  position: relative;
+  overflow: auto;
+  max-height: 260px;
+  border: 1px dashed var(--ino-color-border);
+  border-radius: var(--ino-radius-md);
+  background: var(--ino-color-surface-sunken);
+  padding: var(--ino-space-4);
+}
+
+.demo-aos__spacer {
+  display: grid;
+  place-items: center;
+  height: 280px;
+  color: var(--ino-color-on-surface-muted);
+  font-size: var(--ino-type-label-size);
+}
+
+.demo-aos__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ino-space-2);
+  padding: var(--ino-space-4);
+  border: 1px solid var(--ino-color-border);
+  border-radius: var(--ino-radius-md);
+  background: var(--ino-color-surface-raised);
+  color: var(--ino-color-on-surface);
+}
+
+.aos-rise {
+  animation: aos-rise var(--ino-motion-duration-slow) var(--ino-motion-easing-standard) both;
+}
+
+@keyframes aos-rise {
+  from {
+    opacity: 0;
+    transform: translateY(var(--ino-space-5));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// A leave class that ends hidden is safe only because the paired enter class re-reveals at the
+// same observer boundary — the pre-animation state (before the first intersection ever fires)
+// is still fully visible, which is what SPEC.md §3.1 guarantees.
+.aos-fall {
+  animation: aos-fall var(--ino-motion-duration-fast) var(--ino-motion-easing-standard) both;
+}
+
+@keyframes aos-fall {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(var(--ino-space-5));
+  }
 }

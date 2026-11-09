@@ -1,0 +1,171 @@
+<section class="demo-section">
+  <h3 class="demo-section__title">Variants/Structure — plain grouping vs. collapsible</h3>
+  <p class="demo-section__note">
+    Most fieldsets are pure grouping (<code>collapsible="false"</code>, the default) — a plain
+    <code>&lt;legend&gt;</code> with no interactive affordance. Setting <code>collapsible</code>
+    renders the legend as a disclosure button (<code>aria-expanded</code> +
+    <code>aria-controls</code>) that shows/hides the content region. Click the second legend to
+    toggle it.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">collapsible="false" (plain legend)</p>
+      <ino-fieldset legend="Shipping address">
+        <ino-input label="Street" [(value)]="street"></ino-input>
+        <ino-input label="City" [(value)]="city"></ino-input>
+      </ino-fieldset>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">collapsible="true"</p>
+      <ino-fieldset legend="Advanced options" [collapsible]="true" [(collapsed)]="collapsibleOpen">
+        <ino-input label="Street" [(value)]="street"></ino-input>
+        <ino-input label="City" [(value)]="city"></ino-input>
+      </ino-fieldset>
+      <p class="demo-live">collapsed = {{ collapsibleOpen }}</p>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">States</h3>
+  <p class="demo-section__note">
+    <code>disabled</code> sets the native <code>&lt;fieldset disabled&gt;</code> attribute, which
+    cascades to every real descendant form control for free — both <code>&lt;ino-input&gt;</code>s
+    below are inert without this component touching them. <code>readonly</code> only locks the
+    collapse toggle (behavior-only, no <code>aria-readonly</code> — <code>group</code> role doesn't
+    support it, SPEC.md §3); descendant fields are unaffected. <code>loading</code> dims the
+    content and shows a spinner (<code>aria-busy</code>). <code>invalid</code> (via the
+    <code>error</code> string) clears once both fields are filled, so the channel can be watched
+    arriving and leaving.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">disabled — cascades to descendants</p>
+      <ino-fieldset legend="Payout details" [disabled]="true">
+        <ino-input label="Account number" value="•••• 4821"></ino-input>
+        <ino-input label="Routing number" value="•••• 0098"></ino-input>
+      </ino-fieldset>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">collapsible + readonly — toggle inert, stays focusable</p>
+      <ino-fieldset legend="Locked section" [collapsible]="true" [readonly]="true" [collapsed]="false">
+        <ino-input label="Reference ID" value="KYB-20412"></ino-input>
+      </ino-fieldset>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">loading</p>
+      <ino-fieldset legend="Fetching document list" [loading]="true">
+        <ino-input label="Document type" value=""></ino-input>
+      </ino-fieldset>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">collapsed — content removed from the a11y tree</p>
+      <ino-fieldset legend="Archived notes" [collapsible]="true" [collapsed]="collapsedExample">
+        <ino-input label="Note" value="Reviewed 2026-09-12"></ino-input>
+      </ino-fieldset>
+      <p class="demo-live">collapsed = {{ collapsedExample }}</p>
+    </div>
+
+    <div class="demo-pane">
+      <p class="demo-pane__label">invalid — <code>error</code> clears once both fields are filled</p>
+      <ino-fieldset legend="Contact details" [error]="sectionError">
+        <ino-input label="Street" [(value)]="invalidStreet"></ino-input>
+        <ino-input label="City" [(value)]="invalidCity"></ino-input>
+      </ino-fieldset>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Sizing — sm / md / lg (padding scale)</h3>
+  <p class="demo-section__note">
+    <code>size</code> only re-points <code>--ino-control-padding-inline-roomy</code> (doc 26 §5:
+    "padding scales") — a fieldset has no single line-height control of its own, so it does not
+    read the full height/font/icon/gap set a pressable control does. Content below each legend is
+    identical; only the fieldset's own padding changes.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane">
+      <p class="demo-pane__label">size="sm"</p>
+      <ino-fieldset legend="Compact section" size="sm">
+        <ino-input label="Value" [(value)]="smValue"></ino-input>
+      </ino-fieldset>
+    </div>
+    <div class="demo-pane">
+      <p class="demo-pane__label">size="md" (default)</p>
+      <ino-fieldset legend="Default section" size="md">
+        <ino-input label="Value" [(value)]="mdValue"></ino-input>
+      </ino-fieldset>
+    </div>
+    <div class="demo-pane">
+      <p class="demo-pane__label">size="lg"</p>
+      <ino-fieldset legend="Roomy section" size="lg">
+        <ino-input label="Value" [(value)]="lgValue"></ino-input>
+      </ino-fieldset>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Density — dense vs. fluid</h3>
+  <p class="demo-section__note">
+    Density is a global <code>[data-density]</code> token axis, not a per-component
+    <code>@Input()</code>. This docs page renders in the dense register; the right-hand pane
+    overrides to fluid. <code>--ino-control-padding-inline-roomy</code> is re-declared under both
+    <code>[data-density]</code> blocks, so density composes with <code>size</code> for free.
+  </p>
+  <div class="demo-grid">
+    <div class="demo-pane" data-density="dense">
+      <p class="demo-pane__label">dense</p>
+      <ino-fieldset legend="Dense section">
+        <ino-input label="Value" [(value)]="denseValue"></ino-input>
+      </ino-fieldset>
+    </div>
+    <div class="demo-pane" data-density="fluid">
+      <p class="demo-pane__label">fluid</p>
+      <ino-fieldset legend="Fluid section">
+        <ino-input label="Value" [(value)]="fluidValue"></ino-input>
+      </ino-fieldset>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Labels — legend wrapping, RTL</h3>
+  <p class="demo-section__note">
+    <code>legend</code> is the component's one label — native <code>&lt;legend&gt;</code>, so
+    screen readers announce it as the group's accessible name for every descendant control for
+    free (no <code>aria-labelledby</code> wiring needed). The stylesheet uses logical properties
+    only (<code>padding-inline</code>, <code>margin-inline-start</code>,
+    <code>border-inline-start-color</code>), so it mirrors correctly under <code>dir="rtl"</code>.
+  </p>
+  <div class="demo-col" style="max-width: 360px;">
+    <ino-fieldset legend="A longer legend that wraps across more than one line in a narrow pane" [collapsible]="true">
+      <ino-input label="Field" value=""></ino-input>
+    </ino-fieldset>
+  </div>
+  <div class="demo-rtl" dir="rtl" style="margin-top: var(--ino-space-4); max-width: 360px;">
+    <ino-fieldset legend="عنوان الشحن" [collapsible]="true">
+      <ino-input label="الشارع" [(value)]="rtlStreet"></ino-input>
+      <ino-input label="المدينة" [(value)]="rtlCity"></ino-input>
+    </ino-fieldset>
+  </div>
+</section>
+
+<section class="demo-section">
+  <h3 class="demo-section__title">Keyboard contract</h3>
+  <p class="demo-section__note">
+    When <code>collapsible</code>, the legend is a native <code>&lt;button&gt;</code>:
+    <strong>Tab</strong> reaches it as a normal stop (readonly instances stay reachable too — only
+    a <code>disabled</code> fieldset's toggle leaves the tab order, since the native
+    <code>&lt;fieldset disabled&gt;</code> cascade disables it the same as every other descendant
+    control); <strong>Space</strong> or <strong>Enter</strong> toggles <code>collapsed</code> and
+    emits <code>collapsedChange</code> (native button activation, no custom keydown handling).
+    When not <code>collapsible</code>, the legend has no tab stop at all — Tab moves straight into
+    the grouped fields in document order.
+  </p>
+</section>

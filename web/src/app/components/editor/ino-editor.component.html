@@ -1,0 +1,82 @@
+<div class="ino-field">
+  <!-- A contenteditable div is not labelable, so there is no [for]; the label carries an id the
+       textbox points back at via aria-labelledby, and click-to-focus is restored by hand
+       (SPEC.md §8). -->
+  <span *ngIf="label" class="ino-editor__label" (click)="focusContent()">
+    <ino-label
+      [attr.id]="labelId"
+      [size]="size"
+      [required]="required"
+      [disabled]="disabled"
+      [invalid]="!!error"
+      [readonly]="readonly"
+    >{{ label }}</ino-label>
+  </span>
+
+  <div class="ino-editor__frame">
+    <div
+      class="ino-editor__toolbar"
+      role="toolbar"
+      aria-label="Text formatting"
+      [attr.aria-controls]="editorId"
+      (keydown)="onToolbarKeydown($event)"
+    >
+      <ng-container *ngFor="let item of items">
+        <span *ngIf="!isButton(item)" class="ino-editor__divider" aria-hidden="true"></span>
+        <button
+          *ngIf="isButton(item)"
+          type="button"
+          class="ino-editor__btn"
+          [class.ino-editor__btn--pressed]="item.toggle && pressed[item.id]"
+          [attr.aria-pressed]="item.toggle ? !!pressed[item.id] : null"
+          [attr.aria-label]="item.label"
+          [title]="item.label"
+          [attr.tabindex]="item.index === focusIndex ? 0 : -1"
+          [disabled]="disabled || readonly"
+          (mousedown)="$event.preventDefault()"
+          (focus)="onButtonFocus(item)"
+          (click)="exec(item)"
+        >
+          <span class="ino-editor__glyph" [attr.data-glyph]="item.id" aria-hidden="true">{{ item.glyph }}</span>
+        </button>
+      </ng-container>
+    </div>
+
+    <div
+      #content
+      class="ino-editor__content"
+      [class.ino-editor__content--empty]="isEmpty"
+      [id]="editorId"
+      role="textbox"
+      aria-multiline="true"
+      [attr.contenteditable]="disabled || readonly ? 'false' : 'true'"
+      [attr.tabindex]="disabled ? null : 0"
+      [attr.aria-labelledby]="label ? labelId : null"
+      [attr.aria-label]="!label && ariaLabel ? ariaLabel : null"
+      [attr.aria-describedby]="describedBy"
+      [attr.aria-invalid]="error ? true : null"
+      [attr.aria-readonly]="readonly ? true : null"
+      [attr.aria-disabled]="disabled ? true : null"
+      [attr.aria-required]="required ? true : null"
+      [attr.aria-placeholder]="placeholder || null"
+      [attr.data-placeholder]="placeholder || null"
+      (input)="onInput()"
+      (beforeinput)="onBeforeInput($event)"
+      (paste)="onPaste($event)"
+      (focusin)="onFocusIn()"
+      (focusout)="onFocusOut($event)"
+    ></div>
+  </div>
+
+  <div class="ino-field__meta" *ngIf="(hint && !error) || error || (showCount && maxLength)">
+    <p *ngIf="hint && !error" [id]="hintId" class="ino-field__hint">{{ hint }}</p>
+    <p *ngIf="error" [id]="errorId" class="ino-field__error" role="alert">{{ error }}</p>
+    <p
+      *ngIf="showCount && maxLength"
+      [id]="counterId"
+      class="ino-field__counter"
+      [class.ino-field__counter--limit]="atLimit"
+      aria-live="polite"
+    >{{ charCount }}/{{ maxLength }}</p>
+  </div>
+</div>
