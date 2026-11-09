@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { Pressable, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { useTheme } from '../theme/ThemeProvider';
-import { control, space } from '../theme/tokens';
+import { control, radius, space } from '../theme/tokens';
 
 export type InoFieldsetSize = 'sm' | 'md' | 'lg';
 
@@ -116,7 +116,7 @@ export function InoFieldset({
 }
 
 const styles = StyleSheet.create({
-  fieldset: { borderWidth: 1, borderRadius: 8 },
+  fieldset: { borderWidth: 1, borderRadius: radius.md },
   toggleRow: { flexDirection: 'row', alignItems: 'center', gap: space[1] },
   chevron: { fontSize: 11, transform: [{ rotate: '0deg' }] },
   chevronExpanded: { transform: [{ rotate: '90deg' }] },

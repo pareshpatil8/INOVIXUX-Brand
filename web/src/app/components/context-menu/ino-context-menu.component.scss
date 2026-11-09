@@ -16,7 +16,7 @@
   // Stronger border for WCAG 1.4.11 contrast when shadow is unavailable
   border: 1px solid var(--ino-color-border-strong, var(--ino-color-on-surface-muted));
   border-radius: var(--ino-radius-md);
-  box-shadow: var(--ino-shadow-lg, 0 4px 12px rgba(0, 0, 0, 0.15));
+  box-shadow: var(--ino-shadow-lg);
 
   padding-block: var(--ino-control-gap-compact);
 
@@ -50,7 +50,7 @@
   // Focus-visible state (roving tabindex)
   &:focus-visible {
     outline: var(--ino-focus-ring);
-    outline-offset: var(--ino-focus-ring-offset, -2px);
+    outline-offset: calc(-1 * var(--ino-focus-ring-offset));
     background: var(--ino-color-surface-sunken);
   }
 
@@ -74,8 +74,8 @@
 
 .ino-context-menu__icon {
   flex-shrink: 0;
-  width: var(--ino-control-icon-size-compact, 1rem);
-  height: var(--ino-control-icon-size-compact, 1rem);
+  width: var(--ino-control-icon-size-compact, 16px);
+  height: var(--ino-control-icon-size-compact, 16px);
   line-height: 1;
 }
 
@@ -113,7 +113,7 @@
   // Stronger border for WCAG 1.4.11 contrast when shadow is unavailable
   border: 1px solid var(--ino-color-border-strong, var(--ino-color-on-surface-muted));
   border-radius: var(--ino-radius-md);
-  box-shadow: var(--ino-shadow-lg, 0 4px 12px rgba(0, 0, 0, 0.15));
+  box-shadow: var(--ino-shadow-lg);
 
   padding-block: var(--ino-control-gap-compact);
 

@@ -117,7 +117,7 @@
      tree uses (ino-autocomplete/ino-select/ino-inputtags) — see INO-734. */
   &:hover:not(.ino-command-menu__option--disabled) {
     background: var(--ino-color-surface-sunken);
-    box-shadow: inset 0 0 0 1px var(--ino-color-on-surface-muted);
+    box-shadow: var(--ino-hover-ring);
   }
 
   &.ino-command-menu__option--active {

@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { useTheme } from '../theme/ThemeProvider';
+import { radius } from '../theme/tokens';
 
 /**
  * `InoBadge` — React Native port of `web/src/app/components/badge/ino-badge.component.ts`
@@ -213,7 +214,7 @@ const styles = StyleSheet.create({
     lineHeight: 16,
   },
   status: {
-    borderRadius: 12,
+    borderRadius: radius.md,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',

@@ -10,9 +10,9 @@
     "Do not add a waiver to land a component. Fix the violation, or if it needs a token",
     "decision, say so on the owning issue below.",
     "",
-    "  INO-172 — adopt the type scale on pages that hardcode font-size",
-    "  INO-174 — brand gradient, accent glow and toast dwell do not re-theme",
-    "  INO-82  — Master C logo mark: brand-fixed territory fills and stitch-thread values"
+    "  INO-172 \u2014 adopt the type scale on pages that hardcode font-size",
+    "  INO-174 \u2014 brand gradient, accent glow and toast dwell do not re-theme",
+    "  INO-82  \u2014 Master C logo mark: brand-fixed territory fills and stitch-thread values"
   ],
   "waivers": [
     {
@@ -117,36 +117,92 @@
       "rule": "no-hardcoded-icon-color",
       "file": "web/src/app/app.html",
       "match": "fill=\"#4F46E5\"",
-      "reason": "Master C logo mark territory fill — the mark's two territories are brand-fixed geometry, not theme roles; only the stitch thread re-themes (via --ino-logo-thread)",
+      "reason": "Master C logo mark territory fill \u2014 the mark's two territories are brand-fixed geometry, not theme roles; only the stitch thread re-themes (via --ino-logo-thread)",
       "issue": "INO-82"
     },
     {
       "rule": "no-hardcoded-icon-color",
       "file": "web/src/app/app.html",
       "match": "fill=\"#7C5CFC\"",
-      "reason": "Master C logo mark territory fill — same rationale as the #4F46E5 territory above",
+      "reason": "Master C logo mark territory fill \u2014 same rationale as the #4F46E5 territory above",
       "issue": "INO-82"
     },
     {
       "rule": "no-raw-color",
       "file": "web/src/app/app.html",
       "match": "#D8CEFF",
-      "reason": "var(--ino-logo-thread, #D8CEFF) fallback — the thread colour themes via the variable; the literal is only the no-cascade fallback matching the dark default",
+      "reason": "var(--ino-logo-thread, #D8CEFF) fallback \u2014 the thread colour themes via the variable; the literal is only the no-cascade fallback matching the dark default",
       "issue": "INO-82"
     },
     {
       "rule": "no-raw-color",
       "file": "web/src/styles/page-sections.scss",
       "match": "#D8CEFF",
-      "reason": "--ino-logo-thread definition (dark) — would live in tokens.css but tokens.css is frozen post-Wave 0; a brand-mark-only colour, not a reusable role",
+      "reason": "--ino-logo-thread definition (dark) \u2014 would live in tokens.css but tokens.css is frozen post-Wave 0; a brand-mark-only colour, not a reusable role",
       "issue": "INO-82"
     },
     {
       "rule": "no-raw-color",
       "file": "web/src/styles/page-sections.scss",
       "match": "#2A1F6E",
-      "reason": "--ino-logo-thread definition (light) — same rationale as the dark value above",
+      "reason": "--ino-logo-thread definition (light) \u2014 same rationale as the dark value above",
       "issue": "INO-82"
+    },
+    {
+      "rule": "off-scale-font-size",
+      "file": "web/src/app/components/galleria/ino-galleria.component.scss",
+      "match": "font-size: 18px",
+      "reason": "dense-density control-button icon size (36px button); the type scale has no role at this size and it does not match the --ino-control-icon-size-* scale either (16/20/24) \u2014 needs a token decision (an icon-size step between sm and default, or re-deriving the dense control-btn dimensions from the existing scale), not a find-and-replace",
+      "issue": "INO-172"
+    },
+    {
+      "rule": "off-scale-font-size",
+      "file": "web/src/app/components/galleria/ino-galleria.component.scss",
+      "match": "font-size: 28px",
+      "reason": "fluid-density control-button icon size (48px button); same gap as the dense 18px entry above \u2014 above --ino-control-icon-size-lg (24) with no scale step to land on, needs a token decision",
+      "issue": "INO-172"
+    },
+    {
+      "rule": "off-scale-font-size",
+      "file": "mobile/react-native/src/components/InoCarousel.tsx",
+      "match": "fontSize: 18",
+      "reason": "prev/next chevron glyph size; does not match the InoControlSize iconSize scale (16/20/24) web's --ino-control-icon-size-* mirrors \u2014 needs a token decision, not a find-and-replace",
+      "issue": "INO-172"
+    },
+    {
+      "rule": "off-scale-font-size",
+      "file": "mobile/flutter/lib/widgets/ino_carousel.dart",
+      "match": "fontSize: 18",
+      "reason": "prev/next chevron glyph size; same gap as the React Native InoCarousel.tsx entry above",
+      "issue": "INO-172"
+    },
+    {
+      "rule": "no-raw-color",
+      "file": "web/src/app/components/galleria/ino-galleria-item.component.ts",
+      "match": "rgba(",
+      "reason": "caption scrim behind the per-item caption text, fixed dark regardless of theme so the caption stays legible over an arbitrary photo in all 3 themes \u2014 same rationale ino-imagecompare.component.scss:48-49 already documents and flags for its corner-caption scrim",
+      "issue": "INO-922"
+    },
+    {
+      "rule": "no-raw-color",
+      "file": "web/src/app/components/galleria/ino-galleria.component.scss",
+      "match": "rgba(",
+      "reason": "fullscreen lightbox chrome (backdrop scrim, caption gradient, close/prev/next button fills and borders) \u2014 fixed dark/white regardless of theme, same rationale ino-imagecompare.component.scss:48-49 documents: this chrome sits over an arbitrary photo, not a UI surface, so it stays legible by staying fixed rather than repainting with the active theme. Covers all 6 rgba() occurrences in this file (lines 93, 307, 353, 354, 382, 383, 396 \u2014 box-shadow and button states share the identical pattern).",
+      "issue": "INO-922"
+    },
+    {
+      "rule": "no-raw-color",
+      "file": "web/src/app/components/imagecompare/ino-imagecompare.component.scss",
+      "match": "rgba(",
+      "reason": "corner-caption dark scrim, already documented in the component's own comment (lines 48-49) as the one deliberate non-token colour pairing: legible over an arbitrary photo in all 3 themes, flagged rather than silently shipped",
+      "issue": "INO-922"
+    },
+    {
+      "rule": "no-raw-color",
+      "file": "web/src/app/components/imagecompare/ino-imagecompare.component.scss",
+      "match": "#fff",
+      "reason": "corner-caption text colour paired with the dark scrim above \u2014 same already-documented exception (lines 48-49)",
+      "issue": "INO-922"
     }
   ]
 }

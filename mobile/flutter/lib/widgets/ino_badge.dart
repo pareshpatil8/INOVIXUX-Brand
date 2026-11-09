@@ -158,7 +158,7 @@ class InoBadge extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: sizeSpec.paddingHorizontal ?? 0),
       decoration: BoxDecoration(
         color: _backgroundColor(colors),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(InoRadius.md),
       ),
       child: Center(
         child: Text(

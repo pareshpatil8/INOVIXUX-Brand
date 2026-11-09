@@ -238,6 +238,10 @@
   --ino-color-info: var(--ino-primitive-sky-500);
   --ino-color-on-info: #000000;                           /* 6.04:1 */
   --ino-color-danger-text-safe: var(--ino-primitive-red-400); /* danger as TEXT on a surface (invalid labels, inline errors, required markers). Splits from --ino-color-danger per theme for exactly the reason --ino-color-accent-text-safe does: the fill red is not a legible text red here. */
+  --ino-color-success-surface: #101B16; /* 12% --ino-color-success over --ino-color-surface, srgb — the subtle severity-tint background doc 26's badge status variant specifies (SPEC.md §8), precomputed so the component never calls color-mix() itself (banned, check-ds-adherence.mjs no-raw-color, INO-922) */
+  --ino-color-warning-surface: #1F1910; /* same recipe, --ino-color-warning */
+  --ino-color-danger-surface: #201211; /* same recipe, --ino-color-danger */
+  --ino-color-info-surface: #101A1F; /* same recipe, --ino-color-info */
 
   /* Form-label colour roles (INO-125 / W0-3). Every one is an alias of an
      already-themed role, which is why light and high-contrast need zero
@@ -760,6 +764,18 @@
                                                             weight is right on both surfaces and the
                                                             colour re-themes through the role */
 
+  /* Hover/active state rings (INO-922, same family as the two above). A row/option's hover and
+     drag/moved-flash affordances were hand-rolled as `box-shadow: inset 0 0 0 1px …` identically
+     across nine option-row components (cascade-select, command-menu, inputtags, listbox,
+     multiselect, select, select-button-option, tree, treeselect) before this token existed —
+     deliberately NOT sent to --ino-elevation-*, which is the generic fix for a hardcoded shadow,
+     because elevation is decoration that flattens to `none` in high-contrast (§2c), and a border
+     is exactly the "distinguished by border, not luminance" affordance high-contrast calls for
+     (INO-734). Two roles because the hover state and the drag/moved-flash state read different
+     colours (muted neutral vs. the accent), not two widths. */
+  --ino-hover-ring: inset 0 0 0 1px var(--ino-color-on-surface-muted);
+  --ino-active-ring: inset 0 0 0 1px var(--ino-color-accent);
+
   /* ---------------------------------------------------------------------
    * 12b. Z-INDEX SCALE — overlay stacking (INO-814). One value for now:
    *      overlays (menu, context-menu, popover) above page content but
@@ -841,6 +857,10 @@
   --ino-color-info: var(--ino-primitive-sky-700);
   --ino-color-on-info: #FFFFFF;                         /* 6.40:1 */
   --ino-color-danger-text-safe: var(--ino-primitive-red-600); /* on light, the fill red is already a legible text red, so the two roles converge — no light-only primitive needed */
+  --ino-color-success-surface: #E0EBE5; /* 12% --ino-color-success over --ino-color-surface, srgb — see dark default's comment */
+  --ino-color-warning-surface: #EDE7E0;
+  --ino-color-danger-surface: #F0E2E1;
+  --ino-color-info-surface: #E0E8EC;
 
   --ino-elevation-1: 0 20px 48px -24px rgba(20, 20, 26, 0.16); /* dark-mode shadow reads as a black smear on white; lighter + tighter spread */
   --ino-elevation-2: 0 32px 72px -20px rgba(20, 20, 26, 0.24);
@@ -959,6 +979,10 @@
   --ino-color-info: var(--ino-primitive-hc-sky);
   --ino-color-on-info: #000000;                           /* 9.76:1 */
   --ino-color-danger-text-safe: var(--ino-primitive-hc-coral); /* hc-coral already clears this theme's AAA bar as text, so the roles converge here too */
+  --ino-color-success-surface: #001C0E; /* 12% --ino-color-success over --ino-color-surface, srgb — see dark default's comment */
+  --ino-color-warning-surface: #1F1800;
+  --ino-color-danger-surface: #1F0D0D;
+  --ino-color-info-surface: #0D161F;
 
   --ino-elevation-1: none; /* see note above — no shadow gradients in high-contrast mode */
   --ino-elevation-2: none;
@@ -1007,6 +1031,11 @@
      --ino-color-danger. At 3px the 3px focus outline (offset 2px) overpaints the
      ring's outer 1px, leaving 2px of coral — the dark/light baseline. */
   --ino-invalid-ring: 0 0 0 3px var(--ino-color-danger);
+
+  /* Hover/active rings (§12) — widened 1px -> 2px for the same reason the focus/invalid rings
+     are: a border affordance is the whole point in this theme, so it gets more of it, not less. */
+  --ino-hover-ring: inset 0 0 0 2px var(--ino-color-on-surface-muted);
+  --ino-active-ring: inset 0 0 0 2px var(--ino-color-accent);
 
   /* §13 data-viz overrides — this theme's own restep, not a recolor: the
      same six hue families lifted to the top of the dark lightness band
@@ -1071,6 +1100,10 @@
     --ino-color-info: var(--ino-primitive-sky-700);
     --ino-color-on-info: #FFFFFF;
     --ino-color-danger-text-safe: var(--ino-primitive-red-600);
+    --ino-color-success-surface: #E0EBE5;
+    --ino-color-warning-surface: #EDE7E0;
+    --ino-color-danger-surface: #F0E2E1;
+    --ino-color-info-surface: #E0E8EC;
     --ino-elevation-1: 0 20px 48px -24px rgba(20, 20, 26, 0.16);
     --ino-elevation-2: 0 32px 72px -20px rgba(20, 20, 26, 0.24);
     --ino-elevation-neutral-1: 0 4px 8px -6px rgba(20, 20, 26, 0.08);

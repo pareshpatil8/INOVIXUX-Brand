@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import type { ViewStyle, TextStyle } from 'react-native';
+import { useTheme } from '../theme/ThemeProvider';
 
 export interface InoAccordionTabProps {
   header: string;
@@ -44,6 +45,7 @@ export function InoAccordionTab({
   _iconPosition = 'start',
   _accordionDisabled = false,
 }: InoAccordionTabProps) {
+  const { colors } = useTheme();
   const isExpanded = _onToggle !== undefined ? _expanded : controlledExpanded ?? false;
   const isDisabled = disabled || _accordionDisabled;
 
@@ -61,7 +63,7 @@ export function InoAccordionTab({
   const chevronStyle: TextStyle = _iconPosition === 'end' ? styles.chevronEnd : styles.chevronStart;
 
   return (
-    <View style={[styles.tab, style]}>
+    <View style={[styles.tab, { borderBottomColor: colors.borderSoft }, style]}>
       <Pressable
         onPress={handleToggle}
         disabled={isDisabled}
@@ -70,20 +72,20 @@ export function InoAccordionTab({
         style={({ pressed }) => [
           styles.header,
           { paddingVertical: paddingValue, paddingHorizontal: paddingValue },
-          pressed && !isDisabled && styles.headerPressed,
+          { backgroundColor: pressed && !isDisabled ? colors.surfaceSunken : colors.surfaceRaised },
           isDisabled && styles.headerDisabled,
         ]}
       >
-        {_iconPosition === 'start' && <Text style={[chevronStyle, isDisabled && styles.chevronDisabled]}>{chevron}</Text>}
-        <Text style={[styles.headerText, isDisabled && styles.headerTextDisabled]}>{header}</Text>
-        {_iconPosition === 'end' && <Text style={[chevronStyle, isDisabled && styles.chevronDisabled]}>{chevron}</Text>}
+        {_iconPosition === 'start' && <Text style={[chevronStyle, { color: colors.onSurfaceMuted }]}>{chevron}</Text>}
+        <Text style={[styles.headerText, { color: isDisabled ? colors.onSurfaceMuted : colors.onSurface }]}>{header}</Text>
+        {_iconPosition === 'end' && <Text style={[chevronStyle, { color: colors.onSurfaceMuted }]}>{chevron}</Text>}
       </Pressable>
       {isExpanded && (
         // No accessibilityRole: RN's AccessibilityRole has no `region` — that is web-only
         // ARIA (SPEC.md §96). Passing it was a runtime no-op, so dropping it is behaviour
         // preserving; the panel stays reachable via its individually-accessible children.
         <View
-          style={[styles.body, { paddingVertical: paddingValue, paddingHorizontal: paddingValue }]}
+          style={[styles.body, { backgroundColor: colors.surface }, { paddingVertical: paddingValue, paddingHorizontal: paddingValue }]}
           accessibilityLabel={header}
         >
           {children}
@@ -96,15 +98,10 @@ export function InoAccordionTab({
 const styles = StyleSheet.create({
   tab: {
     borderBottomWidth: 1,
-    borderBottomColor: '#222222', // var(--ino-color-border-soft) approximation
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1a1a1a', // var(--ino-color-surface-raised) approximation
-  },
-  headerPressed: {
-    backgroundColor: '#242424', // var(--ino-color-surface-hover) approximation
   },
   headerDisabled: {
     opacity: 0.5,
@@ -113,25 +110,14 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     fontWeight: '600',
-    color: '#ffffff', // var(--ino-color-on-surface) approximation
-  },
-  headerTextDisabled: {
-    color: '#888888', // var(--ino-color-on-surface-muted) approximation
   },
   chevronStart: {
     fontSize: 11,
-    color: '#888888',
     marginRight: 8,
   },
   chevronEnd: {
     fontSize: 11,
-    color: '#888888',
     marginLeft: 8,
   },
-  chevronDisabled: {
-    color: '#666666',
-  },
-  body: {
-    backgroundColor: '#0f0f0f', // var(--ino-color-surface) approximation
-  },
+  body: {},
 });

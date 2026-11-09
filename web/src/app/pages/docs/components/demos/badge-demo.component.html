@@ -103,7 +103,7 @@
   <div class="demo-grid">
     <div class="demo-pane">
       <p class="demo-pane__label">dot on button</p>
-      <button class="demo-button" style="position: relative; padding: 12px 24px; border-radius: 8px; border: 1px solid currentColor;">
+      <button class="demo-button" style="position: relative; padding: 12px 24px; border-radius: var(--ino-radius-md); border: 1px solid currentColor;">
         Notifications
         <ino-badge variant="dot" size="sm" ariaLabel="Has new items"></ino-badge>
       </button>
@@ -111,7 +111,7 @@
 
     <div class="demo-pane">
       <p class="demo-pane__label">count on button</p>
-      <button class="demo-button" style="position: relative; padding: 12px 24px; border-radius: 8px; border: 1px solid currentColor;">
+      <button class="demo-button" style="position: relative; padding: 12px 24px; border-radius: var(--ino-radius-md); border: 1px solid currentColor;">
         Messages
         <ino-badge variant="count" size="sm" [value]="5" ariaLabel="5 new messages"></ino-badge>
       </button>
@@ -119,7 +119,7 @@
 
     <div class="demo-pane">
       <p class="demo-pane__label">count overflow on button</p>
-      <button class="demo-button" style="position: relative; padding: 12px 24px; border-radius: 8px; border: 1px solid currentColor;">
+      <button class="demo-button" style="position: relative; padding: 12px 24px; border-radius: var(--ino-radius-md); border: 1px solid currentColor;">
         Inbox
         <ino-badge variant="count" size="sm" [value]="142" ariaLabel="142 unread items"></ino-badge>
       </button>
@@ -220,7 +220,7 @@
   <div class="demo-grid">
     <div class="demo-pane" dir="rtl">
       <p class="demo-pane__label">RTL — positioned dot on button</p>
-      <button class="demo-button" style="position: relative; padding: 12px 24px; border-radius: 8px; border: 1px solid currentColor;">
+      <button class="demo-button" style="position: relative; padding: 12px 24px; border-radius: var(--ino-radius-md); border: 1px solid currentColor;">
         إشعارات
         <ino-badge variant="dot" size="sm" ariaLabel="عناصر جديدة"></ino-badge>
       </button>
@@ -228,7 +228,7 @@
 
     <div class="demo-pane" dir="rtl">
       <p class="demo-pane__label">RTL — count badge</p>
-      <button class="demo-button" style="position: relative; padding: 12px 24px; border-radius: 8px; border: 1px solid currentColor;">
+      <button class="demo-button" style="position: relative; padding: 12px 24px; border-radius: var(--ino-radius-md); border: 1px solid currentColor;">
         رسائل
         <ino-badge variant="count" size="sm" [value]="7" ariaLabel="7 رسائل جديدة"></ino-badge>
       </button>

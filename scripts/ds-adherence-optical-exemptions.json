@@ -232,6 +232,90 @@
       "issue": "INO-173"
     },
     {
+      "rule": "off-scale-spacing",
+      "file": "web/src/app/components/chip/ino-chip.component.scss",
+      "match": "margin: -1px",
+      "reason": "standard sr-only visually-hidden clip (1px box, -1px margin, overflow hidden) — same accessibility technique already exempted for ino-alert__sr-status / ino-tag__label--sr-only / ino-progress-spinner__sr-only / ino-input-otp / ino-meter-group",
+      "issue": "INO-173"
+    },
+    {
+      "rule": "off-scale-spacing",
+      "file": "web/src/app/components/dataview/ino-dataview.component.scss",
+      "match": "margin: -1px",
+      "reason": "standard sr-only visually-hidden clip (1px box, -1px margin, overflow hidden) — same accessibility technique already exempted for ino-alert__sr-status / ino-tag__label--sr-only / ino-progress-spinner__sr-only / ino-input-otp / ino-meter-group",
+      "issue": "INO-173"
+    },
+    {
+      "rule": "off-scale-spacing",
+      "file": "web/src/app/components/inputmask/ino-inputmask.component.scss",
+      "match": "margin: -1px",
+      "reason": "standard sr-only visually-hidden clip (1px box, -1px margin, overflow hidden) — same accessibility technique already exempted for ino-alert__sr-status / ino-tag__label--sr-only / ino-progress-spinner__sr-only / ino-input-otp / ino-meter-group",
+      "issue": "INO-173"
+    },
+    {
+      "rule": "off-scale-spacing",
+      "file": "web/src/app/components/inputtags/ino-inputtags.component.scss",
+      "match": "margin: -1px",
+      "reason": "standard sr-only visually-hidden clip (1px box, -1px margin, overflow hidden) — same accessibility technique already exempted for ino-alert__sr-status / ino-tag__label--sr-only / ino-progress-spinner__sr-only / ino-input-otp / ino-meter-group",
+      "issue": "INO-173"
+    },
+    {
+      "rule": "off-scale-spacing",
+      "file": "web/src/app/components/terminal/ino-terminal.component.scss",
+      "match": "margin: -1px",
+      "reason": "standard sr-only visually-hidden clip (1px box, -1px margin, overflow hidden) — same accessibility technique already exempted for ino-alert__sr-status / ino-tag__label--sr-only / ino-progress-spinner__sr-only / ino-input-otp / ino-meter-group",
+      "issue": "INO-173"
+    },
+    {
+      "rule": "off-scale-spacing",
+      "file": "web/src/app/components/inputnumber/ino-inputnumber.component.scss",
+      "match": "padding-inline-end: calc(var(--ino-control-padding-inline, var(--ino-space-4)) + 60px)",
+      "reason": "60px reserves exact clearance for the stepper button column (two 24px-wide buttons) beside the text so typed digits never run under them; a layout clearance calc tied to a sibling's pixel geometry, not a step on the spacing rhythm",
+      "issue": "INO-173"
+    },
+    {
+      "rule": "off-scale-spacing",
+      "file": "web/src/app/components/inputnumber/ino-inputnumber.component.scss",
+      "match": "gap: 2px",
+      "reason": "micro gap stacking the up/down stepper buttons flush, optical not rhythm",
+      "issue": "INO-173"
+    },
+    {
+      "rule": "off-scale-spacing",
+      "file": "web/src/app/components/slider/ino-slider.component.scss",
+      "match": "padding-block: 2px",
+      "reason": "value-tooltip pill padding sized to the glyph, not page-layout rhythm",
+      "issue": "INO-173"
+    },
+    {
+      "rule": "off-scale-spacing",
+      "file": "mobile/react-native/src/components/InoBadge.tsx",
+      "match": "paddingHorizontal: 6",
+      "reason": "badge pill padding sized to the glyph, not page-layout rhythm",
+      "issue": "INO-173"
+    },
+    {
+      "rule": "off-scale-spacing",
+      "file": "mobile/react-native/src/components/InoInputNumber.tsx",
+      "match": "gap: 2",
+      "reason": "micro gap stacking the up/down stepper buttons flush, optical not rhythm",
+      "issue": "INO-173"
+    },
+    {
+      "rule": "off-scale-spacing",
+      "file": "mobile/react-native/src/components/InoSlider.tsx",
+      "match": "paddingHorizontal: 6",
+      "reason": "value-tooltip pill padding sized to the glyph, not page-layout rhythm",
+      "issue": "INO-173"
+    },
+    {
+      "rule": "off-scale-spacing",
+      "file": "mobile/react-native/src/components/InoSlider.tsx",
+      "match": "paddingVertical: 2",
+      "reason": "value-tooltip pill padding sized to the glyph, not page-layout rhythm",
+      "issue": "INO-173"
+    },
+    {
       "rule": "non-token-radius",
       "file": "mobile/flutter/lib/widgets/ino_select.dart",
       "match": "BorderRadius.circular(2",

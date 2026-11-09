@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { Pressable, Text, View, AccessibilityRole } from 'react-native';
 import { useTheme } from '../theme/ThemeProvider';
-import { control, ControlSize, space } from '../theme/tokens';
+import { control, ControlSize, radius, space } from '../theme/tokens';
 
 export type InoCarouselOrientation = 'horizontal' | 'vertical';
 
@@ -161,7 +161,7 @@ export function InoCarousel({
               backgroundColor: colors.surfaceRaised,
               borderWidth: 1,
               borderColor: colors.border,
-              borderRadius: 12,
+              borderRadius: radius.pill,
               opacity: !circular && isAtStart ? 0.6 : 1,
             }}
           >
@@ -186,7 +186,7 @@ export function InoCarousel({
               backgroundColor: colors.surfaceRaised,
               borderWidth: 1,
               borderColor: colors.border,
-              borderRadius: 12,
+              borderRadius: radius.pill,
               opacity: !circular && isAtEnd ? 0.6 : 1,
             }}
           >
@@ -208,7 +208,7 @@ export function InoCarousel({
               backgroundColor: 'transparent',
               borderWidth: 1,
               borderColor: colors.border,
-              borderRadius: 12,
+              borderRadius: radius.pill,
             }}
           >
             <Text style={{ color: playing ? colors.accent : colors.onSurface, fontSize: 16 }}>
@@ -242,7 +242,7 @@ export function InoCarousel({
                 style={{
                   width: space[2],
                   height: space[2],
-                  borderRadius: 4,
+                  borderRadius: radius.pill,
                   backgroundColor: isActive ? colors.accent : colors.border,
                 }}
               />

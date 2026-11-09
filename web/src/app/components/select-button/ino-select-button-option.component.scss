@@ -103,7 +103,7 @@
    hover rules in the tree. */
 .ino-select-button-option__label:not(:has(.ino-select-button-option__input:disabled)):hover {
   background: var(--ino-color-surface-sunken);
-  box-shadow: inset 0 0 0 1px var(--ino-color-on-surface-muted);
+  box-shadow: var(--ino-hover-ring);
   z-index: 2;
 
   &:has(.ino-select-button-option__input:checked) {

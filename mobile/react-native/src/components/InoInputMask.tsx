@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, TextInput, TextInputProps, View } from 'react-native';
 import { useTheme } from '../theme/ThemeProvider';
-import { control, ControlSize, space } from '../theme/tokens';
+import { control, ControlSize, radius, space } from '../theme/tokens';
 
 /**
  * `<InoInputMask>` — RN port of `<ino-inputmask>` (web/src/app/components/inputmask, INO-404 /
@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
   control: {
     width: '100%',
     borderWidth: 1,
-    borderRadius: 8,
+    borderRadius: radius.md,
     fontVariant: ['tabular-nums'],
   },
   disabled: { opacity: 0.5 },

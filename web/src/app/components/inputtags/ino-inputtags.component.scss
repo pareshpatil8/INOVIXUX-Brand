@@ -44,7 +44,7 @@
   /* Density (same floor idiom as ino-input .ino-field__control): a dense-scoped ancestor
      re-declares --ino-row-min-height, and the field grows past this floor for extra chip rows
      but never shrinks below it. */
-  min-block-size: max(var(--ino-control-height, var(--ino-target-comfortable)), var(--ino-row-min-height, 0px));
+  min-block-size: max(var(--ino-control-height, var(--ino-target-comfortable)), var(--ino-row-min-height, var(--ino-target-comfortable)));
   padding: var(--ino-space-1);
   border: 1px solid var(--ino-color-border);
   border-radius: var(--ino-radius-md);
@@ -231,7 +231,7 @@
 
   &:hover:not(.ino-inputtags__option--disabled) {
     background: var(--ino-color-surface-sunken);
-    box-shadow: inset 0 0 0 1px var(--ino-color-on-surface-muted);
+    box-shadow: var(--ino-hover-ring);
   }
 
   &.ino-inputtags__option--active {

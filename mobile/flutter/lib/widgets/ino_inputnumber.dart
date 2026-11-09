@@ -381,16 +381,16 @@ class _SpinnerButton extends StatelessWidget {
         opacity: disabled ? 0.5 : 1,
         child: Material(
           color: colors.surfaceRaised,
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(InoRadius.sm),
           child: InkWell(
             onTap: disabled ? null : onPressed,
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(InoRadius.sm),
             child: Container(
               width: 24,
               height: 18,
               decoration: BoxDecoration(
                 border: Border.all(color: colors.border),
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(InoRadius.sm),
               ),
               child: Icon(icon, size: 12, color: colors.onSurface),
             ),

@@ -75,7 +75,7 @@ $border-color: var(--ino-color-surface-raised);
     border: 3px solid var(--ino-color-accent);
     border-right-color: transparent;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation: spin var(--ino-motion-duration-countup) linear infinite;
   }
 }
 
@@ -124,12 +124,12 @@ $border-color: var(--ino-color-surface-raised);
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  font-size: 24px;
+  font-size: var(--ino-control-icon-size-lg);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 200ms ease;
+  transition: all var(--ino-motion-duration-base) ease;
   margin: var(--ino-space-4);
 
   &:hover:not(:disabled) {
@@ -167,7 +167,7 @@ $border-color: var(--ino-color-surface-raised);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 200ms ease;
+  transition: all var(--ino-motion-duration-base) ease;
 
   &:hover {
     background: var(--ino-color-surface);
@@ -195,7 +195,7 @@ $border-color: var(--ino-color-surface-raised);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 200ms ease;
+  transition: all var(--ino-motion-duration-base) ease;
   pointer-events: auto;
 
   &:hover {
@@ -228,7 +228,7 @@ $border-color: var(--ino-color-surface-raised);
   background: none;
   cursor: pointer;
   overflow: hidden;
-  transition: border-color 200ms ease;
+  transition: border-color var(--ino-motion-duration-base) ease;
   padding: 0;
 
   img {
@@ -236,7 +236,7 @@ $border-color: var(--ino-color-surface-raised);
     height: 100%;
     object-fit: cover;
     opacity: 0.6;
-    transition: opacity 200ms ease;
+    transition: opacity var(--ino-motion-duration-base) ease;
   }
 
   &:hover img {
@@ -277,7 +277,7 @@ $border-color: var(--ino-color-surface-raised);
   background: var(--ino-color-surface-raised);
   border: none;
   cursor: pointer;
-  transition: all 200ms ease;
+  transition: all var(--ino-motion-duration-base) ease;
   padding: 0;
 
   &:hover {
@@ -309,7 +309,7 @@ $border-color: var(--ino-color-surface-raised);
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  animation: fadeIn 200ms ease;
+  animation: fadeIn var(--ino-motion-duration-base) ease;
 }
 
 @keyframes fadeIn {
@@ -356,12 +356,12 @@ $border-color: var(--ino-color-surface-raised);
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  font-size: 20px;
+  font-size: var(--ino-control-icon-size-default);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 200ms ease;
+  transition: all var(--ino-motion-duration-base) ease;
   z-index: 1001;
 
   &:hover {
@@ -384,13 +384,13 @@ $border-color: var(--ino-color-surface-raised);
   color: white;
   width: 50px;
   height: 50px;
-  border-radius: 4px;
-  font-size: 24px;
+  border-radius: var(--ino-radius-sm);
+  font-size: var(--ino-control-icon-size-lg);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 200ms ease;
+  transition: all var(--ino-motion-duration-base) ease;
 
   &:hover:not(:disabled) {
     background: rgba(255, 255, 255, 0.2);

@@ -441,7 +441,7 @@ const styles = StyleSheet.create({
     paddingBottom: space[7],
     gap: space[3],
   },
-  grabber: { width: 36, height: 4, borderRadius: 2, alignSelf: 'center' },
+  grabber: { width: 36, height: 4, borderRadius: radius.sm, alignSelf: 'center' },
   sheetTitle: { ...type.h3 },
   filter: { borderWidth: 1 },
   list: { flexGrow: 0 },

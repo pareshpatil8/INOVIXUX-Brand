@@ -100,7 +100,7 @@
 }
 
 .ino-dock__icon {
-  font-size: 20px; /* md — matches --ino-control-icon-size-default (fixed px, SPEC.md §3) */
+  font-size: var(--ino-control-icon-size-default); /* md (fixed px, SPEC.md §3) */
   line-height: 1;
   pointer-events: none;
 }
@@ -110,7 +110,7 @@
 }
 
 :host([data-size='lg']) .ino-dock__icon {
-  font-size: 24px; /* matches --ino-control-icon-size-lg */
+  font-size: var(--ino-control-icon-size-lg);
 }
 
 /* Magnify-on-hover (SPEC.md §4): the hovered/focused item itself scales up. Neighbour

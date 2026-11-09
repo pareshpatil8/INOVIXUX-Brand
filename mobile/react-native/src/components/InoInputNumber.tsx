@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, TextInput, TextInputProps, TouchableOpacity, View } from 'react-native';
 import { useTheme } from '../theme/ThemeProvider';
-import { control, ControlSize, space } from '../theme/tokens';
+import { control, ControlSize, radius, space } from '../theme/tokens';
 
 export type InoInputNumberMode = 'decimal' | 'currency' | 'percent';
 export type InoInputNumberVariant = 'outline' | 'filled';
@@ -279,7 +279,7 @@ const styles = StyleSheet.create({
     width: 24,
     height: 18,
     borderWidth: 1,
-    borderRadius: 4,
+    borderRadius: radius.sm,
     justifyContent: 'center',
     alignItems: 'center',
   },

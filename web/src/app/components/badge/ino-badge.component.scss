@@ -111,21 +111,21 @@
  * + colored text + colored border. The tint percentage is chosen to provide subtle differentiation
  * while maintaining readability in all three themes (dark/light/high-contrast). */
 :host([data-variant='status'][data-severity='info']) {
-  background: color-mix(in srgb, var(--ino-color-info) 12%, var(--ino-color-surface));
+  background: var(--ino-color-info-surface);
   color: var(--ino-color-info);
 }
 
 :host([data-variant='status'][data-severity='success']) {
-  background: color-mix(in srgb, var(--ino-color-success) 12%, var(--ino-color-surface));
+  background: var(--ino-color-success-surface);
   color: var(--ino-color-success);
 }
 
 :host([data-variant='status'][data-severity='warning']) {
-  background: color-mix(in srgb, var(--ino-color-warning) 12%, var(--ino-color-surface));
+  background: var(--ino-color-warning-surface);
   color: var(--ino-color-warning);
 }
 
 :host([data-variant='status'][data-severity='danger']) {
-  background: color-mix(in srgb, var(--ino-color-danger) 12%, var(--ino-color-surface));
+  background: var(--ino-color-danger-surface);
   color: var(--ino-color-danger);
 }

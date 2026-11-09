@@ -146,14 +146,14 @@
 
 @media (prefers-reduced-motion: no-preference) {
   .ino-terminal__busy-dots span {
-    animation: ino-terminal-busy-pulse 1.2s ease-in-out infinite;
+    animation: ino-terminal-busy-pulse var(--ino-motion-duration-countup) ease-in-out infinite;
 
     &:nth-child(2) {
-      animation-delay: 0.15s;
+      animation-delay: var(--ino-motion-duration-fast);
     }
 
     &:nth-child(3) {
-      animation-delay: 0.3s;
+      animation-delay: var(--ino-motion-duration-base);
     }
   }
 

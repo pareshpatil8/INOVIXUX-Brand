@@ -81,7 +81,7 @@
 }
 
 .ino-speeddial__fab-icon {
-  font-size: 20px;
+  font-size: var(--ino-control-icon-size-default);
   line-height: 1;
 }
 
@@ -90,7 +90,7 @@
 }
 
 .ino-speeddial[data-size='lg'] .ino-speeddial__fab-icon {
-  font-size: 24px;
+  font-size: var(--ino-control-icon-size-lg);
 }
 
 .ino-speeddial--open .ino-speeddial__fab-icon {

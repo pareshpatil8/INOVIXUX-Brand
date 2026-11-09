@@ -206,7 +206,7 @@
   line-height: 1;
   /* Expanded: point up (click collapses); collapsed: point down (click expands). */
   transform: rotate(180deg);
-  transition: transform 120ms ease;
+  transition: transform var(--ino-motion-duration-fast) ease;
 
   &--collapsed {
     transform: rotate(0deg);
@@ -226,7 +226,7 @@
   border: 2px solid var(--ino-color-border);
   border-block-start-color: var(--ino-color-accent);
   border-radius: 50%;
-  animation: ino-orgchart-spin 700ms linear infinite;
+  animation: ino-orgchart-spin var(--ino-motion-duration-countup) linear infinite;
 }
 
 @keyframes ino-orgchart-spin {
@@ -249,6 +249,6 @@
   }
 
   .ino-orgchart__spinner {
-    animation-duration: 1.6s;
+    animation-duration: var(--ino-motion-duration-countup);
   }
 }

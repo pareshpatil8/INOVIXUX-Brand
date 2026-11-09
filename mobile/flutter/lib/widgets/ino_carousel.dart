@@ -133,7 +133,7 @@ class InoCarousel extends StatelessWidget {
           decoration: BoxDecoration(
             color: colors.surfaceRaised,
             border: Border.all(color: colors.border),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(InoRadius.pill),
           ),
           child: Opacity(
             opacity: isDisabled ? 0.6 : 1.0,
@@ -164,7 +164,7 @@ class InoCarousel extends StatelessWidget {
           height: InoSpace.s2,
           decoration: BoxDecoration(
             color: isActive ? colors.accent : colors.border,
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(InoRadius.pill),
           ),
         ),
       ),
@@ -221,9 +221,8 @@ class InoCarousel extends StatelessWidget {
                           width: size.height,
                           height: size.height,
                           decoration: BoxDecoration(
-                            color: Colors.transparent,
                             border: Border.all(color: colors.border),
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(InoRadius.pill),
                           ),
                           child: Center(
                             child: Text(

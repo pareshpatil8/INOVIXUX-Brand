@@ -105,7 +105,7 @@ class InoAutocomplete extends StatefulWidget {
   State<InoAutocomplete> createState() => _InoAutocompleteState();
 }
 
-const _searchDebounce = Duration(milliseconds: 250);
+const _searchDebounce = InoMotion.base;
 
 class _InoAutocompleteState extends State<InoAutocomplete> {
   Timer? _searchTimer;
@@ -453,7 +453,7 @@ class _SuggestionSheetState extends State<_SuggestionSheet> {
                     height: 4,
                     margin: const EdgeInsets.only(top: InoSpace.s3, bottom: InoSpace.s4),
                     decoration:
-                        BoxDecoration(color: colors.borderSoft, borderRadius: BorderRadius.circular(2)),
+                        BoxDecoration(color: colors.borderSoft, borderRadius: BorderRadius.circular(InoRadius.sm)),
                   ),
                 ),
                 Padding(

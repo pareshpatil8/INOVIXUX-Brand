@@ -2,6 +2,7 @@ import React, { useState, Children, cloneElement, isValidElement, ReactElement }
 import { View, StyleSheet } from 'react-native';
 import type { ViewStyle } from 'react-native';
 import { useTheme } from '../theme/ThemeProvider';
+import { radius } from '../theme/tokens';
 
 export interface InoAccordionProps {
   children: React.ReactNode;
@@ -58,7 +59,7 @@ export function InoAccordion({
   const accordionStyle = {
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 8,
+    borderRadius: radius.md,
     backgroundColor: colors.surfaceRaised,
     overflow: 'hidden' as const,
   };

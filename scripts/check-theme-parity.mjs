@@ -650,7 +650,7 @@ const COMPONENT_REGISTRY = [
       },
     },
     divergences: [
-      { platform: 'reactNative', roles: ['accent', 'accentActive', 'borderSoft', 'onSurface', 'onSurfaceMuted', 'surface', 'surfaceSunken'], reason: "web reads accent/accent-active for the tab header's hover/pressed text color, surface-sunken for its hover/pressed background fill, border-soft for the inter-tab divider, on-surface/on-surface-muted for tab text, and surface for the expanded panel background (ino-accordion-tab.component.scss). RN port (InoAccordion.tsx + InoAccordionTab.tsx) only reads border and surface-raised from the theme; the tab component has hardcoded StyleSheet values instead of theme reads for all other roles. Hover/active states (accent/accent-active/surface-sunken) are pointer/keyboard concepts this port does not reach. The remaining roles (border-soft, on-surface, on-surface-muted, surface) are hardcoded and need to be migrated to theme reads in a follow-up — see InoAccordionTab.tsx:95-135 StyleSheet comments for the intended mappings." },
+      { platform: 'reactNative', roles: ['accent', 'accentActive', 'borderSoft', 'onSurface', 'onSurfaceMuted', 'surface', 'surfaceSunken'], reason: "web reads accent/accent-active for the tab header's hover/pressed text colour, surface-sunken for its hover/pressed background fill, border-soft for the inter-tab divider, on-surface/on-surface-muted for tab text, and surface for the expanded panel background (ino-accordion-tab.component.scss). This registry entry's reactNative path is InoAccordion.tsx (the group wrapper), which only reads border/surfaceRaised; the per-tab roles above are read by the sibling InoAccordionTab.tsx (migrated off hardcoded hex to live theme reads under INO-922 — see that file) rather than the registered path, so they show as a divergence here regardless. The one genuine gap is accent/accent-active: `:hover:not(:disabled)` has no RN/Pressable equivalent, so the press state reads surface-sunken for the background (matching web's hover/press fill) but keeps on-surface text instead of switching to accent — same call InoButton.tsx and siblings make for pointer-only colour changes." },
       { platform: 'flutter', roles: ['accent', 'accentActive', 'surfaceSunken'], reason: 'web reads accent/accent-active for the tab header hover/pressed text color and surface-sunken for its hover/pressed background fill. Hover and :active are pointer/keyboard concepts this port does not reach — a touch press has no separate hover phase. The port reads border-soft for the inter-tab divider, on-surface/on-surface-muted for tab text, surface for the expanded panel, and surface-raised for the collapsed tab header (ino_accordion.dart).' },
     ],
   },
@@ -734,9 +734,9 @@ const COMPONENT_REGISTRY = [
       },
     },
     divergences: [
-      { platform: 'reactNative', roles: ['surface'], reason: "web's status variant uses `color-mix(in srgb, var(--ino-color-{severity}) 12%, var(--ino-color-surface))` to create a tinted background (ino-badge.component.scss). RN has no built-in color-blend function, so the port uses the full severity color as background with `on{Severity}` text instead — a visual divergence but equivalent contrast (severity background + on-severity text = full semantic pairing)." },
-      { platform: 'flutter', roles: ['surface'], reason: 'same as the React Native entry above — Flutter port uses full severity color backgrounds with on-severity text, while web uses color-mix tinting.' },
-      { platform: 'reactNative', roles: ['onDanger', 'onInfo', 'onSuccess', 'onWarning'], reason: "ADDED roles, not dropped ones. Web's status variant uses tinted backgrounds (color-mix) with the severity color as text; mobile uses full severity backgrounds with on-severity text. Both achieve WCAG AA contrast, just via different pairing strategies." },
+      { platform: 'reactNative', roles: ['infoSurface', 'successSurface', 'warningSurface', 'dangerSurface'], reason: "web's status variant reads --ino-color-{severity}-surface for a tinted background (ino-badge.component.scss) — precomputed 12% severity-color-over-surface literals per theme (tokens.css), added under INO-922 so the component stops calling color-mix() itself (banned outright by check-ds-adherence.mjs's no-raw-color rule, even wrapping a var()). RN has no equivalent token and no build-time color-blend step, so the port keeps using the full severity colour as background with on{Severity} text instead — a visual divergence but equivalent contrast (severity background + on-severity text = full semantic pairing)." },
+      { platform: 'flutter', roles: ['infoSurface', 'successSurface', 'warningSurface', 'dangerSurface'], reason: 'same as the React Native entry above — Flutter port uses full severity color backgrounds with on-severity text, while web uses the precomputed severity-surface tint roles.' },
+      { platform: 'reactNative', roles: ['onDanger', 'onInfo', 'onSuccess', 'onWarning'], reason: "ADDED roles, not dropped ones. Web's status variant uses tinted backgrounds (--ino-color-{severity}-surface) with the severity color as text; mobile uses full severity backgrounds with on-severity text. Both achieve WCAG AA contrast, just via different pairing strategies." },
       { platform: 'flutter', roles: ['onDanger', 'onInfo', 'onSuccess', 'onWarning'], reason: 'same as the React Native entry above.' },
     ],
   },
@@ -1381,6 +1381,24 @@ const COMPONENT_REGISTRY = [
       { platform: 'flutter', roles: ['border'], reason: 'same as the React Native entry above — ino_radio.dart draws the ring with a BoxDecoration whose unchecked border is colors.border.' },
       { platform: 'reactNative', roles: ['accentActive'], reason: 'web reserves accent-active for the pointer-down flash on the native control (`&:active:not(:disabled)` re-points accent-color, ino-radio.component.scss:68). A radio tap commits immediately on touch with no pointer-down-before-commit phase, so the port goes straight from colors.border to colors.accent. Same rationale as checkbox/input/datepicker.' },
       { platform: 'flutter', roles: ['accentActive'], reason: 'same as the React Native entry above.' },
+    ],
+  },
+  {
+    name: 'rating',
+    web: 'web/src/app/components/rating',
+    mobile: {
+      reactNative: {
+        path: 'mobile/react-native/src/components/InoRating.tsx',
+        roles: ['danger', 'onSurface', 'onSurfaceMuted', 'warning'],
+      },
+      flutter: {
+        path: 'mobile/flutter/lib/widgets/ino_rating.dart',
+        roles: ['danger', 'onSurface', 'onSurfaceMuted', 'warning'],
+      },
+    },
+    divergences: [
+      { platform: 'reactNative', roles: ['onSurface'], reason: 'ADDED role, not a dropped one. Web composes <ino-label> for the group label and never references --ino-color-on-surface directly in ino-rating.component.scss (colour is entirely delegated to <ino-label>\'s own stylesheet). The RN port has no separate label component to delegate to (it renders the label Text itself), so it reads on-surface inline for the enabled-label case alongside the on-surface-muted it already shares with web for the disabled case.' },
+      { platform: 'flutter', roles: ['onSurface'], reason: 'same as the React Native entry above — ino_rating.dart renders its own label Text and reads colors.onSurface inline.' },
     ],
   },
   {
