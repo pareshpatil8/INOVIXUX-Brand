@@ -43,6 +43,7 @@ import { InoIconFieldComponent } from '../../../../components/icon-field/ino-ico
 import { InoIftaLabelComponent } from '../../../../components/iftalabel/ino-iftalabel.component';
 import { InoImageComponent } from '../../../../components/image/ino-image.component';
 import { InoImagecompareComponent } from '../../../../components/imagecompare/ino-imagecompare.component';
+import { InoInplaceComponent } from '../../../../components/inplace/ino-inplace.component';
 import { InoInputComponent } from '../../../../components/input/ino-input.component';
 import { InoInputGroupComponent } from '../../../../components/input-group/ino-input-group.component';
 import { InoInputOtpComponent } from '../../../../components/input-otp/ino-input-otp.component';
@@ -139,6 +140,7 @@ export const COMPONENT_REGISTRY: Record<string, Type<any>> = {
   'iftalabel': InoIftaLabelComponent,
   'image': InoImageComponent,
   'imagecompare': InoImagecompareComponent,
+  'inplace': InoInplaceComponent,
   'input': InoInputComponent,
   'input-group': InoInputGroupComponent,
   'input-otp': InoInputOtpComponent,

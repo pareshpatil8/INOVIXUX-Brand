@@ -58,6 +58,7 @@ import { OrgchartDemoComponent } from './demos/orgchart-demo.component';
 import { RatingDemoComponent } from './demos/rating-demo.component';
 import { DragdropDemoComponent } from './demos/dragdrop-demo.component';
 import { ImagecompareDemoComponent } from './demos/imagecompare-demo.component';
+import { InplaceDemoComponent } from './demos/inplace-demo.component';
 
 /**
  * Slug -> hand-authored demo component, for components whose §2 Component Publish Contract
@@ -302,4 +303,11 @@ export const CUSTOM_DEMOS: Record<string, Type<unknown>> = {
   // signature behaviors — hover-preview, cancelable click-to-clear, Arrow-key
   // selection-follows-focus — are interaction-driven. See `rating/SPEC.md` for the full contract.
   'rating': RatingDemoComponent,
+  // The display/edit slots are `ng-template` content (`inoInplaceDisplay`/`inoInplaceEdit`), the
+  // same content-projection gap `dataview`'s own comment above records — the generic renderer has
+  // no way to project either, so it would mount an `<ino-inplace>` with nothing in either slot.
+  // The §5 row's signature behaviors — lazy edit-template mounting, close on blur/Enter, the
+  // multi-field and `<textarea>` carve-outs — are all interaction-driven. See `inplace/SPEC.md`
+  // for the full contract.
+  'inplace': InplaceDemoComponent,
 };

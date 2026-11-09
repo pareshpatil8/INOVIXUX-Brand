@@ -1,0 +1,87 @@
+/*
+ * <ino-inplace> — INO-497 (INO-31 Phase B5, doc 26 §5 row `ino-inplace`).
+ *
+ * No literal colour/space/radius/duration/font-size — every declaration resolves through a
+ * semantic role in tokens.css, logical properties only. Sizing is "inherits content" per the
+ * row: no --ino-control-height/size scale is referenced here, deliberately — the trigger and
+ * editor both size to their projected content, not to a control-height rung.
+ */
+:host {
+  display: inline-block;
+  max-inline-size: 100%;
+}
+
+.ino-inplace__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ino-space-1);
+  max-inline-size: 100%;
+  padding: var(--ino-space-1) var(--ino-space-2);
+  margin: calc(-1 * var(--ino-space-1)) calc(-1 * var(--ino-space-2));
+  background: transparent;
+  border: none;
+  border-radius: var(--ino-radius-sm);
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+  cursor: pointer;
+  transition: background var(--ino-motion-duration-fast) var(--ino-motion-easing-standard);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+
+  &:hover {
+    background: var(--ino-color-surface-sunken);
+  }
+
+  &:active {
+    background: var(--ino-color-surface-sunken);
+    color: var(--ino-color-accent-active);
+  }
+
+  &:focus-visible {
+    outline: var(--ino-focus-ring);
+    outline-offset: var(--ino-focus-ring-offset);
+  }
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.5;
+  }
+}
+
+:host(.ino-inplace--readonly) .ino-inplace__trigger {
+  cursor: default;
+
+  &:hover,
+  &:active {
+    background: transparent;
+    color: inherit;
+  }
+}
+
+.ino-inplace__display {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ino-inplace__icon {
+  flex-shrink: 0;
+  color: var(--ino-color-on-surface-muted);
+  font-size: var(--ino-type-body-sm-size);
+  line-height: 1;
+}
+
+.ino-inplace__editor {
+  display: inline-block;
+  max-inline-size: 100%;
+  outline: none;
+}
+
+:host(.ino-inplace--editing) .ino-inplace__editor:focus-visible {
+  outline: var(--ino-focus-ring);
+  outline-offset: var(--ino-focus-ring-offset);
+  border-radius: var(--ino-radius-sm);
+}

@@ -3940,6 +3940,74 @@
         "templates": []
       }
     },
+    "inplace": {
+      "name": "ino-inplace",
+      "docPath": "docs/brand/06-angular-components/inplace.md",
+      "a11y": "<p><strong>Role / ARIA</strong> — the display slot is a native <code>&lt;button type=\"button\"&gt;</code>, giving it button\nsemantics (role, keyboard activation, disabled state) for free — no hand-rolled <code>role=\"button\"</code> +\nkeydown handler. <code>aria-label</code> comes from <code>ariaLabel</code>. <code>readonly</code> sets <code>aria-readonly=\"true\"</code>\nwithout removing the button from the tab order; <code>disabled</code> sets the native <code>disabled</code> attribute,\nwhich does remove it. The editor container carries no ARIA role of its own — it is a plain\nfocus-landing wrapper around consumer-supplied content, which brings whatever semantics it needs —\nbut always carries <code>tabindex=\"-1\"</code> so it is reachable programmatically even before any focusable\nchild has mounted.</p>\n<p><strong>Keyboard</strong> —</p>\n<table>\n<thead>\n<tr>\n<th>Key</th>\n<th>Behavior</th>\n</tr>\n</thead>\n<tbody><tr>\n<td>Space / Enter (on the trigger)</td>\n<td>Opens the editor; focus moves into it</td>\n</tr>\n<tr>\n<td>Tab</td>\n<td>One stop for the trigger when closed; whatever focusable controls the edit template exposes when open</td>\n</tr>\n<tr>\n<td>Enter (inside the editor, not a <code>&lt;textarea&gt;</code>)</td>\n<td>Closes and returns focus to the trigger</td>\n</tr>\n<tr>\n<td>Enter (inside a <code>&lt;textarea&gt;</code>)</td>\n<td>Inserts a newline — does <strong>not</strong> close, the universal multi-line carve-out</td>\n</tr>\n<tr>\n<td>Escape</td>\n<td>Not bound — deliberately. See <a href=\"#deliberate-omissions\">Deliberate omissions</a></td>\n</tr>\n</tbody></table>\n<p><strong>Focus behavior</strong> — opening moves focus to the first native-focusable descendant of the editor\n(<code>input, textarea, select, button, [href], [tabindex]:not([tabindex=\"-1\"])</code>), falling back to the\neditor container itself. Closing — by Enter, by blur, or by an external <code>editing = false</code> write —\nalways returns focus to the trigger button, so a keyboard user is never left with focus on a now-\nunmounted element.</p>\n<p><strong>Blur</strong> — closes when <code>focusout</code>'s <code>relatedTarget</code> is outside the editor subtree\n(<code>Node.contains</code>), so moving focus between two fields inside a multi-field edit template does not\nclose it mid-edit. Gated by <code>closeOnBlur</code> (default on).</p>\n<p><strong>Contrast</strong> — WCAG 2.2 AA in all 3 themes, gated by <code>check-theme-parity</code>. The trigger's hover/\nactive surfaces reuse <code>--ino-color-surface-sunken</code> / <code>--ino-color-accent-active</code>, the same roles\n<code>ino-button</code>'s ghost variant is already audited under.</p>\n<p><strong>RTL</strong> — logical properties only in CSS; no directional keyboard axis to mirror.</p>\n<p>Full contract: <code>SPEC.md</code> §10.</p>\n<hr />\n",
+      "notes": "<ul>\n<li><strong>No separate outside-click listener</strong> — the existing blur handling (focus leaving the editor\nsubtree) already covers \"click away to close\" without a redundant document-level listener.</li>\n<li><strong>No built-in commit/cancel buttons or value model</strong> — <code>ino-inplace</code> owns only the display/edit\ntoggle; the projected edit template is free to bind to whatever model it wants and is\nresponsible for its own commit/cancel UI if it wants one beyond \"Enter closes, blur closes\".</li>\n<li><strong>No Escape-to-close</strong> — the row names only \"blur/Enter\"; binding Escape here would race a rich\nedit template's own popup (e.g. a date picker) that needs Escape to mean \"close the inner\npopup\", not \"close the whole editor\".</li>\n<li><strong>No readonly value-display variant beyond blocking entry</strong> — <code>readonly</code> blocks <code>open()</code> like\n<code>disabled</code> does, but renders without the opacity drop, matching every other INO-31 control's\ndisabled-vs-readonly visual contract; there is no additional \"readonly value\" rendering because\nthe component has no value of its own.</li>\n</ul>\n<p><strong>PrimeNG mapping:</strong> PrimeNG <code>Inplace</code> → <code>ino-inplace</code>; its <code>pTemplate=\"display\"</code>/\n<code>pTemplate=\"content\"</code> string-ref slots become the compile-time-checked <code>inoInplaceDisplay</code>/\n<code>inoInplaceEdit</code> directives; its <code>active</code>/<code>activeChange</code> pair becomes <code>editing</code>/<code>editingChange</code>;\nits <code>closable</code> + dedicated close icon is replaced by the close-on-blur/Enter gesture the row names\ninstead.</p>\n<hr />\n",
+      "mobile": "<table>\n<thead>\n<tr>\n<th>Track</th>\n<th>Status</th>\n<th>Notes</th>\n</tr>\n</thead>\n<tbody><tr>\n<td>Capacitor</td>\n<td>Not a port</td>\n<td>Renders the same Angular component and the same CSS (INO-31 plan rev 9 §5 rule) — done the moment the web component passes.</td>\n</tr>\n<tr>\n<td>React Native</td>\n<td>Not ported</td>\n<td>Web-only per doc 26 §5 row specification</td>\n</tr>\n<tr>\n<td>Flutter</td>\n<td>Not ported</td>\n<td>Web-only per doc 26 §5 row specification</td>\n</tr>\n</tbody></table>\n",
+      "api": {
+        "props": [
+          {
+            "name": "editing",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": "Whether the edit slot is mounted. Banana-in-a-box with `editingChange`."
+          },
+          {
+            "name": "ariaLabel",
+            "type": "string",
+            "values": null,
+            "default": "'Edit'",
+            "optional": true,
+            "description": "Accessible name for the display trigger — the row's \"edit affordance labeled\" requirement. Also used as the visible affordance glyph's `aria-hidden` sibling text when no `label` is otherwise obvious from the display content."
+          },
+          {
+            "name": "editIcon",
+            "type": "string",
+            "values": null,
+            "default": "'✎'",
+            "optional": true,
+            "description": "Trailing glyph rendered next to the display content as a visual edit affordance, mirroring `ino-rating`'s plain-text-glyph precedent (no icon-component dependency exists yet). Set to `''` to omit it when the display content already signals editability on its own."
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "readonly",
+            "type": "boolean",
+            "values": null,
+            "default": "false",
+            "optional": true,
+            "description": null
+          },
+          {
+            "name": "closeOnBlur",
+            "type": "boolean",
+            "values": null,
+            "default": "true",
+            "optional": true,
+            "description": "Close (return to display) when focus leaves the editor subtree entirely. On by default per the row's \"close on blur/Enter\"; a consumer whose edit template owns its own commit/cancel buttons outside that subtree can set this false and call `close()` explicitly."
+          }
+        ],
+        "events": [
+          {
+            "name": "editingChange",
+            "type": "boolean",
+            "description": null
+          }
+        ],
+        "methods": [],
+        "templates": []
+      }
+    },
     "input": {
       "name": "ino-input",
       "docPath": "docs/brand/06-angular-components/input.md",

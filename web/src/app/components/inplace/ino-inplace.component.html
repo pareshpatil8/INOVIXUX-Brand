@@ -1,0 +1,29 @@
+@if (!editing) {
+  <button
+    #trigger
+    type="button"
+    class="ino-inplace__trigger"
+    [attr.aria-label]="ariaLabel"
+    [attr.aria-readonly]="readonly ? true : null"
+    [disabled]="disabled"
+    (click)="open()"
+  >
+    <span class="ino-inplace__display">
+      <ng-container *ngTemplateOutlet="displayDef?.template ?? null"></ng-container>
+    </span>
+    @if (editIcon) {
+      <span class="ino-inplace__icon" aria-hidden="true">{{ editIcon }}</span>
+    }
+  </button>
+}
+@if (editing) {
+  <div
+    #editor
+    class="ino-inplace__editor"
+    tabindex="-1"
+    (keydown)="onEditorKeydown($event)"
+    (focusout)="onEditorFocusOut($event)"
+  >
+    <ng-container *ngTemplateOutlet="editDef?.template ?? null"></ng-container>
+  </div>
+}
