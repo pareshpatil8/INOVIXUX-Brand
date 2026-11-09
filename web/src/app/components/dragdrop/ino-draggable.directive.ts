@@ -140,7 +140,9 @@ export class InoDraggableDirective implements OnInit, OnDestroy {
     this.inoDraggableOnDragStart.emit(this.inoDraggable);
   }
 
-  private cancelKeyboardDrag(): void {
+  /** Public: also invoked by `InoDragDropService.cancelCarrying()` when Escape is pressed while
+   *  real DOM focus is on a droppable zone rather than this draggable (SPEC.md §3.4). */
+  cancelKeyboardDrag(): void {
     if (!this.isCarrying) return;
 
     this.isCarrying = false;
@@ -155,7 +157,9 @@ export class InoDraggableDirective implements OnInit, OnDestroy {
     this.elRef.nativeElement.focus();
   }
 
-  private attemptDropOnFocused(): void {
+  /** Public: also invoked by `InoDragDropService.attemptDropOnFocusedZone()` when Enter is
+   *  pressed while real DOM focus is on a droppable zone rather than this draggable. */
+  attemptDropOnFocused(): void {
     const focusedDroppable = this.dragDropService.getFocusedDroppable();
     if (focusedDroppable) {
       focusedDroppable.receiveKeyboardDrop(this.inoDraggable, this);
@@ -163,7 +167,21 @@ export class InoDraggableDirective implements OnInit, OnDestroy {
   }
 
   private getLabel(): string {
-    return this.elRef.nativeElement.getAttribute('aria-label') || 'Item';
+    const el = this.elRef.nativeElement;
+    const ariaLabel = el.getAttribute('aria-label');
+    if (ariaLabel) return ariaLabel;
+
+    const labelledBy = el.getAttribute('aria-labelledby');
+    if (labelledBy) {
+      const text = labelledBy
+        .split(/\s+/)
+        .map((id: string) => document.getElementById(id)?.textContent?.trim())
+        .filter((part: string | undefined): part is string => !!part)
+        .join(' ');
+      if (text) return text;
+    }
+
+    return 'Item';
   }
 
   /** `inoDraggableHandle` wins when the caller sets it explicitly; otherwise, a `[inoDropHandle]`

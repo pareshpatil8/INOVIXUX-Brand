@@ -1,10 +1,12 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
   Output,
   booleanAttribute,
+  inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -45,6 +47,8 @@ let idCounter = 0;
   },
 })
 export class InoDragdropComponent {
+  private cdr = inject(ChangeDetectorRef);
+
   @Input() sourceLabel = 'Available';
   @Input() targetLabel = 'Selected';
   @Input() sourceItems: InoDragDropItem[] = [];
@@ -107,6 +111,7 @@ export class InoDragdropComponent {
     this.flashTimer = setTimeout(() => {
       this.flashedValues.delete(value);
       this.flashTimer = null;
+      this.cdr.markForCheck();
     }, 200);
   }
 }

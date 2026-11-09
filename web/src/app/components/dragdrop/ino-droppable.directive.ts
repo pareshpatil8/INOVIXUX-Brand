@@ -59,6 +59,10 @@ export class InoDroppableDirective implements OnInit, OnDestroy {
     return this.inoDroppableDisabled ? 'true' : null;
   }
 
+  /** Programmatically focusable (SPEC.md §3.4: `element.focus()` on arrow-key navigation) but
+   *  excluded from normal Tab order, since drop zones are reached via the carry flow, not Tab. */
+  @HostBinding('attr.tabindex') tabindex = -1;
+
   ngOnInit(): void {
     if (!this.elRef.nativeElement.getAttribute('role')) {
       this.renderer.setAttribute(this.elRef.nativeElement, 'role', 'region');
@@ -96,6 +100,41 @@ export class InoDroppableDirective implements OnInit, OnDestroy {
     const data = this.dragDropService.getDraggingData();
     const source = this.dragDropService.getDraggingSource();
     this.attemptDrop(data, source, false);
+  }
+
+  /** Real DOM focus lands here while carrying (SPEC.md §3.4), so once the user has arrowed past
+   *  the first zone the draggable's own `keydown` handler no longer sees these events — forward
+   *  them to the service, which delegates back to the active draggable's existing logic.
+   *  Draggable `<li>` items are DOM descendants of their `[inoDroppable]` `<ul>`, so a keydown
+   *  on a still-focused draggable bubbles up here too; only act when this host itself is the
+   *  focused element, otherwise the draggable's own handler and this one both fire and the
+   *  carry navigates two steps per keypress. */
+  @HostListener('keydown', ['$event'])
+  onKeyDown(event: KeyboardEvent): void {
+    if (!this.dragDropService.isCarrying()) return;
+    if (event.target !== this.elRef.nativeElement) return;
+
+    if (
+      event.code === 'ArrowUp' ||
+      event.code === 'ArrowDown' ||
+      event.code === 'ArrowLeft' ||
+      event.code === 'ArrowRight'
+    ) {
+      event.preventDefault();
+      this.dragDropService.navigateToNextDroppable(event.code);
+      return;
+    }
+
+    if (event.code === 'Enter') {
+      event.preventDefault();
+      this.dragDropService.attemptDropOnFocusedZone();
+      return;
+    }
+
+    if (event.code === 'Escape') {
+      event.preventDefault();
+      this.dragDropService.cancelCarrying();
+    }
   }
 
   /** Called by `InoDraggableDirective.attemptDropOnFocused()` on Enter while carrying. */
@@ -187,10 +226,20 @@ export class InoDroppableDirective implements OnInit, OnDestroy {
   }
 
   private getLabel(): string {
-    return (
-      this.elRef.nativeElement.getAttribute('aria-label') ||
-      this.elRef.nativeElement.getAttribute('aria-labelledby') ||
-      'zone'
-    );
+    const el = this.elRef.nativeElement;
+    const ariaLabel = el.getAttribute('aria-label');
+    if (ariaLabel) return ariaLabel;
+
+    const labelledBy = el.getAttribute('aria-labelledby');
+    if (labelledBy) {
+      const text = labelledBy
+        .split(/\s+/)
+        .map((id: string) => document.getElementById(id)?.textContent?.trim())
+        .filter((part: string | undefined): part is string => !!part)
+        .join(' ');
+      if (text) return text;
+    }
+
+    return 'zone';
   }
 }

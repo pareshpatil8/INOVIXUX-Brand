@@ -122,6 +122,18 @@ export class InoDragDropService {
     return this.carrying !== null;
   }
 
+  /** Arrow-key navigation moves real DOM focus onto the droppable zone (SPEC.md §3.4), so the
+   *  draggable's own `keydown` handler stops receiving events once focus leaves it. These two
+   *  methods let `[inoDroppable]` forward Enter/Escape, while carrying, back to the active
+   *  draggable's existing logic instead of duplicating it. */
+  attemptDropOnFocusedZone(): void {
+    this.carrying?.draggable.attemptDropOnFocused();
+  }
+
+  cancelCarrying(): void {
+    this.carrying?.draggable.cancelKeyboardDrag();
+  }
+
   setCurrentDraggableCarrying(draggable: InoDraggableDirective): void {
     if (this.carrying) {
       this.carrying.draggable = draggable;
